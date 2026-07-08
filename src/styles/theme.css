@@ -1,0 +1,239 @@
+/**
+ * Element Plus 主题覆盖
+ * 对齐源码 z1-design 视觉规范：
+ * - 主色 #165dff（替代 Element Plus 默认 #409EFF）
+ * - 圆角统一 2-4px（源码规范）
+ * - radio-button 改为 segmented 风格（浅蓝底+蓝字+蓝边，非蓝底白字）
+ * - 字体 13px 为主（源码规范）
+ */
+
+:root {
+  /* 主色系（覆盖 Element Plus 默认）*/
+  --el-color-primary: #165dff;
+  --el-color-primary-light-3: #4080ff;
+  --el-color-primary-light-5: #8cb8ff;
+  --el-color-primary-light-7: #b3d1ff;
+  --el-color-primary-light-8: #d0e7ff;
+  --el-color-primary-light-9: #e8f3ff;
+  --el-color-primary-dark-2: #1249b8;
+
+  /* 圆角（源码 2-4px）*/
+  --el-border-radius-base: 2px;
+  --el-border-radius-small: 2px;
+}
+
+/* ============ radio-button 改为 segmented 风格 ============ */
+.el-radio-button__inner {
+  border-color: #e5e8ef !important;
+  background: #f7f8fa !important;
+  color: #4e5969 !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+
+.el-radio-button__original-radio:checked + .el-radio-button__inner {
+  border-color: #165dff !important;
+  background: #eef4ff !important;
+  color: #165dff !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.el-radio-button__inner:hover {
+  color: #165dff !important;
+}
+
+/* ============ tabs 下划线风格（替代 card）============ */
+.el-tabs__item {
+  color: #6b7480;
+  font-weight: 500;
+}
+
+.el-tabs__item.is-active {
+  color: #165dff;
+  font-weight: 600;
+}
+
+.el-tabs__item:hover {
+  color: #165dff;
+}
+
+.el-tabs__active-bar {
+  background-color: #165dff;
+  height: 2px !important;
+}
+
+/* card 类型 tabs 简化（去除过度边框）*/
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-bottom: 2px solid #165dff;
+  background: transparent;
+}
+
+.el-tabs--card > .el-tabs__header {
+  border-bottom: 1px solid #e7ebf0;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: none;
+}
+
+/* ============ 按钮微调（对齐源码）============ */
+.el-button--primary {
+  --el-button-bg-color: #165dff;
+  --el-button-border-color: #165dff;
+  --el-button-hover-bg-color: #4080ff;
+  --el-button-hover-border-color: #4080ff;
+  --el-button-active-bg-color: #1249b8;
+  --el-button-active-border-color: #1249b8;
+}
+
+/* ============ 输入框/选择器圆角 ============ */
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: 2px !important;
+}
+
+/* ============ tag 圆角（pill 风格）============ */
+.el-tag {
+  border-radius: 12px;
+}
+
+/* ============ 表格头部样式（对齐源码）============ */
+.el-table th.el-table__cell {
+  background: #f7f9fc !important;
+  color: #556273 !important;
+  font-weight: 600 !important;
+}
+
+.el-table th.el-table__cell .cell {
+  font-size: 13px;
+}
+
+/* ============ 全局字体（源码规范 13px 为主）============ */
+.el-form-item__label {
+  font-size: 13px;
+  color: #5a6678;
+}
+
+.el-input__inner,
+.el-select__placeholder,
+.el-textarea__inner {
+  font-size: 13px;
+}
+
+/* ============ link 按钮颜色 ============ */
+.el-button--primary.is-link,
+.el-button--primary.is-text {
+  --el-button-text-color: #165dff;
+  --el-button-hover-text-color: #4080ff;
+}
+
+/* ============ 品牌沉浸式风格补丁（适用功能记录仓迁移页：运输通道/广林询价）============ */
+
+/* 通用 form-section 大圆角 + 阴影卡片 */
+.channel-page .form-section,
+.inquiry-page .form-section {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(28, 46, 86, 0.05) !important;
+  padding: 18px 22px !important;
+}
+
+/* page-header 卡片化 */
+.channel-page .page-header,
+.inquiry-page .page-header {
+  padding: 14px 20px !important;
+  background: #fff !important;
+  border: 1px solid #e7ebf0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(28, 46, 86, 0.04) !important;
+  margin-bottom: 14px !important;
+}
+
+/* filter-row 卡片化 */
+.channel-page .filter-row,
+.inquiry-page .filter-row {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(28, 46, 86, 0.03) !important;
+}
+
+/* section-title 增强竖条 */
+.channel-page .section-title::before,
+.inquiry-page .section-title::before {
+  width: 4px !important;
+  background: linear-gradient(180deg, #165dff, #4080ff) !important;
+  border-radius: 2px !important;
+}
+
+/* el-tag 全部改胶囊 */
+.channel-page .el-tag,
+.inquiry-page .el-tag {
+  border-radius: 999px !important;
+  padding: 0 12px !important;
+  height: 22px !important;
+  line-height: 20px !important;
+}
+
+/* el-table 圆角 + hover 淡蓝 */
+.channel-page .el-table,
+.inquiry-page .el-table {
+  border-radius: 6px;
+  overflow: hidden;
+}
+.channel-page .el-table tbody tr:hover > td.el-table__cell,
+.inquiry-page .el-table tbody tr:hover > td.el-table__cell {
+  background: #f2f6ff !important;
+}
+
+/* 卡片类容器统一圆角 */
+.channel-page .plan-card,
+.inquiry-page .plan-card,
+.channel-page .segment-card,
+.inquiry-page .plan-summary-card,
+.channel-page .carrier-block,
+.inquiry-page .recent-card {
+  border-radius: 8px !important;
+}
+
+/* scheme-source / summary 卡片阴影 */
+.channel-page .scheme-source,
+.channel-page .scheme-summary,
+.inquiry-page .source-card {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(28, 46, 86, 0.04) !important;
+}
+
+/* 抽屉/弹窗圆角 */
+.channel-page :deep(.el-drawer__header),
+.inquiry-page :deep(.el-drawer__header) {
+  margin-bottom: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eef0f5;
+}
+
+/* 角色切换器（广林询价三端）改 iOS 分段风 */
+.inquiry-page .el-radio-group .el-radio-button__inner {
+  border-radius: 999px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  padding: 6px 18px !important;
+  font-weight: 500 !important;
+}
+.inquiry-page .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background: #fff !important;
+  color: #165dff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  font-weight: 600 !important;
+}
+.inquiry-page .el-radio-group {
+  background: #f5f6fa;
+  padding: 3px;
+  border-radius: 999px;
+}

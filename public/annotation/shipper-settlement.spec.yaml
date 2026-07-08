@@ -1,0 +1,259 @@
+meta:
+  page_id: shipper-settlement
+  page_name: 多式联运 - 货主结算
+  version: 1
+  updated_at: "2026-07-05"
+  page_path: prototype/货主结算/App.vue
+  prd_ref: prd/多式联运_货主结算_PRD_v1.md
+  rule_refs:
+    - context/business-rules/03-跨模块业务原则/联运计划结算分层原则.md
+
+units:
+  - id: add_basic_subject
+    index: ①
+    short_index: "1"
+    title: 新增页基础信息与结算主体
+    anchor_selector: ".annotation-add-basic"
+    node_class: annotation-add-basic-node
+    aria_label: ① 新增页基础信息与结算主体
+    page_scope: add
+    purpose: |-
+      约束本次货主结算单的结算对象、结算方、结算日期和结算总额。
+      结算方是后续可选联运计划的筛选条件，已选计划后切换结算方必须清空计划和费用明细。
+    rules:
+      - priority: P0
+        text: 结算对象、结算方、结算日期必填；结算总额只读，由已选联运计划基础运费、补贴和扣减实时汇总。
+      - priority: P0
+        text: 修改结算方后，必须清空已选联运计划及其费用明细，防止不同结算方的计划进入同一结算单。
+      - priority: P1
+        text: 备注为选填，不参与金额计算，不影响后续状态流转。
+    field_columns:
+      - 字段
+      - 来源
+      - 规则
+      - 下游影响
+    fields:
+      - 字段: 结算对象
+        来源: 运输结算模块业务类型字典
+        规则: 当前场景固定用于货主结算，必填
+        下游影响: 决定生成货主应收结算单
+      - 字段: 结算方
+        来源: 结算主体档案 / 联运计划结算方
+        规则: 必填，筛选可添加联运计划
+        下游影响: 同一结算单只能包含该结算方下的联运计划
+      - 字段: 结算总额
+        来源: 页面试算结果
+        规则: 只读，等于基础运费合计 + 补贴合计 - 扣减合计
+        下游影响: 提交后形成结算单金额快照
+
+  - id: add_plan_selector
+    index: ②
+    short_index: "2"
+    title: 添加联运计划与可选条件
+    anchor_selector: ".annotation-add-plan-selector"
+    node_class: annotation-add-plan-selector-node
+    aria_label: ② 添加联运计划与可选条件
+    page_scope: add
+    purpose: |-
+      选择当前结算方下满足条件的联运计划，作为本次货主结算单核算对象。
+      该抽屉为动态区域，仅在点击“添加联运计划”后出现。
+    rules:
+      - priority: P0
+        text: 可选联运计划必须与当前结算方一致，且已生效、未作废、存在客户侧费用规则、未结算量大于 0。
+      - priority: P0
+        text: 不可选计划必须给出原因，例如未结算量为 0、缺少客户侧费用规则、缺少装卸确认量、已作废或存在争议锁定。
+      - priority: P1
+        text: 支持多选联运计划；回填后按联运计划分组展示并参与总额试算。
+      - priority: P1
+        text: 已选联运计划可移除，移除后同步重算结算总额。
+    field_columns:
+      - 对象
+      - 判断依据
+      - 通过条件
+      - 异常处理
+    fields:
+      - 对象: 联运计划
+        判断依据: 结算方、状态、费用规则、未结算量、异常锁定
+        通过条件: 同一结算方且存在可结算量
+        异常处理: 不可选并展示原因
+
+  - id: add_settlement_calculation
+    index: ③
+    short_index: "3"
+    title: 核算联运计划与整票/分段计算
+    anchor_selector: ".annotation-add-plans"
+    node_class: annotation-add-plans-node
+    aria_label: ③ 核算联运计划与整票/分段计算
+    page_scope: add
+    purpose: |-
+      维护已选联运计划的本次结算量、运输单价、基础运费、补贴、扣减和核算运费。
+      整票结算按联运计划级统一计费；分段结算按子计划（路段）级独立计费，支持异构分段。
+    rules:
+      - priority: P0
+        text: 本次结算量默认等于未结算量，可减少、不可增加；整票按货品/箱型明细行维护，分段按子计划明细行维护。
+      - priority: P0
+        text: 分段结算下，各子计划独立维护计费条件、计费依据、单价和量纲；集装箱子计划计费依据置空。
+      - priority: P0
+        text: 运输单价可在本次结算中调整，但散货/普货按计划级或子计划级调整，集装箱按箱型调整；只形成结算单快照，不反改联运计划费用规则。
+      - priority: P1
+        text: 核算运费 = 基础运费 + 补贴金额 - 扣减金额；全单结算总额为所有联运计划核算运费之和。
+      - priority: P1
+        text: 多货品或多箱型不得合并为不可追溯的单行费用；不同货品/箱型行不可跨行挪用未结算量。
+    field_columns:
+      - 场景
+      - 计费单元
+      - 量来源
+      - 计算规则
+    fields:
+      - 场景: 整票结算
+        计费单元: 联运计划级，明细按货品/箱型拆行
+        量来源: 装货口径取首段装货确认量，卸货口径取末段卸货确认量
+        计算规则: 散货/普货按计划级统一单价；集装箱按箱型单价
+      - 场景: 分段结算
+        计费单元: 子计划（路段）级
+        量来源: 各子计划按自身计费依据取装卸确认量；集装箱按箱型箱数汇总
+        计算规则: 散货/普货按路段统一单价；集装箱按路段+箱型单价
+
+  - id: add_adjustment_dialog
+    index: ④
+    short_index: "4"
+    title: 补贴/扣减维护
+    anchor_selector: ".annotation-add-adjustment-dialog-anchor"
+    node_class: annotation-add-adjustment-node
+    aria_label: ④ 补贴/扣减维护
+    visibility_condition: adjustment_dialog_open
+    visibility_condition_desc: 仅当点击明细行补贴或扣减并打开维护弹窗后可见
+    page_scope: add
+    purpose: |-
+      维护本次结算中的增项和减项费用。
+      标注挂在补贴/扣减维护弹窗内；点击明细行补贴或扣减后打开。
+    rules:
+      - priority: P0
+        text: 补贴金额、扣减金额必须挂到货品/箱型明细行级；分段结算还必须记录所属子计划。
+      - priority: P1
+        text: 补贴和扣减只影响本次结算单，不反改联运计划费用规则。
+      - priority: P1
+        text: 金额必须合法，确认后回写当前明细行并触发计划小计和全单结算总额重算。
+      - priority: P2
+        text: 无补贴或无扣减时使用轻量空态文案，不使用大面积插画。
+
+  - id: add_submit_and_occupy
+    index: ⑤
+    short_index: "5"
+    title: 提交校验与结算量占用
+    anchor_selector: ".annotation-add-submit"
+    node_class: annotation-add-submit-node
+    aria_label: ⑤ 提交校验与结算量占用
+    page_scope: add
+    purpose: |-
+      提交后生成正式货主结算单并进入待审核状态。
+      同时占用本次结算量，避免后续结算单重复结算同一数量范围。
+    rules:
+      - priority: P0
+        text: 提交前必须校验结算对象、结算方、至少一个联运计划、费用规则完整、本次结算量合法、运输单价合法、补贴扣减金额合法。
+      - priority: P0
+        text: 提交后结算单直接进入待审核，不生成草稿。
+      - priority: P0
+        text: 系统按子计划（路段）级 + 量纲记录本次结算占用；整票结算按联运计划级和货品/箱型明细行占用。
+      - priority: P1
+        text: 若同一内部运单同一数量范围已被其他有效结算单占用，本次提交必须阻断。
+    state_transitions:
+      - from: 新建未提交
+        action: 提交
+        to: 待审核
+        rule: 生成结算单并占用本次结算量
+
+  - id: detail_basic_and_summary
+    index: ⑥
+    short_index: "6"
+    title: 详情页基础信息与全单汇总
+    anchor_selector: ".annotation-detail-basic"
+    node_class: annotation-detail-basic-node
+    aria_label: ⑥ 详情页基础信息与全单汇总
+    page_scope: detail
+    purpose: |-
+      只读展示已生成结算单的基础信息和全单费用汇总。
+      详情页展示的是提交时形成的结算结果快照，不随联运计划后续费用规则变化实时重算。
+    rules:
+      - priority: P0
+        text: 详情页核心结算字段只读，不允许修改数量、单价、补贴、扣减或结算结果。
+      - priority: P0
+        text: 结算总额 = 基础运费合计 + 补贴金额合计 - 扣减金额合计，必须与各联运计划核算运费汇总一致。
+      - priority: P1
+        text: 不展示 OA 流程、OA 单号、查看依据、运单选择或内部运单占用明细。
+      - priority: P1
+        text: 状态为待打款时显示确认打款；待审核、已打款、已作废不显示确认打款。
+    status_action_matrix:
+      - status: 待审核
+        actions: 不显示确认打款
+        rule: 等待外部审核或 OA 结果同步
+      - status: 待打款
+        actions: 显示确认打款
+        rule: 打款完成后进入已打款
+      - status: 已打款
+        actions: 不显示确认打款
+        rule: 结算完成，只读查看
+      - status: 已作废
+        actions: 不显示确认打款
+        rule: 不参与有效已结算量统计
+
+  - id: detail_plan_list
+    index: ⑦
+    short_index: "7"
+    title: 左侧联运计划汇总
+    anchor_selector: ".annotation-detail-plan-list"
+    node_class: annotation-detail-plan-list-node
+    aria_label: ⑦ 左侧联运计划汇总
+    page_scope: detail
+    purpose: |-
+      左侧按联运计划卡片展示本结算单包含的计划清单和费用摘要。
+      点击卡片切换右侧计费详情，左侧摘要与右侧明细必须保持金额一致。
+    rules:
+      - priority: P0
+        text: 一张货主结算单可包含同一结算方下多个联运计划，左侧列表承担计划切换入口。
+      - priority: P0
+        text: 整票结算和分段结算只是客户侧主运费计算方式，不决定结算单数量。
+      - priority: P1
+        text: 卡片展示联运计划号、结算方式、计划名称或路线摘要、货品/箱型摘要、基础运费、补贴、扣减和核算运费。
+      - priority: P1
+        text: 默认选中第一条联运计划；切换后右侧计费类型、基础运费、补贴、扣减和核算结果同步更新。
+
+  - id: detail_fee_breakdown
+    index: ⑧
+    short_index: "8"
+    title: 右侧计费详情与核算结果
+    anchor_selector: ".annotation-detail-billing-type, .annotation-detail-base-fee, .annotation-detail-subsidy, .annotation-detail-deduction, .annotation-detail-result"
+    node_class: annotation-detail-fee-node
+    aria_label: ⑧ 右侧计费详情与核算结果
+    page_scope: detail
+    purpose: |-
+      右侧展示当前联运计划的计费方式、基础运费、补贴费用、扣减费用和核算结果。
+      详情页用于复核结算快照，不提供编辑入口。
+    rules:
+      - priority: P0
+        text: 整票结算按货品/箱型展示基础运费表；分段结算按子计划（路段）分组展示。散货/普货同一计划或同一路段内共用单价，集装箱按箱型展示单价。
+      - priority: P0
+        text: 分段结算下，补贴费用和扣减费用需展示所属子计划，保证费用可追溯到路段与明细行。
+      - priority: P1
+        text: 集装箱子计划计费依据置空，确认总量按该段箱型箱数汇总取值，不同箱型可不同单价。
+      - priority: P1
+        text: 核算运费 = 基础运费合计 + 补贴金额合计 - 扣减金额合计；结果必须与左侧计划卡片核算运费一致。
+      - priority: P2
+        text: 无补贴或无扣减时使用轻量空态文案。
+    field_columns:
+      - 分组
+      - 展示内容
+      - 关键规则
+    fields:
+      - 分组: 计费类型
+        展示内容: 联运计划号、结算方式、计费条件、计费依据、计价方式
+        关键规则: 整票为计划级，分段为各子计划独立计费
+      - 分组: 基础运费
+        展示内容: 货品/箱型、结算量、单价、金额
+        关键规则: 详情页只读展示提交时快照
+      - 分组: 补贴/扣减
+        展示内容: 货品/箱型、所属子计划、费用项目、金额
+        关键规则: 按明细行级维护，不合并为不可追溯费用
+      - 分组: 核算结果
+        展示内容: 基础运费、补贴、扣减、核算运费
+        关键规则: 与左侧计划卡片和全单汇总保持一致

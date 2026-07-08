@@ -1,0 +1,4 @@
+{
+  "version": 1,
+  "note": "标注渲染器契约版本（templates/runtime/ 下 annotation-core.js + annotation-core.css + vendor/js-yaml.min.js）。改动 runtime 任何文件后必须 +1。version 用于自安装时判断项目侧副本是否落后并触发覆盖，不是 npm 包版本。"
+}
