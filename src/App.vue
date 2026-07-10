@@ -119,7 +119,6 @@ const pageLoaders = {
   transportChannel: () => import('../prototype/运输通道管理/App.vue').then(m => markRaw(m.default)),
   multimodalCreate: () => import('../prototype/创建联运计划/App.vue').then(m => markRaw(m.default)),
   inquiryShipper: () => import('../prototype/广林询价三端/App.vue').then(m => markRaw(m.default)),
-  inquiryNvocc: () => import('../prototype/广林询价三端/App.vue').then(m => markRaw(m.default)),
   shipperSettlement: () => import('../prototype/货主结算/App.vue').then(m => markRaw(m.default)),
   waybillQuote: () => import('../prototype/承运商报价/App.vue').then(m => markRaw(m.default)),
 }
@@ -131,15 +130,14 @@ const pages = [
   // 通用功能
   { key: 'waybillManage', name: '托运单管理', module: '托运单管理 · 列表 + 创建', icon: '📦', status: 'ready', category: 'general' },
   { key: 'waybillQuote', name: '承运商报价', module: '托运单管理 · 报价页', icon: '💰', status: 'ready', category: 'general' },
+  { key: 'inquiryHall', name: '货源大厅', module: '托运单管理 · 承运商报价入口', icon: '🏷️', status: 'ready', category: 'general' },
   { key: 'multimodalCreate', name: '创建联运计划', module: '多式联运', icon: '🚢', status: 'ready', category: 'general' },
   { key: 'multimodalManage', name: '联运计划管理', module: '多式联运', icon: '📋', status: 'ready', category: 'general' },
   { key: 'shipperSettlement', name: '货主结算', module: '多式联运', icon: '🧾', status: 'ready', category: 'general' },
   { key: 'containerPlan', name: '集装箱计划创建', module: '公路计划', icon: '🚂', status: 'ready', category: 'general' },
   { key: 'transportChannel', name: '运输通道管理', module: '运输通道', icon: '🛣️', status: 'ready', category: 'general' },
   // 项目定制
-  { key: 'inquiryHall', name: '询价大厅', module: '广林项目定制 · 承运商端', icon: '🏷️', status: 'ready', category: 'custom' },
-  { key: 'inquiryShipper', name: '货源询价（货主端）', module: '广林项目定制 · 货主端', icon: '📮', status: 'ready', category: 'custom' },
-  { key: 'inquiryNvocc', name: '询价管理（无车承运人）', module: '广林项目定制 · 无车承运人端', icon: '🚚', status: 'ready', category: 'custom' },
+  { key: 'inquiryShipper', name: '货源询价（广林三端）', module: '广林项目定制 · 货主/无车承运人/承运商', icon: '📮', status: 'ready', category: 'custom' },
 ]
 
 const generalPages = computed(() => pages.filter(p => p.category === 'general'))

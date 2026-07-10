@@ -1,170 +1,228 @@
 /**
- * 广林询价三端 Mock 数据
- * 三端联动：货主端 + 无车承运人端 + 承运商端
- * 一份共享数据 + 三个角色视图
+ * 广林询价三端 Mock 数据（严格按源 page.html DB 结构 1:1 还原）
+ * 7 条询价覆盖全状态：草稿/待承接/已发布/待确认/已完成/已拒绝/已取消
  */
 
-// 询价类型
-export const inquiryTypes = ['长协货源询价', '零星货源询价']
+export const CONFIG = {
+  shipperName: '广西广林木业有限公司',
+  carriers: ['顺达物流', '鑫运运输', '广运达物流'],
+  nvoccs: ['广林物流', '鑫运物流'],
+}
 
-// 配载方式
-export const stowageModes = ['按重量', '按数量', '按体积']
+export const CURRENT_CARRIER = '广运达物流'
+export const CURRENT_NVOCC = '广林物流'
 
-// 单位映射
+// 下拉选项
+export const typeOptions = ['长协', '零星']
+export const loadModeOptions = ['按重量', '按数量', '按体积']
 export const unitMap = {
   按重量: ['吨', '千克'],
   按数量: ['件', '箱', '托', '车'],
   按体积: ['立方米'],
 }
+export const transportOptions = ['汽运', '水运', '铁路']
+export const originOptions = ['南宁', '柳州', '桂林', '梧州', '北海', '玉林']
+export const destOptions = ['广州', '深圳', '佛山', '中山', '珠海', '江门', '惠州', '肇庆']
+export const goodsOptions = ['原木', '板材', '方木', '木片']
+export const goodsRecommend = {
+  原木: { loadMode: '按重量', unit: '吨' },
+  板材: { loadMode: '按重量', unit: '吨' },
+  方木: { loadMode: '按数量', unit: '件' },
+  木片: { loadMode: '按体积', unit: '立方米' },
+}
+export const markupModes = ['按比例加价', '按固定金额加价', '直接填写']
+export const quoteModeOptions = ['按运输单价报价', '按运输总价报价']
 
-// 货品推荐配载方式
-export const cargoRecommend = {
-  原木: { stowage: '按重量', unit: '吨' },
-  板材: { stowage: '按重量', unit: '吨' },
-  方木: { stowage: '按数量', unit: '件' },
-  木片: { stowage: '按体积', unit: '立方米' },
-  煤炭: { stowage: '按重量', unit: '吨' },
-  钢材: { stowage: '按重量', unit: '吨' },
+// 货主端状态 tabs
+export const shipperStatusTabs = ['全部', '草稿', '待承接', '待报价', '待确认', '已完成', '已拒绝', '已取消']
+
+// 无车承运人端状态 tabs
+export const nvoccStatusTabs = ['全部', '待承接', '已承接', '已发布', '待货主确认', '已完成', '已拒绝', '已取消']
+
+// 状态 tag 映射（严格按源 sTag 函数）
+const statusTagMap = {
+  '草稿': 'neutral', '待承接': 'warning', '已承接': 'processing', '已发布': 'processing',
+  '待报价': 'processing', '待确认': 'warning', '待货主确认': 'warning',
+  '已完成': 'success', '已拒绝': 'error', '已取消': 'neutral',
+  '待处理': 'neutral', '报价中': 'processing', '已确认': 'success',
+  '已生成托运单': 'success', '已驳回': 'error',
+  '已报价': 'processing', '未入围': 'neutral', '已成交': 'success', '已失效': 'neutral',
+  '长协': 'processing', '零星': 'success',
+}
+export function getStatusTagClass(s) {
+  return 'gl-tag-' + (statusTagMap[s] || 'neutral')
 }
 
-// 货品选项
-export const cargoOptions = Object.keys(cargoRecommend)
-
-// 地址库
-export const addressOptions = ['苏州', '上海', '杭州', '南京', '广州', '深圳', '成都', '武汉']
-
-// 询价对象（无车承运人）
-export const nvoccOptions = ['广林物流平台公司', '东南无车承运', '华中联运平台']
-
-// 报价加价方式
-export const markupTypes = ['按比例加价', '按固定金额加价', '直接填写']
-
-// 初始数据：5 张货源询价
+// 7 条询价数据（严格按源 DB.inquiries）
 export const initialInquiries = [
   {
-    id: 'IQ20260701001',
-    inquiryType: '长协货源询价',
-    title: '广林项目-华东木材长协',
-    shipper: '广林木业有限公司',
-    nvocc: '广林物流平台公司',
-    description: '原木从苏州发往上海，按月稳定货源',
-    status: '草稿',
-    createdAt: '2026-07-01 09:00',
-    rejectReason: '',
-    cancelReason: '',
+    id: 'HYXJ-2026-0516-001',
+    title: '广林2026年5月长协货源询价-第一批',
+    type: '长协',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: '5月长协线路询价',
+    status: '已发布',
+    publishTime: '2026-05-15 14:30',
+    acceptTime: '2026-05-15 15:00',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '', cancelTime: '',
     routes: [
+      { id: 'R001', origin: '南宁', dest: '广州', goods: '原木', loadMode: '按重量', quantity: 500, unit: '吨', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+      { id: 'R002', origin: '南宁', dest: '深圳', goods: '原木', loadMode: '按重量', quantity: 300, unit: '吨', transport: '汽运', remark: '优先安排', status: '报价中', deadline: '2026-08-22 18:00', publishNote: '请尽快报价', quotes: [] },
       {
-        id: 'R001', origin: '苏州', destination: '上海', cargo: '原木',
-        stowage: '按重量', cargoQty: 200, unit: '吨', transportMode: '汽运',
-        remark: '',
-        status: '待处理',
-        publishDeadline: '',
-        publishRemark: '',
-        carrierQuotes: [],
-        currentQuoteVersion: null, // 当前对货主报价版本
-        waybillNo: '',
+        id: 'R003', origin: '柳州', dest: '佛山', goods: '板材', loadMode: '按重量', quantity: 200, unit: '吨', transport: '汽运', remark: '', status: '报价中', deadline: '2026-08-22 18:00', publishNote: '',
+        quotes: [
+          { carrier: '顺达物流', quoteMode: '按运输总价报价', totalAmount: 8500, unitPrice: 42.5, remark: '', status: '已报价', time: '2026-05-16 10:15' },
+          { carrier: '鑫运运输', quoteMode: '按运输总价报价', totalAmount: 9200, unitPrice: 46, remark: '含装卸费', status: '已报价', time: '2026-05-16 11:40' },
+          { carrier: '广运达物流', quoteMode: '按运输单价报价', totalAmount: 8200, unitPrice: 41, remark: '', status: '已报价', time: '2026-05-16 15:00' },
+        ],
       },
     ],
   },
   {
-    id: 'IQ20260701002',
-    inquiryType: '长协货源询价',
-    title: '广林项目-木片发运',
-    shipper: '广林木业有限公司',
-    nvocc: '广林物流平台公司',
-    description: '',
-    status: '待承接',
-    createdAt: '2026-07-01 10:00',
-    rejectReason: '',
-    cancelReason: '',
-    routes: [
-      {
-        id: 'R002', origin: '苏州', destination: '杭州', cargo: '木片',
-        stowage: '按体积', cargoQty: 500, unit: '立方米', transportMode: '汽运',
-        remark: '',
-        status: '待处理',
-        publishDeadline: '',
-        publishRemark: '',
-        carrierQuotes: [],
-        currentQuoteVersion: null,
-        waybillNo: '',
-      },
-    ],
-  },
-  {
-    id: 'IQ20260701003',
-    inquiryType: '零星货源询价',
-    title: '零星-钢材运输',
-    shipper: '广林木业有限公司',
-    nvocc: '广林物流平台公司',
-    description: '',
+    id: 'HYXJ-2026-0516-002',
+    title: '广林零星货源询价-散货运输',
+    type: '零星',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: '零星散货询价',
     status: '待确认',
-    createdAt: '2026-07-02 09:00',
-    rejectReason: '',
-    cancelReason: '',
+    publishTime: '2026-05-14 10:00',
+    acceptTime: '2026-05-14 10:30',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '', cancelTime: '',
     routes: [
       {
-        id: 'R003', origin: '上海', destination: '南京', cargo: '钢材',
-        stowage: '按重量', cargoQty: 50, unit: '吨', transportMode: '汽运',
-        remark: '',
-        status: '待货主确认',
-        publishDeadline: '2026-07-05 18:00',
-        publishRemark: '请尽快报价',
-        carrierQuotes: [
-          { id: 'Q001', carrier: '顺达物流', totalAmount: 8000, unitPrice: 160, createdAt: '2026-07-03 10:00' },
-          { id: 'Q002', carrier: '鑫运运输', totalAmount: 7500, unitPrice: 150, createdAt: '2026-07-03 11:00' },
-          { id: 'Q003', carrier: '广运达物流', totalAmount: 7800, unitPrice: 156, createdAt: '2026-07-03 14:00' },
+        id: 'R101', origin: '南宁', dest: '珠海', goods: '板材', loadMode: '按重量', quantity: 80, unit: '吨', transport: '汽运', remark: '', status: '报价中', deadline: '2026-08-23 18:00', publishNote: '',
+        quotes: [
+          { carrier: '顺达物流', quoteMode: '按运输总价报价', totalAmount: 4200, unitPrice: 52.5, remark: '', status: '已报价', time: '2026-05-15 11:00' },
+          { carrier: '广运达物流', quoteMode: '按运输总价报价', totalAmount: 4100, unitPrice: 51.25, remark: '', status: '已报价', time: '2026-05-15 14:00' },
         ],
-        currentQuoteVersion: { totalAmount: 8200, unitPrice: 164, submitRemark: '加价 4%', submittedAt: '2026-07-03 16:00', baseQuoteId: 'Q002' },
-        waybillNo: '',
+      },
+      { id: 'R102', origin: '梧州', dest: '中山', goods: '原木', loadMode: '按数量', quantity: 120, unit: '件', transport: '汽运', remark: '', status: '报价中', deadline: '2026-08-23 18:00', publishNote: '', quotes: [] },
+      {
+        id: 'R103', origin: '桂林', dest: '深圳', goods: '板材', loadMode: '按数量', quantity: 60, unit: '件', transport: '汽运', remark: '急件', status: '待货主确认', deadline: '2026-08-22 18:00', publishNote: '',
+        quotes: [
+          { carrier: '顺达物流', quoteMode: '按运输单价报价', totalAmount: 3800, unitPrice: 63.33, remark: '', status: '已报价', time: '2026-05-15 14:00' },
+          { carrier: '鑫运运输', quoteMode: '按运输总价报价', totalAmount: 4000, unitPrice: 66.67, remark: '', status: '已报价', time: '2026-05-15 15:30' },
+        ],
+        selectedCarrier: '顺达物流', markupMode: '直接填写', markupValue: 0, confirmPrice: 4100, fillNote: '', submitTime: '2026-05-15 16:00',
+      },
+      {
+        id: 'R104', origin: '北海', dest: '佛山', goods: '原木', loadMode: '按重量', quantity: 180, unit: '吨', transport: '汽运', remark: '', status: '已驳回', deadline: '2026-08-24 18:00', publishNote: '',
+        quotes: [
+          { carrier: '鑫运运输', quoteMode: '按运输总价报价', totalAmount: 6800, unitPrice: 37.78, remark: '', status: '已报价', time: '2026-05-16 10:00' },
+          { carrier: '广运达物流', quoteMode: '按运输单价报价', totalAmount: 7000, unitPrice: 38.89, remark: '', status: '已报价', time: '2026-05-16 11:30' },
+        ],
+        selectedCarrier: '鑫运运输', markupMode: '按固定金额加价', markupValue: 500, confirmPrice: 7300, fillNote: '含装卸', submitTime: '2026-05-16 12:00',
+        rejectReason: '报价偏高，请重新报价', rejectTime: '2026-05-16 14:00',
+      },
+      {
+        id: 'R105', origin: '玉林', dest: '江门', goods: '方木', loadMode: '按数量', quantity: 90, unit: '件', transport: '汽运', remark: '', status: '已确认', deadline: '2026-08-20 18:00', publishNote: '',
+        quotes: [
+          { carrier: '顺达物流', quoteMode: '按运输总价报价', totalAmount: 5500, unitPrice: 61.11, remark: '', status: '已报价', time: '2026-05-14 09:00' },
+        ],
+        selectedCarrier: '顺达物流', markupMode: '按固定金额加价', markupValue: 500, confirmPrice: 6000, fillNote: '', submitTime: '2026-05-14 10:00',
       },
     ],
   },
   {
-    id: 'IQ20260701004',
-    inquiryType: '长协货源询价',
-    title: '广林项目-板材稳定运输',
-    shipper: '广林木业有限公司',
-    nvocc: '广林物流平台公司',
-    description: '',
+    id: 'HYXJ-2026-0516-003',
+    title: '广林4月零星货源询价-已完结',
+    type: '零星',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: '4月零星已完结',
     status: '已完成',
-    createdAt: '2026-06-20 09:00',
-    rejectReason: '',
-    cancelReason: '',
+    publishTime: '2026-04-20 10:00',
+    acceptTime: '2026-04-20 11:00',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '', cancelTime: '',
     routes: [
       {
-        id: 'R004', origin: '苏州', destination: '深圳', cargo: '板材',
-        stowage: '按重量', cargoQty: 100, unit: '吨', transportMode: '汽运',
-        remark: '',
-        status: '已生成托运单',
-        publishDeadline: '2026-06-25 18:00',
-        publishRemark: '',
-        carrierQuotes: [
-          { id: 'Q004', carrier: '顺达物流', totalAmount: 15000, unitPrice: 150, createdAt: '2026-06-21 09:00' },
-          { id: 'Q005', carrier: '广运达物流', totalAmount: 14500, unitPrice: 145, createdAt: '2026-06-21 10:00' },
+        id: 'R201', origin: '南宁', dest: '广州', goods: '板材', loadMode: '按数量', quantity: 150, unit: '箱', transport: '汽运', remark: '', status: '已生成托运单', deadline: '2026-08-25 18:00', publishNote: '',
+        quotes: [
+          { carrier: '广运达物流', quoteMode: '按运输单价报价', totalAmount: 6200, unitPrice: 41.33, remark: '', status: '已成交', time: '2026-04-21 09:20' },
+          { carrier: '顺达物流', quoteMode: '按运输总价报价', totalAmount: 6300, unitPrice: 42, remark: '', status: '未入围', time: '2026-04-21 10:45' },
         ],
-        currentQuoteVersion: { totalAmount: 14800, unitPrice: 148, submitRemark: '', submittedAt: '2026-06-22 10:00', baseQuoteId: 'Q005' },
-        waybillNo: 'CON20260622001',
+        selectedCarrier: '广运达物流', markupMode: '按固定金额加价', markupValue: 600, confirmPrice: 6800, fillNote: '', submitTime: '2026-04-21 14:20', shippingOrder: 'ZY-20260425-001',
+      },
+      {
+        id: 'R202', origin: '柳州', dest: '深圳', goods: '原木', loadMode: '按体积', quantity: 200, unit: '立方米', transport: '汽运', remark: '', status: '已生成托运单', deadline: '2026-08-25 18:00', publishNote: '',
+        quotes: [
+          { carrier: '顺达物流', quoteMode: '按运输总价报价', totalAmount: 9500, unitPrice: 47.5, remark: '', status: '已成交', time: '2026-04-21 08:00' },
+          { carrier: '广运达物流', quoteMode: '按运输总价报价', totalAmount: 9600, unitPrice: 48, remark: '', status: '未入围', time: '2026-04-21 09:30' },
+        ],
+        selectedCarrier: '顺达物流', markupMode: '按比例加价', markupValue: 7.37, confirmPrice: 10200, fillNote: '', submitTime: '2026-04-21 10:15', shippingOrder: 'ZY-20260425-002',
       },
     ],
   },
   {
-    id: 'IQ20260701005',
-    inquiryType: '零星货源询价',
-    title: '已取消示例',
-    shipper: '广林木业有限公司',
-    nvocc: '广林物流平台公司',
-    description: '',
+    id: 'HYXJ-2026-0516-004',
+    title: '广林长协货源询价-待提交',
+    type: '长协',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '',
+    desc: '草稿测试',
+    status: '草稿',
+    publishTime: '', acceptTime: '',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '', cancelTime: '',
+    routes: [
+      { id: 'R301', origin: '南宁', dest: '佛山', goods: '原木', loadMode: '按重量', quantity: 200, unit: '吨', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+      { id: 'R302', origin: '柳州', dest: '广州', goods: '板材', loadMode: '按数量', quantity: 300, unit: '箱', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+    ],
+  },
+  {
+    id: 'HYXJ-2026-0516-005',
+    title: '广林零星货源询价-新增线路',
+    type: '零星',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: '新增零星询价，待承接',
+    status: '待承接',
+    publishTime: '2026-05-16 09:00',
+    acceptTime: '',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '', cancelTime: '',
+    routes: [
+      { id: 'R401', origin: '玉林', dest: '惠州', goods: '方木', loadMode: '按数量', quantity: 200, unit: '件', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+      { id: 'R402', origin: '北海', dest: '江门', goods: '木片', loadMode: '按体积', quantity: 80, unit: '立方米', transport: '水运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+    ],
+  },
+  {
+    id: 'HYXJ-2026-0516-006',
+    title: '广林零星货源询价-被拒绝',
+    type: '零星',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: 'NVOCC拒绝承接',
+    status: '已拒绝',
+    publishTime: '2026-05-15 08:00',
+    acceptTime: '',
+    rejectReason: '当前运力紧张，无法承接该批货源',
+    rejectTime: '2026-05-15 09:30',
+    cancelReason: '', cancelTime: '',
+    routes: [
+      { id: 'R501', origin: '南宁', dest: '广州', goods: '板材', loadMode: '按重量', quantity: 100, unit: '吨', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+    ],
+  },
+  {
+    id: 'HYXJ-2026-0516-007',
+    title: '广林长协货源询价-已取消',
+    type: '长协',
+    owner: '广西广林木业有限公司',
+    targetNvocc: '广林物流',
+    desc: '货主取消',
     status: '已取消',
-    createdAt: '2026-06-15 09:00',
-    rejectReason: '',
-    cancelReason: '客户取消订单',
-    routes: [],
+    publishTime: '2026-05-14 16:00',
+    acceptTime: '',
+    rejectReason: '', rejectTime: '',
+    cancelReason: '业务调整，该批次暂不需要运输',
+    cancelTime: '2026-05-14 17:00',
+    routes: [
+      { id: 'R601', origin: '玉林', dest: '佛山', goods: '原木', loadMode: '按重量', quantity: 150, unit: '吨', transport: '汽运', remark: '', status: '待处理', quotes: [], deadline: '', publishNote: '' },
+    ],
   },
 ]
-
-// 当前承运商（用于承运商端视角过滤）
-export const currentCarrier = '顺达物流'
-
-// 承运商池（承运商端模拟"当前承运商"）
-export const carrierPool = ['顺达物流', '鑫运运输', '广运达物流']
