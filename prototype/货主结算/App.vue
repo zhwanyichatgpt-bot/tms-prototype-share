@@ -471,9 +471,10 @@ async function bootAnnotation() {
   await nextTick()
   await loadAnnotationScript()
   await window.AnnotationCore.init({
+    pageId: '货主结算',
     specUrl: `${annotationBaseUrl}shipper-settlement.spec.yaml`,
     jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
-    readOnly: new URLSearchParams(window.location.search).get('annotation') === '1',
+    readOnly: (() => { const p = new URLSearchParams(window.location.search); return p.get('readOnly') === '1' || p.get('readonly') === '1'; })(),
   })
 }
 

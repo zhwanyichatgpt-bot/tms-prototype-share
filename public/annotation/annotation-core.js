@@ -3,17 +3,18 @@
  *
  * 能力：
  *   1. 从 spec.yaml 加载结构化数据
- *   2. 渲染右侧标注抽屉（作用 / 规则分层 / 状态动作矩阵 / 状态流转 / 字段表）
+ *   2. 渲染可调宽的右侧标注工作区（总览 / 单条详情共用同一面板）
  *   3. 切换标注模式（开关显示页面标号）
- *   4. URL `?edit=1` 时解锁编辑按钮，通过 File System Access API 写回 spec.yaml
+ *   4. URL `?edit=1` 时解锁结构化编辑，通过本地保存中间件写回 spec.yaml
+ *   5. 人工编辑自动加锁，保存后直接发布到当前 spec.yaml
  *
  * 公开 API：window.AnnotationCore
  *   .init(options)            — 初始化，加载 spec.yaml，绑定事件
  *   .enable() / .disable()    — 切换标注模式
  *   .toggle()                 — 翻转标注模式
  *   .isEnabled()              — 当前是否开启
- *   .open(unitId)             — 打开某个标注单元的抽屉
- *   .close()                  — 关闭抽屉
+ *   .open(unitId)             — 在右侧工作区打开某个标注单元
+ *   .close()                  — 从单条详情返回总览
  *   .refresh()                — 按当前状态重算标号显隐
  *   .setUnitGate(id, fn)      — 为特定单元注册自定义显隐条件（返回 boolean）
  *   .setGlobalGate(fn)        — 设置全局显隐前置条件（返回 boolean）
@@ -23,8 +24,8 @@
  *   - 外层工具条放开关按钮（默认用 id="toolbarAnnotationToggleBtn"）
  *   - 标号 DOM 结构：<button class="annotation-node {modifier} hidden"
  *                          data-annotation-id="unit_id" aria-label="...">N</button>
- *   - 标号必须挂在带 `.annotation-anchor-host` 或 `position:relative` 的父容器里
- *   - 抽屉 DOM 由 AnnotationCore.init 时自动注入（若页面已有则沿用）
+ *   - 标号统一挂在 body 下的独立覆盖层，不写入 Vue/React 管理的页面节点
+ *   - 总览和单条详情共用一个可调宽的右侧工作区
  * ========================================================================= */
 
 (function () {
@@ -34,11 +35,16 @@
   // 可在 AnnotationCore.init({ jsYamlSrc }) 时覆盖以适配项目实际部署路径。
   const JS_YAML_LOCAL_DEFAULT = './annotation/vendor/js-yaml.min.js';
   const JS_YAML_CDN = 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js';
-  const DRAWER_ID = 'annotationDrawerMask';
   const EDITOR_ID = 'annotationEditorMask';
-  const DRAWER_WIDTH_STORAGE_KEY = 'annotation.drawer.width.v1';
-  const DRAWER_MIN_WIDTH = 420;
-  const DRAWER_MAX_WIDTH = 980;
+  const OVERLAY_ID = 'annotationOverlayRoot';
+  const OVERVIEW_ID = 'annotationOverviewPanel';
+  const PANEL_WIDTH_STORAGE_KEY = 'annotation.panel.width.v2';
+  const PANEL_HEIGHT_STORAGE_KEY = 'annotation.panel.height.v2';
+  const PANEL_POSITION_STORAGE_KEY = 'annotation.panel.position.v2';
+  const PANEL_MIN_WIDTH = 360;
+  const PANEL_MAX_WIDTH = 980;
+  const PANEL_MIN_HEIGHT = 400;
+  const PANEL_MAX_HEIGHT = 1200;
   const POSITIONING_TIP_ID = 'annotationPositioningTip';
 
   const state = {
@@ -59,9 +65,10 @@
     previewBadgePositions: {},
     pendingUnitDraft: null,
     pendingBindReason: '',
-    drawerWidth: 620,
-    dirHandle: null,      // FSA 目录句柄（指向 current/）
-    fileHandle: null,     // FSA spec.yaml 文件句柄
+    displayIndexByUnit: {},
+    panelWidth: 620,
+    panelHeight: null,       // null=未设置(沿用 top+bottom 撑开的默认高度);number=固定高度
+    panelPosition: null,     // null=默认右上角;{top,left}=自定义定位(拖动后)
   };
 
   const config = {
@@ -73,6 +80,7 @@
     // 页面标识符，用于服务端保存接口。
     // 格式：目录名，如 "运输通道管理"。可由页面自行在 AnnotationCore.init() 前设置。
     pageId: null,
+    saveEndpoint: '/api/spec',
     globalGate: null,
     unitGates: {},        // { unitId: () => boolean }
     readOnly: false,      // 只读发布模式：隐藏编辑/新增/调整角标按钮，禁用保存
@@ -85,6 +93,8 @@
   let bindingModeHandlerAttached = false;
   let positioningModeHandlerAttached = false;
   let editorSurfaceEventsBound = false;
+  let domObserver = null;
+  let domRefreshScheduled = false;
 
   /* ---------- 工具函数 -------------------------------------------------- */
 
@@ -142,10 +152,6 @@
     }
   }
 
-  function hasFSA() {
-    return typeof window.showDirectoryPicker === 'function';
-  }
-
   function escapeHtml(str) {
     return String(str == null ? '' : str)
       .replace(/&/g, '&amp;')
@@ -156,8 +162,9 @@
   }
 
   function setLoadError(message) {
-    if (!els.drawerBody) return;
-    els.drawerBody.innerHTML = `
+    const target = els.overviewBody || els.overviewDetail;
+    if (!target) return;
+    target.innerHTML = `
       <div class="annotation-note" style="color:#bb3f3f">
         ${escapeHtml(message)}
       </div>
@@ -175,88 +182,265 @@
     return Number.isFinite(num) ? num : null;
   }
 
-  function getDrawerMaxWidth() {
+  function getPanelMaxWidth() {
     const viewport = Math.max(window.innerWidth || 0, 0);
-    return Math.max(DRAWER_MIN_WIDTH, Math.min(DRAWER_MAX_WIDTH, viewport - 48));
+    return Math.max(PANEL_MIN_WIDTH, Math.min(PANEL_MAX_WIDTH, viewport - 48));
   }
 
-  function clampDrawerWidth(width) {
-    const raw = Number(width || state.drawerWidth || 620);
+  function clampPanelWidth(width) {
+    const raw = Number(width || state.panelWidth || 620);
     const safe = Number.isFinite(raw) ? raw : 620;
-    return Math.max(DRAWER_MIN_WIDTH, Math.min(getDrawerMaxWidth(), safe));
+    return Math.max(PANEL_MIN_WIDTH, Math.min(getPanelMaxWidth(), safe));
   }
 
-  function saveDrawerWidth(width) {
+  function savePanelWidth(width) {
     try {
-      window.localStorage.setItem(DRAWER_WIDTH_STORAGE_KEY, String(clampDrawerWidth(width)));
+      window.localStorage.setItem(PANEL_WIDTH_STORAGE_KEY, String(clampPanelWidth(width)));
     } catch (_) {}
   }
 
-  function restoreDrawerWidth() {
+  function restorePanelWidth() {
     try {
-      const raw = window.localStorage.getItem(DRAWER_WIDTH_STORAGE_KEY);
+      const raw = window.localStorage.getItem(PANEL_WIDTH_STORAGE_KEY);
       if (!raw) return 620;
-      return clampDrawerWidth(Number(raw));
+      return clampPanelWidth(Number(raw));
     } catch (_) {
       return 620;
     }
   }
 
-  function applyDrawerWidth(width) {
-    state.drawerWidth = clampDrawerWidth(width);
-    if (!els.drawer) return;
+  function applyPanelWidth(width) {
+    state.panelWidth = clampPanelWidth(width);
     if (window.innerWidth <= 760) {
-      els.drawer.style.removeProperty('--annotation-drawer-width');
+      if (els.overviewPanel) els.overviewPanel.style.removeProperty('--annotation-panel-width');
       return;
     }
-    els.drawer.style.setProperty('--annotation-drawer-width', `${state.drawerWidth}px`);
+    if (els.overviewPanel) els.overviewPanel.style.setProperty('--annotation-panel-width', `${state.panelWidth}px`);
   }
 
-  function syncDrawerWidthToViewport() {
-    applyDrawerWidth(state.drawerWidth || restoreDrawerWidth());
+  function syncPanelWidthToViewport() {
+    applyPanelWidth(state.panelWidth || restorePanelWidth());
   }
 
-  function ensureDrawerResizeHandle() {
-    if (!els.drawer || !els.drawerResizer || els.drawerResizer.dataset.bound === '1') return;
-    els.drawerResizer.dataset.bound = '1';
+  /* ---------- 面板高度(新增):支持自由缩放高度 ---------- */
+  function getPanelMaxHeight() {
+    const viewport = Math.max(window.innerHeight || 0, 0);
+    return Math.max(PANEL_MIN_HEIGHT, Math.min(PANEL_MAX_HEIGHT, viewport - 48));
+  }
 
-    const startResize = (startClientX, pointerId) => {
+  function clampPanelHeight(height) {
+    const raw = Number(height || state.panelHeight || PANEL_MIN_HEIGHT);
+    const safe = Number.isFinite(raw) ? raw : PANEL_MIN_HEIGHT;
+    return Math.max(PANEL_MIN_HEIGHT, Math.min(getPanelMaxHeight(), safe));
+  }
+
+  function savePanelHeight(height) {
+    try {
+      window.localStorage.setItem(PANEL_HEIGHT_STORAGE_KEY, String(clampPanelHeight(height)));
+    } catch (_) {}
+  }
+
+  function restorePanelHeight() {
+    try {
+      const raw = window.localStorage.getItem(PANEL_HEIGHT_STORAGE_KEY);
+      if (!raw) return null; // 未设置 → 用默认(top+bottom 撑开)
+      return clampPanelHeight(Number(raw));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function applyPanelHeight(height) {
+    const next = height == null ? null : clampPanelHeight(height);
+    state.panelHeight = next;
+    if (window.innerWidth <= 760 || next == null) {
+      if (els.overviewPanel) els.overviewPanel.style.removeProperty('--annotation-panel-height');
+      return;
+    }
+    if (els.overviewPanel) els.overviewPanel.style.setProperty('--annotation-panel-height', `${next}px`);
+  }
+
+  function syncPanelHeightToViewport() {
+    const restored = state.panelHeight != null ? state.panelHeight : restorePanelHeight();
+    applyPanelHeight(restored);
+  }
+
+  /* ---------- 面板位置(新增):支持自由移动 ---------- */
+  function clampPanelPosition(top, left) {
+    const vw = Math.max(window.innerWidth || 0, 0);
+    const vh = Math.max(window.innerHeight || 0, 0);
+    const w = els.overviewPanel ? els.overviewPanel.offsetWidth : state.panelWidth;
+    const h = els.overviewPanel ? els.overviewPanel.offsetHeight : PANEL_MIN_HEIGHT;
+    // 不拖出视口(允许保留至少 80px 可见区域,防止拖丢找不到)
+    const minVisible = 80;
+    const maxLeft = Math.max(minVisible - w, vw - minVisible);
+    const maxTop = Math.max(0, vh - minVisible);
+    return {
+      top: Math.max(0, Math.min(maxTop, Number(top))),
+      left: Math.max(minVisible - w, Math.min(maxLeft, Number(left))),
+    };
+  }
+
+  function savePanelPosition(pos) {
+    try {
+      if (!pos) {
+        window.localStorage.removeItem(PANEL_POSITION_STORAGE_KEY);
+        return;
+      }
+      const clamped = clampPanelPosition(pos.top, pos.left);
+      window.localStorage.setItem(PANEL_POSITION_STORAGE_KEY, JSON.stringify(clamped));
+    } catch (_) {}
+  }
+
+  function restorePanelPosition() {
+    try {
+      const raw = window.localStorage.getItem(PANEL_POSITION_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed.top !== 'number' || typeof parsed.left !== 'number') return null;
+      return clampPanelPosition(parsed.top, parsed.left);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function applyPanelPosition(pos) {
+    state.panelPosition = pos;
+    const panel = els.overviewPanel;
+    if (!panel) return;
+    if (window.innerWidth <= 760 || !pos) {
+      // 移动端或未自定义位置 → 回到默认右上角
+      panel.classList.remove('custom-position');
+      panel.style.removeProperty('--annotation-panel-left');
+      panel.style.removeProperty('--annotation-panel-top');
+      return;
+    }
+    panel.classList.add('custom-position');
+    panel.style.setProperty('--annotation-panel-left', `${pos.left}px`);
+    panel.style.setProperty('--annotation-panel-top', `${pos.top}px`);
+  }
+
+  function syncPanelPositionToViewport() {
+    const restored = state.panelPosition || restorePanelPosition();
+    applyPanelPosition(restored);
+  }
+
+  function ensureOverviewResizeHandle() {
+    const panel = els.overviewPanel;
+    const resizer = els.overviewResizer;
+    if (!panel || !resizer || resizer.dataset.bound === '1') return;
+    resizer.dataset.bound = '1';
+
+    // 左侧手柄:只改宽(保留原有行为)
+    resizer.addEventListener('pointerdown', (event) => {
       if (window.innerWidth <= 760) return;
-      const startWidth = clampDrawerWidth(state.drawerWidth || els.drawer.offsetWidth || 620);
-      document.body.classList.add('annotation-drawer-resizing');
-      if (pointerId != null && els.drawerResizer.setPointerCapture) {
-        try { els.drawerResizer.setPointerCapture(pointerId); } catch (_) {}
+      event.preventDefault();
+      const startWidth = clampPanelWidth(state.panelWidth || panel.offsetWidth || 620);
+      const startX = event.clientX;
+      document.body.classList.add('annotation-panel-resizing');
+      if (resizer.setPointerCapture) {
+        try { resizer.setPointerCapture(event.pointerId); } catch (_) {}
       }
 
-      const updateWidth = (clientX) => {
-        const delta = startClientX - clientX;
-        applyDrawerWidth(startWidth + delta);
+      const onMove = (moveEvent) => {
+        applyPanelWidth(startWidth + startX - moveEvent.clientX);
       };
+      const onUp = () => {
+        document.body.classList.remove('annotation-panel-resizing');
+        savePanelWidth(state.panelWidth);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
 
-      const stopResize = () => {
-        document.body.classList.remove('annotation-drawer-resizing');
-        saveDrawerWidth(state.drawerWidth);
-        if (pointerId != null && els.drawerResizer.releasePointerCapture) {
-          try { els.drawerResizer.releasePointerCapture(pointerId); } catch (_) {}
+    // 左下角手柄(新增):宽高同时改
+    const corner = els.overviewResizerCorner;
+    if (corner && corner.dataset.bound !== '1') {
+      corner.dataset.bound = '1';
+      corner.addEventListener('pointerdown', (event) => {
+        if (window.innerWidth <= 760) return;
+        event.preventDefault();
+        // 用实际渲染尺寸作为起点,兼容未设置高度时取 offsetHeight
+        const startWidth = clampPanelWidth(state.panelWidth || panel.offsetWidth || 620);
+        const startHeight = clampPanelHeight(state.panelHeight || panel.offsetHeight || PANEL_MIN_HEIGHT);
+        const startX = event.clientX;
+        const startY = event.clientY;
+        document.body.classList.add('annotation-panel-resizing');
+        if (corner.setPointerCapture) {
+          try { corner.setPointerCapture(event.pointerId); } catch (_) {}
         }
-        window.removeEventListener('pointermove', onPointerMove);
-        window.removeEventListener('pointerup', onPointerUp);
-      };
 
-      const onPointerMove = (event) => {
-        updateWidth(event.clientX);
-      };
-      const onPointerUp = () => {
-        stopResize();
-      };
+        const onMove = (moveEvent) => {
+          // 往左拖 → 变宽;往下拖 → 变高
+          applyPanelWidth(startWidth + startX - moveEvent.clientX);
+          applyPanelHeight(startHeight + (moveEvent.clientY - startY));
+        };
+        const onUp = () => {
+          document.body.classList.remove('annotation-panel-resizing');
+          savePanelWidth(state.panelWidth);
+          savePanelHeight(state.panelHeight);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+      });
+    }
+  }
 
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
-    };
+  /* ---------- 标题栏拖动(新增):移动整个面板 ---------- */
+  function ensureOverviewDragHandle() {
+    const panel = els.overviewPanel;
+    if (!panel || panel.dataset.dragBound === '1') return;
+    panel.dataset.dragBound = '1';
 
-    els.drawerResizer.addEventListener('pointerdown', (event) => {
-      event.preventDefault();
-      startResize(event.clientX, event.pointerId);
+    // 绑定两个标题栏(列表态 + 详情态)
+    const headers = [
+      panel.querySelector('.annotation-overview-list-header'),
+      panel.querySelector('.annotation-overview-detail-header'),
+    ].filter(Boolean);
+
+    headers.forEach((header) => {
+      header.addEventListener('pointerdown', (event) => {
+        if (window.innerWidth <= 760) return;
+        // 点到按钮(收起/返回/编辑)不触发拖动
+        if (event.target.closest('button')) return;
+        event.preventDefault();
+
+        const rect = panel.getBoundingClientRect();
+        const startLeft = rect.left;
+        const startTop = rect.top;
+        const startX = event.clientX;
+        const startY = event.clientY;
+        // 首次拖动时锁定当前尺寸(避免从 top+bottom 撑开切到 left/top 时高度突变)
+        const lockedWidth = panel.offsetWidth;
+        const lockedHeight = panel.offsetHeight;
+
+        panel.classList.add('dragging');
+        if (header.setPointerCapture) {
+          try { header.setPointerCapture(event.pointerId); } catch (_) {}
+        }
+
+        const onMove = (moveEvent) => {
+          const nextLeft = startLeft + (moveEvent.clientX - startX);
+          const nextTop = startTop + (moveEvent.clientY - startY);
+          const clamped = clampPanelPosition(nextTop, nextLeft);
+          // 锁定尺寸,确保拖动过程中面板大小不变
+          applyPanelWidth(lockedWidth);
+          applyPanelHeight(lockedHeight);
+          applyPanelPosition(clamped);
+        };
+        const onUp = () => {
+          panel.classList.remove('dragging');
+          if (state.panelPosition) savePanelPosition(state.panelPosition);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+      });
     });
   }
 
@@ -288,30 +472,56 @@
   }
 
   function measureBadgePosition(node) {
-    if (!node || !node.parentElement) return { x: 0, y: 0 };
-    const hostRect = node.parentElement.getBoundingClientRect();
+    if (!node) return { x: 0, y: 0 };
+    const unit = unitById(node.dataset.annotationId);
+    let host = null;
+    try { host = unit && unit.anchor_selector ? document.querySelector(unit.anchor_selector) : null; } catch (_) {}
+    if (!host) return { x: 0, y: 0 };
+    const hostRect = host.getBoundingClientRect();
     const rect = node.getBoundingClientRect();
     return {
-      x: Math.max(0, Math.round(rect.left - hostRect.left)),
-      y: Math.max(0, Math.round(rect.top - hostRect.top)),
+      x: Math.round(rect.left - hostRect.left),
+      y: Math.round(rect.top - hostRect.top),
     };
   }
 
   function applyBadgePositionToNode(node, unit) {
-    const position = resolveBadgePosition(unit);
-    if (position.x == null || position.y == null) {
-      node.classList.remove('annotation-node-custom-position');
-      node.style.removeProperty('left');
-      node.style.removeProperty('top');
-      node.style.removeProperty('right');
-      node.style.removeProperty('bottom');
+    let host = null;
+    try { host = unit.anchor_selector ? document.querySelector(unit.anchor_selector) : null; } catch (_) {}
+    if (!host) {
+      node.classList.add('hidden');
+      node.dataset.anchorAvailable = 'false';
       return;
     }
-    node.classList.add('annotation-node-custom-position');
-    node.style.left = `${position.x}px`;
-    node.style.top = `${position.y}px`;
+    node.dataset.anchorAvailable = 'true';
+    const rect = host.getBoundingClientRect();
+    const outsideViewport = rect.bottom < 0 || rect.top > window.innerHeight || rect.right < 0 || rect.left > window.innerWidth;
+    node.style.visibility = outsideViewport ? 'hidden' : 'visible';
+    const position = resolveBadgePosition(unit);
+    const x = position.x == null ? -17 : position.x;
+    const y = position.y == null ? -17 : position.y;
+    node.classList.toggle('annotation-node-custom-position', position.x != null && position.y != null);
+    node.style.left = `${Math.round(rect.left + x)}px`;
+    node.style.top = `${Math.round(rect.top + y)}px`;
     node.style.right = 'auto';
     node.style.bottom = 'auto';
+  }
+
+  function applyCollisionAvoidance() {
+    const groups = new Map();
+    document.querySelectorAll('.annotation-node[data-annotation-id]').forEach((node) => {
+      const selector = node.dataset.anchorSelector || '';
+      if (!groups.has(selector)) groups.set(selector, []);
+      groups.get(selector).push(node);
+    });
+    groups.forEach((nodes) => {
+      let automaticIndex = 0;
+      nodes.forEach((node) => {
+        if (node.classList.contains('annotation-node-custom-position')) return;
+        if (automaticIndex > 0) node.style.top = `${parseFloat(node.style.top || '0') + automaticIndex * 38}px`;
+        automaticIndex += 1;
+      });
+    });
   }
 
   function clearPreviewBadgePosition(unitId) {
@@ -413,41 +623,49 @@
     positioningModeHandlerAttached = true;
 
     let draggingNode = null;
-    let draggingHost = null;
-    let dragOffsetX = 0;
+    let draggingAnchor = null;   // 角标的锚点元素(坐标基准,与渲染一致)
+    let dragOffsetX = 0;         // 鼠标相对角标左上角的偏移(viewport 坐标)
     let dragOffsetY = 0;
     let dragPointerId = null;
 
-    const moveNodeByDelta = (node, deltaX, deltaY) => {
-      if (!node || !node.parentElement) return;
-      const hostRect = node.parentElement.getBoundingClientRect();
-      const maxX = Math.max(0, hostRect.width - node.offsetWidth);
-      const maxY = Math.max(0, hostRect.height - node.offsetHeight);
-      const current = measureBadgePosition(node);
-      const nextX = Math.max(0, Math.min(maxX, current.x + deltaX));
-      const nextY = Math.max(0, Math.min(maxY, current.y + deltaY));
+    // 从角标节点解析它的锚点元素(与 applyBadgePositionToNode 完全一致)
+    const resolveAnchorForNode = (node) => {
+      if (!node) return null;
+      const selector = node.dataset.anchorSelector || '';
+      if (!selector) return null;
+      try { return document.querySelector(selector); } catch (_) { return null; }
+    };
+
+    // 把角标定位到「相对 anchor 偏移 (offsetX, offsetY)」处
+    // 采用与 applyBadgePositionToNode 相同的算法: viewport 坐标 = anchor.left + offsetX
+    const placeNodeAtOffset = (node, anchor, offsetX, offsetY) => {
+      const rect = anchor.getBoundingClientRect();
       node.classList.add('annotation-node-custom-position');
-      node.style.left = `${nextX}px`;
-      node.style.top = `${nextY}px`;
+      node.style.left = `${Math.round(rect.left + offsetX)}px`;
+      node.style.top = `${Math.round(rect.top + offsetY)}px`;
       node.style.right = 'auto';
       node.style.bottom = 'auto';
+    };
+
+    const moveNodeByDelta = (node, deltaX, deltaY) => {
+      if (!node) return;
+      const anchor = resolveAnchorForNode(node);
+      if (!anchor) return;
+      // 当前偏移 = 角标 viewport 坐标 - anchor viewport 坐标(与 measureBadgePosition 一致)
+      const current = measureBadgePosition(node);
+      const nextX = current.x + deltaX;
+      const nextY = current.y + deltaY;
+      placeNodeAtOffset(node, anchor, nextX, nextY);
       setPreviewBadgePosition(node.dataset.annotationId || state.positioningUnitId, Math.round(nextX), Math.round(nextY));
     };
 
     const moveToClientPoint = (clientX, clientY) => {
-      if (!draggingNode || !draggingHost) return;
-      const hostRect = draggingHost.getBoundingClientRect();
-      const rawX = clientX - hostRect.left - dragOffsetX;
-      const rawY = clientY - hostRect.top - dragOffsetY;
-      const maxX = Math.max(0, hostRect.width - draggingNode.offsetWidth);
-      const maxY = Math.max(0, hostRect.height - draggingNode.offsetHeight);
-      const nextX = Math.max(0, Math.min(maxX, rawX));
-      const nextY = Math.max(0, Math.min(maxY, rawY));
-      draggingNode.classList.add('annotation-node-custom-position');
-      draggingNode.style.left = `${nextX}px`;
-      draggingNode.style.top = `${nextY}px`;
-      draggingNode.style.right = 'auto';
-      draggingNode.style.bottom = 'auto';
+      if (!draggingNode || !draggingAnchor) return;
+      // 目标偏移 = 鼠标位置 - anchor 左上角 - 鼠标相对角标的偏移
+      const anchorRect = draggingAnchor.getBoundingClientRect();
+      const nextX = clientX - anchorRect.left - dragOffsetX;
+      const nextY = clientY - anchorRect.top - dragOffsetY;
+      placeNodeAtOffset(draggingNode, draggingAnchor, nextX, nextY);
       setPreviewBadgePosition(draggingNode.dataset.annotationId || state.positioningUnitId, Math.round(nextX), Math.round(nextY));
     };
 
@@ -459,7 +677,7 @@
       }
       draggingNode.classList.remove('dragging');
       draggingNode = null;
-      draggingHost = null;
+      draggingAnchor = null;
       dragPointerId = null;
     };
 
@@ -468,11 +686,13 @@
       const node = event.target.closest('.annotation-node.positioning-draggable');
       if (!node) return;
       if (state.positioningScope !== 'global' && node.dataset.annotationId !== state.positioningUnitId) return;
+      const anchor = resolveAnchorForNode(node);
+      if (!anchor) return; // 找不到锚点 → 不允许拖(避免坐标无意义)
       event.preventDefault();
       event.stopPropagation();
       selectPositioningUnit(node.dataset.annotationId || '');
       draggingNode = node;
-      draggingHost = node.parentElement;
+      draggingAnchor = anchor;
       dragPointerId = event.pointerId;
       const rect = node.getBoundingClientRect();
       dragOffsetX = event.clientX - rect.left;
@@ -541,54 +761,103 @@
     });
   }
 
-  /* ---------- 抽屉 DOM ------------------------------------------------- */
+  function ensureOverlayRoot() {
+    let root = document.getElementById(OVERLAY_ID);
+    if (root) return root;
+    root = document.createElement('div');
+    root.id = OVERLAY_ID;
+    root.className = 'annotation-overlay-root';
+    root.setAttribute('aria-label', '原型标注定位层');
+    document.body.appendChild(root);
+    return root;
+  }
 
-  function ensureDrawer() {
-    let mask = document.getElementById(DRAWER_ID);
-    if (mask) {
-      els.drawerMask = mask;
-      els.drawer = mask.querySelector('.annotation-drawer');
-      els.drawerResizer = mask.querySelector('#annotationDrawerResizer');
-      els.drawerBadge = mask.querySelector('#annotationDrawerBadge');
-      els.drawerTitle = mask.querySelector('#annotationDrawerTitle');
-      els.drawerSubtitle = mask.querySelector('#annotationDrawerSubtitle');
-      els.drawerBody = mask.querySelector('.annotation-drawer-body');
-      els.drawerClose = mask.querySelector('#annotationDrawerClose');
-      els.drawerEditBtn = mask.querySelector('#annotationDrawerEditBtn');
-      ensureDrawerResizeHandle();
-      applyDrawerWidth(state.drawerWidth || restoreDrawerWidth());
-      return;
-    }
-
-    mask = document.createElement('div');
-    mask.className = 'annotation-mask';
-    mask.id = DRAWER_ID;
-    mask.innerHTML = `
-      <aside class="annotation-drawer" aria-label="原型标注说明抽屉">
-        <div class="annotation-drawer-resizer" id="annotationDrawerResizer" title="拖动调整抽屉宽度" aria-hidden="true"></div>
-        <div class="annotation-drawer-header">
-          <div class="annotation-drawer-header-main">
-            <div class="annotation-drawer-kicker">
-              <span class="annotation-badge" id="annotationDrawerBadge">①</span>
-              <span>原型标注</span>
+  function ensureOverviewPanel() {
+    let panel = document.getElementById(OVERVIEW_ID);
+    if (!panel) {
+      panel = document.createElement('aside');
+      panel.id = OVERVIEW_ID;
+      panel.className = 'annotation-overview-panel';
+      panel.setAttribute('aria-label', '原型标注工作区');
+      panel.innerHTML = `
+        <div class="annotation-overview-resizer" id="annotationOverviewResizer" title="拖动调整标注工作区宽度" aria-hidden="true"></div>
+        <div class="annotation-overview-resizer-corner" id="annotationOverviewResizerCorner" title="拖动调整标注工作区大小(宽+高)" aria-hidden="true"></div>
+        <header class="annotation-overview-header annotation-overview-list-header">
+          <div>
+            <strong>原型标注总览</strong>
+            <span id="annotationOverviewCount"></span>
+          </div>
+          <button type="button" id="annotationOverviewCollapse" aria-label="收起标注总览">收起</button>
+        </header>
+        <header class="annotation-overview-detail-header" id="annotationOverviewDetailHeader">
+          <button type="button" class="annotation-overview-back" id="annotationOverviewBack">← 返回总览</button>
+          <div class="annotation-overview-detail-heading">
+            <span class="annotation-badge" id="annotationOverviewDetailBadge"></span>
+            <div>
+              <strong id="annotationOverviewDetailTitle"></strong>
+              <span id="annotationOverviewDetailSubtitle"></span>
             </div>
-            <h3 class="annotation-drawer-title" id="annotationDrawerTitle"></h3>
-            <div class="annotation-drawer-subtitle" id="annotationDrawerSubtitle"></div>
           </div>
-          <div class="annotation-drawer-header-actions">
-            <!-- annotation:edit-only start -->
-            <button class="annotation-edit-btn" id="annotationDrawerEditBtn" type="button" title="编辑该单元">
-              <span>编辑</span>
-            </button>
-            <!-- annotation:edit-only end -->
-            <button class="annotation-close" id="annotationDrawerClose" type="button" title="关闭">×</button>
+          <!-- annotation:edit-only start -->
+          <button type="button" class="annotation-edit-btn" id="annotationOverviewEdit">编辑</button>
+          <!-- annotation:edit-only end -->
+        </header>
+        <div class="annotation-overview-body" id="annotationOverviewBody"></div>
+        <div class="annotation-overview-detail" id="annotationOverviewDetail"></div>
+      `;
+      document.body.appendChild(panel);
+      panel.querySelector('#annotationOverviewCollapse').onclick = () => {
+        panel.classList.toggle('collapsed');
+        panel.querySelector('#annotationOverviewCollapse').textContent = panel.classList.contains('collapsed') ? '展开' : '收起';
+      };
+      panel.querySelector('#annotationOverviewBack').onclick = close;
+      panel.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-overview-unit]');
+        if (!card) return;
+        const unit = unitById(card.dataset.overviewUnit);
+        if (!unit) return;
+        let anchor = null;
+        try { anchor = document.querySelector(unit.anchor_selector); } catch (_) {}
+        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        open(unit.id);
+      });
+    }
+    els.overviewPanel = panel;
+    els.overviewResizer = panel.querySelector('#annotationOverviewResizer');
+    els.overviewResizerCorner = panel.querySelector('#annotationOverviewResizerCorner');
+    els.overviewBody = panel.querySelector('#annotationOverviewBody');
+    els.overviewDetail = panel.querySelector('#annotationOverviewDetail');
+    els.overviewDetailBadge = panel.querySelector('#annotationOverviewDetailBadge');
+    els.overviewDetailTitle = panel.querySelector('#annotationOverviewDetailTitle');
+    els.overviewDetailSubtitle = panel.querySelector('#annotationOverviewDetailSubtitle');
+    els.overviewEditBtn = panel.querySelector('#annotationOverviewEdit');
+    ensureOverviewResizeHandle();
+    ensureOverviewDragHandle();
+    applyPanelWidth(state.panelWidth || restorePanelWidth());
+    applyPanelHeight(state.panelHeight != null ? state.panelHeight : restorePanelHeight());
+    applyPanelPosition(state.panelPosition || restorePanelPosition());
+    return panel;
+  }
+
+  function renderOverview() {
+    const panel = ensureOverviewPanel();
+    const body = panel.querySelector('#annotationOverviewBody');
+    const count = panel.querySelector('#annotationOverviewCount');
+    const units = state.spec && Array.isArray(state.spec.units) ? state.spec.units : [];
+    count.textContent = `${units.length} 项 · 按研发决策排序`;
+    body.innerHTML = units.map((unit, index) => {
+      let anchorAvailable = false;
+      try { anchorAvailable = !!document.querySelector(unit.anchor_selector); } catch (_) {}
+      return `
+        <article class="annotation-overview-card${state.activeUnitId === unit.id ? ' active' : ''}" data-overview-unit="${escapeHtml(unit.id)}">
+          <div class="annotation-overview-card-title">
+            <span>${index + 1}</span>
+            <div><strong>${escapeHtml(unit.title || unit.id)}</strong><small>${anchorAvailable ? '页面位置可见' : escapeHtml(unit.visibility_condition_desc || '当前页面状态下暂不可见')}</small></div>
           </div>
-        </div>
-        <div class="annotation-drawer-body"></div>
-      </aside>
-    `;
-    document.body.appendChild(mask);
-    ensureDrawer();
+          <div class="annotation-overview-card-body">${renderUnitBody(unit)}</div>
+        </article>
+      `;
+    }).join('');
   }
 
   /* annotation:edit-only start */
@@ -659,6 +928,35 @@
                 <div class="annotation-form-group">
                   <label class="annotation-form-label">副标题</label>
                   <input type="text" name="subtitle" class="annotation-form-input" placeholder="请输入副标题" />
+                </div>
+                <div class="annotation-form-row">
+                  <div class="annotation-form-group annotation-form-group-half">
+                    <label class="annotation-form-label">规则确认态</label>
+                    <select name="confirmation" class="annotation-form-input" data-role="confirmation">
+                      <option value="confirmed">已确认</option>
+                      <option value="assumption">假设</option>
+                      <option value="pending">待确认</option>
+                      <option value="conflict">来源冲突</option>
+                    </select>
+                  </div>
+                  <div class="annotation-form-group annotation-form-group-half">
+                    <label class="annotation-form-label">待确认影响</label>
+                    <select name="pending_impact" class="annotation-form-input">
+                      <option value="low">低</option>
+                      <option value="medium">中</option>
+                      <option value="high">高</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="annotation-form-group">
+                  <label class="annotation-form-label">人工处理决定</label>
+                  <select name="human_disposition" class="annotation-form-input">
+                    <option value="undecided">待人工决定</option>
+                    <option value="resolved">已确认解决</option>
+                    <option value="accepted_pending">保留待确认并允许交付</option>
+                    <option value="hold">暂缓交付</option>
+                  </select>
+                  <div class="annotation-form-hint">AI 只负责提醒影响；是否允许交付由你决定，保存后不再交给 AI 复审。</div>
                 </div>
               </div>
             </div>
@@ -856,6 +1154,21 @@
 
   function renderUnitBody(unit) {
     const parts = [];
+
+    if (unit.confirmation && unit.confirmation !== 'confirmed') {
+      const confirmationLabels = { assumption: '假设', pending: '待确认', conflict: '来源冲突' };
+      const label = confirmationLabels[unit.confirmation] || unit.confirmation;
+      const impactLabels = { low: '低影响', medium: '中影响', high: '高影响' };
+      const dispositionLabels = {
+        undecided: '待人工决定',
+        resolved: '已由人工确认解决',
+        accepted_pending: '人工已允许带待确认项交付',
+        hold: '人工已决定暂缓交付',
+      };
+      const impact = impactLabels[unit.pending_impact] || '影响未评估';
+      const disposition = dispositionLabels[unit.human_disposition] || dispositionLabels.undecided;
+      parts.push(`<div class="annotation-confirmation-banner" data-disposition="${escapeHtml(unit.human_disposition || 'undecided')}"><strong>${escapeHtml(label)} · ${escapeHtml(impact)}</strong><span>${escapeHtml(disposition)}。AI 不替代人工做交付决定。</span></div>`);
+    }
 
     // 作用
     if (unit.purpose) {
@@ -1110,38 +1423,29 @@
   }
 
   function findAnnotationNodes(unitId) {
-    return document.querySelectorAll(`[data-annotation-id="${escapeSelectorValue(unitId)}"]`);
+    const overlay = document.getElementById(OVERLAY_ID);
+    return overlay ? overlay.querySelectorAll(`[data-annotation-id="${escapeSelectorValue(unitId)}"]`) : [];
   }
 
   function syncAnnotationNodes() {
-    document.querySelectorAll('.annotation-node[data-generated="true"]').forEach((node) => node.remove());
     if (!state.spec || !Array.isArray(state.spec.units)) return;
+    const overlay = ensureOverlayRoot();
     const validIds = new Set(state.spec.units.map((unit) => unit.id));
 
-    state.spec.units.forEach((unit) => {
-      const existing = Array.from(findAnnotationNodes(unit.id));
-      if (!existing.length && unit.anchor_selector) {
-        let host = null;
-        try {
-          host = document.querySelector(unit.anchor_selector);
-        } catch (e) {
-          console.warn('[AnnotationCore] 锚点选择器无效：', unit.anchor_selector, e);
-        }
-        if (host) {
-          host.classList.add('annotation-anchor-host');
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = `annotation-node ${unit.node_class || 'annotation-node-generic'} hidden`;
-          button.dataset.annotationId = unit.id;
-          button.dataset.generated = 'true';
-          button.setAttribute('aria-label', unit.aria_label || unit.title || unit.id);
-          button.textContent = unit.short_index || unit.index || '•';
-          host.appendChild(button);
-        }
+    state.spec.units.forEach((unit, unitIndex) => {
+      const displayIndex = String(unitIndex + 1);
+      let node = overlay.querySelector(`.annotation-node[data-annotation-id="${escapeSelectorValue(unit.id)}"]`);
+      if (!node) {
+        node = document.createElement('button');
+        node.type = 'button';
+        node.className = 'annotation-node annotation-node-generic hidden';
+        node.dataset.annotationId = unit.id;
+        node.dataset.generated = 'true';
+        overlay.appendChild(node);
       }
-
-      findAnnotationNodes(unit.id).forEach((node) => {
+      [node].forEach((node) => {
         node.classList.add('annotation-node');
+        node.dataset.anchorSelector = unit.anchor_selector || '';
         const prevClass = node.dataset.annotationNodeClass;
         if (prevClass && prevClass !== unit.node_class) {
           node.classList.remove(prevClass);
@@ -1152,16 +1456,17 @@
         } else {
           delete node.dataset.annotationNodeClass;
         }
-        node.setAttribute('aria-label', unit.aria_label || unit.title || unit.id);
-        node.textContent = unit.short_index || unit.index || node.textContent || '•';
+        node.setAttribute('aria-label', `${displayIndex} ${unit.title || unit.id}`);
+        node.textContent = displayIndex;
         applyBadgePositionToNode(node, unit);
       });
     });
 
+    applyCollisionAvoidance();
+
     document.querySelectorAll('.annotation-node[data-annotation-id]').forEach((node) => {
       if (!validIds.has(node.dataset.annotationId)) {
-        node.classList.add('hidden');
-        node.classList.remove('active');
+        if (node.dataset.generated === 'true') node.remove();
       }
     });
   }
@@ -1241,7 +1546,6 @@
   }
 
   const BINDING_UI_IGNORE_SELECTOR = [
-    '#annotationDrawerMask',
     '#annotationEditorMask',
     '#annotationBindingTip',
     '.annotation-node',
@@ -1444,29 +1748,64 @@
 
   function refresh() {
     if (!state.spec) {
-      if (els.drawerMask) {
-        els.drawerMask.classList.remove('show');
-      }
+      if (els.overviewPanel) els.overviewPanel.classList.remove('show', 'detail-mode');
       syncToggleUi();
       return;
     }
     syncAnnotationNodes();
     const globalOk = typeof config.globalGate !== 'function' || config.globalGate();
 
-    state.spec.units.forEach((unit) => {
+    state.displayIndexByUnit = {};
+    state.spec.units.forEach((unit, unitIndex) => {
       const nodes = findAnnotationNodes(unit.id);
+      const stableIndex = unitIndex + 1;
+      state.displayIndexByUnit[unit.id] = stableIndex;
       nodes.forEach((node) => {
-        const show = state.enabled && globalOk && gatesAllow(unit);
+        const show = state.enabled && globalOk && gatesAllow(unit) && node.dataset.anchorAvailable !== 'false';
         node.classList.toggle('hidden', !show);
         node.classList.toggle('active', state.activeUnitId === unit.id);
+        node.textContent = String(stableIndex);
+        node.setAttribute('aria-label', `${stableIndex} ${unit.title || unit.id}`);
       });
     });
 
-    if (els.drawerMask) {
-      const shouldShowDrawer = state.enabled && globalOk && !!state.activeUnitId;
-      els.drawerMask.classList.toggle('show', shouldShowDrawer);
+    renderOverview();
+    const overview = document.getElementById(OVERVIEW_ID);
+    if (overview) {
+      overview.classList.toggle('show', state.enabled && globalOk);
+      overview.classList.toggle('detail-mode', state.enabled && globalOk && !!state.activeUnitId);
     }
     syncToggleUi();
+  }
+
+  function isAnnotationInfrastructureNode(node) {
+    if (!node || node.nodeType !== 1) return true;
+    const element = node;
+    return element.matches('[data-generated="true"], .annotation-node, .annotation-overlay-root, .annotation-overview-panel, .annotation-editor-mask, .annotation-binding-tip, .annotation-positioning-tip')
+      || !!element.closest('.annotation-overlay-root, .annotation-overview-panel, .annotation-editor-mask, .annotation-binding-tip, .annotation-positioning-tip');
+  }
+
+  function startDomTracking() {
+    if (domObserver || typeof MutationObserver === 'undefined' || !document.body) return;
+    domObserver = new MutationObserver((records) => {
+      const relevant = records.some((record) => {
+        if (record.type === 'attributes') return !isAnnotationInfrastructureNode(record.target);
+        const changed = [...record.addedNodes, ...record.removedNodes];
+        return changed.some((node) => !isAnnotationInfrastructureNode(node));
+      });
+      if (!relevant || domRefreshScheduled) return;
+      domRefreshScheduled = true;
+      requestAnimationFrame(() => {
+        domRefreshScheduled = false;
+        refresh();
+      });
+    });
+    domObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style', 'hidden', 'aria-hidden'],
+    });
   }
 
   /* ---------- 公共 API：打开/关闭/开关 ---------------------------------- */
@@ -1480,10 +1819,13 @@
     if (typeof config.onBeforeOpen === 'function') config.onBeforeOpen(unit);
 
     state.activeUnitId = unitId;
-    if (els.drawerBadge) els.drawerBadge.textContent = unit.index || unit.short_index || '';
-    if (els.drawerTitle) els.drawerTitle.textContent = unit.title || '';
-    if (els.drawerSubtitle) els.drawerSubtitle.textContent = unit.subtitle || '';
-    if (els.drawerBody) els.drawerBody.innerHTML = renderUnitBody(unit);
+    const panel = ensureOverviewPanel();
+    panel.classList.remove('collapsed');
+    panel.classList.add('detail-mode');
+    if (els.overviewDetailBadge) els.overviewDetailBadge.textContent = String(state.displayIndexByUnit[unit.id] || (state.spec.units.findIndex((item) => item.id === unit.id) + 1));
+    if (els.overviewDetailTitle) els.overviewDetailTitle.textContent = unit.title || '';
+    if (els.overviewDetailSubtitle) els.overviewDetailSubtitle.textContent = unit.subtitle || '';
+    if (els.overviewDetail) els.overviewDetail.innerHTML = renderUnitBody(unit);
     refresh();
 
     if (typeof config.onAfterOpen === 'function') config.onAfterOpen(unit);
@@ -1491,6 +1833,7 @@
 
   function close() {
     state.activeUnitId = null;
+    if (els.overviewPanel) els.overviewPanel.classList.remove('detail-mode');
     refresh();
   }
 
@@ -1518,6 +1861,7 @@
     'id', 'index', 'short_index', 'title', 'subtitle',
     'anchor_selector', 'node_class', 'aria_label',
     'visibility_condition', 'visibility_condition_desc',
+    'confirmation', 'pending_impact', 'human_disposition',
     'purpose', 'rules', 'status_action_matrix',
     'badge_offset_x', 'badge_offset_y',
     'state_transitions', 'field_columns', 'fields', 'footnote'
@@ -1542,6 +1886,16 @@
 
   function deepClone(value) {
     return value == null ? value : JSON.parse(JSON.stringify(value));
+  }
+
+  function markHumanOwned(unit) {
+    return {
+      ...unit,
+      origin: 'human',
+      human_locked: true,
+      updated_by: 'human',
+      updated_at: new Date().toISOString(),
+    };
   }
 
   function compactObject(obj) {
@@ -1633,11 +1987,18 @@
       badge_offset_y: null,
       visibility_condition: '',
       visibility_condition_desc: '',
+      confirmation: 'confirmed',
+      pending_impact: 'low',
+      human_disposition: 'resolved',
       purpose: '',
       rules: [],
       field_columns: [],
       fields: [],
       footnote: '',
+      origin: 'human',
+      human_locked: true,
+      updated_by: 'human',
+      updated_at: new Date().toISOString(),
     };
   }
 
@@ -1658,11 +2019,18 @@
   }
 
   function populateBasicFields(unit) {
-    ['id', 'index', 'short_index', 'title', 'subtitle', 'anchor_selector', 'node_class', 'aria_label', 'badge_offset_x', 'badge_offset_y', 'visibility_condition', 'visibility_condition_desc', 'purpose', 'footnote']
+    ['id', 'index', 'short_index', 'title', 'subtitle', 'anchor_selector', 'node_class', 'aria_label', 'badge_offset_x', 'badge_offset_y', 'visibility_condition', 'visibility_condition_desc', 'confirmation', 'pending_impact', 'human_disposition', 'purpose', 'footnote']
       .forEach((key) => {
         const input = getEditorInput(key);
         if (input) input.value = unit[key] == null ? '' : unit[key];
       });
+    const confirmationInput = getEditorInput('confirmation');
+    const pendingImpactInput = getEditorInput('pending_impact');
+    const dispositionInput = getEditorInput('human_disposition');
+    const confirmation = unit.confirmation || 'confirmed';
+    if (confirmationInput) confirmationInput.value = confirmation;
+    if (pendingImpactInput) pendingImpactInput.value = unit.pending_impact || 'low';
+    if (dispositionInput) dispositionInput.value = unit.human_disposition || (confirmation === 'confirmed' ? 'resolved' : 'undecided');
     const bindingTargetInput = getEditorInput('binding_target_label');
     if (bindingTargetInput) {
       bindingTargetInput.value = unit.binding_target_label || unit.anchor_selector || '';
@@ -1931,6 +2299,9 @@
       binding_target_label: getValue('binding_target_label'),
       visibility_condition: getValue('visibility_condition'),
       visibility_condition_desc: getValue('visibility_condition_desc'),
+      confirmation: getValue('confirmation') || 'confirmed',
+      pending_impact: getValue('pending_impact') || 'low',
+      human_disposition: getValue('human_disposition') || 'undecided',
       purpose: getValue('purpose'),
       footnote: getValue('footnote'),
     };
@@ -2032,6 +2403,12 @@
       if (dupAction) return `状态矩阵里的动作 "${dupAction}" 重复，请调整。`;
     }
 
+    if (!['confirmed', 'assumption', 'pending', 'conflict'].includes(unit.confirmation)) return '规则确认态无效。';
+    if (!['low', 'medium', 'high'].includes(unit.pending_impact)) return '待确认影响值无效。';
+    if (!['undecided', 'resolved', 'accepted_pending', 'hold'].includes(unit.human_disposition)) return '人工处理决定无效。';
+    if (unit.confirmation === 'confirmed' && unit.human_disposition !== 'resolved') return '已确认规则的人工处理决定必须是“已确认解决”。';
+    if (unit.confirmation !== 'confirmed' && unit.human_disposition === 'resolved') return '待确认/冲突规则不能标记为“已确认解决”；请先把确认态改为已确认。';
+
     return '';
   }
 
@@ -2041,6 +2418,7 @@
       'id', 'index', 'short_index', 'title', 'subtitle',
       'anchor_selector', 'node_class', 'aria_label', 'badge_offset_x', 'badge_offset_y',
       'visibility_condition', 'visibility_condition_desc',
+      'confirmation', 'pending_impact', 'human_disposition',
       'purpose', 'rules', 'status_action_matrix',
       'state_transitions', 'field_columns', 'fields', 'footnote'
     ];
@@ -2117,6 +2495,11 @@
     setBindingMode(false);
     setPositioningMode(false);
     editorContext = { ...editorContext, ...context };
+    // 打开编辑器时隐藏总览面板，避免遮挡编辑界面
+    if (els.overviewPanel && els.overviewPanel.classList.contains('show')) {
+      state.overviewHiddenByEditor = true;
+      els.overviewPanel.classList.add('editor-hidden');
+    }
     els.editorTitle.textContent = context.isNew ? '新建标注单元' : `编辑：${unit.title || unit.id}`;
     els.editorSubtitle.textContent = context.isNew
       ? '请先点页面区域完成绑定，再补充标题、规则等业务内容。'
@@ -2153,8 +2536,8 @@
     state.pendingBindReason = '已选中页面区域，请继续填写这个新标注的内容。';
     setBindingMode(false);
     setBindingMode(true);
-    if (els.drawerBody) {
-      els.drawerBody.innerHTML = `
+    if (els.overviewDetail) {
+      els.overviewDetail.innerHTML = `
         <div class="annotation-summary-card">
           <strong>新增标注</strong>
           <p>请先回到页面上，直接点选你想挂角标的区域。选完后会自动弹出填写内容的窗口。</p>
@@ -2167,6 +2550,11 @@
     setBindingMode(false);
     state.editorOpen = false;
     if (els.editorMask) els.editorMask.classList.remove('show');
+    // 关闭编辑器时恢复总览面板(仅当它是因编辑器而隐藏的)
+    if (state.overviewHiddenByEditor) {
+      state.overviewHiddenByEditor = false;
+      if (els.overviewPanel) els.overviewPanel.classList.remove('editor-hidden');
+    }
   }
 
   function startToolbarBadgePositionAdjustment() {
@@ -2230,8 +2618,8 @@
     console.log('[AnnotationCore] positioning mode entered', unitId);
     syncAnnotationNodes();
     refresh();
-    if (els.drawerBody) {
-      els.drawerBody.innerHTML = `
+    if (els.overviewDetail) {
+      els.overviewDetail.innerHTML = `
         <div class="annotation-summary-card">
           <strong>正在调整角标位置</strong>
           <p>请直接拖动页面上的角标圆点，到你觉得更顺眼的位置。拖完后点击顶部提示里的“完成位置调整”，会自动回到编辑窗口。</p>
@@ -2296,18 +2684,23 @@
     }
 
     const nextSpec = deepClone(state.spec);
-    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: todayIso() };
+    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: new Date().toISOString(), updated_by: 'human' };
     nextSpec.units = (nextSpec.units || []).map((unit) => {
       const preview = getPreviewBadgePosition(unit.id);
+      // 注意:旧值必须直接读 unit.badge_offset_x/y,不能用 resolveBadgePosition
+      // (后者优先返回 preview,会导致 current===preview 永远相等 → 保存被跳过)
+      const oldX = unit.badge_offset_x == null ? null : Number(unit.badge_offset_x);
+      const oldY = unit.badge_offset_y == null ? null : Number(unit.badge_offset_y);
       if (!preview) return unit;
-      const nextUnit = { ...unit, badge_offset_x: preview.x, badge_offset_y: preview.y };
+      if (oldX === preview.x && oldY === preview.y) return unit;
+      const nextUnit = markHumanOwned({ ...unit, badge_offset_x: preview.x, badge_offset_y: preview.y });
       return cleanupUnit(nextUnit);
     });
 
     const doneBtn = document.getElementById('annotationPositioningDoneBtn');
     if (doneBtn) doneBtn.disabled = true;
     try {
-      await persistSpec(nextSpec);
+      await persistSpec(nextSpec, 'move-badges');
       setPositioningMode(false);
       state.positioningScope = 'single';
       clearPreviewBadgePosition();
@@ -2335,8 +2728,8 @@
     state.pendingBindReason = '已重新选择页面区域，请继续完成标注内容。';
     closeEditor();
     setBindingMode(true);
-    if (els.drawerBody) {
-      els.drawerBody.innerHTML = `
+    if (els.overviewDetail) {
+      els.overviewDetail.innerHTML = `
         <div class="annotation-summary-card">
           <strong>重新绑定页面区域</strong>
           <p>请直接在页面上点一个新的区域。选完后会自动回到填写窗口。</p>
@@ -2363,20 +2756,24 @@
       : `已连接本地服务，可直接保存到 spec.yaml（单元：${editorContext.originalId || '—'}）。`;
   }
 
-  async function persistSpec(nextSpec) {
+  async function persistSpec(nextSpec, action = 'save') {
     // 从 config.pageId 或当前 URL 路径推断页面目录名
     const pageId = config.pageId || detectPageIdFromUrl();
-    const response = await fetch('/api/spec', {
+    if (!pageId) throw new Error('无法识别页面 ID，请在 AnnotationCore.init({ pageId }) 中配置。');
+    if (!window.jsyaml) throw new Error('YAML 解析器未就绪，无法保存。');
+    const specText = window.jsyaml.dump(nextSpec, { noRefs: true, lineWidth: 120 });
+    const response = await fetch(config.saveEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ page: pageId, spec: nextSpec }),
+      body: JSON.stringify({ page: pageId, spec: nextSpec, specText, action }),
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok || result.success === false) {
       throw new Error(result.error || `保存失败（HTTP ${response.status}）`);
     }
     state.spec = nextSpec;
-    state.specText = '';
+    state.specText = specText;
+    return result;
   }
 
   /**
@@ -2405,10 +2802,10 @@
     }
 
     const nextSpec = deepClone(state.spec);
-    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: todayIso() };
+    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: new Date().toISOString(), updated_by: 'human' };
     if (!Array.isArray(nextSpec.units)) nextSpec.units = [];
 
-    const unit = collected.value;
+    const unit = markHumanOwned(collected.value);
     if (editorContext.isNew) {
       nextSpec.units.push(unit);
     } else if (editorContext.originalIndex >= 0) {
@@ -2420,7 +2817,7 @@
     els.editorSave.disabled = true;
     setEditorStatus('muted', '正在保存到 spec.yaml ...');
     try {
-      await persistSpec(nextSpec);
+      await persistSpec(nextSpec, editorContext.isNew ? 'create-unit' : 'edit-unit');
       state.activeUnitId = unit.id;
       editorContext = {
         isNew: false,
@@ -2433,7 +2830,7 @@
       renderEditorMeta();
       if (state.enabled) open(unit.id);
       refresh();
-      setEditorStatus('ok', '保存成功。');
+      setEditorStatus('ok', '保存成功，已直接发布到当前标注。');
       closeEditor();
     } catch (e) {
       console.error('[AnnotationCore] 保存失败：', e);
@@ -2454,14 +2851,14 @@
     if (nextIndex < 0 || nextIndex >= state.spec.units.length) return;
 
     const nextSpec = deepClone(state.spec);
-    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: todayIso() };
-    nextSpec.units[editorContext.originalIndex] = collected.value;
+    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: new Date().toISOString(), updated_by: 'human' };
+    nextSpec.units[editorContext.originalIndex] = markHumanOwned(collected.value);
     const [current] = nextSpec.units.splice(editorContext.originalIndex, 1);
     nextSpec.units.splice(nextIndex, 0, current);
 
     setEditorStatus('muted', '正在调整单元顺序 ...');
     try {
-      await persistSpec(nextSpec);
+      await persistSpec(nextSpec, 'reorder-unit');
       editorContext.originalIndex = nextIndex;
       state.activeUnitId = current.id;
       refresh();
@@ -2482,16 +2879,18 @@
     }
     if (editorContext.originalIndex < 0) return;
     const unit = state.spec.units[editorContext.originalIndex];
-    const confirmed = window.confirm(`确认删除标注单元“${unit.title || unit.id}”吗？删除后会立即写回 spec.yaml。`);
-    if (!confirmed) return;
+    const riskConfirmed = window.confirm(`删除“${unit.title || unit.id}”可能移除研发依赖的实现规则，且保存后立即生效。是否继续？`);
+    if (!riskConfirmed) return;
+    const finalConfirmed = window.confirm(`请再次确认：立即删除标注单元“${unit.title || unit.id}”并发布？`);
+    if (!finalConfirmed) return;
 
     const nextSpec = deepClone(state.spec);
-    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: todayIso() };
+    nextSpec.meta = { ...(nextSpec.meta || {}), updated_at: new Date().toISOString(), updated_by: 'human' };
     nextSpec.units.splice(editorContext.originalIndex, 1);
 
     setEditorStatus('muted', '正在删除标注单元 ...');
     try {
-      await persistSpec(nextSpec);
+      await persistSpec(nextSpec, 'delete-unit');
       state.activeUnitId = null;
       closeEditor();
       close();
@@ -2683,6 +3082,11 @@
       case 'transition-effect':
         editorTransitions[index].effect = target.value;
         return;
+      case 'confirmation': {
+        const dispositionInput = getEditorInput('human_disposition');
+        if (dispositionInput) dispositionInput.value = target.value === 'confirmed' ? 'resolved' : 'undecided';
+        return;
+      }
       case 'title': {
         if (!editorContext.isNew) return;
         const idInput = getEditorInput('id');
@@ -2726,14 +3130,6 @@
       open(node.dataset.annotationId);
     });
 
-    // 抽屉关闭
-    if (els.drawerClose) els.drawerClose.onclick = close;
-    if (els.drawerMask) {
-      els.drawerMask.addEventListener('click', (e) => {
-        if (e.target === els.drawerMask) close();
-      });
-    }
-
     // 工具条开关
     const toggleBtn = document.getElementById(config.toggleBtnId);
     if (toggleBtn) toggleBtn.onclick = toggle;
@@ -2750,16 +3146,23 @@
       }
     });
 
-    window.addEventListener('resize', syncDrawerWidthToViewport);
+    window.addEventListener('resize', () => {
+      syncPanelWidthToViewport();
+      syncPanelHeightToViewport();
+      syncPanelPositionToViewport();
+      if (state.enabled) refresh();
+    });
+    window.addEventListener('scroll', () => {
+      if (state.enabled) syncAnnotationNodes();
+    }, true);
 
     /* annotation:edit-only start */
-    // 只读模式下移除抽屉编辑按钮
-    if (config.readOnly && els.drawerEditBtn) {
-      els.drawerEditBtn.remove();
-      els.drawerEditBtn = null;
+    // 只读模式下移除详情编辑按钮
+    if (config.readOnly && els.overviewEditBtn) {
+      els.overviewEditBtn.remove();
+      els.overviewEditBtn = null;
     }
-    // 编辑按钮
-    if (els.drawerEditBtn) els.drawerEditBtn.onclick = openEditor;
+    if (els.overviewEditBtn) els.overviewEditBtn.onclick = openEditor;
     const editorEntryBtn = document.getElementById('toolbarAnnotationEditorBtn');
     if (editorEntryBtn) editorEntryBtn.onclick = openCreateUnitEditor;
     const toolbarPositionBtn = document.getElementById('toolbarAnnotationPositionBtn');
@@ -2784,10 +3187,13 @@
       config.readOnly = true;
     }
     Object.assign(config, options || {});
-    state.drawerWidth = restoreDrawerWidth();
+    state.panelWidth = restorePanelWidth();
+    state.panelHeight = restorePanelHeight();
+    state.panelPosition = restorePanelPosition();
 
-    // 挂抽屉 DOM
-    ensureDrawer();
+    // 标注 UI 全部挂在 body 独立层，避免框架重绘清掉标号。
+    ensureOverlayRoot();
+    ensureOverviewPanel();
 
     // 编辑模式
     if (isEditModeUrl()) {
@@ -2821,6 +3227,7 @@
     }
 
     bindEvents();
+    startDomTracking();
     if (config.readOnly && state.spec) {
       state.enabled = true;
     } else if ((isEditModeUrl() || isAnnotationAutoOpenUrl()) && state.spec) {

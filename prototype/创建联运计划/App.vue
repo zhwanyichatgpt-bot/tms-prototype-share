@@ -1,15 +1,20 @@
 <template>
   <WorkspaceShell current-title="创建联运计划">
-    <div class="plan-create-page">
+    <div class="plan-create-page annotation-plan-page">
       <header class="page-header">
         <div class="header-left">
           <h1 class="page-title">新增联运计划</h1>
         </div>
-        <button class="ws-btn" @click="handleCancel">返回联运计划</button>
+        <div class="header-actions" style="display:flex;gap:10px;align-items:center">
+          <div class="prototype-annotation-toggle" style="display:flex;align-items:center;gap:6px">
+            <button id="toolbarAnnotationToggleBtn" class="ws-btn" type="button" style="font-size:13px;padding:0 14px">原型标注</button>
+          </div>
+          <button class="ws-btn" @click="handleCancel">返回联运计划</button>
+        </div>
       </header>
 
     <!-- 关联托运单信息卡 -->
-    <section v-if="waybillOrder" class="source-card">
+    <section v-if="waybillOrder" class="source-card annotation-plan-source-context">
       <div class="source-line">
         <strong>已关联托运单：{{ waybillOrder.id }}</strong>
         <el-button type="primary" link size="small" @click="clearWaybillRelation">解除关联</el-button>
@@ -22,7 +27,7 @@
     </section>
 
     <!-- 基础信息 -->
-    <section class="form-section">
+    <section class="form-section annotation-plan-basic">
       <div class="section-header">
         <h3 class="section-title">基础信息</h3>
         <el-button v-if="!waybillOrder" type="primary" link @click="openWaybillDrawer">+ 关联托运单</el-button>
@@ -59,7 +64,7 @@
     </section>
 
     <!-- 货品信息 -->
-    <section class="form-section">
+    <section class="form-section annotation-plan-cargo">
       <div class="section-header">
         <h3 class="section-title">货品信息</h3>
         <el-form-item label="配载方式" label-width="80" style="margin-bottom: 0">
@@ -117,19 +122,19 @@
     </section>
 
     <!-- 路线规划 -->
-    <section class="form-section">
-      <div class="section-header">
+    <section class="form-section annotation-plan-route">
+      <div class="section-header annotation-plan-route-header">
         <h3 class="section-title">路线规划（执行段）</h3>
         <el-button v-if="!waybillOrder" type="primary" link @click="addSegment">+ 添加执行段</el-button>
       </div>
 
-      <div v-for="(seg, idx) in plan.routeSegments" :key="seg.id" class="segment-card">
-        <div class="segment-header">
+      <div v-for="(seg, idx) in plan.routeSegments" :key="seg.id" class="segment-card annotation-plan-segment-card">
+        <div class="segment-header annotation-plan-segment-header">
           <strong>执行段 {{ seg.seq }}</strong>
           <el-tag size="small" :type="seg.transportMode === '公路' ? 'success' : seg.transportMode === '铁路' ? 'warning' : 'primary'">{{ seg.transportMode }}</el-tag>
           <el-tag size="small" type="info">{{ seg.carryForm }}</el-tag>
           <span class="seg-route">{{ seg.from }} → {{ seg.to }}</span>
-          <div class="segment-actions">
+          <div class="segment-actions annotation-plan-subplan-actions">
             <el-button v-if="seg.subPlan" type="primary" link size="small" @click="viewSubPlan(seg)">查看子计划</el-button>
             <el-button v-else type="primary" link size="small" @click="createSubPlan(seg)">创建子计划</el-button>
             <el-button v-if="!waybillOrder && plan.routeSegments.length > 1" type="danger" link size="small" @click="removeSegment(idx)">删除</el-button>
@@ -162,7 +167,7 @@
         </el-form>
 
         <!-- 承运货品摘要 -->
-        <div class="cargo-summary">
+        <div class="cargo-summary annotation-plan-cargo-summary">
           <span class="summary-label">承运货品：</span>
           <el-tag v-for="(c, ci) in seg.cargoItems" :key="ci" size="small" type="info" effect="plain" style="margin-right: 4px">
             {{ c.cargoName }} <em v-if="c.weight">| {{ c.weight }}吨</em>
@@ -178,7 +183,7 @@
     </section>
 
     <!-- 费用信息 -->
-    <section class="form-section">
+    <section class="form-section annotation-plan-fee">
       <div class="section-header">
         <h3 class="section-title">费用信息</h3>
         <el-switch v-model="plan.feeConfig.enabled" />
@@ -277,7 +282,7 @@
         </el-form>
 
         <!-- 其他费用 -->
-        <div class="extra-fee-block">
+        <div class="extra-fee-block annotation-plan-extra-fee">
           <div class="section-header">
             <h4 class="sub-title">其他费用</h4>
             <el-button type="primary" link size="small" @click="addExtraFee">+ 添加</el-button>
@@ -302,7 +307,7 @@
     </section>
 
     <!-- 附件 -->
-    <section class="form-section">
+    <section class="form-section annotation-plan-attachment">
       <h3 class="section-title">附件</h3>
       <el-upload action="#" :auto-upload="false" :limit="3">
         <el-button>点击上传</el-button>
@@ -313,7 +318,7 @@
     </section>
 
     <!-- 底部操作栏 -->
-    <footer class="page-footer">
+    <footer class="page-footer annotation-plan-actions">
       <span class="footer-info">已创建 {{ createdSubPlanCount }} 个子计划</span>
       <el-button @click="handleCancel">取消</el-button>
       <el-button @click="saveDraft">保存草稿</el-button>
@@ -322,7 +327,7 @@
 
     <!-- 关联托运单抽屉 -->
     <el-drawer v-model="waybillDrawerVisible" title="选择关联托运单" direction="rtl" size="500px">
-      <el-radio-group v-model="selectedWaybillId" class="drawer-list">
+      <el-radio-group v-model="selectedWaybillId" class="drawer-list annotation-waybill-drawer-anchor">
         <el-radio
           v-for="w in selectableWaybills"
           :key="w.id"
@@ -345,7 +350,7 @@
     <!-- 子计划详情 -->
     <el-dialog v-model="subPlanDialogVisible" title="子计划详情" width="500px">
       <template v-if="currentSubPlan">
-        <div class="subplan-detail">
+        <div class="subplan-detail annotation-subplan-dialog-anchor">
           <div><span>子计划编号：</span><strong>{{ currentSubPlan.id }}</strong></div>
           <div><span>类型：</span><strong>{{ currentSubPlan.type }}</strong></div>
           <div><span>状态：</span><strong>{{ currentSubPlan.status }}</strong></div>
@@ -361,7 +366,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
 import {
@@ -379,11 +384,101 @@ const selectedWaybillId = ref('')
 const submitting = ref(false)
 const subPlanDialogVisible = ref(false)
 const currentSubPlan = ref(null)
+const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
+
+function loadAnnotationScript() {
+  return new Promise((resolve, reject) => {
+    if (window.AnnotationCore) {
+      resolve()
+      return
+    }
+
+    const scriptUrl = `${annotationBaseUrl}annotation-core.js`
+    const existing = document.querySelector(`script[src="${scriptUrl}"]`)
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true })
+      existing.addEventListener('error', reject, { once: true })
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = scriptUrl
+    script.onload = () => resolve()
+    script.onerror = reject
+    document.head.appendChild(script)
+  })
+}
+
+async function bootAnnotation() {
+  await nextTick()
+  await loadAnnotationScript()
+  console.log('[annotation] AnnotationCore loaded:', !!window.AnnotationCore)
+  const spec = await window.AnnotationCore.init({
+    pageId: '创建联运计划',
+    specUrl: `${annotationBaseUrl}create-plan.spec.yaml`,
+    jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
+    readOnly: (() => { const p = new URLSearchParams(window.location.search); return p.get('readOnly') === '1' || p.get('readonly') === '1'; })(),
+  })
+
+  // 移除 annotation-core 自动绑定的 onclick，改用 addEventListener
+  const toggleBtn = document.getElementById('toolbarAnnotationToggleBtn')
+  if (toggleBtn) {
+    toggleBtn.onclick = null  // 移除 annotation-core 的绑定
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (window.AnnotationCore?.isEnabled?.()) {
+        window.AnnotationCore.disable()
+        toggleBtn.style.borderColor = ''
+        toggleBtn.style.background = ''
+        toggleBtn.style.color = ''
+      } else {
+        window.AnnotationCore.enable()
+        toggleBtn.style.borderColor = 'rgba(219,91,91,0.36)'
+        toggleBtn.style.background = '#fff5f5'
+        toggleBtn.style.color = '#bb3f3f'
+        // 多次延迟 refresh + 手动绑标号点击，对抗 Vue DOM 更新
+        const bindBadgeClicks = () => {
+          document.querySelectorAll('.annotation-node[data-annotation-id]:not(.hidden)').forEach((node) => {
+            if (node.dataset.clickBound) return
+            node.dataset.clickBound = 'true'
+            node.addEventListener('click', (ev) => {
+              ev.stopPropagation()
+              window.AnnotationCore?.open?.(node.dataset.annotationId)
+            })
+          })
+        }
+        setTimeout(() => { window.AnnotationCore?.refresh?.(); bindBadgeClicks() }, 50)
+        setTimeout(() => { window.AnnotationCore?.refresh?.(); bindBadgeClicks() }, 200)
+      }
+    })
+  }
+}
+
+function refreshAnnotation() {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      window.AnnotationCore?.refresh?.()
+    })
+  })
+}
+
+onMounted(() => {
+  bootAnnotation().catch((error) => {
+    console.warn('[prototype-annotation] 创建联运计划标注加载失败:', error)
+  })
+})
+
+onUnmounted(() => {
+  window.AnnotationCore?.disable?.()
+  window.AnnotationCore?.close?.()
+})
 
 // ============ 关联托运单 ============
 function openWaybillDrawer() {
   selectedWaybillId.value = waybillOrder.value?.id || ''
   waybillDrawerVisible.value = true
+  refreshAnnotation()
 }
 
 function confirmWaybillRelation() {
@@ -401,12 +496,14 @@ function confirmWaybillRelation() {
     plan.routeSegments.forEach(s => { s.locked = true })
   }
   waybillDrawerVisible.value = false
+  refreshAnnotation()
   ElMessage.success('已关联托运单')
 }
 
 function clearWaybillRelation() {
   waybillOrder.value = null
   plan.routeSegments.forEach(s => { s.locked = false })
+  refreshAnnotation()
   ElMessage.success('已解除关联，字段保留可继续编辑')
 }
 
@@ -448,6 +545,7 @@ function createSubPlan(seg) {
 function viewSubPlan(seg) {
   currentSubPlan.value = seg.subPlan
   subPlanDialogVisible.value = true
+  refreshAnnotation()
 }
 
 const createdSubPlanCount = computed(() => plan.routeSegments.filter(s => s.subPlan).length)

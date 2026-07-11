@@ -1,0 +1,255 @@
+meta:
+  page_id: multimodal-create-plan
+  page_name: 多式联运 - 创建联运计划
+  version: 3
+  updated_at: '2026-07-11T06:04:41.733Z'
+  updated_by: human
+  page_path: prototype/创建联运计划/App.vue
+  prd_ref: prd/多式联运_创建联运计划_PRD_v1.md
+units:
+  - id: source_and_waybill
+    index: ①
+    short_index: '1'
+    title: 创建来源与托运单承接
+    anchor_selector: .annotation-plan-basic
+    node_class: annotation-source-waybill-node
+    aria_label: ① 创建来源与托运单承接
+    badge_offset_x: -25
+    badge_offset_y: 8
+    confirmation: confirmed
+    human_disposition: resolved
+    purpose: 区分手工创建、关联托运单和已确认报价三类来源，明确带入内容及可编辑边界。
+    rules:
+      - priority: P0
+        text: 关联托运单是可选项；未关联时可手工维护基础信息，且不得单独阻断保存或生效。
+      - priority: P0
+        text: 抽屉单选确认后带入托运企业、联系人、电话、货品和配载方式，并锁定企业、货品和配载；取消抽屉不改变当前关联。
+      - priority: P0
+        text: 清空关联后保留已带入值并解除来源锁定；若任一执行段已有子计划，货品和配载继续锁定。
+      - priority: P1
+        text: 已确认报价来源承接托运单、报价单和托运订单快照，核心路线只读，创建页不要求重新编排。
+    field_columns:
+      - 来源
+      - 带入内容
+      - 编辑边界
+    fields:
+      - 来源: 手工创建
+        带入内容: 无
+        编辑边界: 基础、货品、路线可维护
+      - 来源: 关联托运单
+        带入内容: 企业、联系人、电话、货品、配载
+        编辑边界: 企业、货品、配载锁定；清空后按子计划状态解锁
+      - 来源: 已确认报价
+        带入内容: 托运单、报价单、托运订单及报价路线
+        编辑边界: 上游确认内容只读
+    origin: human
+    human_locked: true
+    updated_by: human
+    source_refs:
+      - PRD 4.1-4.3、5.1、6.1
+    updated_at: '2026-07-11T05:57:31.822Z'
+  - id: cargo_and_stowage
+    index: ②
+    short_index: '2'
+    title: 货品、配载与锁定
+    anchor_selector: .annotation-plan-cargo
+    node_class: annotation-cargo-stowage-node
+    aria_label: ② 货品、配载与锁定
+    badge_offset_x: -20
+    badge_offset_y: 15
+    confirmation: confirmed
+    pending_impact: low
+    human_disposition: resolved
+    purpose: 定义整票唯一配载口径、货品有效性、金额计算及锁定条件。
+    rules:
+      - priority: P0
+        text: 一张计划只能选择按重量、按体积或按数量中的一种配载方式；生效时当前口径数值必须大于 0。
+      - priority: P0
+        text: 生效时至少一条有效货品；货品名称、包装、单价和当前配载值有效，货品总价=单价×当前配载值且只读。
+      - priority: P0
+        text: 已关联托运单或任一执行段已有子计划时，配载方式和全部货品行锁定，不允许新增、编辑或删除。
+      - priority: P1
+        text: 页面可汇总展示，但数据层必须保留原始货品行、装卸点和各计量值。
+    field_columns:
+      - 配载方式
+      - 生效条件
+      - 金额计算
+    fields:
+      - 配载方式: 按重量
+        生效条件: 单选
+        金额计算: 单价 × 重量
+      - 配载方式: 按体积
+        生效条件: 体积 > 0
+        金额计算: 单价 × 体积
+      - 配载方式: 按数量
+        生效条件: 数量 > 0
+        金额计算: 单价 × 数量
+    origin: human
+    human_locked: true
+    updated_by: human
+    source_refs:
+      - PRD 4.4-4.5、5.2、7.2
+    updated_at: '2026-07-11T06:04:41.733Z'
+  - id: execution_segment_lifecycle
+    index: ③
+    short_index: '3'
+    title: 执行段形成、货品计算与子计划承接
+    anchor_selector: .annotation-plan-route-header
+    node_class: annotation-execution-segment-node
+    aria_label: ③ 执行段形成、货品计算与子计划承接
+    badge_offset_x: -52
+    badge_offset_y: -9
+    confirmation: confirmed
+    human_disposition: resolved
+    purpose: 以执行段为统一对象，说明路线如何成段、节点和承运货品如何计算，以及如何创建并承接子计划。
+    rules:
+      - priority: P0
+        text: 手工场景按运输方式、运输类型、起点和终点维护执行段；报价来源仅合并连续、同方式、首尾相接且中间无装卸事件的小段，其他情况必须断开。
+      - priority: P0
+        text: 聚合后的执行段保留全部中间地址节点和原报价小段；散杂货按原始装卸区间计算在途货品，节点分别表达装、卸、装/卸、起或途。
+      - priority: P0
+        text: 装货点缺失的流向不进入执行段；卸货点缺失则持续承运到路线末端并提示；装货晚于卸货的流向无效。
+      - priority: P0
+        text: 一个执行段只有一个子计划入口；创建前校验运输方式、运输类型、起终点，并承接完整节点序列和该段承运货品，不按内部报价小段拆分。
+      - priority: P0
+        text: 已有子计划的执行段修改核心字段前提示可能不一致；删除时提示将同步移除子计划关联和分段费用，确认后再执行。
+      - priority: P2
+        text: 待确认：不同运输方式子计划创建后还需锁定哪些执行段字段，以及创建失败应定位在页级、执行段还是子计划摘要。
+    state_transitions:
+      - from: 手工路线或报价小段
+        trigger: 录入路线或按聚合条件扫描
+        to: 有序执行段
+        effect: 保留完整节点和来源数据
+      - from: 有序执行段
+        trigger: 按装卸关系计算
+        to: 节点动作与分段承运货品
+        effect: 页面可汇总，底层保留原始流向
+      - from: 执行段未创建子计划
+        trigger: 必填校验通过并创建
+        to: 子计划草稿
+        effect: 回显子计划摘要，货品与配载进入锁定
+    field_columns:
+      - 场景
+      - 节点表达
+      - 货品口径
+      - 子计划边界
+    fields:
+      - 场景: 散杂货执行段
+        节点表达: 装 / 卸 / 装卸 / 起 / 途
+        货品口径: 按每条原始装卸流向计算在途区间
+        子计划边界: 承接该段全部节点和有效承运货品
+      - 场景: 集装箱联运执行段
+        节点表达: 提空 / 还空 / 提重 / 还重
+        货品口径: 整票箱货 + 当前段承运货品
+        子计划边界: 每段只表达两个箱态交接节点
+    origin: human
+    human_locked: true
+    updated_by: human
+    source_refs:
+      - PRD 4.6-4.23、5.3、6.2、7.3、8.1
+    updated_at: '2026-07-11T05:57:31.822Z'
+  - id: fee_configuration
+    index: ④
+    short_index: '4'
+    title: 客户侧费用组织与计算
+    anchor_selector: .annotation-plan-fee
+    node_class: annotation-fee-node
+    aria_label: ④ 客户侧费用组织与计算
+    badge_offset_x: -10
+    badge_offset_y: 16
+    confirmation: confirmed
+    human_disposition: resolved
+    purpose: 创建页只配置客户侧应收规则；整票规则挂主计划，分段规则挂已关联子计划的执行段。
+    rules:
+      - priority: P0
+        text: 整票结算统一维护计费条件、计费依据、运输单价和单位；支持重量、体积、数量、集装箱，本期不做按车和按里程。
+      - priority: P0
+        text: 分段结算仅为已关联子计划的执行段生成配置，各段可使用不同计费规则；存在未关联段时提示并在生效时阻断。
+      - priority: P0
+        text: 按集装箱计费时至少一条有效箱型价格且箱型不可重复；分段按箱计费不设置装货/卸货计费依据。
+      - priority: P1
+        text: 其他费用必须选择增项/减项和计价方式，金额=基数×单价；创建页不展示结算量、已结金额或执行成本。
+    field_columns:
+      - 组织方式
+      - 配置层级
+      - 允许差异
+      - 生效边界
+    fields:
+      - 组织方式: 整票结算
+        配置层级: 主联运计划
+        允许差异: 全票统一规则
+        生效边界: 计划级费用关键项完整
+      - 组织方式: 分段结算
+        配置层级: 已关联子计划的执行段
+        允许差异: 各段规则可异构
+        生效边界: 全部执行段先关联子计划并完成配置
+    origin: human
+    human_locked: true
+    updated_by: human
+    source_refs:
+      - PRD 4.24、5.4-5.5、7.4-7.5
+    updated_at: '2026-07-11T05:57:31.822Z'
+  - id: delivery_actions
+    index: ⑤
+    short_index: '5'
+    title: 保存、生效、退出与未决边界
+    anchor_selector: .annotation-plan-actions
+    node_class: annotation-delivery-actions-node
+    aria_label: ⑤ 保存、生效、退出与未决边界
+    badge_offset_x: 8
+    badge_offset_y: 8
+    origin: ai
+    human_locked: false
+    updated_by: ai
+    confirmation: pending
+    pending_impact: medium
+    human_disposition: undecided
+    source_refs:
+      - PRD 3.3、4.25-4.26、5.6-5.7、6.2、8.1
+    purpose: 区分草稿与生效校验，统一退出保护；附件仍是模拟能力，其正式规则需人工确认。
+    rules:
+      - priority: P0
+        text: 保存草稿只校验计划名称；成功后生成或更新草稿记录并返回联运计划管理页。
+      - priority: P0
+        text: 提交生效校验基础信息、有效货品、当前配载值、执行段、子计划关联要求和费用关键项；关联托运单本身不是必填。
+      - priority: P0
+        text: 存在草稿子计划时，生效前二次确认；通过后主计划进入待执行并回写管理页。
+      - priority: P0
+        text: 取消与关闭共用未保存变更保护，提供放弃变更、保存草稿或关闭弹窗，不维护两套逻辑。
+      - priority: P2
+        text: 待确认：附件分类、业务字段、数量限制、失败重试和是否参与生效校验；当前上传类型和 10MB 提示不能直接视为后端正式规则。
+    status_action_matrix:
+      states:
+        - 新建未保存
+        - 草稿无子计划
+        - 草稿有子计划
+      actions:
+        - 保存草稿
+        - 提交生效
+        - 取消或关闭
+      cells:
+        新建未保存:
+          - 可点
+          - 可点
+          - 可点
+        草稿无子计划:
+          - 可点
+          - 可点
+          - 可点
+        草稿有子计划:
+          - 可点
+          - 可点
+          - 可点
+      legend:
+        保存草稿: 仅校验计划名称
+        提交生效: 全量校验；有草稿子计划时再二次确认
+        取消或关闭: 有未保存变更时弹出统一保护
+    state_transitions:
+      - from: 新建未保存
+        trigger: 保存草稿
+        to: 草稿
+        effect: 回写管理页草稿记录
+      - from: 新建未保存或草稿
+        trigger: 提交生效且校验通过
+        to: 待执行
+        effect: 回写管理页并进入执行、轨迹和结算链路

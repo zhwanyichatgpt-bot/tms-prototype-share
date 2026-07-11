@@ -44,8 +44,15 @@
 }
 
 /* ---- 页面上贴靠的标号小圆圈 -------------------------------------------- */
+.annotation-overlay-root {
+  position: fixed;
+  inset: 0;
+  z-index: 145;
+  pointer-events: none;
+}
+
 .annotation-node {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 34px;
@@ -63,7 +70,7 @@
   pointer-events: auto;
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
-  z-index: 12;
+  z-index: 1;
 }
 
 .annotation-node:hover,
@@ -77,8 +84,273 @@
   display: none;
 }
 
-.annotation-anchor-host {
-  position: relative;
+/* ---- 默认可见的标注总览 ------------------------------------------------ */
+.annotation-overview-panel {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  bottom: 20px;
+  width: min(var(--annotation-panel-width, 620px), calc(100vw - 40px));
+  height: var(--annotation-panel-height, auto);
+  z-index: 160;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e6eaf2;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 50px rgba(22, 33, 58, 0.18);
+  color: #263246;
+}
+
+.annotation-overview-panel.show { display: flex; }
+.annotation-overview-panel.collapsed { bottom: auto; width: 220px; height: auto !important; }
+/* 编辑器打开时隐藏总览面板 */
+.annotation-overview-panel.editor-hidden { display: none !important; }
+
+/* 自定义位置(拖动后):切换到 left/top 定位,释放 right/bottom */
+.annotation-overview-panel.custom-position {
+  right: auto;
+  bottom: auto;
+  left: var(--annotation-panel-left);
+  top: var(--annotation-panel-top);
+}
+/* 收起时也隐藏两个缩放手柄,避免误触 */
+.annotation-overview-panel.collapsed .annotation-overview-resizer,
+.annotation-overview-panel.collapsed .annotation-overview-resizer-corner { display: none; }
+.annotation-overview-panel.collapsed .annotation-overview-body { display: none; }
+.annotation-overview-panel.detail-mode .annotation-overview-list-header,
+.annotation-overview-panel.detail-mode .annotation-overview-body { display: none; }
+.annotation-overview-panel:not(.detail-mode) .annotation-overview-detail-header,
+.annotation-overview-panel:not(.detail-mode) .annotation-overview-detail { display: none; }
+
+.annotation-overview-resizer {
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 16px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 2;
+}
+
+.annotation-overview-resizer::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  width: 3px;
+  height: 88px;
+  border-radius: 999px;
+  background: #94a3b8;
+  opacity: .45;
+  transform: translateY(-50%);
+  transition: opacity .18s ease, background .18s ease;
+}
+
+.annotation-overview-panel:hover .annotation-overview-resizer::before,
+body.annotation-panel-resizing .annotation-overview-resizer::before {
+  opacity: 1;
+  background: #64748b;
+}
+
+body.annotation-panel-resizing {
+  cursor: ew-resize;
+  user-select: none;
+}
+
+/* 左下角缩放手柄(宽+高同时调) */
+.annotation-overview-resizer-corner {
+  position: absolute;
+  left: -8px;
+  bottom: -8px;
+  width: 18px;
+  height: 18px;
+  cursor: sw-resize;
+  z-index: 3;
+}
+
+.annotation-overview-resizer-corner::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  width: 10px;
+  height: 10px;
+  border-left: 3px solid #94a3b8;
+  border-bottom: 3px solid #94a3b8;
+  border-radius: 0 0 0 3px;
+  opacity: .45;
+  transition: opacity .18s ease, border-color .18s ease;
+}
+
+.annotation-overview-panel:hover .annotation-overview-resizer-corner::before,
+body.annotation-panel-resizing .annotation-overview-resizer-corner::before {
+  opacity: 1;
+  border-color: #64748b;
+}
+
+.annotation-overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef1f6;
+  background: #fafbfe;
+}
+
+.annotation-overview-header > div { display: grid; gap: 3px; }
+.annotation-overview-header strong { font-size: 15px; }
+.annotation-overview-header span { color: #7c879c; font-size: 12px; }
+.annotation-overview-header button {
+  border: 0;
+  background: transparent;
+  color: #526079;
+  cursor: pointer;
+}
+
+.annotation-overview-detail-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef1f6;
+  background: #fafbfe;
+}
+
+/* 标题栏可拖动移动整个面板(按钮仍保持 pointer) */
+.annotation-overview-list-header,
+.annotation-overview-detail-header {
+  cursor: grab;
+}
+.annotation-overview-panel.dragging .annotation-overview-list-header,
+.annotation-overview-panel.dragging .annotation-overview-detail-header {
+  cursor: grabbing;
+}
+.annotation-overview-list-header button,
+.annotation-overview-detail-header button {
+  cursor: pointer;
+}
+
+.annotation-overview-back {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #526079;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.annotation-overview-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.annotation-overview-detail-heading > div { display: grid; gap: 3px; min-width: 0; }
+.annotation-overview-detail-heading strong { color: #263246; font-size: 16px; line-height: 1.45; }
+.annotation-overview-detail-heading span { color: #7c879c; font-size: 12px; }
+
+.annotation-overview-detail {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  background: linear-gradient(180deg, #fff 0%, #fafcff 100%);
+}
+
+.annotation-overview-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.annotation-overview-card {
+  border: 1px solid #e8ebf2;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.annotation-overview-card:hover,
+.annotation-overview-card.active {
+  border-color: #ef9a9a;
+  box-shadow: 0 8px 20px rgba(187, 63, 63, .09);
+}
+
+.annotation-overview-card-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 13px 8px;
+}
+
+.annotation-overview-card-title > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff1f1;
+  color: #bb3f3f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.annotation-overview-card-title > div { display: grid; gap: 3px; min-width: 0; }
+.annotation-overview-card-title strong { font-size: 14px; line-height: 1.4; }
+.annotation-overview-card-title small { color: #9099aa; font-size: 11px; }
+.annotation-overview-card-body { padding: 0 13px 12px; font-size: 12px; }
+.annotation-overview-card-body .annotation-section { margin: 10px 0 0; }
+.annotation-overview-card-body .annotation-section h4 { margin-bottom: 6px; font-size: 12px; }
+.annotation-overview-card-body .annotation-transition-item { padding: 8px; }
+.annotation-overview-card-body .annotation-fields-table { font-size: 11px; }
+
+@media (max-width: 760px) {
+  .annotation-overview-panel { top: 60px; right: 10px; bottom: 10px; width: calc(100vw - 20px); }
+  .annotation-overview-resizer,
+  .annotation-overview-resizer-corner { display: none; }
+  /* 移动端强制回到默认右上角定位,忽略自定义位置 */
+  .annotation-overview-panel.custom-position {
+    left: auto;
+    top: 60px;
+    right: 10px;
+    bottom: 10px;
+    height: auto;
+  }
+  .annotation-overview-list-header,
+  .annotation-overview-detail-header { cursor: default; }
+}
+
+.annotation-confirmation-banner {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid #f3cf7a;
+  border-radius: 12px;
+  background: #fff9e8;
+  color: #7a4f01;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.annotation-confirmation-banner[data-disposition="hold"] {
+  border-color: #f3a6a0;
+  background: #fff1f0;
+  color: #a5271d;
+}
+
+.annotation-confirmation-banner[data-disposition="accepted_pending"] {
+  border-color: #a9dfbd;
+  background: #ecfdf3;
+  color: #027a48;
 }
 
 body.annotation-binding-mode {
@@ -256,125 +528,6 @@ body.annotation-binding-mode .annotation-editor {
   left: auto;
 }
 
-/* ---- 抽屉遮罩 + 主体 --------------------------------------------------- */
-.annotation-mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(25, 35, 58, 0.14);
-  backdrop-filter: blur(2px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.18s ease;
-  z-index: 125;
-}
-
-.annotation-mask.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.annotation-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: min(var(--annotation-drawer-width, 620px), 100%);
-  height: 100%;
-  background: #fff;
-  border-left: 1px solid #dfe6f3;
-  box-shadow: -18px 0 36px rgba(22, 33, 58, 0.12);
-  transform: translateX(100%);
-  transition: transform 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.annotation-mask.show .annotation-drawer {
-  transform: translateX(0);
-}
-
-.annotation-drawer-resizer {
-  position: absolute;
-  top: 0;
-  left: -8px;
-  width: 16px;
-  height: 100%;
-  cursor: ew-resize;
-  z-index: 2;
-}
-
-.annotation-drawer-resizer::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 7px;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 88px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(148, 163, 184, 0) 0%, rgba(148, 163, 184, 0.9) 20%, rgba(148, 163, 184, 0.9) 80%, rgba(148, 163, 184, 0) 100%);
-  opacity: 0;
-  transition: opacity 0.18s ease, background 0.18s ease;
-}
-
-.annotation-mask.show .annotation-drawer:hover .annotation-drawer-resizer::before,
-body.annotation-drawer-resizing .annotation-drawer-resizer::before {
-  opacity: 1;
-}
-
-body.annotation-drawer-resizing {
-  cursor: ew-resize;
-  user-select: none;
-}
-
-body.annotation-drawer-resizing .annotation-drawer {
-  transition: none;
-}
-
-/* ---- 抽屉头部 ---------------------------------------------------------- */
-.annotation-drawer-header {
-  padding: 22px 24px 18px;
-  border-bottom: 1px solid #e9eef7;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  background: #fff;
-}
-
-.annotation-drawer-header-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.annotation-drawer-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  color: #bb3f3f;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.annotation-drawer-title {
-  margin: 0;
-  font-size: 20px;
-  line-height: 28px;
-}
-
-.annotation-drawer-subtitle {
-  margin-top: 6px;
-  color: var(--muted, #68758d);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.annotation-drawer-header-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .annotation-edit-btn {
   border: 1px solid #d4ddee;
   background: #fff;
@@ -412,17 +565,6 @@ body.annotation-edit-enabled .annotation-edit-btn {
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
-}
-
-/* ---- 抽屉主体滚动区 ---------------------------------------------------- */
-.annotation-drawer-body {
-  flex: 1;
-  overflow: auto;
-  padding: 22px 24px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
 }
 
 .annotation-summary-card,
@@ -716,6 +858,7 @@ body.annotation-edit-enabled .annotation-edit-btn {
   background: rgba(25, 35, 58, 0.38);
   backdrop-filter: blur(3px);
   display: flex;
+  z-index: 200;
   align-items: center;
   justify-content: center;
   z-index: 140;
@@ -878,39 +1021,11 @@ body.annotation-edit-enabled .annotation-edit-btn {
 /* annotation:edit-only end */
 
 /* ---- 响应式 ------------------------------------------------------------ */
-@media (max-width: 1200px) {
-  .annotation-drawer {
-    width: min(var(--annotation-drawer-width, 520px), 100%);
-  }
-}
-
 @media (max-width: 760px) {
   .annotation-node {
     width: 30px;
     height: 30px;
     font-size: 13px;
-  }
-
-  .annotation-drawer {
-    width: 100%;
-  }
-
-  .annotation-drawer-resizer {
-    display: none;
-  }
-
-  .annotation-drawer-header {
-    padding: 18px;
-    flex-direction: column;
-  }
-
-  .annotation-drawer-header-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .annotation-drawer-body {
-    padding: 18px;
   }
 
   .annotation-transition-item {
@@ -1494,4 +1609,5 @@ body.annotation-edit-enabled .annotation-edit-btn {
   .annotation-form-group-half {
     width: 100%;
   }
+
 }
