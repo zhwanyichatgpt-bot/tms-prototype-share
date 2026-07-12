@@ -1,120 +1,165 @@
 /**
- * 创建联运计划 Mock 数据（迁移自主仓 multimodal/create-plan）
+ * 创建联运计划 Mock 数据
+ * 1:1 迁移自主仓 multimodal/create-plan/current/src/mock-data.js
+ * 场景：玉米 30吨 + 小麦 20吨，安徽宿迁 → 浙江金华，5 段公路/铁路/公路混合（演示执行段聚合）
+ * PRD 补充：货品项加 unitPrice（货品单价）；其他费用加 feeType/pricingMode/price/basis 字段
  */
 
-// 运输方式（路段级）
-export const transportModes = ['公路', '铁路', '水路']
-
-// 运输类型（carryForm）
-export const carryForms = ['散货运输', '集装箱运输']
-
-// 包装类型
-export const packageTypes = ['散装', '袋装', '箱装', '桶装']
-
-// 货品单位
-export const cargoUnits = ['吨', '件', '车']
-
-// 配载方式
-export const stowageModes = ['按重量', '按体积', '按数量']
-
-// 结算方式
-export const settlementModes = ['整票结算', '分段结算']
-
-// 计费条件
-export const billingConditions = ['按重量', '按体积', '按数量', '按集装箱']
-
-// 计费依据（仅散杂货）
-export const billingBases = ['按装货口径', '按卸货口径']
-
-// 单价单位
-export const priceUnits = ['元/吨', '元/方', '元/车', '元/箱', '元/公里']
-
-// 是否含税
-export const taxOptions = ['是', '否']
-
-// 付款方式
-export const paymentTypes = ['预付', '到付', '月结']
-
-// 支付方式
-export const paymentMethods = ['银行转账', '线上支付', '承兑汇票']
-
-// 计费规则（货品计量）
-export const calcRules = ['按重量', '按体积', '按车次', '按集装箱', '按里程']
-
-// 计量单位
-export const measureUnits = ['吨', '方', '车', '箱', '公里']
-
-// 默认联运计划数据（手工创建模式）
-export const defaultPlan = {
-  planName: '上海-成都多式联运计划',
-  shipperCompany: '华东贸易有限公司',
+// 默认托运单（手工创建 / 无上游确认报价时使用）
+export const defaultWaybillOrder = {
+  id: 'TY20250612001',
+  shipperCompany: '华东农业贸易有限公司',
   contactName: '张经理',
-  contactPhone: '13900001111',
-  remark: '',
-  waybillOrder: null, // 关联托运单
-  confirmedQuote: null, // 关联报价
+  contactPhone: '138****6789',
+  remark: '请优先安排铁路运输，注意防潮',
   cargoItems: [
-    { id: 'c1', cargoName: '机械设备', packageType: '散装', weight: 50, volume: 80, quantity: 1, unit: '吨', loadPoint: '上海浦东', unloadPoint: '成都龙泉驿' },
-  ],
-  stowageMode: '按重量',
-  routeSegments: [
     {
-      id: 'seg1', seq: 1,
-      transportMode: '公路', carryForm: '散货运输',
-      from: '上海浦东', to: '南京',
-      loadWorkTime: '', unloadWorkTime: '', duration: '待确认',
-      locked: false, subPlan: null,
-      cargoItems: [{ cargoName: '机械设备', weight: 50 }],
+      id: 'C1',
+      cargoName: '玉米',
+      packageType: '散装',
+      weight: 30,
+      volume: 42,
+      quantity: 30,
+      unit: '吨',
+      unitPrice: 120, // PRD 7.2 货品单价
+      loadPointId: 'LP-001',
+      loadPoint: '安徽宿迁一号装货点',
+      loadAddress: '安徽省宿迁市宿城区工业路188号',
+      unloadPointId: 'UP-001',
+      unloadPoint: '浙江金华一号卸货点',
+      unloadAddress: '浙江省金华市婺城区物流大道66号',
     },
     {
-      id: 'seg2', seq: 2,
-      transportMode: '铁路', carryForm: '散货运输',
-      from: '南京', to: '成都',
-      loadWorkTime: '', unloadWorkTime: '', duration: '待确认',
-      locked: false, subPlan: null,
-      cargoItems: [{ cargoName: '机械设备', weight: 50 }],
+      id: 'C2',
+      cargoName: '小麦',
+      packageType: '散装',
+      weight: 20,
+      volume: 28,
+      quantity: 20,
+      unit: '吨',
+      unitPrice: 150, // PRD 7.2 货品单价
+      loadPointId: 'LP-002',
+      loadPoint: '安徽宿迁二号装货点',
+      loadAddress: '安徽省宿迁市泗阳县开发区北路88号',
+      unloadPointId: 'UP-002',
+      unloadPoint: '浙江金华二号卸货点',
+      unloadAddress: '浙江省金华市义乌市货运西路128号',
     },
   ],
-  feeConfig: {
-    enabled: true,
-    settlementMode: '整票结算',
-    includeTax: '是',
-    paymentType: '月结',
-    paymentMethod: '银行转账',
-    calcRule: '按重量',
-    measureUnit: '吨',
-    billingBasis: '装货重量',
-    unitPrice: 100,
-    lossRule: '不启用',
-    segmentRules: [], // 分段时各段规则
-  },
-  extraFeeRows: [],
-  subPlanStatus: { created: 0 },
 }
 
-// 可选托运单（关联托运单抽屉）
-export const selectableWaybills = [
+// 默认确认报价（shared 模式下带入）
+export const defaultConfirmedQuote = {
+  id: 'BJ20250612001',
+  quoteMode: '分段报价',
+  billingCondition: '重量',
+  billingBasis: '按装货重量',
+  totalAmount: 6800,
+  transportAmount: 6200,
+  extraAmount: 600,
+}
+
+// 默认报价小段（5 段公路/铁路/公路混合，演示连续相同运输方式聚合）
+export const defaultRouteSegments = [
   {
-    id: 'TY20260701001', shipperCompany: '华东贸易有限公司', businessType: '散杂货',
-    mainTransportMode: '多式联运', status: '待执行',
-    contactName: '张经理', contactPhone: '13900001111',
+    id: 'seg-001',
+    seq: 1,
+    transportMode: '公路',
+    carryForm: '散货运输',
+    fromId: 'LP-001',
+    from: '安徽宿迁一号装货点',
+    fromAddress: '安徽省宿迁市宿城区工业路188号',
+    toId: 'LP-002',
+    to: '安徽宿迁二号装货点',
+    toAddress: '安徽省宿迁市泗阳县开发区北路88号',
+    duration: '2小时',
+    locked: true,
     cargoItems: [
-      { id: 'c1', cargoName: '机械设备', packageType: '散装', weight: 50, volume: 80, quantity: 1, unit: '吨', loadPoint: '上海浦东', unloadPoint: '成都龙泉驿' },
+      { cargoId: 'C1', cargoName: '玉米', packageType: '散装', quantity: 30, unit: '吨' },
     ],
-    loadNodes: [{ name: '上海浦东' }],
-    unloadNodes: [{ name: '成都龙泉驿' }],
   },
   {
-    id: 'TY20260701002', shipperCompany: '西南物流有限公司', businessType: '集装箱',
-    mainTransportMode: '多式联运', status: '待执行',
-    contactName: '李经理', contactPhone: '13800002222',
+    id: 'seg-002',
+    seq: 2,
+    transportMode: '公路',
+    carryForm: '散货运输',
+    fromId: 'LP-002',
+    from: '安徽宿迁二号装货点',
+    fromAddress: '安徽省宿迁市泗阳县开发区北路88号',
+    toId: 'ST-001',
+    to: '宿迁铁路货运站',
+    toAddress: '江苏省宿迁市宿城区铁路货场路',
+    duration: '1小时',
+    locked: true,
     cargoItems: [
-      { id: 'c1', cargoName: '电子配件', packageType: '箱装', weight: 25, quantity: 5, unit: '箱', loadPoint: '广州', unloadPoint: '成都' },
+      { cargoId: 'C1', cargoName: '玉米', packageType: '散装', quantity: 30, unit: '吨' },
+      { cargoId: 'C2', cargoName: '小麦', packageType: '散装', quantity: 20, unit: '吨' },
     ],
-    containerBoxes: [{ id: 'b1', containerType: '20GP', quantity: 5, cargoName: '电子配件' }],
-    containerNodes: [{ nodeType: '装货', name: '广州' }, { nodeType: '卸货', name: '成都' }],
+  },
+  {
+    id: 'seg-003',
+    seq: 3,
+    transportMode: '铁路',
+    carryForm: '集装箱运输',
+    fromId: 'ST-001',
+    from: '宿迁铁路货运站',
+    fromAddress: '江苏省宿迁市宿城区铁路货场路',
+    toId: 'ST-002',
+    to: '金华铁路到达站',
+    toAddress: '浙江省金华市金东区铁路货运中心',
+    duration: '18小时',
+    locked: true,
+    cargoItems: [
+      { cargoId: 'C1', cargoName: '玉米', packageType: '散装', quantity: 30, unit: '吨' },
+      { cargoId: 'C2', cargoName: '小麦', packageType: '散装', quantity: 20, unit: '吨' },
+    ],
+  },
+  {
+    id: 'seg-004',
+    seq: 4,
+    transportMode: '公路',
+    carryForm: '散货运输',
+    fromId: 'ST-002',
+    from: '金华铁路到达站',
+    fromAddress: '浙江省金华市金东区铁路货运中心',
+    toId: 'UP-001',
+    to: '浙江金华一号卸货点',
+    toAddress: '浙江省金华市婺城区物流大道66号',
+    duration: '1小时',
+    locked: true,
+    cargoItems: [
+      { cargoId: 'C1', cargoName: '玉米', packageType: '散装', quantity: 30, unit: '吨' },
+      { cargoId: 'C2', cargoName: '小麦', packageType: '散装', quantity: 20, unit: '吨' },
+    ],
+  },
+  {
+    id: 'seg-005',
+    seq: 5,
+    transportMode: '公路',
+    carryForm: '散货运输',
+    fromId: 'UP-001',
+    from: '浙江金华一号卸货点',
+    fromAddress: '浙江省金华市婺城区物流大道66号',
+    toId: 'UP-002',
+    to: '浙江金华二号卸货点',
+    toAddress: '浙江省金华市义乌市货运西路128号',
+    duration: '1小时',
+    locked: true,
+    cargoItems: [
+      { cargoId: 'C2', cargoName: '小麦', packageType: '散装', quantity: 20, unit: '吨' },
+    ],
   },
 ]
+
+// 默认报价侧费用摘要
+export const defaultFeeInfo = {
+  quoteMode: '分段报价',
+  billingCondition: '重量',
+  billingBasis: '按装货重量',
+  transportTotal: 15100,
+  extraTotal: 400,
+  totalAmount: 15500,
+}
 
 // 子计划类型映射
 export const subPlanTypeMap = {
