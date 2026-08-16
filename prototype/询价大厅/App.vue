@@ -1,6 +1,5 @@
 <template>
   <div class="hall-page">
-    <BackBar current-title="询价大厅" />
     <!-- 顶部品牌头（简化版） -->
     <header class="site-header">
       <div class="header-inner">
@@ -165,7 +164,7 @@
     </main>
 
     <!-- 货源详情弹窗 -->
-    <el-dialog v-model="showDetailDialog" title="货源详情" width="720px">
+    <el-dialog v-model="showDetailDialog" title="货源详情" width="720px" :append-to-body="false">
       <template v-if="currentWaybill">
         <div class="detail-sub">托运单号：{{ currentWaybill.id }}</div>
         <section class="detail-section">
@@ -221,7 +220,6 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { demoWaybills } from './mock-data'
 import { prototypeStore } from '../../src/shared/prototype-store'
-import BackBar from '../../src/components/BackBar.vue'
 
 const waybillList = ref([])
 const showDetailDialog = ref(false)
@@ -382,6 +380,34 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+:deep(.el-overlay) {
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .hall-page {
   min-height: 100vh;
   background: #fff;

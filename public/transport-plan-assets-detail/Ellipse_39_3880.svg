@@ -1,0 +1,30 @@
+<svg viewBox="0 0 8.02734 8.27637" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="8.027344" height="8.276367" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_0">
+			<effect x="0.000000" y="1.000000" visibility="visible" fill="rgb(5,35,143)" fill-opacity="0.160784319" effectType="dropShadow" stdDeviation="1" radius="0" />
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.649999976" stdDeviation="8" />
+		</g>
+		<filter id="filter_0" width="8.027344" height="8.276367" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_0)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.5625 0 " />
+			<feOffset dx="0.000000" dy="1.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="0.333333343" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.0196078 0 0 0 0 0.137255 0 0 0 0 0.560784 0 0 0 0.160784 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_0" transform="matrix(1,0,0,1,-0,-0)">
+			<path d="M4.01367 6.27717C2.34927 6.27717 1 4.92795 1 3.26359C1 1.59923 2.34927 0.25 4.01367 0.25C5.67808 0.25 7.02735 1.59923 7.02735 3.26359C7.02735 4.92795 5.67808 6.27717 4.01367 6.27717Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		</clipPath>
+	</defs>
+	<g data-pixso-skip-parse="true">
+		<foreignObject width="8.027344" height="8.276367" x="0.000000" y="0.000000">
+			<div xmlns="http://www.w3.org/1999/xhtml" style="clip-path:url(#outline_mask_0);height:100%;backdrop-filter:blur(4.000000px);width:100%;-webkit-backdrop-filter:blur(4.000000px);" />
+		</foreignObject>
+	</g>
+	<g filter="url(#filter_0)">
+		<ellipse id="椭圆 1985" rx="3.013673" ry="3.013587" cx="4.01367283" cy="3.263587" fill="rgb(58,101,255)" fill-opacity="0.639999986" />
+		<ellipse id="椭圆 1985" rx="3.013673" ry="3.013587" cx="4.01367283" cy="3.263587" stroke="rgb(255,255,255)" stroke-opacity="0" stroke-width="0.000000" />
+	</g>
+</svg>

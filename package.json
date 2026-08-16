@@ -4,10 +4,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:settlement": "node --test prototype/货主结算/settlement-rules.test.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "element-plus": "^2.7.0",
+    "vant": "^4.10.0",
     "vue": "^3.4.0"
   },
   "devDependencies": {

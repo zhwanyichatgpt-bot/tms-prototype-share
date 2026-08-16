@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "预览船东移动端原型",
+            "url": "http://localhost:5173/?page=shipownerMobileHome",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1,12 +1,12 @@
 <template>
-  <WorkspaceShell current-title="托运单管理">
+  <WorkspaceShell current-title="托运单管理" :show-back-link="false">
     <div class="waybill-manage-page">
       <!-- 页面标题（与表格拼接成连续卡片墙）-->
       <header class="page-header">
-        <h1 class="page-title">托运单管理</h1>
+        <h1 class="page-title annotation-business-type-entry">托运单管理</h1>
         <div class="page-actions">
           <button class="ws-btn" @click="refreshList">刷新</button>
-          <button class="ws-btn primary" @click="openTypeSelectDialog">+ 新增公开托运单</button>
+          <button class="ws-btn primary annotation-create-entry" @click="openTypeSelectDialog">+ 新增公开托运单</button>
         </div>
       </header>
 
@@ -52,7 +52,7 @@
       </div>
 
     <!-- 业务类型选择弹窗 -->
-    <el-dialog v-model="showTypeSelectDialog" title="选择托运单类型" width="460px">
+    <el-dialog v-model="showTypeSelectDialog" title="选择托运单类型" width="460px" :append-to-body="false">
       <p class="dialog-tip">请选择要创建的托运单业务类型：</p>
       <div class="type-options">
         <div
@@ -73,6 +73,7 @@
       title="新增公开托运单 / 散杂货运输"
       direction="rtl"
       size="calc(100vw - 258px)"
+      :append-to-body="false"
       :before-close="closeCreateDialog"
     >
       <div class="create-body">
@@ -86,7 +87,7 @@
           <h3 class="section-title">运输信息</h3>
           <div class="field-line">
             <span class="inline-label">是否允许货品混装</span>
-            <el-radio-group v-model="formData.allowMix" size="small">
+            <el-radio-group v-model="formData.allowMix" size="small" class="choice-segment mix-choice">
               <el-radio-button label="允许" />
               <el-radio-button label="不允许" />
             </el-radio-group>
@@ -324,7 +325,7 @@
               </div>
               <div class="preference-row">
                 <span class="inline-label">可见范围</span>
-                <el-radio-group v-model="formData.visibilityScope" size="small">
+                <el-radio-group v-model="formData.visibilityScope" size="small" class="choice-segment visibility-choice">
                   <el-radio-button v-for="s in visibilityScopeOptions" :key="s" :label="s">{{ s }}</el-radio-button>
                 </el-radio-group>
               </div>
@@ -383,6 +384,7 @@
       title="新增公开托运单 / 集装箱运输"
       direction="rtl"
       size="calc(100vw - 258px)"
+      :append-to-body="false"
       :before-close="closeCreateDialog"
     >
       <div class="create-body">
@@ -590,7 +592,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   ElButton, ElTable, ElTableColumn, ElDialog, ElDrawer, ElInput, ElInputNumber,
@@ -604,6 +606,59 @@ import {
 } from './mock-data'
 import { prototypeStore, addWaybill } from '../../src/shared/prototype-store'
 import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
+
+const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
+const annotationSpecUrl = new URL('./spec.yaml', import.meta.url).href
+
+function loadAnnotationScript() {
+  return new Promise((resolve, reject) => {
+    if (window.AnnotationCore) {
+      resolve()
+      return
+    }
+
+    const scriptUrl = `${annotationBaseUrl}annotation-core.js`
+    const existing = document.querySelector(`script[src="${scriptUrl}"]`)
+    if (existing) {
+      existing.remove()
+    }
+
+    const script = document.createElement('script')
+    script.src = scriptUrl
+    script.onload = resolve
+    script.onerror = reject
+    document.head.appendChild(script)
+  })
+}
+
+async function bootAnnotation() {
+  await nextTick()
+  await loadAnnotationScript()
+  await window.AnnotationCore.init({
+    pageId: '托运单管理',
+    specUrl: annotationSpecUrl,
+    jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
+    unitGates: {
+      business_type_entry: () => !showTypeSelectDialog.value && !showBulkCargoDialog.value && !showContainerDialog.value,
+      management_list_status: () => !showTypeSelectDialog.value && !showBulkCargoDialog.value && !showContainerDialog.value,
+      bulk_cargo_nodes: () => showBulkCargoDialog.value,
+      bulk_cargo_flow: () => showBulkCargoDialog.value,
+      container_boxes_and_nodes: () => showContainerDialog.value,
+      quote_and_publish_settings: () => showBulkCargoDialog.value || showContainerDialog.value,
+      draft_publish_and_writeback: () => showBulkCargoDialog.value || showContainerDialog.value,
+    },
+    readOnly: (() => {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('readOnly') === '1' || params.get('readonly') === '1'
+    })(),
+  })
+}
+
+function refreshAnnotation() {
+  nextTick(() => {
+    requestAnimationFrame(() => window.AnnotationCore?.refresh?.())
+  })
+}
 
 // ============ 列表数据 ============
 const waybillList = ref([])
@@ -678,6 +733,7 @@ const showContainerDialog = ref(false)
 
 function openTypeSelectDialog() {
   showTypeSelectDialog.value = true
+  refreshAnnotation()
 }
 
 function selectBusinessType(type) {
@@ -689,6 +745,7 @@ function selectBusinessType(type) {
     showContainerDialog.value = true
     initEmptyContainerData()
   }
+  refreshAnnotation()
 }
 
 // ============ 散杂货表单 ============
@@ -861,6 +918,7 @@ function closeCreateDialog(done) {
   containerNodes.value = []
   containerBoxes.value = []
   if (typeof done === 'function') done()
+  refreshAnnotation()
 }
 
 // ============ 校验 ============
@@ -1009,10 +1067,56 @@ function saveContainerWaybill(status) {
 
 onMounted(() => {
   loadWaybillList()
+  bootAnnotation().catch((error) => {
+    console.warn('[prototype-annotation] 托运单管理标注加载失败:', error)
+  })
+})
+
+onUnmounted(() => {
+  window.AnnotationCore?.disable?.()
+  window.AnnotationCore?.close?.()
 })
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+/* 变量来自外层 App.vue 的 .prototype-workbench 三态：
+   --canvas-toolbar-height (48px)  外层原型工具栏高度
+   --canvas-offset-left (232/48/0) 左侧目录占宽，目录切换时联动
+   弹窗 append-to-body=false 后挂在组件 DOM 内，:deep() 才能选中 */
+:deep(.el-overlay) {
+  /* overlay 圈定 drawer 可用区：顶部避让工具栏，左侧避让目录并留 16px 空隙，
+     右侧留 16px 空隙，高度=视口-工具栏；同时设 left/right 让宽度自动算 */
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  /* dialog 居中基准下沉到工具栏下方 */
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  /* drawer 在 overlay 内部撑满，不再独立定位（overlay 已做避让+间距）*/
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  /* drawer 纵向 flex：header 固定 + body 自适应滚动 + footer 钉底 */
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  /* 内容区自适应 drawer 剩余高度，独立滚动，footer 不再被挤出可视区 */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .waybill-manage-page {
   min-height: calc(100vh - 132px);
 }
@@ -1258,6 +1362,51 @@ onMounted(() => {
   width: 140px;
   color: #4e5969;
   font-size: 13px;
+}
+
+/* 创建托运单的二元/多元选择统一为紧凑的分段控件，强化选中层级。 */
+:deep(.choice-segment) {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #dbe3f0;
+  border-radius: 6px;
+  background: #f5f7fb;
+}
+
+:deep(.choice-segment .el-radio-button__inner) {
+  min-width: 76px;
+  padding: 7px 14px;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: #5f6b7a !important;
+  font-size: 13px;
+  line-height: 18px;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+:deep(.visibility-choice .el-radio-button__inner) {
+  min-width: 104px;
+}
+
+:deep(.choice-segment .el-radio-button__inner:hover) {
+  background: #eaf1ff !important;
+  color: #165dff !important;
+}
+
+:deep(.choice-segment .el-radio-button__original-radio:checked + .el-radio-button__inner) {
+  border-color: #b9d0ff !important;
+  background: #ffffff !important;
+  color: #165dff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(22, 93, 255, 0.14) !important;
+}
+
+:deep(.choice-segment .el-radio-button__original-radio:focus-visible + .el-radio-button__inner) {
+  outline: 2px solid #8cb8ff;
+  outline-offset: 1px;
 }
 
 .transport-timeline {

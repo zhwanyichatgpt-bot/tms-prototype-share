@@ -1,24 +1,15 @@
 <template>
   <div class="settlement-page">
-    <BackBar current-title="货主结算">
-      <template #actions>
-        <div class="top-actions">
-          <div class="prototype-annotation-toggle">
-            <button id="toolbarAnnotationToggleBtn" class="btn annotation-toggle-btn" type="button">
-              原型标注
-            </button>
-          </div>
-          <el-radio-group v-model="pageMode" size="small">
-            <el-radio-button label="add">新增页</el-radio-button>
-            <el-radio-button label="detail">详情页</el-radio-button>
-          </el-radio-group>
-        </div>
-      </template>
-    </BackBar>
     <!-- 顶部切换条（原型演示用） -->
     <header class="page-header">
       <div class="header-left">
         <h1 class="page-title">{{ pageMode === 'add' ? '新增货主结算单' : '货主结算单详情' }}</h1>
+      </div>
+      <div class="header-right">
+        <el-radio-group v-model="pageMode" size="small">
+          <el-radio-button label="add">新增页</el-radio-button>
+          <el-radio-button label="detail">详情页</el-radio-button>
+        </el-radio-group>
       </div>
     </header>
 
@@ -146,7 +137,7 @@
               </div>
               <el-table :data="sub.lineItems" border size="small">
                 <el-table-column prop="name" label="货品/箱型" min-width="120" />
-                <el-table-column prop="confirmTotal" label="确认总量" width="100" />
+                <el-table-column prop="transportTotal" label="运输总量" width="100" />
                 <el-table-column prop="settledQty" label="已结算量" width="100" />
                 <el-table-column prop="unsettledQty" label="未结算量" width="100" />
                 <el-table-column label="本次结算量" width="140">
@@ -271,6 +262,7 @@
                 <div><span>结算方式</span><strong>{{ currentPlan.type === 'whole' ? '整票结算' : '分段结算' }}</strong></div>
                 <div v-if="currentPlan.type === 'whole'"><span>计费条件</span><strong>{{ currentPlan.billingCondition }}</strong></div>
                 <div v-if="currentPlan.type === 'whole'"><span>计费依据</span><strong>{{ currentPlan.billingBasis }}</strong></div>
+                <div><span>运输路线</span><strong>{{ currentPlan.route }}</strong></div>
                 <div><span>计价方式</span><strong>{{ currentPlan.pricingMethod }}</strong></div>
               </div>
             </div>
@@ -297,14 +289,29 @@
                     <strong>路段{{ sub.seq }}：{{ sub.from }} → {{ sub.to }}（{{ sub.transportMode }}）</strong>
                     <el-tag size="small" type="info">{{ sub.billingCondition }}</el-tag>
                     <el-tag v-if="sub.billingBasis" size="small">{{ sub.billingBasis }}</el-tag>
-                    <span>单价：{{ sub.unitPrice }} {{ sub.priceUnit }}</span>
+                    <span v-if="!isContainerBilling(sub.billingCondition)">单价：{{ sub.unitPrice }} {{ sub.priceUnit }}</span>
+                    <span v-else>箱型单价见明细</span>
                   </div>
                   <el-table :data="sub.lineItems" border size="small">
                     <el-table-column prop="name" label="货品/箱型" min-width="120" />
-                    <el-table-column prop="confirmTotal" label="确认总量" width="100" />
+                    <el-table-column prop="transportTotal" label="运输总量" width="100" />
+                    <el-table-column prop="settledQty" label="已结算量" width="100" />
+                    <el-table-column prop="unsettledQty" label="未结算量" width="100" />
                     <el-table-column prop="currentSettleQty" label="本次结算量" width="100" />
+                    <el-table-column label="运输单价" width="110">
+                      <template #default="{ row }">{{ row.unitPrice ?? sub.unitPrice }} {{ sub.priceUnit }}</template>
+                    </el-table-column>
                     <el-table-column prop="lineFee" label="明细金额" width="100">
                       <template #default="{ row }">¥{{ row.lineFee.toLocaleString() }}</template>
+                    </el-table-column>
+                    <el-table-column prop="subsidy" label="补贴" width="90">
+                      <template #default="{ row }">¥{{ (row.subsidy || 0).toLocaleString() }}</template>
+                    </el-table-column>
+                    <el-table-column prop="deduction" label="扣减" width="90">
+                      <template #default="{ row }">¥{{ (row.deduction || 0).toLocaleString() }}</template>
+                    </el-table-column>
+                    <el-table-column label="核算运费" width="110">
+                      <template #default="{ row }">¥{{ (row.lineFee + (row.subsidy || 0) - (row.deduction || 0)).toLocaleString() }}</template>
                     </el-table-column>
                   </el-table>
                   <div class="sub-subtotal">路段小计：¥{{ sub.subtotal.checkFee.toLocaleString() }}</div>
@@ -368,7 +375,7 @@
     </div>
 
     <!-- ============ 计划选择抽屉 ============ -->
-    <el-drawer v-model="planSelectorVisible" title="添加联运计划" direction="rtl" size="960px" class="annotation-add-plan-selector">
+    <el-drawer v-model="planSelectorVisible" title="添加联运计划" direction="rtl" size="960px" class="annotation-add-plan-selector" :append-to-body="false">
       <el-empty v-if="!candidatePlans.length" description="当前结算方暂无可结算联运计划" />
       <el-table :data="candidatePlans" border @selection-change="onPlanSelectChange">
         <el-table-column type="selection" width="50" :selectable="row => row.selectable" />
@@ -377,17 +384,23 @@
         <el-table-column prop="cargoSummary" label="货品" min-width="140" />
         <el-table-column prop="transportMode" label="运输方式" width="100" />
         <el-table-column prop="shipperCompany" label="托运企业" min-width="160" />
-        <el-table-column label="运输总量" width="100">
-          <template #default="{ row }">{{ getPlanTotal(row) }}</template>
+        <el-table-column label="运输总量" min-width="220">
+          <template #default="{ row }">{{ buildPlanQuantitySummary(row, 'total') }}</template>
         </el-table-column>
-        <el-table-column label="待结算总量" width="100">
-          <template #default="{ row }">{{ getPlanUnsettled(row) }}</template>
+        <el-table-column label="待结算总量" min-width="220">
+          <template #default="{ row }">{{ buildPlanQuantitySummary(row, 'unsettled') }}</template>
+        </el-table-column>
+        <el-table-column label="计价方式" min-width="180">
+          <template #default="{ row }">{{ getPlanPricingSummary(row) }}</template>
         </el-table-column>
         <el-table-column label="状态" width="100">
           <template #default="{ row }">
             <el-tag v-if="!row.selectable" type="info" size="small">不可选</el-tag>
             <el-tag v-else type="success" size="small">可选</el-tag>
           </template>
+        </el-table-column>
+        <el-table-column label="不可选原因" min-width="160">
+          <template #default="{ row }">{{ row.selectable ? '-' : row.unselectableReason }}</template>
         </el-table-column>
       </el-table>
       <template #footer>
@@ -402,6 +415,7 @@
       :title="subsidyType === 'subsidy' ? '维护补贴项' : '维护扣减项'"
       width="640px"
       class="annotation-add-adjustment-dialog"
+      :append-to-body="false"
       @opened="refreshAnnotation"
       @closed="refreshAnnotation"
     >
@@ -434,11 +448,15 @@
 <script setup>
 import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import BackBar from '../../src/components/BackBar.vue'
 import {
   settlementObjects, settlementParties,
   getPlansByParty, detailSnapshot,
 } from './mock-data'
+import {
+  buildPlanQuantitySummary,
+  formatLocalDate,
+  validateAdjustmentItems,
+} from './settlement-rules.mjs'
 
 const pageMode = ref('add')
 const submitting = ref(false)
@@ -502,33 +520,42 @@ function refreshAnnotation() {
 }
 
 // ============ 新增页 ============
-const form = reactive({ objectId: 'OBJ001', partyId: '', date: '', remark: '', totalAmount: 0 })
+const form = reactive({ objectId: 'OBJ001', partyId: '', date: formatLocalDate(), remark: '', totalAmount: 0 })
 const selectedPlans = ref([])
 const planSelectorVisible = ref(false)
 const tempSelected = ref([])
+const lastConfirmedPartyId = ref('')
 
 const candidatePlans = computed(() => {
   const all = getPlansByParty(form.partyId)
-  return all.map(p => ({
-    ...p,
-    selectable: p.selectable && !selectedPlans.value.some(sp => sp.id === p.id),
-  }))
+  return all.map(p => {
+    const alreadySelected = selectedPlans.value.some(sp => sp.id === p.id)
+    return {
+      ...p,
+      selectable: p.selectable && !alreadySelected,
+      unselectableReason: alreadySelected ? '已添加到本结算单' : p.unselectableReason,
+    }
+  })
 })
 
-function onPartyChange() {
+function onPartyChange(nextPartyId) {
   if (selectedPlans.value.length) {
     ElMessageBox.confirm('修改结算方将清空已选联运计划，是否继续？', '确认', { type: 'warning' })
       .then(() => {
         selectedPlans.value = []
+        lastConfirmedPartyId.value = nextPartyId
       })
       .catch(() => {
-        // 还原（简化）
+        form.partyId = lastConfirmedPartyId.value
       })
+    return
   }
+  lastConfirmedPartyId.value = nextPartyId
 }
 
 function openPlanSelector() {
   if (!form.partyId) return ElMessage.warning('请先选择结算方')
+  tempSelected.value = []
   planSelectorVisible.value = true
 }
 function onPlanSelectChange(rows) {
@@ -547,18 +574,19 @@ function confirmAddPlans() {
   })
   planSelectorVisible.value = false
   ElMessage.success(`已添加 ${tempSelected.value.length} 个联运计划`)
+  tempSelected.value = []
 }
 function removePlan(idx) {
   selectedPlans.value.splice(idx, 1)
 }
 
-function getPlanTotal(p) {
-  if (p.settlementType === 'whole') return p.cargoItems.reduce((s, c) => s + c.transportTotal, 0)
-  return p.subPlans.reduce((s, sub) => s + sub.confirmTotal, 0)
-}
-function getPlanUnsettled(p) {
-  if (p.settlementType === 'whole') return p.cargoItems.reduce((s, c) => s + c.unsettledQty, 0)
-  return p.subPlans.reduce((s, sub) => s + sub.unsettledQty, 0)
+function getPlanPricingSummary(plan) {
+  if (plan.settlementType === 'whole') {
+    return isContainerBilling(plan.billingCondition)
+      ? '按箱型单价计费'
+      : `${plan.billingCondition} · ${plan.billingBasis} · ${plan.unitPrice}${plan.billingUnit}`
+  }
+  return '各子计划按自身条件、依据和单价计费'
 }
 
 // 计算函数
@@ -607,6 +635,7 @@ const totalAmount = computed(() => selectedPlans.value.reduce((s, p) => s + calc
 function submitSettlement() {
   if (!form.objectId) return ElMessage.warning('请选择结算对象')
   if (!form.partyId) return ElMessage.warning('请选择结算方')
+  if (!form.date) return ElMessage.warning('请选择结算日期')
   if (!selectedPlans.value.length) return ElMessage.warning('请至少添加一个联运计划')
   for (const p of selectedPlans.value) {
     if (p.settlementType === 'whole') {
@@ -651,8 +680,10 @@ function openSubsidy(plan, target, planType, type) {
   subsidyDialogVisible.value = true
 }
 function confirmSubsidy() {
-  const valid = subsidyItems.value.filter(i => i.name && i.amount > 0)
-  const total = valid.reduce((s, i) => s + i.amount, 0)
+  const validation = validateAdjustmentItems(subsidyItems.value)
+  if (!validation.valid) return ElMessage.warning(validation.message)
+  const valid = JSON.parse(JSON.stringify(subsidyItems.value))
+  const total = validation.total
   const { plan, target, planType } = subsidyTarget
   const key = subsidyType.value === 'subsidy' ? 'subsidyItems' : 'deductionItems'
   const amountKey = subsidyType.value === 'subsidy' ? 'subsidyAmount' : 'deductionAmount'
@@ -686,6 +717,34 @@ function confirmPay() {
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+:deep(.el-overlay) {
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .settlement-page {
   min-height: 100vh;
   background: #f5f7fa;

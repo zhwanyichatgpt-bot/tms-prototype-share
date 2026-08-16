@@ -17,7 +17,7 @@
         <span>业务工作台</span>
       </div>
       <div class="header-meta">
-        <span class="back-link" @click="goHome">← 返回原型目录</span>
+        <span v-if="showBackLink" class="back-link" @click="goHome">← 返回原型目录</span>
         <span class="meta-date">{{ currentDate }}</span>
         <span class="meta-pill">待办 {{ todoCount }}</span>
       </div>
@@ -50,6 +50,7 @@ import { prototypeStore, setCurrentPage } from '../shared/prototype-store'
 const props = defineProps({
   currentTitle: { type: String, default: '业务工作台' },
   todoCount: { type: [String, Number], default: 55 },
+  showBackLink: { type: Boolean, default: true },
 })
 
 const currentDate = computed(() => {

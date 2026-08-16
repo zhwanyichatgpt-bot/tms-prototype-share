@@ -1,6 +1,5 @@
 <template>
   <div class="plan-create-page">
-    <BackBar current-title="集装箱运输计划创建" />
     <!-- 页头 -->
     <header class="page-header">
       <div class="header-left">
@@ -284,7 +283,7 @@
     </footer>
 
     <!-- 托运单抽屉 -->
-    <el-drawer v-model="orderDrawerVisible" title="选择关联托运单" direction="rtl" size="500px">
+    <el-drawer v-model="orderDrawerVisible" title="选择关联托运单" direction="rtl" size="500px" :append-to-body="false">
       <div class="drawer-filter">
         <el-input v-model="orderKeyword" placeholder="按编号/路线/托运企业搜索" size="small" clearable />
       </div>
@@ -313,7 +312,6 @@
 <script setup>
 import { ref, reactive, computed, h } from 'vue'
 import { ElMessage } from 'element-plus'
-import BackBar from '../../src/components/BackBar.vue'
 import {
   scenarioIndependent, scenarioIntermodal,
   companies, addresses, containerTypes, containerSizes,
@@ -647,6 +645,34 @@ function submitPlan() {
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+:deep(.el-overlay) {
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .plan-create-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f5f7fb 0%, #f2f4f8 100%);

@@ -1,0 +1,399 @@
+/* 船东首页移动端样式 — 严格按设计稿 750px (375px @2x) 1:1 还原 */
+
+/* 外层预览容器 */
+.mobile-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: #e8eaed;
+  padding: 24px 0;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "SF Pro Text", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 手机壳 375×812 */
+.phone-shell {
+  width: 375px;
+  height: 812px;
+  background: #ffffff;
+  border-radius: 44px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0,0,0,0.08);
+  border: 10px solid #1a1a1e;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 1. iOS 状态栏 ========== */
+.status-bar {
+  height: 44px;
+  padding: 14px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  letter-spacing: 0.5px;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #000;
+  font-size: 14px;
+}
+
+/* ========== 2. 顶部导航栏（城市选择 + 胶囊按钮） ========== */
+.top-nav {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+.city-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 12px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d2129;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+.capsule-btns {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.capsule-btns .cap-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #4e5969;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.capsule-btns .cap-divider {
+  width: 0.5px;
+  height: 18px;
+  background: #e0e0e0;
+}
+
+/* ========== 3. 地图区域 ========== */
+.map-area {
+  width: 100%;
+  height: 270px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.map-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* 大标语 */
+.map-slogan {
+  position: absolute;
+  top: 72px;
+  left: 16px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1d2129;
+  z-index: 10;
+  letter-spacing: 1px;
+}
+
+/* ========== 4. 附近货源面板 ========== */
+.cargo-panel {
+  flex: 1;
+  background: #f5f6f8;
+  border-radius: 20px 20px 0 0;
+  margin-top: -20px;
+  position: relative;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 面板头 */
+.panel-header {
+  padding: 16px 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.panel-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1d2129;
+}
+.scan-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #3370ff 0%, #2355f6 100%);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 0 20px 0 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(35,85,246,0.3);
+}
+.scan-btn .scan-icon {
+  font-size: 16px;
+}
+
+/* 排序 Tab */
+.sort-tabs {
+  display: flex;
+  padding: 14px 16px 10px;
+  gap: 0;
+}
+.sort-tab {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #86909c;
+  font-weight: 500;
+  cursor: pointer;
+  padding-bottom: 6px;
+  position: relative;
+}
+.sort-tab.active {
+  color: #2355f6;
+  font-weight: 700;
+}
+.sort-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: #2355f6;
+  border-radius: 2px;
+}
+
+/* ========== 5. 货源卡片列表 ========== */
+.cargo-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 12px 80px;
+}
+
+/* 单张货源卡片 */
+.cargo-card {
+  background: #fff;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  padding: 14px 14px 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  border-left: 3px solid #2355f6;
+  overflow: hidden;
+}
+
+/* 卡片头：推荐 + 时间 */
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.badge-recommend {
+  color: #00b42a;
+  font-size: 14px;
+  font-weight: 800;
+}
+.badge-time {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1d2129;
+}
+
+/* 路线 */
+.route-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.route-item {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1d2129;
+}
+.route-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.route-dot.blue { background: #2355f6; }
+.route-dot.green { background: #00b42a; }
+.route-distance {
+  font-size: 13px;
+  color: #86909c;
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* 标签行 + 价格行 */
+.tags-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+.tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.tag-platform {
+  background: #2355f6;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.tag-outline {
+  background: #fff;
+  color: #4e5969;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #e5e6eb;
+}
+.tag-green {
+  background: #fff;
+  color: #00b42a;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #b7eb8f;
+}
+.price-area {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.price-label {
+  font-size: 11px;
+  color: #86909c;
+}
+.price-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2355f6;
+  line-height: 1;
+}
+.price-unit {
+  font-size: 12px;
+  color: #2355f6;
+  font-weight: 600;
+}
+
+/* 企业底部信息 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #f2f3f5;
+  font-size: 12px;
+  color: #86909c;
+}
+.publisher-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.publisher-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #e8f3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #2355f6;
+  font-weight: 800;
+}
+.publisher-name {
+  color: #4e5969;
+  font-weight: 500;
+}
+
+/* ========== 6. 底部 Tabbar ========== */
+.bottom-tabbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 0.5px solid #e5e6eb;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  padding-bottom: 4px;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #86909c;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tab-item.active {
+  color: #2355f6;
+  font-weight: 700;
+}
+.tab-icon {
+  font-size: 22px;
+}

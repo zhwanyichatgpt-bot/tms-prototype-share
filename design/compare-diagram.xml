@@ -1,0 +1,21 @@
+<mxGraphModel dx="1400" dy="700" grid="0" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="700" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="title" value="一级承运商的三种选择（对比：为什么产出不一样）" style="text;html=1;align=center;fontSize=18;fontStyle=1;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="300" y="20" width="800" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="c1" value="&lt;b style='font-size:15px'&gt;选择一：自己运&lt;/b&gt;&lt;br&gt;&lt;br&gt;谁创建运输计划：&lt;b&gt;一级自己&lt;/b&gt;&lt;br&gt;&lt;br&gt;产出：自己的&lt;b&gt;运输计划&lt;/b&gt;&lt;br&gt;&lt;br&gt;走货源大厅：否&lt;br&gt;&lt;br&gt;走调度中心：是（派自己的车）&lt;br&gt;&lt;br&gt;关系：&lt;b&gt;自营&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="40" y="80" width="400" height="500" as="geometry"/>
+    </mxCell>
+    <mxCell id="c2" value="&lt;b style='font-size:15px'&gt;选择二：指派下游&lt;/b&gt;&lt;br&gt;&lt;br&gt;谁创建运输计划：&lt;b&gt;一级自己&lt;/b&gt;&lt;br&gt;&lt;br&gt;产出给下游：&lt;b&gt;运输任务&lt;/b&gt;&lt;br&gt;&lt;br&gt;走货源大厅：否&lt;br&gt;&lt;br&gt;走调度中心：是（指派二级）&lt;br&gt;&lt;br&gt;关系：&lt;b&gt;强（派活执行）&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="480" y="80" width="400" height="500" as="geometry"/>
+    </mxCell>
+    <mxCell id="c3" value="&lt;b style='font-size:15px'&gt;选择三：运力竞价&lt;/b&gt;&lt;br&gt;&lt;br&gt;谁创建运输计划：&lt;b&gt;二级自己&lt;/b&gt;&lt;br&gt;&lt;br&gt;产出给下游：&lt;b&gt;托运订单&lt;/b&gt;&lt;br&gt;&lt;br&gt;走货源大厅：是（发起运力竞价）&lt;br&gt;&lt;br&gt;走调度中心：是（在调度中心发起）&lt;br&gt;&lt;br&gt;关系：&lt;b&gt;弱（独立竞标）&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="920" y="80" width="400" height="500" as="geometry"/>
+    </mxCell>
+    <mxCell id="note" value="⚠ 关键差异：指派产出「运输任务」（一级主导、二级被动执行）；运力竞价产出「托运订单」（二级独立承接、自建运输计划）。两者不该混。" style="text;html=1;align=center;fontSize=13;fillColor=#fff2cc;strokeColor=#d6b656;rounded=1;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="150" y="610" width="1100" height="55" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

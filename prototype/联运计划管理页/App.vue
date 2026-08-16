@@ -131,7 +131,7 @@
     </div>
 
     <!-- 二次确认弹窗 -->
-    <el-dialog v-model="confirmVisible" :title="confirmTitle" width="420px">
+    <el-dialog v-model="confirmVisible" :title="confirmTitle" width="420px" :append-to-body="false">
       <span>{{ confirmMessage }}</span>
       <template #footer>
         <el-button @click="confirmVisible = false">取消</el-button>
@@ -295,6 +295,34 @@ function handleConfirm() {
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+:deep(.el-overlay) {
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .plan-page {
   min-height: calc(100vh - 132px);
 }

@@ -1,0 +1,22 @@
+<svg viewBox="0 0 27.8037 19.5215" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="27.803711" height="19.521484" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_23">
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.629999995" stdDeviation="18" />
+		</g>
+		<filter id="filter_23" width="27.803711" height="19.521484" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_23)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_6" transform="matrix(1,0,0,1,-0,-0)">
+			<path d="M21.8005 5.37842C20.8613 2.26709 17.9753 0 14.5576 0C11.1665 0 8.29663 2.23096 7.33496 5.30493L6.96143 5.30493C3.1167 5.30493 0 8.42163 0 12.2664L0 12.5598C0 16.4048 3.1167 19.5212 6.96143 19.5212L20.8425 19.5212C24.6873 19.5212 27.8037 16.4048 27.8037 12.5598L27.8037 12.2664C27.8037 8.74731 25.1909 5.84668 21.8005 5.37842Z" fill="rgb(255,255,255)" fill-rule="nonzero" />
+		</clipPath>
+	</defs>
+	<g data-pixso-skip-parse="true">
+		<foreignObject width="27.803711" height="19.521484" x="0.000000" y="0.000000">
+			<div xmlns="http://www.w3.org/1999/xhtml" style="clip-path:url(#outline_mask_6);height:100%;backdrop-filter:blur(9.000000px);width:100%;-webkit-backdrop-filter:blur(9.000000px);" />
+		</foreignObject>
+	</g>
+	<g filter="url(#filter_23)">
+		<path id="路径 17944" d="M21.8005 5.37842C20.8613 2.26709 17.9753 0 14.5576 0C11.1665 0 8.29663 2.23096 7.33496 5.30493L6.96143 5.30493C3.1167 5.30493 0 8.42163 0 12.2664L0 12.5598C0 16.4048 3.1167 19.5212 6.96143 19.5212L20.8425 19.5212C24.6873 19.5212 27.8037 16.4048 27.8037 12.5598L27.8037 12.2664C27.8037 8.74731 25.1909 5.84668 21.8005 5.37842Z" fill="rgb(255,255,255)" fill-opacity="0.200000003" fill-rule="nonzero" />
+	</g>
+</svg>

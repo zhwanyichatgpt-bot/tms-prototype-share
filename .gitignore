@@ -4,3 +4,4 @@ dist/
 *.local
 *.log
 .zcode/
+.codex-tmp/

@@ -1,0 +1,31 @@
+<svg viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="7.000000" height="7.000000" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_19">
+			<effect x="0.000000" y="3.000000" visibility="hidden" fill="rgb(0,0,0)" fill-opacity="0.160784319" effectType="dropShadow" stdDeviation="6" radius="0" />
+			<effect x="2.000000" y="0.000000" visibility="visible" fill="rgb(255,255,255)" fill-opacity="0.160784319" effectType="innerShadow" showShadowBehind="1" stdDeviation="6" radius="0" />
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.730000019" stdDeviation="28" />
+		</g>
+		<filter id="filter_19" width="7.000000" height="7.000000" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_19)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 100 0 " />
+			<feOffset dx="2.000000" dy="0.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="2" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.160784 0 " />
+			<feBlend result="effect_innerShadow_1" in2="shape" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_5" transform="matrix(1,0,0,1,-0,-0)">
+			<path d="M3.5 7C1.567 7 0 5.433 0 3.5C0 1.567 1.567 0 3.5 0C5.433 0 7 1.567 7 3.5C7 5.433 5.433 7 3.5 7Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		</clipPath>
+	</defs>
+	<g data-pixso-skip-parse="true">
+		<foreignObject width="7.000000" height="7.000000" x="0.000000" y="0.000000">
+			<div xmlns="http://www.w3.org/1999/xhtml" style="clip-path:url(#outline_mask_5);height:100%;backdrop-filter:blur(14.000000px);width:100%;-webkit-backdrop-filter:blur(14.000000px);" />
+		</foreignObject>
+	</g>
+	<g filter="url(#filter_19)">
+		<circle id="椭圆 6" cx="3.5" cy="3.5" r="3.5" fill="rgb(255,255,255)" fill-opacity="0.00999999978" />
+		<circle id="椭圆 6" cx="3.5" cy="3.5" r="3.5" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-width="0.000000" />
+	</g>
+</svg>

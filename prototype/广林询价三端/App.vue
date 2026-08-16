@@ -1,6 +1,5 @@
 <template>
   <div class="guanglin-app">
-    <BackBar current-title="广林询价三端" />
     <!-- ============ 顶部应用 shell ============ -->
     <div class="gl-top-nav">
       <div class="gl-nav-logo">TMS</div>
@@ -908,7 +907,6 @@
 
 <script setup>
 import { ref, reactive, computed, watch, watchEffect } from 'vue'
-import BackBar from '../../src/components/BackBar.vue'
 import {
   initialInquiries, CURRENT_CARRIER, CURRENT_NVOCC, CONFIG,
   typeOptions, loadModeOptions, unitMap, transportOptions,

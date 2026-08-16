@@ -13,6 +13,9 @@
  */
 import { reactive } from 'vue'
 
+const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+const initialPage = urlParams ? (urlParams.get('page') || 'home') : 'home';
+
 // 初始 mock 数据（空数组，由各页面的 mock-data.js 在创建时注入或留空）
 export const prototypeStore = reactive({
   // 托运单列表（托运单创建页写入，托运单管理列表页读取）
@@ -26,7 +29,7 @@ export const prototypeStore = reactive({
   // 报价列表（承运商报价页写入）
   quotes: [],
   // 当前导航到的页面 key（用于总入口高亮）
-  currentPage: 'home',
+  currentPage: initialPage,
 })
 
 // ============ 托运单 ============

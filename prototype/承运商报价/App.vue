@@ -1,6 +1,5 @@
 <template>
   <div class="quote-root">
-    <BackBar current-title="承运商报价" />
     <!-- 顶部导航（按源文件还原） -->
     <nav class="top-nav">
       <div class="brand">
@@ -76,15 +75,6 @@
               </div>
             </div>
 
-            <div class="field" style="margin-bottom: 12px">
-              <span>报价模式</span>
-              <div class="segmented">
-                <button :class="{ active: form.quoteMode === '整段报价' }" @click="form.quoteMode = '整段报价'">整段报价</button>
-                <button :class="{ active: form.quoteMode === '分段报价', disabled: form.transportMode !== '多式联运' }" :disabled="form.transportMode !== '多式联运'" @click="form.quoteMode = '分段报价'">分段报价</button>
-              </div>
-              <p class="field-tip" v-if="form.transportMode !== '多式联运'">单一运输方式仅支持整段报价</p>
-            </div>
-
             <!-- 路线区 -->
             <h4 class="block-title">{{ routeSectionTitle }}</h4>
 
@@ -158,6 +148,16 @@
             费用明细
           </div>
           <div>
+            <!-- 报价模式：费用结构开关（整段/分段决定下方费用结构；可选范围受运输方式约束，PRD 5.3） -->
+            <div class="field" style="margin-bottom: 16px">
+              <span>报价模式</span>
+              <div class="segmented">
+                <button :class="{ active: form.quoteMode === '整段报价' }" @click="setQuoteMode('整段报价')">整段报价</button>
+                <button :class="{ active: form.quoteMode === '分段报价', disabled: form.transportMode !== '多式联运' }" :disabled="form.transportMode !== '多式联运'" @click="setQuoteMode('分段报价')">分段报价</button>
+              </div>
+              <p class="field-tip" v-if="form.transportMode !== '多式联运'">单一运输方式仅支持整段报价；多式联运支持分段报价</p>
+            </div>
+
             <!-- 整段报价 -->
             <template v-if="form.quoteMode === '整段报价'">
               <div class="field-grid three" style="margin-bottom: 16px">
@@ -224,14 +224,41 @@
                   </div>
                 </div>
                 <div class="seg-amount">路段金额：<strong class="blue">¥{{ calcSegmentAmount(seg).toFixed(2) }}</strong></div>
+
+                <!-- 路段其他费用：分段报价下按路段维护（PRD 5.5「路段其他费用」） -->
+                <div class="seg-extra-fee">
+                  <div class="seg-extra-fee-head">
+                    <span>路段其他费用</span>
+                    <button type="button" class="add-row-btn sm" @click="addSegmentExtraFee(seg)">+ 添加费用项</button>
+                  </div>
+                  <table class="q-table seg-extra-fee-table">
+                    <thead><tr><th>类型</th><th>费用名称</th><th>基数</th><th>单价</th><th>金额</th><th>操作</th></tr></thead>
+                    <tbody>
+                      <tr v-for="(e, ei) in seg.extraFees" :key="ei">
+                        <td>
+                          <select class="table-input" v-model="e.type">
+                            <option v-for="t in extraFeeTypeOptions" :key="t" :value="t">{{ t }}</option>
+                          </select>
+                        </td>
+                        <td><input class="table-input" v-model="e.name" placeholder="费用名称" /></td>
+                        <td><input class="table-input" type="number" v-model.number="e.base" min="0" /></td>
+                        <td><input class="table-input" type="number" v-model.number="e.unitPrice" min="0" /></td>
+                        <td><strong class="blue">¥{{ calcExtraFeeItem(e).toFixed(2) }}</strong></td>
+                        <td><button type="button" class="text-btn danger" @click="seg.extraFees.splice(ei, 1)">删除</button></td>
+                      </tr>
+                      <tr v-if="!seg.extraFees.length"><td colspan="6" class="empty-row">本路段暂无其他费用</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="seg-extra-fee-total" v-if="seg.extraFees.length">路段其他费用小计：¥{{ calcSegmentExtraFeeTotal(seg).toFixed(2) }}</div>
+                </div>
               </div>
               <div class="estimate">分段合计：<strong>¥{{ segmentTotalFee.toFixed(2) }}</strong></div>
             </template>
           </div>
         </section>
 
-        <!-- 其他费用 -->
-        <section class="form-section">
+        <!-- 其他费用（仅整段报价：整单维护一组其他费用；分段报价下其他费用按路段维护，见各路段卡） -->
+        <section class="form-section" v-if="form.quoteMode === '整段报价'">
           <div class="section-label">
             <svg class="section-icon" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#2468F2"/><path d="M10 5v10" stroke="#fff" stroke-width="2"/><circle cx="10" cy="14" r="1.5" fill="#fff"/></svg>
             其他费用
@@ -390,7 +417,6 @@ import {
   bulkWaybill, containerWaybill, carrierAddressOptions,
 } from './mock-data'
 import { addQuote } from '../../src/shared/prototype-store'
-import BackBar from '../../src/components/BackBar.vue'
 
 const currentWaybillId = ref('TY20260701001')
 const waybill = ref(bulkWaybill)
@@ -442,6 +468,7 @@ function initSegments() {
         duration: '1天',
         cargoItems: [{ cargoName: '集装箱', qty: waybill.value.containerBoxes.reduce((s, b) => s + b.quantity, 0), unit: '箱' }],
         billingDimension: '按集装箱', billingBasis: '', unitPrice: 0,
+        extraFees: [], // 路段其他费用：分段报价下按路段维护（PRD 5.5）
       })
     }
     return segs
@@ -450,9 +477,9 @@ function initSegments() {
   const unload = waybill.value.unloadOrderNodes[0]
   const cargo = waybill.value.cargoFlows[0]
   return [
-    { mode: '公路', carryForm: '散货运输', from: load?.name || '', to: '上海铁路货运站', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 80 },
-    { mode: '铁路', carryForm: '散货运输', from: '上海铁路货运站', to: '武汉港', duration: '2天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 60 },
-    { mode: '公路', carryForm: '散货运输', from: '武汉港', to: unload?.name || '', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按卸货口径', unitPrice: 70 },
+    { mode: '公路', carryForm: '散货运输', from: load?.name || '', to: '上海铁路货运站', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 80, extraFees: [] },
+    { mode: '铁路', carryForm: '散货运输', from: '上海铁路货运站', to: '武汉港', duration: '2天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 60, extraFees: [] },
+    { mode: '公路', carryForm: '散货运输', from: '武汉港', to: unload?.name || '', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按卸货口径', unitPrice: 70, extraFees: [] },
   ]
 }
 
@@ -467,12 +494,26 @@ function setTransportMode(m) {
   recalculateRoute()
 }
 
+// 报价模式 = 费用结构开关：切换时重置费用侧配置（沿用 PRD 5.3「切换重置」精神；路线/路段仍由运输方式决定，不受影响）
+function setQuoteMode(mode) {
+  if (form.quoteMode === mode) return
+  form.quoteMode = mode
+  fee.unitPrice = 0
+  boxPrices.value = isContainer.value ? waybill.value.containerBoxes.map(b => ({ ...b, unitPrice: 0 })) : []
+  extraFees.value = []
+  if (mode === '分段报价') {
+    segments.value.forEach(seg => { seg.unitPrice = 0; seg.extraFees = [] })
+  }
+  ElMessage.info('已切换报价模式，当前费用配置已重置')
+}
+
 function addSegment() {
   const last = segments.value[segments.value.length - 1]
   segments.value.push({
     mode: '公路', carryForm: '散货运输',
     from: last?.to || '', to: '', duration: '',
     cargoItems: [], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 0,
+    extraFees: [], // 路段其他费用：分段报价下按路段维护（PRD 5.5）
   })
   recalculateRoute()
 }
@@ -518,10 +559,25 @@ function calcSegmentAmount(seg) {
 }
 const segmentTotalFee = computed(() => segments.value.reduce((s, seg) => s + calcSegmentAmount(seg), 0))
 const transportFee = computed(() => form.quoteMode === '整段报价' ? (isContainer.value ? boxTotal.value : totalFee.value) : segmentTotalFee.value)
-const extraFeeTotal = computed(() => extraFees.value.reduce((s, e) => s + (e.base || 0) * (e.unitPrice || 0), 0))
+
+// 其他费用总额：整段报价=顶层 extraFees 合计；分段报价=各路段 extraFees 合计（PRD 5.5：路段其他费用按段维护）
+function calcExtraFeeItem(e) { return (e.base || 0) * (e.unitPrice || 0) }
+function calcSegmentExtraFeeTotal(seg) {
+  return (seg.extraFees || []).reduce((s, e) => s + calcExtraFeeItem(e), 0)
+}
+const extraFeeTotal = computed(() => {
+  if (form.quoteMode === '分段报价') {
+    return segments.value.reduce((s, seg) => s + calcSegmentExtraFeeTotal(seg), 0)
+  }
+  return extraFees.value.reduce((s, e) => s + calcExtraFeeItem(e), 0)
+})
 const grandTotal = computed(() => transportFee.value + extraFeeTotal.value)
 
 function addExtraFee() { extraFees.value.push({ type: '增项', name: '', base: 0, unitPrice: 0 }) }
+function addSegmentExtraFee(seg) {
+  if (!seg.extraFees) seg.extraFees = []
+  seg.extraFees.push({ type: '增项', name: '', base: 0, unitPrice: 0 })
+}
 
 function submitQuote() {
   if (!form.contactName?.trim()) return ElMessage.warning('请填联系人')
@@ -530,6 +586,13 @@ function submitQuote() {
   if (form.quoteMode === '整段报价' && !isContainer.value && !fee.unitPrice) return ElMessage.warning('请填运输单价')
   if (form.quoteMode === '分段报价') {
     for (let i = 0; i < segments.value.length; i++) { if (!segments.value[i].unitPrice) return ElMessage.warning(`路段 ${i + 1} 请填运输单价`) }
+    // 分段报价：路段其他费用费用名称不可为空（PRD 7.6）
+    for (let i = 0; i < segments.value.length; i++) {
+      const ef = segments.value[i].extraFees || []
+      for (let j = 0; j < ef.length; j++) {
+        if (!ef[j].name?.trim()) return ElMessage.warning(`路段 ${i + 1} 的其他费用第 ${j + 1} 行请填写费用名称`)
+      }
+    }
   }
   if (!service.delivery.length) return ElMessage.warning('请选择至少一种配送方式')
   if (!service.outline?.trim()) return ElMessage.warning('请填方案概述')
@@ -767,6 +830,20 @@ watch(() => form.transportMode, () => recalculateRoute())
 }
 .seg-amount strong { font-size: 16px; }
 
+/* 路段其他费用（分段报价下按路段维护） */
+.seg-extra-fee {
+  margin-top: 12px; padding-top: 12px; border-top: 1px dashed #eef0f5;
+}
+.seg-extra-fee-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; font-weight: 600; color: #4e5969; margin-bottom: 8px;
+}
+.add-row-btn.sm { padding: 4px 10px; font-size: 12px; }
+.seg-extra-fee-table th, .seg-extra-fee-table td { padding: 8px 10px; font-size: 12px; }
+.seg-extra-fee-total {
+  margin-top: 8px; text-align: right; font-size: 12px; color: #6b7280;
+}
+
 .add-row-btn {
   padding: 6px 14px; border: 1px dashed #2f68ed; background: transparent;
   color: #2f68ed; border-radius: 4px; cursor: pointer; font-size: 13px;
@@ -780,7 +857,7 @@ watch(() => form.transportMode, () => recalculateRoute())
 
 /* ===== 右侧托运单卡片 ===== */
 .source-card {
-  position: sticky; top: 78px; background: #f6f8fc; border-radius: 8px;
+  position: sticky; top: 8px; background: #f6f8fc; border-radius: 8px;
   overflow: hidden; box-shadow: 0 2px 8px rgba(15, 28, 56, 0.06);
 }
 .card-head {

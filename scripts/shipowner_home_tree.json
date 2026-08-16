@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Error: Timeout waiting for broker response"
+    }
+  ],
+  "isError": true
+}

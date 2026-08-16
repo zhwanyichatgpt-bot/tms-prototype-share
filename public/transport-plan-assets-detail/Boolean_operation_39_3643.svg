@@ -1,0 +1,19 @@
+<svg viewBox="0 0 34.5688 38.7227" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34.568848" height="38.722656" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_9">
+			<effect x="0.000000" y="3.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.160784319" effectType="dropShadow" stdDeviation="6" radius="0" />
+		</g>
+		<filter id="filter_9" width="34.568848" height="38.722656" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_9)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="3.000000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="2" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.160784 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+	</defs>
+	<g filter="url(#filter_9)">
+		<path id="联合 59" d="M14.5264 24.1949C10.1858 22.9895 7 19.009 7 14.2844C7 8.60449 11.6045 4 17.2844 4C22.9644 4 27.5688 8.60449 27.5688 14.2844C27.5688 19.009 24.3832 22.9894 20.0426 24.1949L18 28.28C17.7052 28.8697 16.8638 28.8697 16.5688 28.28L14.5264 24.1949Z" fill="rgb(58,101,255)" fill-rule="evenodd" />
+		<path id="联合 59" d="M11.0499 23.7108Q12.3185 24.5504 13.8256 25.0295L15.6745 28.7274C16.0062 29.3906 16.5429 29.7223 17.2845 29.7223Q17.8408 29.7223 18.2433 29.4735Q18.6457 29.2247 18.8944 28.7272L20.7433 25.0295Q22.2505 24.5503 23.5191 23.7107L23.5191 23.7107Q25.0447 22.7009 26.2253 21.17Q27.3841 19.6674 27.9699 17.9673Q28.5688 16.2291 28.5688 14.2844C28.5688 8.05221 23.5166 3 17.2844 3C11.0522 3 6 8.05221 6 14.2844Q6 16.229 6.59896 17.9673L6.59897 17.9673Q7.18479 19.6674 8.34358 21.17Q9.52424 22.701 11.0499 23.7108ZM7 14.2844C7 19.009 10.1858 22.9895 14.5264 24.1949L16.5688 28.28C16.8638 28.8697 17.7052 28.8697 18 28.28L20.0426 24.1949C24.3832 22.9894 27.5688 19.009 27.5688 14.2844C27.5688 8.60449 22.9644 4 17.2844 4C11.6045 4 7 8.60449 7 14.2844Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+	</g>
+</svg>

@@ -1,0 +1,51 @@
+<svg viewBox="0 0 24.3359 24.3359" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.335938" height="24.335938" fill="none" customFrame="#000000">
+	<defs>
+		<linearGradient id="paint_linear_5" x1="12.0038471" x2="12.0038471" y1="5.89160156" y2="18.8817177" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_6" x1="22.0616455" x2="22.0616455" y1="11.7841797" y2="12.9902344" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_7" x1="2.27453613" x2="2.27453613" y1="11.7841797" y2="12.9902344" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_8" x1="12.168457" x2="12.168457" y1="0" y2="4.54931641" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_9" x1="12.168457" x2="12.168457" y1="19.7861328" y2="24.3354492" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_10" x1="19.1635742" x2="19.1635742" y1="3.60644531" y2="7.17651367" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_11" x1="5.17260742" x2="5.17260742" y1="17.5976562" y2="21.1674805" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_12" x1="5.3918457" x2="5.3918457" y1="3.60644531" y2="7.17651367" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_13" x1="19.3830566" x2="19.3830566" y1="17.5976562" y2="21.1674805" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+	</defs>
+	<g id="组 23657">
+		<circle id="椭圆 260" cx="12.0038471" cy="12.3866596" r="6.49505806" fill="url(#paint_linear_5)" />
+		<path id="路径 17945" d="M23.7336 11.7842L20.3904 11.7842C20.0571 11.7842 19.7871 12.054 19.7871 12.387C19.7871 12.7202 20.0571 12.9902 20.3904 12.9902L23.7336 12.9902C24.0662 12.9902 24.3362 12.7202 24.3362 12.387C24.3362 12.054 24.0662 11.7842 23.7336 11.7842Z" fill="url(#paint_linear_6)" fill-rule="nonzero" />
+		<path id="路径 17946" d="M4.54907 12.387C4.54907 12.054 4.27905 11.7842 3.94604 11.7842L0.602539 11.7842C0.269775 11.7842 0 12.054 0 12.387C0 12.7202 0.269775 12.9902 0.602539 12.9902L3.94604 12.9902C4.27905 12.9902 4.54907 12.7202 4.54907 12.387Z" fill="url(#paint_linear_7)" fill-rule="nonzero" />
+		<path id="路径 17947" d="M12.1685 4.54932C12.5015 4.54932 12.7715 4.27954 12.7715 3.94653L12.7715 0.603027C12.7715 0.27002 12.5015 0 12.1685 0C11.8354 0 11.5654 0.27002 11.5654 0.603027L11.5654 3.94653C11.5654 4.27954 11.8354 4.54932 12.1685 4.54932Z" fill="url(#paint_linear_8)" fill-rule="nonzero" />
+		<path id="路径 17948" d="M12.1685 19.7861C11.8354 19.7861 11.5654 20.0562 11.5654 20.3889L11.5654 23.7324C11.5654 24.0654 11.8354 24.3354 12.1685 24.3354C12.5015 24.3354 12.7715 24.0654 12.7715 23.7324L12.7715 20.3889C12.7715 20.0562 12.5015 19.7861 12.1685 19.7861Z" fill="url(#paint_linear_9)" fill-rule="nonzero" />
+		<path id="路径 17949" d="M18.4082 7L20.772 4.6355C21.0078 4.3999 21.0078 4.01807 20.772 3.7832C20.5366 3.54736 20.1548 3.54736 19.9194 3.7832L17.5552 6.14746C17.3193 6.38257 17.3193 6.76392 17.5552 7C17.7905 7.23535 18.1724 7.23535 18.4082 7Z" fill="url(#paint_linear_10)" fill-rule="nonzero" />
+		<path id="路径 17950" d="M5.92847 17.7742L3.56421 20.1382C3.32886 20.3735 3.32886 20.7556 3.56421 20.991C3.79956 21.2263 4.1814 21.2263 4.41675 20.991L6.78101 18.6267C7.01636 18.3914 7.01636 18.0095 6.78101 17.7742C6.54565 17.5388 6.16382 17.5388 5.92847 17.7742Z" fill="url(#paint_linear_11)" fill-rule="nonzero" />
+		<path id="路径 17951" d="M6.14771 7C6.38306 7.23535 6.76489 7.23535 7.00024 7C7.2356 6.76392 7.2356 6.38257 7.00024 6.14746L4.63623 3.7832C4.40063 3.54736 4.01904 3.54736 3.78369 3.7832C3.5481 4.01807 3.5481 4.3999 3.78369 4.6355L6.14771 7Z" fill="url(#paint_linear_12)" fill-rule="nonzero" />
+		<path id="路径 17952" d="M18.6274 17.7742C18.3916 17.5388 18.0103 17.5388 17.7749 17.7742C17.5391 18.0095 17.5391 18.3914 17.7749 18.6267L20.1389 20.991C20.3743 21.2263 20.7561 21.2263 20.9915 20.991C21.2268 20.7556 21.2268 20.3735 20.9915 20.1382L18.6274 17.7742Z" fill="url(#paint_linear_13)" fill-rule="nonzero" />
+	</g>
+</svg>

@@ -1,6 +1,5 @@
 <template>
   <div class="channel-page">
-    <BackBar current-title="运输通道管理" />
 
     <!-- ============ 视图1：管理页 ============ -->
     <div v-if="view === 'manage'" class="manage-view">
@@ -754,7 +753,6 @@ import {
   feeTypeOptions, feeCalcModes, carrierPool, seedChannels, initialIdSeed,
 } from './mock-data'
 import { setCurrentPage } from '../../src/shared/prototype-store'
-import BackBar from '../../src/components/BackBar.vue'
 
 const channels = ref(JSON.parse(JSON.stringify(seedChannels)))
 let idSeed = initialIdSeed

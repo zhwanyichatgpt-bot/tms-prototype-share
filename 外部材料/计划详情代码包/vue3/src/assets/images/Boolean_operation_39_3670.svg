@@ -1,0 +1,21 @@
+<svg viewBox="0 0 268 154.128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="268.000000" height="154.127930" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_5">
+			<effect x="0.000000" y="3.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.160784319" effectType="dropShadow" stdDeviation="6" radius="0" />
+		</g>
+		<filter id="filter_5" width="268.000000" height="154.127930" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_5)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.16279 0 " />
+			<feOffset dx="0.000000" dy="3.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="2" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.160784 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+	</defs>
+	<g opacity="0.860000014" filter="url(#filter_5)">
+		<path id="联合 63" d="M262 9C262 5.68628 259.314 3 256 3L12 3C8.68628 3 6 5.68628 6 9L6 127.112C6 130.426 8.68628 133.112 12 133.112L126.917 133.112L133.636 144.631C134.022 145.293 134.978 145.293 135.364 144.631L142.083 133.112L256 133.112C259.314 133.112 262 130.426 262 127.112L262 9Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		<path id="联合 63" d="M256 3C259.314 3 262 5.68628 262 9L262 127.112C262 130.426 259.314 133.112 256 133.112L142.083 133.112L135.364 144.631C134.978 145.293 134.022 145.293 133.636 144.631L126.917 133.112L12 133.112C8.68628 133.112 6 130.426 6 127.112L6 9C6 5.68628 8.68628 3 12 3L256 3ZM261 9C261 6.23857 258.761 4 256 4L12 4C9.23857 4 7 6.23857 7 9L7 127.112C7 129.874 9.23857 132.112 12 132.112L127.491 132.112L134.5 144.128L141.509 132.112L256 132.112C258.761 132.112 261 129.874 261 127.112L261 9Z" fill="rgb(112,112,112)" fill-opacity="0" fill-rule="evenodd" />
+	</g>
+</svg>

@@ -485,10 +485,22 @@
     };
   }
 
+  function isAnchorRenderable(host) {
+    if (!host) return false;
+    if ('isConnected' in host && !host.isConnected) return false;
+
+    const style = window.getComputedStyle(host);
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+
+    const rect = host.getBoundingClientRect();
+    const hasLayoutBox = typeof host.getClientRects !== 'function' || host.getClientRects().length > 0;
+    return hasLayoutBox && rect.width > 0 && rect.height > 0;
+  }
+
   function applyBadgePositionToNode(node, unit) {
     let host = null;
     try { host = unit.anchor_selector ? document.querySelector(unit.anchor_selector) : null; } catch (_) {}
-    if (!host) {
+    if (!isAnchorRenderable(host)) {
       node.classList.add('hidden');
       node.dataset.anchorAvailable = 'false';
       return;
@@ -498,8 +510,8 @@
     const outsideViewport = rect.bottom < 0 || rect.top > window.innerHeight || rect.right < 0 || rect.left > window.innerWidth;
     node.style.visibility = outsideViewport ? 'hidden' : 'visible';
     const position = resolveBadgePosition(unit);
-    const x = position.x == null ? -17 : position.x;
-    const y = position.y == null ? -17 : position.y;
+    const x = position.x == null ? -14 : position.x;
+    const y = position.y == null ? -14 : position.y;
     node.classList.toggle('annotation-node-custom-position', position.x != null && position.y != null);
     node.style.left = `${Math.round(rect.left + x)}px`;
     node.style.top = `${Math.round(rect.top + y)}px`;
@@ -791,6 +803,7 @@
         </header>
         <header class="annotation-overview-detail-header" id="annotationOverviewDetailHeader">
           <button type="button" class="annotation-overview-back" id="annotationOverviewBack">← 返回总览</button>
+          <button type="button" class="annotation-overview-close" id="annotationOverviewDetailClose" aria-label="关闭当前标注">关闭</button>
           <div class="annotation-overview-detail-heading">
             <span class="annotation-badge" id="annotationOverviewDetailBadge"></span>
             <div>
@@ -811,6 +824,7 @@
         panel.querySelector('#annotationOverviewCollapse').textContent = panel.classList.contains('collapsed') ? '展开' : '收起';
       };
       panel.querySelector('#annotationOverviewBack').onclick = close;
+      panel.querySelector('#annotationOverviewDetailClose').onclick = closeDetailAndCollapse;
       panel.addEventListener('click', (event) => {
         const card = event.target.closest('[data-overview-unit]');
         if (!card) return;
@@ -844,15 +858,24 @@
     const body = panel.querySelector('#annotationOverviewBody');
     const count = panel.querySelector('#annotationOverviewCount');
     const units = state.spec && Array.isArray(state.spec.units) ? state.spec.units : [];
-    count.textContent = `${units.length} 项 · 按研发决策排序`;
-    body.innerHTML = units.map((unit, index) => {
-      let anchorAvailable = false;
-      try { anchorAvailable = !!document.querySelector(unit.anchor_selector); } catch (_) {}
+    const visibleCount = Object.keys(state.displayIndexByUnit).length;
+    count.textContent = `当前 ${visibleCount} 项 · 全部 ${units.length} 项`;
+    const orderedUnits = units.slice().sort((left, right) => {
+      const leftIndex = state.displayIndexByUnit[left.id];
+      const rightIndex = state.displayIndexByUnit[right.id];
+      if (leftIndex != null && rightIndex != null) return leftIndex - rightIndex;
+      if (leftIndex != null) return -1;
+      if (rightIndex != null) return 1;
+      return units.indexOf(left) - units.indexOf(right);
+    });
+    body.innerHTML = orderedUnits.map((unit) => {
+      const displayIndex = state.displayIndexByUnit[unit.id];
+      const anchorAvailable = displayIndex != null;
       return `
         <article class="annotation-overview-card${state.activeUnitId === unit.id ? ' active' : ''}" data-overview-unit="${escapeHtml(unit.id)}">
           <div class="annotation-overview-card-title">
-            <span>${index + 1}</span>
-            <div><strong>${escapeHtml(unit.title || unit.id)}</strong><small>${anchorAvailable ? '页面位置可见' : escapeHtml(unit.visibility_condition_desc || '当前页面状态下暂不可见')}</small></div>
+            <span>${displayIndex == null ? '—' : displayIndex}</span>
+            <div><strong>${escapeHtml(unit.title || unit.id)}</strong><small>${anchorAvailable ? '当前页面可见' : escapeHtml(unit.visibility_condition_desc || '当前页面状态下暂不可见')}</small></div>
           </div>
           <div class="annotation-overview-card-body">${renderUnitBody(unit)}</div>
         </article>
@@ -1746,6 +1769,17 @@
     return true;
   }
 
+  function buildVisibleIndexMap(units, isVisible) {
+    const map = {};
+    let nextIndex = 1;
+    (Array.isArray(units) ? units : []).forEach((unit) => {
+      if (!unit || !unit.id || !isVisible(unit)) return;
+      map[unit.id] = nextIndex;
+      nextIndex += 1;
+    });
+    return map;
+  }
+
   function refresh() {
     if (!state.spec) {
       if (els.overviewPanel) els.overviewPanel.classList.remove('show', 'detail-mode');
@@ -1755,17 +1789,32 @@
     syncAnnotationNodes();
     const globalOk = typeof config.globalGate !== 'function' || config.globalGate();
 
-    state.displayIndexByUnit = {};
-    state.spec.units.forEach((unit, unitIndex) => {
+    const availabilityByUnit = {};
+    state.spec.units.forEach((unit) => {
       const nodes = findAnnotationNodes(unit.id);
-      const stableIndex = unitIndex + 1;
-      state.displayIndexByUnit[unit.id] = stableIndex;
+      availabilityByUnit[unit.id] = globalOk && gatesAllow(unit)
+        && Array.from(nodes).some((node) => node.dataset.anchorAvailable !== 'false');
+    });
+    state.displayIndexByUnit = buildVisibleIndexMap(
+      state.spec.units,
+      (unit) => availabilityByUnit[unit.id],
+    );
+
+    if (state.activeUnitId && state.displayIndexByUnit[state.activeUnitId] == null) {
+      state.activeUnitId = null;
+    }
+
+    state.spec.units.forEach((unit) => {
+      const nodes = findAnnotationNodes(unit.id);
+      const displayIndex = state.displayIndexByUnit[unit.id];
       nodes.forEach((node) => {
-        const show = state.enabled && globalOk && gatesAllow(unit) && node.dataset.anchorAvailable !== 'false';
+        const show = state.enabled && displayIndex != null && node.dataset.anchorAvailable !== 'false';
         node.classList.toggle('hidden', !show);
         node.classList.toggle('active', state.activeUnitId === unit.id);
-        node.textContent = String(stableIndex);
-        node.setAttribute('aria-label', `${stableIndex} ${unit.title || unit.id}`);
+        if (displayIndex != null) {
+          node.textContent = String(displayIndex);
+          node.setAttribute('aria-label', `${displayIndex} ${unit.title || unit.id}`);
+        }
       });
     });
 
@@ -1834,6 +1883,20 @@
   function close() {
     state.activeUnitId = null;
     if (els.overviewPanel) els.overviewPanel.classList.remove('detail-mode');
+    refresh();
+  }
+
+  function collapseDetailPanel(panel) {
+    if (!panel) return;
+    panel.classList.remove('detail-mode');
+    panel.classList.add('collapsed');
+    const collapseButton = panel.querySelector('#annotationOverviewCollapse');
+    if (collapseButton) collapseButton.textContent = '展开';
+  }
+
+  function closeDetailAndCollapse() {
+    state.activeUnitId = null;
+    collapseDetailPanel(els.overviewPanel);
     refresh();
   }
 
@@ -3249,5 +3312,8 @@
     setUnitGate: (id, fn) => { config.unitGates[id] = fn; refresh(); },
     setGlobalGate: (fn) => { config.globalGate = fn; refresh(); },
     getSpec: () => state.spec,
+    buildVisibleIndexMap,
+    isAnchorRenderable,
+    collapseDetailPanel,
   };
 })();

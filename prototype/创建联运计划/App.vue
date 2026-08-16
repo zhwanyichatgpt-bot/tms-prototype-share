@@ -7,9 +7,6 @@
           <h1 class="page-title">新增联运计划</h1>
         </div>
         <div class="header-actions">
-          <div class="prototype-annotation-toggle">
-            <button id="toolbarAnnotationToggleBtn" class="ws-btn" type="button">原型标注</button>
-          </div>
           <button type="button" class="close-entry" @click="handleCancel">
             <span class="close-arrow">←</span>
             <span class="close-text">返回联运计划</span>
@@ -495,7 +492,7 @@
       </div>
 
       <!-- 报价单详情弹窗 -->
-      <el-dialog v-model="quoteDialogVisible" width="760px" class="quote-modal-wrap" :show-close="false" append-to-body>
+      <el-dialog v-model="quoteDialogVisible" width="760px" class="quote-modal-wrap" :show-close="false" :append-to-body="false">
         <template #header>
           <div class="modal-header-inner">
             <span class="modal-title">报价单详情</span>
@@ -546,7 +543,7 @@
       </el-dialog>
 
       <!-- 关联托运单抽屉（PRD 点4：筛选） -->
-      <el-drawer v-model="waybillDrawerVisible" title="选择关联托运单" direction="rtl" size="760px" class="waybill-drawer-wrap" append-to-body>
+      <el-drawer v-model="waybillDrawerVisible" title="选择关联托运单" direction="rtl" size="760px" class="waybill-drawer-wrap" :append-to-body="false">
         <div class="drawer-filter">
           <input class="drawer-filter-input" v-model="drawerFilters.keyword" placeholder="按编号/托运企业/货类搜索" />
           <input class="drawer-filter-input datetime" v-model="drawerFilters.createDate" type="date" />
@@ -594,7 +591,7 @@
       </el-drawer>
 
       <!-- 子计划详情弹窗 -->
-      <el-dialog v-model="subPlanDialogVisible" width="520px" class="subplan-modal-wrap" :show-close="false" append-to-body>
+      <el-dialog v-model="subPlanDialogVisible" width="520px" class="subplan-modal-wrap" :show-close="false" :append-to-body="false">
         <template #header>
           <div class="modal-header-inner">
             <span class="modal-title">子计划详情</span>
@@ -1517,6 +1514,34 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* ============ 弹窗约束回画布内（不盖外层工具栏，避让左侧目录）============ */
+:deep(.el-overlay) {
+  top: var(--canvas-toolbar-height, 48px);
+  left: calc(var(--canvas-offset-left, 232px) + 16px);
+  right: 16px;
+  bottom: auto;
+  height: calc(100vh - var(--canvas-toolbar-height, 48px));
+  overflow: hidden;
+}
+:deep(.el-overlay-dialog) {
+  top: var(--canvas-toolbar-height, 48px);
+}
+:deep(.el-drawer) {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+:deep(.el-drawer__body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 /* ===== 全局重置（页面内） ===== */
 .page-root * {
   box-sizing: border-box;
