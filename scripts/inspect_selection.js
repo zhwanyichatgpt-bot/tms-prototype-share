@@ -1,75 +1,66 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { spawn } from 'child_process';
 
 async function main() {
-  const transport = new StdioClientTransport({
-    command: "npx",
-    args: ["-y", "@jiujiang/jishi-mcp-server"]
+  const child = spawn('jishi-mcp-server', [], {
+    stdio: ['pipe', 'pipe', 'pipe'],
   });
 
-  const client = new Client(
-    { name: "antigravity-jishi-inspector", version: "1.0.0" },
-    { capabilities: {} }
-  );
+  let buffer = '';
+  child.stdout.on('data', (chunk) => {
+    buffer += chunk.toString();
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
 
-  try {
-    await client.connect(transport);
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try {
+        const msg = JSON.parse(line.trim());
+        if (msg.id === 2) {
+          console.log('\n🎯 即时设计返回 RAW:');
+          console.log(JSON.stringify(msg, null, 2));
+          child.kill();
+          process.exit(0);
+        }
+      } catch (e) {
+      }
+    }
+  });
 
-    // 1. 列出在线的插件客户端
-    console.log("=== 1. 检查已连接客户端 (list_plugin_clients) ===");
-    let clientId = null;
-    try {
-      const clientsRes = await client.callTool({
-        name: "list_plugin_clients",
-        arguments: {}
-      });
-      console.log("Clients Response:", JSON.stringify(clientsRes, null, 2));
-      
-      // 尝试解析 clientId
-      if (clientsRes?.content?.[0]?.text) {
-        const parsed = JSON.parse(clientsRes.content[0].text);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          clientId = parsed[0].id || parsed[0].clientId || parsed[0];
-        } else if (parsed.clients && parsed.clients.length > 0) {
-          clientId = parsed.clients[0].id || parsed.clients[0];
+  function sendMsg(msg) {
+    child.stdin.write(JSON.stringify(msg) + '\n');
+  }
+
+  sendMsg({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'initialize',
+    params: {
+      protocolVersion: '2024-11-05',
+      capabilities: {},
+      clientInfo: { name: 'inspect-selection', version: '1.0.0' }
+    }
+  });
+
+  setTimeout(() => {
+    sendMsg({ jsonrpc: '2.0', method: 'notifications/initialized' });
+    sendMsg({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'tools/call',
+      params: {
+        name: 'execute_script',
+        arguments: {
+          code: 'JSON.stringify({ doc: jsDesign.root ? jsDesign.root.name : "root", page: jsDesign.currentPage ? jsDesign.currentPage.name : "page", selCount: jsDesign.currentPage.selection ? jsDesign.currentPage.selection.length : 0, sel: jsDesign.currentPage.selection ? jsDesign.currentPage.selection.map(n => ({ id: n.id, name: n.name, type: n.type, width: n.width, height: n.height })) : [] })'
         }
       }
-    } catch (e) {
-      console.log("List clients error:", e.message);
-    }
+    });
+  }, 1000);
 
-    const args = clientId ? { clientId } : {};
-    console.log("Using args:", args);
-
-    // 2. 获取当前页面节点/画板
-    console.log("\n=== 2. 获取页面画板 (get_page_nodes) ===");
-    try {
-      const pageNodesRes = await client.callTool({
-        name: "get_page_nodes",
-        arguments: args
-      });
-      console.log("Page Nodes Result:", JSON.stringify(pageNodesRes, null, 2));
-    } catch (e) {
-      console.log("Get page nodes error:", e.message);
-    }
-
-    // 3. 获取选中内容
-    console.log("\n=== 3. 获取选中元素 (get_selection) ===");
-    try {
-      const selectionRes = await client.callTool({
-        name: "get_selection",
-        arguments: args
-      });
-      console.log("Selection Result:", JSON.stringify(selectionRes, null, 2));
-    } catch (e) {
-      console.log("Get selection error:", e.message);
-    }
-
-  } catch (err) {
-    console.error("Connect error:", err.message);
-  } finally {
-    process.exit(0);
-  }
+  setTimeout(() => {
+    console.error('连接超时');
+    child.kill();
+    process.exit(1);
+  }, 8000);
 }
 
-main();
+main().catch(console.error);

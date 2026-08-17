@@ -392,14 +392,14 @@ const submitQuote = () => {
 }
 
 .load-port {
-  left: 166px;
-  top: 101px;
+  left: 120px;
+  top: 205px;
   width: max-content;
 }
 
 .unload-port {
-  left: 49px;
-  top: 257px;
+  left: 205px;
+  top: 65px;
   width: max-content;
 }
 

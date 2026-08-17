@@ -25,7 +25,6 @@
             <span class="port-line"></span>
             <span class="port-anchor"></span>
           </div>
-          <div class="route-distance">航线{{ routeDistText }}</div>
         </section>
 
         <!-- 2. 下方面板区 -->
@@ -129,6 +128,15 @@
               <span class="mq-label">报价时间</span>
               <b class="mq-value">{{ quote.quoteTime }}</b>
             </div>
+            <!-- 已确认状态：关联托运订单号 / 运输任务号 (紧跟在报价时间后，纯文本展示) -->
+            <div v-if="quote.status === '已确认' && !isCapacity" class="mq-info-row">
+              <span class="mq-label">托运订单</span>
+              <b class="mq-value mq-value-blue">{{ quote.orderNo || 'TY20240814001' }}</b>
+            </div>
+            <div v-if="quote.status === '已确认' && isCapacity" class="mq-info-row">
+              <span class="mq-label">运输任务</span>
+              <b class="mq-value mq-value-blue">{{ quote.taskNo || 'RW20240814001' }}</b>
+            </div>
           </section>
 
           <!-- 6. 发布信息卡片 -->
@@ -146,10 +154,10 @@
         </section>
       </div>
 
-      <!-- 7. 底部固定操作栏 -->
+      <!-- 7. 底部固定操作栏（仅在报价中展示修改报价，已确认/已完成去除操作按钮） -->
       <footer class="detail-action" v-if="showAction">
-        <button type="button" :class="actionCls" @click="onAction">
-          {{ actionText }}
+        <button type="button" class="primary" @click="onAction">
+          修改报价
         </button>
       </footer>
     </main>
@@ -260,21 +268,20 @@ const onCopyCode = async () => {
   }
 }
 
-// 底部操作：报价中→修改报价；已确认→查看托运订单/运输任务
-const showAction = computed(() => props.quote.status === '报价中' || props.quote.status === '已确认')
-const actionText = computed(() => {
-  if (props.quote.status === '报价中') return '修改报价'
-  return isCapacity.value ? '查看运输任务' : '查看托运订单'
-})
-const actionCls = computed(() => (props.quote.status === '已确认' ? 'confirm' : 'primary'))
+const copyDoc = async (no, typeName) => {
+  try {
+    await navigator.clipboard?.writeText(no)
+  } finally {
+    showToast(`${typeName}已复制：${no}`)
+  }
+}
+
+// 底部操作：仅在报价中时展示修改报价；已确认去除底部操作按钮
+const showAction = computed(() => props.quote.status === '报价中')
 
 const onAction = () => {
   if (props.quote.status === '报价中') {
     emit('edit-quote', props.quote)
-  } else if (isCapacity.value) {
-    emit('view-task', props.quote)
-  } else {
-    emit('view-order', props.quote)
   }
 }
 </script>
@@ -393,14 +400,14 @@ const onAction = () => {
 }
 
 .load-port {
-  left: 166px;
-  top: 101px;
+  left: 120px;
+  top: 205px;
   width: max-content;
 }
 
 .unload-port {
-  left: 49px;
-  top: 257px;
+  left: 205px;
+  top: 65px;
   width: max-content;
 }
 
@@ -858,6 +865,16 @@ const onAction = () => {
 .mq-value-blue {
   color: #3465ff;
   font-weight: 600;
+}
+
+.mq-doc-btn {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0;
 }
 
 .mq-note {

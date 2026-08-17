@@ -1,10 +1,12 @@
 <template>
   <div class="shipowner-preview">
-    <!-- 我的报价列表页 -->
-    <MyQuotes
-      v-if="currentView === 'myQuotes'"
+    <!-- 订单中心（包含报价与订单双 Tab） -->
+    <OrderCenter
+      v-if="currentView === 'orderCenter' || currentView === 'myQuotes'"
       :quotes="userQuoteList"
+      :default-tab="orderCenterDefaultTab"
       @back="currentView = 'home'"
+      @nav-home="currentView = 'home'"
       @view-detail="openQuoteDetail"
       @edit-quote="editQuote"
       @view-order="handleViewOrder"
@@ -15,7 +17,7 @@
     <QuoteDetail
       v-else-if="currentView === 'quoteDetail'"
       :quote="selectedQuote"
-      @back="currentView = 'myQuotes'"
+      @back="onBackFromDetail"
       @edit-quote="editQuote"
       @view-order="handleViewOrder"
       @view-task="handleViewTask"
@@ -55,15 +57,9 @@
         <span class="city-arrow"></span>
       </button>
 
-      <!-- 3. 扫码接单小图标按钮 (右上角，避开小程序胶囊) -->
+      <!-- 3. 地图右上角扫码接单 -->
       <button class="map-scan-button" type="button" aria-label="扫码接单" title="扫码接单" @click="showScan = true">
-        <van-icon name="scan" size="20" color="#173664" />
-      </button>
-
-      <!-- 我的报价入口 (货源应用内子功能) -->
-      <button class="my-quotes-entry" type="button" aria-label="我的报价" @click="currentView = 'myQuotes'">
-        <van-icon name="bill-o" size="13" color="#173664" />
-        <span>我的报价</span>
+        <van-icon name="scan" size="18" color="#173664" />
       </button>
 
       <!-- 4. 品牌标语 -->
@@ -229,7 +225,7 @@
       <!-- 10. 底部导航 -->
       <div class="bottom-mask"></div>
       <nav class="bottom-nav" aria-label="底部导航">
-        <img src="/shipowner-tabbar.svg" alt="找货、跑货、运单、我的" />
+        <img src="/shipowner-tabbar.svg" alt="找货、订单、运单、我的" />
         <button
           v-for="(nav, index) in navs"
           :key="nav"
@@ -266,11 +262,12 @@ import { computed, reactive, ref } from 'vue'
 import { showToast } from 'vant'
 import CargoBiddingDetail from './CargoBiddingDetail.vue'
 import BiddingQuotePage from './BiddingQuotePage.vue'
-import MyQuotes from './MyQuotes.vue'
+import OrderCenter from './OrderCenter.vue'
 import QuoteDetail from './QuoteDetail.vue'
 import { mockCargoList, mockFreightMapPins, mockCapacityMapPins } from './mock-data.js'
 
-const currentView = ref('home') // 'home' | 'detail' | 'quote' | 'myQuotes' | 'quoteDetail'
+const currentView = ref('home') // 'home' | 'detail' | 'quote' | 'orderCenter' | 'quoteDetail'
+const orderCenterDefaultTab = ref('quote') // 'quote' | 'order'
 const currentCity = ref('福州市')
 const showCityPicker = ref(false)
 const showScan = ref(false)
@@ -287,7 +284,7 @@ const tabs = [
   { key: 'latest', label: '最新发布' },
 ]
 
-const navs = ['找货', '跑货', '运单', '我的']
+const navs = ['找货', '订单', '运单', '我的']
 
 const cities = [
   { text: '福州市', value: '福州市' },
@@ -364,15 +361,15 @@ const onQuoteSuccess = (quoteData) => {
       quoteNote: quoteData.quoteRemark || '',
     }
   }
-  const fromMyQuotes = !!editingQuote.value
+  const fromOrderCenter = !!editingQuote.value
   editingQuote.value = null
-  currentView.value = fromMyQuotes ? 'myQuotes' : 'detail'
+  currentView.value = fromOrderCenter ? 'orderCenter' : 'detail'
 }
 
 const onQuoteBack = () => {
-  const fromMyQuotes = !!editingQuote.value
+  const fromOrderCenter = !!editingQuote.value
   editingQuote.value = null
-  currentView.value = fromMyQuotes ? 'myQuotes' : 'detail'
+  currentView.value = fromOrderCenter ? 'orderCenter' : 'detail'
 }
 
 // 我的报价：把用户提交的报价转换成统一报价单结构
@@ -392,7 +389,18 @@ const userQuoteList = computed(() =>
 
 const openQuoteDetail = (quote) => {
   selectedQuote.value = quote
+  orderCenterDefaultTab.value = 'quote'
   currentView.value = 'quoteDetail'
+}
+
+const onBackFromDetail = () => {
+  orderCenterDefaultTab.value = 'quote'
+  currentView.value = 'orderCenter'
+}
+
+const openOrderCenter = (tab = 'quote') => {
+  orderCenterDefaultTab.value = tab
+  currentView.value = 'orderCenter'
 }
 
 // 修改报价：携带上一次报价内容，进入报价页
@@ -411,13 +419,26 @@ const editQuote = (quote) => {
 }
 
 const handleViewOrder = (quote) => {
-  showToast(`已确认，进入正式托运订单（演示：${quote.quoteNo}）`)
+  // 转入订单 Tab
+  orderCenterDefaultTab.value = 'order'
+  currentView.value = 'orderCenter'
 }
+
 const handleViewTask = (quote) => {
   showToast(`已确认，进入运输任务（演示：${quote.quoteNo}）`)
 }
 
-const onNav = (nav) => showToast(nav === '找货' ? '当前已在运力服务首页' : `${nav}页面待演示`)
+const onNav = (nav) => {
+  if (nav === '找货') {
+    showToast('当前已在运力服务首页')
+    return
+  }
+  if (nav === '订单') {
+    openOrderCenter('quote')
+    return
+  }
+  showToast(`${nav}页面待演示`)
+}
 </script>
 
 <style scoped>
@@ -512,46 +533,20 @@ const onNav = (nav) => showToast(nav === '找货' ? '当前已在运力服务首
   width: 36px;
   height: 36px;
   border: 0;
-  border-radius: 50%;
-  background: rgba(238, 245, 255, 0.85);
-  color: #173664;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(23, 54, 100, 0.12);
   backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(18, 38, 71, 0.12);
   transition: transform 0.15s ease;
 }
 
 .map-scan-button:active {
   transform: scale(0.95);
-}
-
-/* 我的报价入口（货源应用内子功能，头部功能层级） */
-.my-quotes-entry {
-  position: absolute;
-  z-index: 24;
-  right: 60px;
-  top: 75.5px;
-  height: 32px;
-  border: 0;
-  border-radius: 16px;
-  background: rgba(238, 245, 255, 0.85);
-  color: #173664;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(18, 38, 71, 0.12);
-}
-.my-quotes-entry:active {
-  transform: scale(0.96);
 }
 
 .slogan {

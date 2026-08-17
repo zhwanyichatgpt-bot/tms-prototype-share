@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="686" height="110" viewBox="0 0 686 110" fill="none">
+  <foreignObject x="-5" y="-5" width="696" height="120">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(14px);clip-path:url(#bgblur_686_110_28_clip_path);height:100%;width:100%"></div>
+  </foreignObject>
+  <rect x="0" y="0" width="686" height="110" rx="55" fill="#FFFFFF" fill-opacity="0.4"></rect>
+  <path fill-rule="evenodd" fill="rgba(255, 255, 255, 1)" d="M631 0L55 0C24.6243 0 0 24.6243 0 55C0 85.3757 24.6243 110 55 110L631 110C661.376 110 686 85.3757 686 55C686 24.6243 661.376 0 631 0ZM17.5233 17.5233Q33.0467 2 55 2L631 2C660.271 2 684 25.7289 684 55C684 84.2711 660.271 108 631 108L55 108C25.7289 108 2 84.2711 2 55Q2 33.0466 17.5233 17.5233Z"></path>
+  <defs>
+    <clipPath id="bgblur_686_110_28_clip_path" transform="translate(5 5)">
+      <rect x="0" y="0" width="686" height="110" rx="55"></rect>
+    </clipPath>
+    <filter id="filter_order_tab" x="180" y="8" width="138" height="94" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="feFloodId_order"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="feFloodId_order" result="shape_order"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha_order"/>
+      <feOffset dx="0" dy="3"/>
+      <feGaussianBlur stdDeviation="2"/>
+      <feComposite in2="hardAlpha_order" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+      <feBlend mode="normal" in2="shape_order" result="innerShadow_order" />
+    </filter>
+  </defs>
+
+  <!-- 选中白色背景胶囊在第二个 Tab (订单，x=179) -->
+  <g filter="url(#filter_order_tab)">
+    <rect x="179" y="8" width="138" height="94" rx="47" fill="#FFFFFF"></rect>
+  </g>
+
+  <!-- 文字部分 -->
+  <!-- 找货 (未选中, 灰色) -->
+  <g><text transform="translate(61, 68.2)"><tspan x="0" y="16.26" font-size="16" line-height="21" fill="#999999" font-family="PingFang SC, sans-serif" letter-spacing="0">找货</tspan></text></g>
+  <!-- 订单 (选中, 黑色加粗) -->
+  <g><text transform="translate(232, 68.2)"><tspan x="0" y="16.26" font-size="16" font-weight="bold" line-height="21" fill="#173664" font-family="PingFang SC, sans-serif" letter-spacing="0">订单</tspan></text></g>
+  <!-- 运单 (未选中, 灰色) -->
+  <g><text transform="translate(412, 68.2)"><tspan x="0" y="16.26" font-size="16" line-height="21" fill="#999999" font-family="PingFang SC, sans-serif" letter-spacing="0">运单</tspan></text></g>
+  <!-- 我的 (未选中, 灰色) -->
+  <g><text transform="translate(576, 68.2)"><tspan x="0" y="16.26" font-size="16" line-height="21" fill="#999999" font-family="PingFang SC, sans-serif" letter-spacing="0">我的</tspan></text></g>
+
+  <!-- 图标 1：找货 (未选中灰) -->
+  <rect x="56" y="22" width="42" height="42" fill="transparent"></rect>
+  <g opacity="0.31"><circle cx="81.9" cy="47.7" r="9.5" fill="#C9C9C9"></circle></g>
+  <path d="M79.3546 24.3125L60.6188 36.3481L59.7 53.2007L63.6375 53.2007L64.4381 38.75L79.1578 28.9194L90.5726 38.0544L90.1303 48.9241C89.6053 53.5309 86.6784 56.5817 81.7434 56.5817L59.4769 56.5817L59.2668 60.5192L81.7434 60.5192C88.6603 60.5192 93.2934 55.9591 94.0415 49.3704L94.7332 36.1119L79.3546 24.3125Z" fill="#999999"></path>
+  <path d="M69.8538 46.9248L82.9957 46.9248L83.3402 43.5641L78.2153 38.4385L75.4313 41.2224L77.1955 42.9873L70.1209 42.9873L69.8538 46.9248Z" fill="#999999"></path>
+
+  <!-- 图标 2：订单 (选中高亮态，带蓝色光点和深蓝图标) -->
+  <rect x="227" y="22" width="42" height="42" fill="transparent"></rect>
+  <g opacity="0.4"><circle cx="252.3" cy="46.2" r="9.5" fill="#3A65FF"></circle></g>
+  <path d="M259.97 26.3223L239.036 26.3223L231.843 35.4179L231.817 35.8641L236.502 35.8641L240.939 30.2598L257.844 30.2598L261.873 36.4548L261.02 47.1673C260.718 51.4067 257.148 54.7404 252.896 54.7404L234.324 54.7404L235.492 39.7754L231.541 39.7754L230.097 58.6779L252.896 58.6779C259.235 58.6779 264.498 53.7692 264.944 47.4429L265.902 35.4179L259.97 26.3223Z" fill="#173664"></path>
+  <path d="M246.162 48.6651L240.912 43.0196L243.89 40.2357L246.552 43.0972L252.498 37.5396L255.087 40.3235L246.162 48.6651Z" fill="#173664"></path>
+
+  <!-- 图标 3：运单 (未选中灰) -->
+  <rect x="407" y="22" width="42" height="42" fill="transparent"></rect>
+  <g opacity="0.31"><circle cx="431.96" cy="46.4" r="9.5" fill="#C9C9C9"></circle></g>
+  <path d="M414.172 26.4971L413.738 30.4362L439.941 30.4362L439.193 47.8078C438.694 52.2459 434.965 55.581 430.501 55.581L416.076 55.581L417.257 34.3491L413.305 34.3491L411.677 59.5202L430.501 59.5202C436.961 59.5202 442.397 54.662 443.106 48.2411L444.34 26.4971L414.172 26.4971Z" fill="#999999"></path>
+  <path d="M434.318 35.5356L421.982 35.5356L421.699 39.4473L434.035 39.4473L434.318 35.5356Z" fill="#999999"></path>
+  <path d="M428.639 43.4033L421.555 43.4033L421.272 47.3149L428.357 47.3149L428.639 43.4033Z" fill="#999999"></path>
+
+  <!-- 图标 4：我的 (未选中灰) -->
+  <rect x="576" y="22" width="42" height="42" fill="transparent"></rect>
+  <g opacity="0.31"><circle cx="596.7" cy="42.8" r="9.4" fill="#C9C9C9"></circle></g>
+  <path d="M596.819 25.1738L581.131 25.1738L580.702 29.0761L596.819 29.0761C600.695 29.0761 604.389 30.728 606.978 33.6158C609.553 36.4903 610.789 40.3537 610.372 44.204L610.346 44.412C609.579 51.3321 603.752 56.5481 596.806 56.5481C592.929 56.5481 589.235 54.8961 586.647 52.0085C584.071 49.1208 582.822 45.2705 583.252 41.4203L584.247 33.3666L580.331 33.3666L579.375 40.991C578.231 51.371 586.361 60.4504 596.806 60.4504C601.267 60.4504 605.378 58.7724 608.486 55.9757C611.608 53.1921 613.729 49.2898 614.223 44.8413L614.249 44.6331C615.393 34.2531 607.264 25.1738 596.819 25.1738Z" fill="#999999"></path>
+  <path d="M593.594 39.0878L588.14 39.0878L588.64 35.1855L594.095 35.1855L593.594 39.0878Z" fill="#999999"></path>
+  <path d="M602.996 39.0878L597.542 39.0878L598.043 35.1855L603.497 35.1855L602.996 39.0878Z" fill="#999999"></path>
+</svg>

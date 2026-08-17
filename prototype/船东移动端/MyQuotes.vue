@@ -193,7 +193,7 @@ const props = defineProps({
 
 const emit = defineEmits(['back', 'view-detail', 'edit-quote', 'view-order', 'view-task'])
 
-const navs = ['找货', '跑货', '运单', '我的']
+const navs = ['找货', '订单', '运单', '我的']
 const keyword = ref('')
 const statusFilter = ref('all')
 const showFilter = ref(false)
@@ -306,7 +306,11 @@ function onOp(q) {
 }
 
 function onNav(nav) {
-  if (nav === '找货') return
+  if (nav === '找货') {
+    emit('back')
+    return
+  }
+  if (nav === '订单') return
   showToast(`${nav}页面待演示`)
 }
 </script>
