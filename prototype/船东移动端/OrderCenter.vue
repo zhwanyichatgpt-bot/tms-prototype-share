@@ -155,10 +155,7 @@
           <!-- 卡片第一行：订单状态 + 托运单号 + 运费总额 -->
           <div class="oc-card-head">
             <span class="oc-status-badge" :class="orderStatusCls(order.status)">{{ order.status }}</span>
-            <span class="oc-order-no">
-              {{ order.orderNo }}
-              <van-icon name="description" size="13" color="#8C99A8" class="oc-copy-icon" @click.stop="copyNo(order.orderNo)" />
-            </span>
+            <span class="oc-order-no">{{ order.orderNo }}</span>
             <div class="oc-order-amount">
               <b>¥ {{ formatMoney(order.totalAmount) }}</b>
             </div>
@@ -176,10 +173,11 @@
             </div>
           </div>
 
-          <!-- 货物规格 + 业务来源轻量标签 + 单价 -->
+          <!-- 货物规格 + 业务来源(公开/指定) + 运输品类(散杂货/集装箱) + 单价（同一行） -->
           <div class="oc-info-row">
             <div class="oc-tag-row">
               <span class="oc-source-tag" :class="order.source">{{ order.sourceText }}</span>
+              <span class="oc-transport-tag">{{ order.transportCategory || '散杂货运输' }}</span>
               <span class="oc-cargo-tag oc-cargo-type">{{ order.cargoSpec }}</span>
             </div>
             <div class="oc-order-unit-price">
@@ -403,8 +401,8 @@ const orderStatusOptions = [
 
 const orderSourceOptions = [
   { text: '全部来源', value: 'all' },
-  { text: '货源竞价', value: 'bidding' },
-  { text: '直接创建', value: 'direct' },
+  { text: '公开托运', value: 'public' },
+  { text: '指定托运', value: 'assigned' },
 ]
 
 // 联动当前 Tab 的快捷状态列表
@@ -888,14 +886,26 @@ const onNav = (nav) => {
   border-radius: 4px;
 }
 
+.oc-source-tag.public,
 .oc-source-tag.bidding {
   background: #eef2ff;
   color: #3a65ff;
 }
 
+.oc-source-tag.assigned,
 .oc-source-tag.direct {
   background: #f0f3f8;
   color: #5a6e85;
+}
+
+.oc-transport-tag {
+  font-size: 11px;
+  color: #4a5d78;
+  background: #f0f4f9;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .oc-status-badge {

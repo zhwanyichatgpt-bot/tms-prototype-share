@@ -248,14 +248,15 @@ export const mockQuoteList = [
 ]
 
 // ================= 托运订单 Mock 数据 =================
-// 仅包含正式托运订单（来自货源竞价确认 或 直接创建），运力竞价生成的运输任务不在此处
+// 仅包含正式托运订单（公开托运 或 指定托运），运力竞价生成的运输任务不在此处
 // status: 待执行 | 执行中 | 已完成
-// source: 'bidding' (货源竞价) | 'direct' (直接创建)
+// source: 'public' (公开托运) | 'assigned' (指定托运)
 export const mockOrderList = [
   {
     orderNo: 'TY20240814001',
-    source: 'bidding',
-    sourceText: '货源竞价',
+    source: 'public',
+    sourceText: '公开托运',
+    transportCategory: '散杂货运输',
     status: '待执行',
     cargoName: '大豆',
     cargoQuantity: '340吨',
@@ -272,8 +273,9 @@ export const mockOrderList = [
   },
   {
     orderNo: 'TY20240812002',
-    source: 'direct',
-    sourceText: '直接创建',
+    source: 'assigned',
+    sourceText: '指定托运',
+    transportCategory: '散杂货运输',
     status: '执行中',
     cargoName: '煤',
     cargoQuantity: '500吨',
@@ -289,12 +291,13 @@ export const mockOrderList = [
   },
   {
     orderNo: 'TY20240810003',
-    source: 'direct',
-    sourceText: '直接创建',
+    source: 'assigned',
+    sourceText: '指定托运',
+    transportCategory: '集装箱运输',
     status: '已完成',
-    cargoName: '钢材',
-    cargoQuantity: '600吨',
-    cargoSpec: '钢材 600吨',
+    cargoName: '标箱',
+    cargoQuantity: '20TEU',
+    cargoSpec: '40HQ 20TEU',
     origin: '广州 黄埔区·黄埔港',
     destination: '湛江 赤坎区·湛江港',
     shipper: '广东航运物流',
@@ -306,8 +309,9 @@ export const mockOrderList = [
   },
   {
     orderNo: 'TY20240808004',
-    source: 'bidding',
-    sourceText: '货源竞价',
+    source: 'public',
+    sourceText: '公开托运',
+    transportCategory: '散杂货运输',
     status: '已完成',
     cargoName: '铁矿石',
     cargoQuantity: '450吨',
