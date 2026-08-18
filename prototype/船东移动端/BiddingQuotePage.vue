@@ -11,7 +11,7 @@
           <button type="button" class="back-button" aria-label="返回" @click="onBack">
             <van-icon name="arrow-left" size="22" color="#333333" />
           </button>
-          <h1 class="header-title">{{ isFreight ? '参与货源竞价' : '参与运力竞价' }}</h1>
+          <h1 class="header-title">{{ isFreight ? '参与货源需求' : '参与运力需求' }}</h1>
 
           <!-- 航线曲线 -->
           <img class="route-image" src="/cargo-detail-route.svg" alt="" />
@@ -55,7 +55,7 @@
               <span>竞价中，报价截止：{{ deadlineText }}</span>
             </div>
             <span class="notice-badge" :class="{ readonly: isReadOnlyState }">
-              {{ isReadOnlyState ? '已报价' : (isFreight ? '货源竞价' : '运力竞价') }}
+              {{ isReadOnlyState ? '已报价' : (isFreight ? '货源需求' : '运力需求') }}
             </span>
           </div>
 

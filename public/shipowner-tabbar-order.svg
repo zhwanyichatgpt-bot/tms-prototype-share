@@ -26,8 +26,8 @@
   </g>
 
   <!-- 文字部分 -->
-  <!-- 找货 (未选中, 灰色) -->
-  <g><text transform="translate(61, 68.2)"><tspan x="0" y="16.26" font-size="16" line-height="21" fill="#999999" font-family="PingFang SC, sans-serif" letter-spacing="0">找货</tspan></text></g>
+  <!-- 大厅 (未选中, 灰色) -->
+  <g><text transform="translate(61, 68.2)"><tspan x="0" y="16.26" font-size="16" line-height="21" fill="#999999" font-family="PingFang SC, sans-serif" letter-spacing="0">大厅</tspan></text></g>
   <!-- 订单 (选中, 黑色加粗) -->
   <g><text transform="translate(232, 68.2)"><tspan x="0" y="16.26" font-size="16" font-weight="bold" line-height="21" fill="#173664" font-family="PingFang SC, sans-serif" letter-spacing="0">订单</tspan></text></g>
   <!-- 运单 (未选中, 灰色) -->

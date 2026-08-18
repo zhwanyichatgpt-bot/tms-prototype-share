@@ -78,9 +78,9 @@
           :class="q.quoteType"
           @click="$emit('view-detail', q)"
         >
-          <!-- 卡片第一行：报价类型徽章 + 报价状态 + 运输时间 -->
+          <!-- 卡片第一行：需求类型徽章 + 报价状态 + 运输时间 -->
           <div class="oc-card-head">
-            <span class="oc-biz-badge" :class="q.quoteType">{{ q.quoteType === 'freight' ? '货源竞价' : '运力竞价' }}</span>
+            <span class="oc-biz-badge" :class="q.quoteType">{{ q.quoteType === 'freight' ? '货源需求' : '运力需求' }}</span>
             <span class="oc-status-badge" :class="quoteStatusCls(q.status)">{{ q.status }}</span>
             <span class="oc-time-range">{{ cargoOf(q).timeRange }}</span>
           </div>
@@ -208,7 +208,7 @@
       <!-- 底部导航：高亮“订单” (第二项) -->
       <div class="oc-bottom-mask"></div>
       <nav class="oc-bottom-nav" aria-label="底部导航">
-        <img src="/shipowner-tabbar-order.svg" alt="找货、订单、运单、我的" />
+        <img src="/shipowner-tabbar-order.svg?v=hall2" alt="大厅、订单、运单、我的" />
         <button
           v-for="(nav, index) in navs"
           :key="nav"
@@ -344,7 +344,7 @@ const emit = defineEmits([
   'nav-home',
 ])
 
-const navs = ['找货', '订单', '运单', '我的']
+const navs = ['大厅', '订单', '运单', '我的']
 
 // 当前顶层 Tab: 'quote' (报价) | 'order' (订单)
 const currentTab = ref(props.defaultTab || 'quote')
@@ -379,8 +379,8 @@ const quoteStatusOptions = [
 
 const quoteTypeOptions = [
   { text: '全部类型', value: 'all' },
-  { text: '货源竞价', value: 'freight' },
-  { text: '运力竞价', value: 'capacity' },
+  { text: '货源需求', value: 'freight' },
+  { text: '运力需求', value: 'capacity' },
 ]
 
 // =================== 订单 Tab 状态与搜索 ===================
@@ -632,7 +632,7 @@ const onCreatePlan = (order) => {
 
 // 底部导航
 const onNav = (nav) => {
-  if (nav === '找货') {
+  if (nav === '大厅') {
     emit('nav-home')
     return
   }

@@ -73,7 +73,7 @@
         :style="{ left: `${pin.left}px`, top: `${pin.top}px` }"
         type="button"
         :aria-label="`${pin.name}，${pin.count}条${activeBusinessCategory === 'freight' ? '货源' : '运力'}`"
-        @click="showToast(`${pin.name} ${activeBusinessCategory === 'freight' ? '货源竞价' : '运力竞价'}共${pin.count}条`)"
+        @click="showToast(`${pin.name} ${activeBusinessCategory === 'freight' ? '货源需求' : '运力需求'}共${pin.count}条`)"
       >
         <img src="/shipowner-map-pin.svg" alt="" />
       </button>
@@ -126,24 +126,24 @@
           </template>
         </svg>
 
-        <!-- 左侧按钮：货源竞价 -->
+        <!-- 左侧按钮：货源需求 -->
         <button
           type="button"
           class="tab-btn left-tab-btn"
           :class="{ active: activeBusinessCategory === 'freight' }"
           @click="switchBusinessCategory('freight')"
         >
-          <span>货源竞价</span>
+          <span>货源需求</span>
         </button>
 
-        <!-- 右侧按钮：运力竞价 -->
+        <!-- 右侧按钮：运力需求 -->
         <button
           type="button"
           class="tab-btn right-tab-btn"
           :class="{ active: activeBusinessCategory === 'capacity' }"
           @click="switchBusinessCategory('capacity')"
         >
-          <span>运力竞价</span>
+          <span>运力需求</span>
         </button>
       </div>
 
@@ -169,10 +169,10 @@
           :class="cargo.businessType"
           @click="onCard(cargo)"
         >
-          <!-- 卡片第一行：竞价类型标签 + 推荐度 + 时间 -->
+          <!-- 卡片第一行：需求类型标签 + 推荐度 + 时间 -->
           <div class="card-heading">
             <span class="biz-badge" :class="cargo.businessType">
-              {{ cargo.businessType === 'freight' ? '货源竞价' : '运力竞价' }}
+              {{ cargo.businessType === 'freight' ? '货源需求' : '运力需求' }}
             </span>
             <span class="recommend"><strong>{{ cargo.recommendRate }}</strong> 推荐</span>
             <span class="time-range">{{ cargo.timeRange }}</span>
@@ -225,7 +225,7 @@
       <!-- 10. 底部导航 -->
       <div class="bottom-mask"></div>
       <nav class="bottom-nav" aria-label="底部导航">
-        <img src="/shipowner-tabbar.svg" alt="找货、订单、运单、我的" />
+        <img src="/shipowner-tabbar.svg?v=hall2" alt="大厅、订单、运单、我的" />
         <button
           v-for="(nav, index) in navs"
           :key="nav"
@@ -272,7 +272,7 @@ const currentCity = ref('福州市')
 const showCityPicker = ref(false)
 const showScan = ref(false)
 
-// 一级业务分类：freight(货源竞价，默认) | capacity(运力竞价)
+// 一级业务分类：freight(货源需求，默认) | capacity(运力需求)
 const activeBusinessCategory = ref('freight')
 
 // 二级排序：recommend(综合排序) | distance(距离最近) | latest(最新发布)
@@ -284,7 +284,7 @@ const tabs = [
   { key: 'latest', label: '最新发布' },
 ]
 
-const navs = ['找货', '订单', '运单', '我的']
+const navs = ['大厅', '订单', '运单', '我的']
 
 const cities = [
   { text: '福州市', value: '福州市' },
@@ -300,7 +300,7 @@ const activeMapPins = computed(() => {
 // 切换一级业务分类
 const switchBusinessCategory = (category) => {
   activeBusinessCategory.value = category
-  showToast(category === 'freight' ? '已切换至：货源竞价' : '已切换至：运力竞价')
+  showToast(category === 'freight' ? '已切换至：货源需求' : '已切换至：运力需求')
 }
 
 // 规范化数据处理
@@ -429,7 +429,7 @@ const handleViewTask = (quote) => {
 }
 
 const onNav = (nav) => {
-  if (nav === '找货') {
+  if (nav === '大厅') {
     showToast('当前已在运力服务首页')
     return
   }
