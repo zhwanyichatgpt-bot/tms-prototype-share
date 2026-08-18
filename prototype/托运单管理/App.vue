@@ -1,54 +1,228 @@
 <template>
-  <WorkspaceShell current-title="托运单管理" :show-back-link="false">
+  <div class="plan-scroll">
     <div class="waybill-manage-page">
-      <!-- 页面标题（与表格拼接成连续卡片墙）-->
-      <header class="page-header">
-        <h1 class="page-title annotation-business-type-entry">托运单管理</h1>
-        <div class="page-actions">
-          <button class="ws-btn" @click="refreshList">刷新</button>
-          <button class="ws-btn primary annotation-create-entry" @click="openTypeSelectDialog">+ 新增公开托运单</button>
-        </div>
-      </header>
+    <!-- 顶部系统区 (业务系统顶栏) -->
+    <header class="tp-topbar">
+      <img class="tp-logo" src="/transport-plan-assets/logo.png" alt="logo" @click="handleGoHome" style="cursor: pointer;" />
+      <span class="tp-divider1"></span>
+      <span class="tp-avatar"></span>
+      <div class="tp-site">
+        <span class="tp-site-name">楹联集运站</span>
+        <span class="tp-site-org">企业名称企业名称企业企业名称...</span>
+      </div>
+      <img class="tp-nav" src="/transport-plan-assets/nav.png" alt="nav" />
+      <span class="tp-date">2022 年 05 月 27 日</span>
+      <span class="tp-weather">24℃ 多云</span>
+      <img class="tp-user" src="/transport-plan-assets/avatar.png" alt="user" />
+      <span class="tp-divider2"></span>
+      <img class="tp-icon i1" src="/transport-plan-assets/icon1.png" alt="icon1" />
+      <img class="tp-icon i2" src="/transport-plan-assets/icon2.png" alt="icon2" />
+      <img class="tp-icon i3" src="/transport-plan-assets/icon3.png" alt="icon3" />
+    </header>
 
-      <!-- 托运单列表 -->
-      <div class="table-card">
-        <table class="ws-table">
-          <thead>
-            <tr>
-              <th width="140">托运单号</th>
-              <th width="100">业务类型</th>
-              <th width="120">运输方式</th>
-              <th>托运企业</th>
-              <th width="100">联系人</th>
-              <th width="110">状态</th>
-              <th width="160">发布时间</th>
-              <th>路线</th>
-              <th width="100">操作</th>
-            </tr>
-          </thead>
-          <tbody v-if="waybillList.length">
-            <tr v-for="item in waybillList" :key="item.id">
-              <td>{{ item.id }}</td>
-              <td>{{ item.businessType }}</td>
-              <td>{{ item.transportMode }}</td>
-              <td class="ellipsis">{{ item.shipperCompany }}</td>
-              <td>{{ item.contactName }}</td>
-              <td>
-                <span class="status-pill" :class="getStatusClass(item.status)">{{ item.status }}</span>
-              </td>
-              <td>{{ item.publishTime }}</td>
-              <td class="ellipsis">{{ item.route }}</td>
-              <td>
-                <button class="text-link" @click="viewDetail(item)">查看</button>
-              </td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr>
-              <td colspan="9" class="empty-cell">暂无托运单，点击右上角创建</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- 第二层工作台条 -->
+    <div class="tp-workbar">
+      <img class="wb-ws-icon" src="/transport-plan-assets/workspace-icon.png" alt="workspace" />
+      <span class="wb-ws-text" @click="handleGoHome" style="cursor: pointer;">工作台</span>
+      <span class="wb-tab-active">
+        <span class="wb-tab-shape"></span>
+        <span class="wb-tab-text">托运单管理</span>
+        <span class="wb-tab-close" title="关闭页面" @click="handleGoHome">
+          <svg width="7" height="7" viewBox="0 0 6.58 6.58" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.82" y="0" width="8.14" height="1.16" transform="rotate(45 0.82 0)" rx="0.58" fill="#3D4050" />
+            <rect x="6.58" y="0.82" width="8.14" height="1.16" transform="rotate(135 6.58 0.82)" rx="0.58" fill="#3D4050" />
+          </svg>
+        </span>
+      </span>
+    </div>
+
+    <!-- 主体内容区 -->
+    <div class="tp-body">
+      <!-- 1. 综合查询区（运输计划风格） -->
+      <div class="query-row">
+        <div class="query-field search-field">
+          <input class="q-input" v-model="filters.keyword" placeholder="输入托运单号/路线/货品搜索" @keyup.enter="handleQuery" />
+        </div>
+        <div class="query-field shipper-field">
+          <span class="q-label">托运企业</span>
+          <input class="q-input" v-model="filters.shipperCompany" placeholder="输入企业名称" @keyup.enter="handleQuery" />
+        </div>
+        <div class="query-field select-field">
+          <span class="q-label">业务类型</span>
+          <select class="q-select" v-model="filters.businessType">
+            <option value="">全部类型</option>
+            <option v-for="b in businessTypeOptions" :key="b" :value="b">{{ b }}</option>
+          </select>
+        </div>
+        <div class="query-field select-field">
+          <span class="q-label">运输方式</span>
+          <select class="q-select" v-model="filters.transportMode">
+            <option value="">全部方式</option>
+            <option v-for="m in transportModeOptions" :key="m" :value="m">{{ m }}</option>
+          </select>
+        </div>
+        <button class="q-refresh" title="重置筛选" @click="handleResetFilters">↻</button>
+        <button class="q-search-btn" @click="handleQuery">搜索</button>
+      </div>
+
+      <!-- 2. 状态页签 -->
+      <div class="status-tabs">
+        <button
+          v-for="t in waybillStatusTabs"
+          :key="t.value"
+          :class="{ active: activeStatus === t.value }"
+          @click="handleStatusTabChange(t.value)"
+        >{{ t.label }}</button>
+      </div>
+
+      <!-- 3. 操作按钮行 -->
+      <div class="action-row">
+        <button class="btn-primary annotation-create-entry" @click="openTypeSelectDialog">新增托运单</button>
+      </div>
+
+      <!-- 4. 托运单表头栏 -->
+      <div class="wb-list-header">
+        <div class="col-head col-hd-waybill">托运单</div>
+        <div class="col-head col-hd-transport">运输信息</div>
+        <div class="col-head col-hd-company">物贸企业</div>
+        <div class="col-head col-hd-cargo">货品信息</div>
+        <div class="col-head col-hd-price">期望单价</div>
+        <div class="col-head col-hd-status">
+          <span>状态</span>
+          <span class="status-arrow">▾</span>
+        </div>
+        <div class="col-head col-hd-requirement">运输要求</div>
+      </div>
+
+      <!-- 4. 托运单卡片列表 -->
+      <div class="wb-card-list">
+        <div
+          v-if="pagedWaybills.length"
+          v-for="(item, index) in pagedWaybills"
+          :key="item.id"
+          class="wb-card-item"
+        >
+          <!-- 卡片顶条 -->
+          <div class="wb-card-topbar">
+            <div class="topbar-left">
+              <span class="wb-index">{{ formatIndex(index) }}</span>
+              <span class="wb-code" @click="viewDetail(item)">{{ item.id }}</span>
+              <span class="wb-mode-tag" :class="item.modeTag === '抢单' ? 'grab' : 'bidding'">
+                {{ item.modeTag || '竞价' }}
+              </span>
+            </div>
+            <div class="topbar-right">
+              <span class="countdown-label">{{ item.countdownType || '距离竞价结束' }}</span>
+              <span class="cd-box">{{ item.countdownDays || '36' }}</span>
+              <span class="cd-unit">天</span>
+              <span class="cd-box">{{ item.countdownHours || '03' }}</span>
+              <span class="cd-colon">:</span>
+              <span class="cd-box">{{ item.countdownMinutes || '37' }}</span>
+              <span class="cd-colon">:</span>
+              <span class="cd-box">{{ item.countdownSeconds || '06' }}</span>
+              <button class="top-action-btn" @click="viewDetail(item)">详情</button>
+              <button
+                v-if="item.status === '竞价中' || item.status === '待审核' || item.status === '待确定'"
+                class="top-action-btn danger"
+                @click="handleCancelWaybill(item)"
+              >取消</button>
+            </div>
+          </div>
+
+          <!-- 卡片内容主体 -->
+          <div class="wb-card-body">
+            <!-- 路线轴 -->
+            <div class="wb-col col-route-wrap">
+              <div class="route-timeline-cell">
+                <div class="rt-axis">
+                  <span class="rt-badge load">装</span>
+                  <div class="rt-line">
+                    <span class="rt-node-circle">{{ getRouteDetails(item).nodeCount }}</span>
+                  </div>
+                  <span class="rt-badge unload">卸</span>
+                </div>
+                <div class="rt-content">
+                  <div class="rt-item load-item">
+                    <div class="rt-item-top">
+                      <span class="rt-city">{{ getRouteDetails(item).loadCity }}</span>
+                      <span class="rt-time">装货时间：{{ getRouteDetails(item).loadTime }}</span>
+                    </div>
+                    <div class="rt-detail">{{ getRouteDetails(item).loadPoint }}</div>
+                  </div>
+                  <div class="rt-item unload-item">
+                    <div class="rt-item-top">
+                      <span class="rt-city">{{ getRouteDetails(item).unloadCity }}</span>
+                      <span class="rt-time">卸货时间：{{ getRouteDetails(item).unloadTime }}</span>
+                    </div>
+                    <div class="rt-detail">{{ getRouteDetails(item).unloadPoint }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 运输信息 -->
+            <div class="wb-col col-transport-wrap">
+              <span class="tag-transport public">公开托运</span>
+              <span
+                class="tag-transport type"
+                :class="item.businessType === '集装箱' ? 'container' : 'bulk'"
+              >{{ item.businessType === '集装箱' ? '集装箱运输' : '散杂货运输' }}</span>
+            </div>
+
+            <!-- 物贸企业 -->
+            <div class="wb-col col-company-wrap">
+              <span class="company-text">{{ item.shipperCompany && item.shipperCompany !== '-' ? item.shipperCompany : '-' }}</span>
+            </div>
+
+            <!-- 货品信息 -->
+            <div class="wb-col col-cargo-wrap">
+              <div class="cargo-cell">
+                <span class="cargo-badge">1</span>
+                <span class="cargo-name">{{ item.cargoName || '货品' }}</span>
+                <span class="cargo-divider">|</span>
+                <span class="cargo-qty">{{ item.cargoQtyStr || (item.totalWeight ? item.totalWeight + ' 吨' : '100 吨') }}</span>
+              </div>
+            </div>
+
+            <!-- 期望单价 -->
+            <div class="wb-col col-price-wrap">
+              <div class="price-cell">
+                <div class="price-val">{{ item.expectedPrice || '400~1200元/箱' }}</div>
+                <div class="price-tag-wrap">
+                  <span class="price-billing-tag">{{ item.billingTag || (item.businessType === '集装箱' ? '箱' : '重量') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 状态 -->
+            <div class="wb-col col-status-wrap">
+              <div class="status-pill">{{ item.status }}</div>
+            </div>
+
+            <!-- 运输要求 -->
+            <div class="wb-col col-requirement-wrap">
+              <span class="req-text">{{ item.requirementText || '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="empty-cell">暂无符合条件的托运单，点击右上角创建</div>
+      </div>
+
+      <!-- 5. 分页栏 -->
+      <div class="pagination-row">
+        <span class="page-total">共 {{ filteredWaybills.length }} 条</span>
+        <span class="page-size">{{ pageSize }}条/页</span>
+        <button class="page-btn" :disabled="currentPageNum <= 1" @click="currentPageNum--">‹</button>
+        <button
+          v-for="n in totalPageNumbers"
+          :key="n"
+          class="page-btn"
+          :class="{ active: n === currentPageNum }"
+          @click="currentPageNum = n"
+        >{{ n }}</button>
+        <button class="page-btn" :disabled="currentPageNum >= totalPageCount" @click="currentPageNum++">›</button>
+        <span class="page-jump">到第 <input class="page-input" v-model.number="jumpPageNum" @keyup.enter="doJumpPage" /> 页</span>
       </div>
 
     <!-- 业务类型选择弹窗 -->
@@ -587,13 +761,22 @@
         </div>
       </template>
     </el-drawer>
-    </div>
-  </WorkspaceShell>
+    </div> <!-- tp-body 结束 -->
+  </div> <!-- waybill-manage-page 结束 -->
+
+  <!-- 散杂货托运单创建抽屉（带黑色半透明蒙层） -->
+  <BulkWaybillCreate
+    v-if="currentSubView === 'bulk-create'"
+    @back="currentSubView = 'list'"
+    @submit-success="handleCreatedWaybill"
+  />
+</div> <!-- plan-scroll 结束 -->
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import BulkWaybillCreate from './BulkWaybillCreate.vue'
 import {
   ElButton, ElTable, ElTableColumn, ElDialog, ElDrawer, ElInput, ElInputNumber,
   ElSelect, ElOption, ElDatePicker, ElRadio, ElRadioGroup, ElRadioButton,
@@ -602,10 +785,48 @@ import {
 import {
   businessTypeOptions, transportModeOptions, taxRequirementOptions,
   paymentMethodOptions, billingModeOptions, goodsOptions, packageOptions,
-  visibilityScopeOptions, sampleWaybillList,
+  visibilityScopeOptions, sampleWaybillList, waybillStatusTabs,
 } from './mock-data'
-import { prototypeStore, addWaybill } from '../../src/shared/prototype-store'
-import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
+import { prototypeStore, addWaybill, setCurrentPage } from '../../src/shared/prototype-store'
+
+const currentDate = computed(() => {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y} 年 ${m} 月 ${d} 日`
+})
+
+function handleGoHome() {
+  setCurrentPage('home')
+  window.dispatchEvent(new CustomEvent('prototype-go-home'))
+}
+
+function formatIndex(index) {
+  const size = pageSize.value || 10
+  const current = currentPageNum.value || 1
+  const num = (current - 1) * size + index + 1
+  return String(num).padStart(2, '0')
+}
+
+function getRouteDetails(item) {
+  let loadCity = item.loadCity || item.loadLocation || ''
+  let unloadCity = item.unloadCity || item.unloadLocation || ''
+  if (!loadCity && item.route) {
+    const parts = item.route.split(' -> ')
+    loadCity = parts[0] || ''
+    unloadCity = parts[1] || ''
+  }
+  return {
+    loadCity: loadCity || '福建省-福州市',
+    loadPoint: item.loadPoint || item.loadDetail || '装货点',
+    loadTime: item.loadTime || '2026-09-23 00:00:00',
+    unloadCity: unloadCity || '湖北省-武汉市',
+    unloadPoint: item.unloadPoint || item.unloadDetail || '卸货点',
+    unloadTime: item.unloadTime || '2026-10-01 00:00:00',
+    nodeCount: item.nodeCount || 2,
+  }
+}
 
 const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
 const annotationSpecUrl = new URL('./spec.yaml', import.meta.url).href
@@ -660,15 +881,27 @@ function refreshAnnotation() {
   })
 }
 
-// ============ 列表数据 ============
+// ============ 列表与筛选数据 ============
 const waybillList = ref([])
+const activeStatus = ref('全部')
+const filters = reactive({
+  keyword: '',
+  shipperCompany: '',
+  businessType: '',
+  transportMode: '',
+})
+const currentPageNum = ref(1)
+const pageSize = ref(10)
+const jumpPageNum = ref(1)
+const checkedRows = reactive({})
+const checkAll = ref(false)
 
 function loadWaybillList() {
   // 优先读 store（创建页写入的），无则用 mock
   if (prototypeStore.waybills.length > 0) {
     waybillList.value = prototypeStore.waybills.map(formatWaybillRow)
   } else {
-    waybillList.value = sampleWaybillList.slice()
+    waybillList.value = sampleWaybillList.map(item => ({ ...item }))
   }
 }
 
@@ -679,15 +912,18 @@ function formatWaybillRow(w) {
     transportMode: w.mainTransportMode || w.transportMode || '多式联运',
     shipperCompany: w.shipperCompany,
     contactName: w.contactName,
+    contactPhone: w.contactPhone || '',
     status: w.status,
     publishTime: w.publishTime
       ? new Date(w.publishTime).toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
       : '',
     route: getRouteText(w),
+    cargoName: w.cargoName || (w.businessType === '集装箱' ? '集装箱货物' : '散杂货'),
   }
 }
 
 function getRouteText(waybill) {
+  if (waybill.route) return waybill.route
   if (!waybill.loadNodes || waybill.loadNodes.length === 0) {
     if (!waybill.containerNodes || waybill.containerNodes.length === 0) return '待确认路线'
     const first = waybill.containerNodes[0].name || '起点'
@@ -701,20 +937,115 @@ function getRouteText(waybill) {
   return `${firstLoad.replace(/装货点|卸货点/g, '')} -> ${lastUnload.replace(/装货点|卸货点/g, '')}`
 }
 
-function getStatusClass(status) {
-  const map = {
-    竞价中: 'pending',
-    已确认: 'success',
-    已取消: 'cancelled',
-    草稿: 'draft',
-    待审核: 'pending',
-    待确定: 'pending',
-    待执行: 'primary',
-    执行中: 'primary',
-    已完成: 'success',
-    已终止: 'cancelled',
+function handleStatusTabChange(statusVal) {
+  activeStatus.value = statusVal
+  currentPageNum.value = 1
+}
+
+function handleQuery() {
+  currentPageNum.value = 1
+  ElMessage.info('已更新列表筛选')
+}
+
+function handleResetFilters() {
+  filters.keyword = ''
+  filters.shipperCompany = ''
+  filters.businessType = ''
+  filters.transportMode = ''
+  activeStatus.value = '全部'
+  currentPageNum.value = 1
+  ElMessage.success('筛选已重置')
+}
+
+function handleCheckAll(val) {
+  pagedWaybills.value.forEach(item => {
+    checkedRows[item.id] = val
+  })
+}
+
+function handleRowCheck(item, val) {
+  checkedRows[item.id] = val
+  checkAll.value = pagedWaybills.value.length > 0 && pagedWaybills.value.every(p => !!checkedRows[p.id])
+}
+
+const filteredWaybills = computed(() => {
+  return waybillList.value.filter(item => {
+    // 状态过滤
+    if (activeStatus.value === '已取消/终止') {
+      if (item.status !== '已取消' && item.status !== '已终止') return false
+    } else if (activeStatus.value !== '全部' && item.status !== activeStatus.value) {
+      return false
+    }
+    // 关键词过滤（单号、路线、货品）
+    if (filters.keyword.trim()) {
+      const kw = filters.keyword.trim().toLowerCase()
+      const matchId = (item.id || '').toLowerCase().includes(kw)
+      const matchRoute = (item.route || '').toLowerCase().includes(kw)
+      const matchCargo = (item.cargoName || '').toLowerCase().includes(kw)
+      if (!matchId && !matchRoute && !matchCargo) return false
+    }
+    // 托运企业过滤
+    if (filters.shipperCompany.trim()) {
+      const sc = filters.shipperCompany.trim().toLowerCase()
+      if (!(item.shipperCompany || '').toLowerCase().includes(sc)) return false
+    }
+    // 业务类型过滤
+    if (filters.businessType && item.businessType !== filters.businessType) {
+      return false
+    }
+    // 运输方式过滤
+    if (filters.transportMode && item.transportMode !== filters.transportMode) {
+      return false
+    }
+    return true
+  })
+})
+
+const totalPageCount = computed(() => Math.max(1, Math.ceil(filteredWaybills.value.length / pageSize.value)))
+const totalPageNumbers = computed(() => {
+  const count = totalPageCount.value
+  const arr = []
+  for (let i = 1; i <= count; i++) arr.push(i)
+  return arr
+})
+
+const pagedWaybills = computed(() => {
+  const start = (currentPageNum.value - 1) * pageSize.value
+  return filteredWaybills.value.slice(start, start + pageSize.value)
+})
+
+function doJumpPage() {
+  const target = Number(jumpPageNum.value)
+  if (target >= 1 && target <= totalPageCount.value) {
+    currentPageNum.value = target
   }
-  return map[status] || 'draft'
+}
+
+function getStatusTagClass(status) {
+  const map = {
+    竞价中: 'blue',
+    已确认: 'green',
+    已完成: 'green',
+    待确定: 'purple',
+    待审核: 'purple',
+    待执行: 'steel',
+    执行中: 'steel',
+    草稿: 'gray',
+    已取消: 'gray',
+    已终止: 'gray',
+  }
+  return map[status] || 'gray'
+}
+
+function handleCancelWaybill(item) {
+  ElMessageBox.confirm(`确定要取消托运单【${item.id}】吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    item.status = '已取消'
+    ElMessage.success(`托运单【${item.id}】已取消`)
+  }).catch(() => {})
 }
 
 function refreshList() {
@@ -727,6 +1058,7 @@ function viewDetail(item) {
 }
 
 // ============ 业务类型选择 ============
+const currentSubView = ref('list')
 const showTypeSelectDialog = ref(false)
 const showBulkCargoDialog = ref(false)
 const showContainerDialog = ref(false)
@@ -739,12 +1071,17 @@ function openTypeSelectDialog() {
 function selectBusinessType(type) {
   showTypeSelectDialog.value = false
   if (type === '散杂货') {
-    showBulkCargoDialog.value = true
-    initEmptyNodes()
+    currentSubView.value = 'bulk-create'
   } else if (type === '集装箱') {
     showContainerDialog.value = true
     initEmptyContainerData()
   }
+  refreshAnnotation()
+}
+
+function handleCreatedWaybill(newWaybill) {
+  waybillList.value.unshift(newWaybill)
+  currentSubView.value = 'list'
   refreshAnnotation()
 }
 
@@ -1117,130 +1454,795 @@ onUnmounted(() => {
   overflow-y: auto;
 }
 
-.waybill-manage-page {
-  min-height: calc(100vh - 132px);
+.plan-scroll {
+  overflow-x: auto;
+  background: #f5f6f8;
 }
 
-/* page-header 与表格拼接成连续卡片墙 */
-.page-header {
+.waybill-manage-page {
+  position: relative;
+  width: 1920px;
+  min-height: 1456px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* ============ 顶部系统区 (y 0-72, 白底) ============ */
+.tp-topbar {
+  position: relative;
+  height: 72px;
+  background: #ffffff;
+  border-bottom: 1px solid #eef1f5;
+}
+.tp-logo {
+  position: absolute;
+  left: 64px;
+  top: 22px;
+  width: 124px;
+  height: 28px;
+}
+.tp-divider1 {
+  position: absolute;
+  left: 216px;
+  top: 24px;
+  width: 1px;
+  height: 24px;
+  background: #3d4050;
+}
+.tp-avatar {
+  position: absolute;
+  left: 244px;
+  top: 21px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e1dede;
+  border: 2px solid #c4cad1;
+}
+.tp-site {
+  position: absolute;
+  left: 284px;
+  top: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tp-site-name {
+  font-size: 16px;
+  color: #3d4050;
+  line-height: 22px;
+}
+.tp-site-org {
+  font-size: 12px;
+  color: #91929e;
+  line-height: 18px;
+}
+.tp-nav {
+  position: absolute;
+  left: 854px;
+  top: 20px;
+  width: 318px;
+  height: 36px;
+}
+.tp-date {
+  position: absolute;
+  left: 1474px;
+  top: 27px;
+  font-size: 16px;
+  color: #3d4050;
+  line-height: 21px;
+  white-space: nowrap;
+}
+.tp-weather {
+  position: absolute;
+  left: 1635px;
+  top: 27px;
+  font-size: 16px;
+  color: #3d4050;
+  line-height: 22px;
+  white-space: nowrap;
+}
+.tp-user {
+  position: absolute;
+  left: 1715px;
+  top: 22px;
+  width: 37px;
+  height: 31px;
+}
+.tp-divider2 {
+  position: absolute;
+  left: 1771px;
+  top: 28px;
+  width: 1px;
+  height: 21px;
+  background: #3d4050;
+}
+.tp-icon {
+  position: absolute;
+  top: 26px;
+  width: 24px;
+  height: 24px;
+}
+.tp-icon.i1 { left: 1792px; }
+.tp-icon.i2 { left: 1828px; }
+.tp-icon.i3 { left: 1864px; }
+
+/* ============ 第二层工作台条 (y 72-108, 浅灰:黑色填充6%透明度) ============ */
+.tp-workbar {
+  position: relative;
+  height: 36px;
+  margin: 0 64px;
+  background: rgba(0, 0, 0, 0.06);
+}
+.wb-ws-icon {
+  position: absolute;
+  left: 48px;
+  top: 11px;
+  width: 16px;
+  height: 16px;
+}
+.wb-ws-text {
+  position: absolute;
+  left: 72px;
+  top: 8px;
+  font-size: 16px;
+  color: #909499;
+  line-height: 22px;
+}
+.wb-tab-active {
+  position: absolute;
+  left: 153px;
+  top: 0;
+  width: 202px;
+  height: 36px;
+}
+.wb-tab-shape {
+  position: absolute;
+  inset: 0;
+  background: url('/transport-plan-assets/tab-transport.png') no-repeat center / 100% 100%;
+}
+.wb-tab-text {
+  position: absolute;
+  left: 50px;
+  top: 8px;
+  font-size: 16px;
+  color: #3d4050;
+  line-height: 22px;
+}
+.wb-tab-close {
+  position: absolute;
+  left: 161px;
+  top: 17px;
+  width: 7px;
+  height: 7px;
+  cursor: pointer;
+}
+
+/* ============ 内容区 (y 108+, 白底) ============ */
+.tp-body {
+  margin: 0 64px;
+  padding-top: 20px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* ============ 1. 查询区 ============ */
+.query-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 32px;
+  margin-bottom: 37px;
+}
+.query-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  border: 1px solid #e0e2e6;
+  background: #fff;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+.search-field { width: 280px; }
+.shipper-field { width: 300px; }
+.select-field { width: 256px; }
+.q-label {
+  font-size: 14px;
+  color: #1b1b1b;
+  white-space: nowrap;
+}
+.q-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #1f2329;
+  background: transparent;
+  min-width: 0;
+}
+.q-input::placeholder { color: #cccccc; }
+.q-select {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #3d4050;
+  background: transparent;
+}
+.q-refresh {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e0e2e6;
+  background: #fff;
+  color: #4e5969;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.q-refresh:hover { border-color: #3a65ff; color: #3a65ff; }
+.q-search-btn {
+  width: 80px;
+  height: 32px;
+  border: none;
+  background: #3a65ff;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.q-search-btn:hover { background: #5982ff; }
+
+/* ============ 2. 状态页签 ============ */
+.status-tabs {
+  display: flex;
+  gap: 24px;
+  height: 29px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.status-tabs button {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #333333;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 29px;
+  position: relative;
+}
+.status-tabs button:hover { color: #3a65ff; }
+.status-tabs button.active {
+  color: #3a65ff;
+  font-weight: 600;
+}
+.status-tabs button.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #3a65ff;
+}
+
+/* ============ 3. 操作按钮行 ============ */
+.action-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.btn-primary {
+  min-width: 92px;
+  height: 28px;
+  padding: 0 12px;
+  border: none;
+  background: #3a65ff;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary:hover { background: #5982ff; }
+.btn-plain {
+  min-width: 92px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid #d8dce3;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-plain:hover { border-color: #3a65ff; color: #3a65ff; }
+
+/* ============ 4. 托运单表头与卡片列表 ============ */
+.wb-list-header {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 16px;
+  color: #86909c;
+  font-size: 13px;
+  border-bottom: 1px solid #eef1f5;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.col-head {
+  box-sizing: border-box;
+}
+.col-hd-waybill { width: 500px; flex-shrink: 0; }
+.col-hd-transport { width: 140px; flex-shrink: 0; }
+.col-hd-company { width: 140px; flex-shrink: 0; }
+.col-hd-cargo { width: 220px; flex-shrink: 0; }
+.col-hd-price { width: 200px; flex-shrink: 0; }
+.col-hd-status { width: 160px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; }
+.status-arrow { font-size: 10px; color: #86909c; }
+.col-hd-requirement { flex: 1; min-width: 200px; }
+
+.wb-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wb-card-item {
+  background: #ffffff;
+  border: 1px solid #eef1f5;
+  border-radius: 2px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.wb-card-item:hover {
+  border-color: #d0e0ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.wb-card-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 54px;
-  padding: 0 18px;
-  margin-bottom: 0;
-  background: #fff;
-  border: 1px solid #e7ebf0;
-  border-bottom: none;
-}
-
-.page-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.page-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* 自定义按钮（源 z1 风格）*/
-.ws-btn {
-  height: 32px;
+  height: 38px;
   padding: 0 16px;
-  border: 1px solid #c9cdd4;
+  background: #fbfcfd;
+  border-bottom: 1px solid #f2f4f8;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-index {
+  color: #86909c;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 4px;
+}
+.wb-code {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2329;
+  cursor: pointer;
+}
+.wb-code:hover {
+  color: #3a65ff;
+}
+.wb-mode-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
   border-radius: 2px;
-  background: #fff;
+  font-size: 11px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+.wb-mode-tag.bidding {
+  background: #3a65ff;
+}
+.wb-mode-tag.grab {
+  background: #ff7d00;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.countdown-label {
+  font-size: 12px;
+  color: #86909c;
+  margin-right: 4px;
+}
+.cd-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 18px;
+  padding: 0 3px;
+  background: #ffece8;
+  color: #f53f3f;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 2px;
+  line-height: 1;
+}
+.cd-unit {
+  font-size: 12px;
+  color: #86909c;
+  margin: 0 3px;
+}
+.cd-colon {
+  font-size: 12px;
+  color: #f53f3f;
+  font-weight: 700;
+  margin: 0 2px;
+}
+.top-action-btn {
+  border: none;
+  background: transparent;
+  color: #3a65ff;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 10px;
+}
+.top-action-btn:hover {
+  text-decoration: underline;
+}
+.top-action-btn.danger {
+  color: #3a65ff;
+}
+
+.wb-card-body {
+  display: flex;
+  align-items: center;
+  min-height: 84px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.col-route-wrap { width: 500px; flex-shrink: 0; }
+.col-transport-wrap {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.tag-transport {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 2px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.tag-transport.public {
+  background: #e8f8ed;
+  color: #21bd88;
+}
+.tag-transport.container {
+  background: #f2ecff;
+  color: #9482b8;
+}
+.tag-transport.bulk {
+  background: #fcecde;
+  color: #aa7b57;
+}
+
+.col-company-wrap {
+  width: 140px;
+  flex-shrink: 0;
   color: #4e5969;
   font-size: 14px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.ws-btn:hover {
-  border-color: #165dff;
-  color: #165dff;
-}
-.ws-btn.primary {
-  background: #165dff;
-  border-color: #165dff;
-  color: #fff;
-}
-.ws-btn.primary:hover {
-  background: #4080ff;
-  border-color: #4080ff;
-  color: #fff;
 }
 
-.table-card {
-  background: #fff;
-  border: 1px solid #e7ebf0;
+.col-cargo-wrap {
+  width: 220px;
+  flex-shrink: 0;
 }
-
-/* 自定义紧凑表格（源 z1 表格风格）*/
-.ws-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.ws-table th, .ws-table td {
-  padding: 10px 14px;
-  text-align: left;
-  border-bottom: 1px solid #eef2f7;
-}
-.ws-table th {
-  background: #f7f9fc;
-  color: #556273;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.ws-table tbody tr:hover {
-  background: #fbfdff;
-}
-.ws-table tbody tr:last-child td {
-  border-bottom: none;
-}
-.ws-table .ellipsis {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ws-table .empty-cell {
-  padding: 54px 20px;
-  text-align: center;
-  color: #8894a4;
+.cargo-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
+  color: #1f2329;
+}
+.cargo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #f2f3f5;
+  color: #86909c;
+  font-size: 11px;
+  border-radius: 2px;
+}
+.cargo-name {
+  font-weight: 500;
+  color: #1f2329;
+}
+.cargo-divider {
+  color: #c9cdd4;
+}
+.cargo-qty {
+  color: #4e5969;
 }
 
-/* 状态彩色 pill（椭圆带边框）*/
+.col-price-wrap {
+  width: 200px;
+  flex-shrink: 0;
+}
+.price-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.price-val {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2329;
+}
+.price-billing-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 6px;
+  background: #f2f3f5;
+  color: #86909c;
+  font-size: 11px;
+  border-radius: 2px;
+}
+
+.col-status-wrap {
+  width: 160px;
+  flex-shrink: 0;
+}
 .status-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 58px;
-  height: 24px;
-  padding: 0 12px;
-  border-radius: 12px;
+  min-width: 68px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid #3a65ff;
+  color: #3a65ff;
+  background: #ffffff;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 600;
-  border: 1px solid transparent;
+  font-weight: 500;
 }
-.status-pill.pending { background: #fff2df; color: #f2870b; border-color: #ffe5b4; }
-.status-pill.success { background: #eaf9ef; color: #1ea25d; border-color: #c5edd5; }
-.status-pill.cancelled { background: #f1f4f8; color: #7d8795; }
-.status-pill.draft { background: #f1f4f8; color: #5f6b7a; }
-.status-pill.primary { background: #e8f3ff; color: #165dff; border-color: #bedaff; }
 
+.col-requirement-wrap {
+  flex: 1;
+  color: #4e5969;
+  font-size: 14px;
+}
+
+/* ============ 路线垂直时间轴（图二/三风格） ============ */
+.route-timeline-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rt-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 0 0 20px;
+}
+
+.rt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  z-index: 2;
+}
+
+.rt-badge.load {
+  background: #e5e9f2;
+  color: #5b6b82;
+}
+
+.rt-badge.unload {
+  background: #2b6bf3;
+  color: #ffffff;
+}
+
+.rt-line {
+  position: relative;
+  width: 1px;
+  height: 26px;
+  background: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 0;
+}
+
+.rt-node-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #717d8f;
+  background: #ffffff;
+  color: #475569;
+  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 3;
+}
+
+.rt-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rt-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rt-item-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+}
+
+.rt-city {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2329;
+}
+
+.rt-time {
+  font-size: 13px;
+  color: #333842;
+}
+
+.rt-detail {
+  font-size: 12px;
+  color: #8f959e;
+  line-height: 1.2;
+}
+
+.row-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
 .text-link {
   border: none;
   background: transparent;
-  color: #165dff;
-  font-size: 13px;
+  color: #3a65ff;
+  font-size: 14px;
   cursor: pointer;
   padding: 0;
+  white-space: nowrap;
+  line-height: 1;
 }
-.text-link:hover { color: #4080ff; }
+.text-link:hover { color: #5982ff; }
+.text-link.publish { color: #21bd88; }
+.text-link.publish:hover { color: #2fcf9b; }
+.text-link.danger { color: #f53f3f; }
+.text-link.danger:hover { color: #d91a15; }
+
+.empty-cell {
+  text-align: center;
+  padding: 60px 20px;
+  color: #909399;
+  font-size: 14px;
+}
+
+/* ============ 5. 分页栏 ============ */
+.pagination-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 4px 18px;
+  border-top: 1px solid #eef1f5;
+  font-size: 14px;
+  color: #323234;
+  justify-content: flex-end;
+  height: 32px;
+  box-sizing: border-box;
+}
+.page-total { color: #91929e; font-size: 14px; }
+.page-size { color: #91929e; font-size: 14px; }
+.page-btn {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid #e0e2e6;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: #3a65ff;
+  color: #3a65ff;
+}
+.page-btn.active {
+  background: #3a65ff;
+  border-color: #3a65ff;
+  color: #fff;
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #91929e;
+  font-size: 14px;
+}
+.page-input {
+  width: 32px;
+  height: 24px;
+  border: 1px solid #e0e2e6;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 14px;
+  color: #1f2329;
+  outline: none;
+}
+.page-input:focus {
+  border-color: #3a65ff;
+}
+
 
 .dialog-tip {
   font-size: 14px;

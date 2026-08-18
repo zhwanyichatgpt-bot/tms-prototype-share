@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "pixso": {
+      "serverUrl": "http://127.0.0.1:3667/mcp"
+    }
+  }
+}
