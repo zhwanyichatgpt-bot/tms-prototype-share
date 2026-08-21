@@ -233,67 +233,123 @@
 
             <template v-if="directoryContentVisible">
               <div class="directory-section">
-                <div class="directory-section-title">通用功能 · Web 端</div>
-                <button
-                  v-for="page in generalWebPages"
-                  :key="page.key"
-                  type="button"
-                  class="directory-item"
-                  :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
-                  :disabled="page.status !== 'ready'"
-                  @click="openPage(page)"
+                <div
+                  class="directory-section-header"
+                  role="button"
+                  :aria-expanded="!collapsedSections.generalWeb"
+                  @click="toggleSection('generalWeb')"
                 >
-                  <span class="directory-item-dot" />
-                  <span class="directory-item-name">{{ page.name }}</span>
-                </button>
+                  <span class="directory-section-title">通用功能 · Web 端</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.generalWeb }">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+                <div v-show="!collapsedSections.generalWeb" class="directory-section-body">
+                  <button
+                    v-for="page in generalWebPages"
+                    :key="page.key"
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :disabled="page.status !== 'ready'"
+                    @click="openPage(page)"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">{{ page.name }}</span>
+                  </button>
+                </div>
               </div>
 
               <div v-if="generalMobilePages.length" class="directory-section">
-                <div class="directory-section-title">通用功能 · 移动端</div>
-                <button
-                  v-for="page in generalMobilePages"
-                  :key="page.key"
-                  type="button"
-                  class="directory-item"
-                  :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
-                  :disabled="page.status !== 'ready'"
-                  @click="openPage(page)"
+                <div
+                  class="directory-section-header"
+                  role="button"
+                  :aria-expanded="!collapsedSections.generalMobile"
+                  @click="toggleSection('generalMobile')"
                 >
-                  <span class="directory-item-dot" />
-                  <span class="directory-item-name">{{ page.name }}</span>
-                </button>
+                  <span class="directory-section-title">通用功能 · 移动端</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.generalMobile }">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+                <div v-show="!collapsedSections.generalMobile" class="directory-section-body">
+                  <button
+                    v-for="page in generalMobilePages"
+                    :key="page.key"
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :disabled="page.status !== 'ready'"
+                    @click="openPage(page)"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">{{ page.name }}</span>
+                  </button>
+                </div>
               </div>
 
               <div v-if="beigangPages.length" class="directory-section">
-                <div class="directory-section-title">北港水运1.0.3.4</div>
-                <button
-                  v-for="page in beigangPages"
-                  :key="page.key"
-                  type="button"
-                  class="directory-item"
-                  :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
-                  :disabled="page.status !== 'ready'"
-                  @click="openPage(page)"
+                <div
+                  class="directory-section-header"
+                  role="button"
+                  :aria-expanded="!collapsedSections.beigang"
+                  @click="toggleSection('beigang')"
                 >
-                  <span class="directory-item-dot" />
-                  <span class="directory-item-name">{{ page.name }}</span>
-                </button>
+                  <span class="directory-section-title">北港水运1.0.3.4</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.beigang }">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+                <div v-show="!collapsedSections.beigang" class="directory-section-body">
+                  <button
+                    v-for="page in beigangPages"
+                    :key="page.key"
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :disabled="page.status !== 'ready'"
+                    @click="openPage(page)"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">{{ page.name }}</span>
+                  </button>
+                </div>
               </div>
 
               <div class="directory-section">
-                <div class="directory-section-title">项目定制</div>
-                <button
-                  v-for="page in customPages"
-                  :key="page.key"
-                  type="button"
-                  class="directory-item"
-                  :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
-                  :disabled="page.status !== 'ready'"
-                  @click="openPage(page)"
+                <div
+                  class="directory-section-header"
+                  role="button"
+                  :aria-expanded="!collapsedSections.custom"
+                  @click="toggleSection('custom')"
                 >
-                  <span class="directory-item-dot" />
-                  <span class="directory-item-name">{{ page.name }}</span>
-                </button>
+                  <span class="directory-section-title">项目定制</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.custom }">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+                <div v-show="!collapsedSections.custom" class="directory-section-body">
+                  <button
+                    v-for="page in customPages"
+                    :key="page.key"
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :disabled="page.status !== 'ready'"
+                    @click="openPage(page)"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">{{ page.name }}</span>
+                  </button>
+                </div>
               </div>
             </template>
           </aside>
@@ -374,6 +430,17 @@ const generalWebPages = computed(() => pages.filter(p => p.category === 'general
 const generalMobilePages = computed(() => pages.filter(p => p.category === 'general' && p.platform === 'mobile'))
 const beigangPages = computed(() => pages.filter(p => p.category === 'beigang'))
 const customPages = computed(() => pages.filter(p => p.category === 'custom'))
+
+const collapsedSections = reactive({
+  generalWeb: false,
+  generalMobile: false,
+  beigang: false,
+  custom: false,
+})
+
+function toggleSection(key) {
+  collapsedSections[key] = !collapsedSections[key]
+}
 
 const currentComponent = shallowRef(null)
 const directoryMode = ref(getDirectoryMode(window.innerWidth))
@@ -843,10 +910,57 @@ function togglePrototypeDirectory() {
   margin-top: 14px;
 }
 
+.directory-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 4px 9px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.directory-section-header:hover {
+  background: #f0f2f5;
+}
+
+.directory-section-header:hover .directory-section-title {
+  color: #475467;
+}
+
 .directory-section-title {
-  padding: 0 9px 7px;
+  padding: 0;
   color: #98a2b3;
   font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: color 0.15s ease;
+}
+
+.directory-section-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: #98a2b3;
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+
+.directory-section-header:hover .directory-section-arrow {
+  color: #667085;
+}
+
+.directory-section-arrow.is-collapsed {
+  transform: rotate(-90deg);
+}
+
+.directory-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .directory-item {
