@@ -14,7 +14,7 @@
       "canonical": "prd-manager-v2",
       "status": "active",
       "targets": ["codex", "claude"],
-      "notes": "从项目 .codex-tmp 迁入；包含项目 PRD references、reviewer 和 validator"
+      "notes": "V2 为唯一在用 PRD Skill；内容保持业务通用，并同步到全局 Skill 目录"
     }
   }
 }

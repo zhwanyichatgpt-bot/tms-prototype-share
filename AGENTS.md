@@ -1,7 +1,7 @@
 # tms-prototype-validation
 
 Codex PM 工作流项目。从需求讨论到可交互原型与研发标注的全链路：
-discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型）→ annotation（标注）。
+discussion（讨论）→ prd-manager-v2（PRD）→ prototype-validator（原型）→ annotation（标注）。
 
 ## 语言要求
 
@@ -36,7 +36,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 | 单页原型标注 | 按 annotation Skill 完成需求分析、锚点注入、JSON 生成和一次确定性校验 |
 | 用户明确要求的局部视觉/交互检查 | 1 轮，最多 8 个浏览器动作 |
 
-- PRD 任务继续遵循当前 `prd-manager` / `prd-manager-v2` 自身流程，本轮不增加项目级 PRD 工具预算。
+- PRD 任务遵循当前 `prd-manager-v2` 自身流程，本轮不增加项目级 PRD 工具预算。
 - 达到预算仍无法完成时，停止继续调用，报告已完成内容、阻塞原因和扩大预算的成本，等待用户确认。
 - 同一文件围绕同一主题默认一次补丁、一次校验；禁止“写一段—全文回读—再写一段”的循环。
 - 单次工具输出超过约 2 万字符后，不再扩大检索范围；先提炼已有证据。
@@ -84,7 +84,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 | 技能 | 触发关键词 |
 |------|-----------|
 | discussion | 我想做 XX、有个想法、需求清单、讨论一下、梳理一下、聊聊 XX 需求 |
-| prd-manager | 写 PRD、生成 PRD、原型反哺、补充 PRD、修改 PRD 第X章、审查 PRD |
+| prd-manager-v2 | 写 PRD、生成 PRD、原型反哺、补充 PRD、修改 PRD 第X章、审查 PRD |
 | prototype-validator | 生成原型、做原型、原型验证、基于 PRD 做页面、实现页面、APP 原型 |
 | annotation | 标注页面、生成标注、添加标注、原型标注 |
 | diagram-generator | 流程图、架构图、时序图、泳道图、ER图、画图、生成图表 |
@@ -112,7 +112,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 ## 工作流链路（引导式接力）
 
 ```
-discussion ──→ prd-manager ──→ prototype-validator ──→ annotation
+discussion ──→ prd-manager-v2 ──→ prototype-validator ──→ annotation
                     ↑                                      │
                     └────── 用户验证认可后反哺 ─────────────┘
 ```
