@@ -52,11 +52,45 @@
             </el-col>
           </el-row>
 
-          <!-- 通用功能 · 移动端 -->
-          <div class="subcategory-title" style="margin-top: 24px">移动端</div>
+          <!-- 通用功能 · 移动端 (如有) -->
+          <template v-if="generalMobilePages.length">
+            <div class="subcategory-title" style="margin-top: 24px">移动端</div>
+            <el-row :gutter="16">
+              <el-col
+                v-for="page in generalMobilePages"
+                :key="page.key"
+                :xs="24"
+                :sm="12"
+                :md="8"
+              >
+                <div
+                  class="page-card-wrapper"
+                  :class="{ disabled: page.status !== 'ready' }"
+                  @click="openPage(page)"
+                >
+                  <el-card shadow="hover" class="page-card mobile">
+                    <div class="page-card-body">
+                      <div class="page-meta">
+                        <div class="page-name">{{ page.name }}</div>
+                        <div class="page-module">{{ page.module }}</div>
+                        <div class="page-status">
+                          <el-tag v-if="page.status === 'ready'" type="success" size="small">已就绪</el-tag>
+                          <el-tag v-else type="info" size="small">待迁移</el-tag>
+                        </div>
+                      </div>
+                    </div>
+                  </el-card>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+
+          <!-- 北港水运1.0.3.4 -->
+          <h2 class="category-title" style="margin-top: 36px">北港水运1.0.3.4</h2>
+          <p class="category-desc">北港水运专项 · 水运计划与承运商企业移动端社会运力采购闭环</p>
           <el-row :gutter="16">
             <el-col
-              v-for="page in generalMobilePages"
+              v-for="page in beigangPages"
               :key="page.key"
               :xs="24"
               :sm="12"
@@ -67,7 +101,7 @@
                 :class="{ disabled: page.status !== 'ready' }"
                 @click="openPage(page)"
               >
-                <el-card shadow="hover" class="page-card mobile">
+                <el-card shadow="hover" class="page-card" :class="{ mobile: page.platform === 'mobile' }">
                   <div class="page-card-body">
                     <div class="page-meta">
                       <div class="page-name">{{ page.name }}</div>
@@ -145,13 +179,32 @@
               <strong>{{ activePage?.name }}</strong>
             </div>
 
-            <div class="workbench-annotation-tools" aria-label="原型标注工具">
-              <div class="prototype-annotation-toggle">
-                <button id="toolbarAnnotationToggleBtn" class="btn" type="button">原型标注</button>
-                <button id="toolbarAnnotationEditorBtn" type="button" hidden>新增标注</button>
-                <button id="toolbarAnnotationPositionBtn" class="btn" type="button">调整标注</button>
-              </div>
+            <div class="workbench-annotation-actions">
+              <button
+                type="button"
+                class="workbench-annotation-toggle"
+                :class="{ active: annotationVisible }"
+                :aria-pressed="annotationVisible"
+                @click="toggleAnnotationVisible"
+              >
+                <span class="workbench-annotation-icon" aria-hidden="true">●</span>
+                <span>原型标注</span>
+                <span class="workbench-annotation-count">{{ annotationCount }}</span>
+              </button>
+
+              <button
+                v-if="annotationCanEdit"
+                type="button"
+                class="workbench-annotation-edit"
+                :class="{ active: annotationEditing }"
+                :aria-pressed="annotationEditing"
+                @click="toggleAnnotationEditing"
+              >
+                <span class="workbench-annotation-edit-icon" aria-hidden="true">✎</span>
+                <span>标注编辑</span>
+              </button>
             </div>
+
           </header>
 
           <button
@@ -195,10 +248,26 @@
                 </button>
               </div>
 
-              <div class="directory-section">
+              <div v-if="generalMobilePages.length" class="directory-section">
                 <div class="directory-section-title">通用功能 · 移动端</div>
                 <button
                   v-for="page in generalMobilePages"
+                  :key="page.key"
+                  type="button"
+                  class="directory-item"
+                  :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                  :disabled="page.status !== 'ready'"
+                  @click="openPage(page)"
+                >
+                  <span class="directory-item-dot" />
+                  <span class="directory-item-name">{{ page.name }}</span>
+                </button>
+              </div>
+
+              <div v-if="beigangPages.length" class="directory-section">
+                <div class="directory-section-title">北港水运1.0.3.4</div>
+                <button
+                  v-for="page in beigangPages"
                   :key="page.key"
                   type="button"
                   class="directory-item"
@@ -235,31 +304,59 @@
         </div>
       </el-main>
     </el-container>
+    <AnnotationOverlay v-if="currentPage !== 'home'" />
   </div>
 </template>
 
 <script setup>
-import { shallowRef, markRaw, computed, onMounted, onUnmounted, nextTick, ref } from 'vue'
+import { shallowRef, computed, defineAsyncComponent, onMounted, onUnmounted, nextTick, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElCard, ElCol, ElContainer, ElHeader, ElMain, ElRow, ElButton, ElTag } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
 import 'element-plus/es/components/tag/style/css'
 import { prototypeStore, setCurrentPage } from './shared/prototype-store'
+import { pageLoaders, pages } from './page-registry'
+import { useAnnotationControl } from './components/Annotation/useAnnotation'
+
+const route = useRoute()
+const router = useRouter()
+const {
+  visible: annotationVisible,
+  editMode: annotationEditing,
+  annotations: annotationItems,
+  toggleVisible: toggleAnnotationVisible,
+  toggleEditMode: toggleAnnotationEditing,
+} = useAnnotationControl()
+const annotationCanEdit = import.meta.env.DEV
+const annotationCount = computed(() => annotationItems.value.length)
+const AnnotationOverlay = defineAsyncComponent(
+  () => import('./components/Annotation/AnnotationOverlay.vue'),
+)
 
 // 监听子页面 WorkspaceShell 发出的返回首页事件
 function handleGoHome() {
-  currentComponent.value = null
-  setCurrentPage('home')
-  resetViewportScroll()
+  goHome()
 }
+
+// 监听子页面发出的跨页面跳转事件
+function handleOpenCustomPage(e) {
+  const key = e.detail?.key
+  if (key) {
+    const targetPage = pages.find(p => p.key === key) || { key, status: 'ready' }
+    openPage(targetPage)
+  }
+}
+
 onMounted(() => {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
   }
   window.addEventListener('prototype-go-home', handleGoHome)
+  window.addEventListener('prototype-open-page', handleOpenCustomPage)
   window.addEventListener('resize', syncDirectoryMode)
 
-  // 页面首次加载/刷新：若 URL 指定了 ?page=xxx 且非 home，自动加载对应组件
-  const initialKey = prototypeStore.currentPage
+  // 页面首次加载/刷新：优先使用路由，兼容旧的 ?page=xxx 地址
+  const initialKey = route.meta.pageKey || prototypeStore.currentPage
   if (initialKey && initialKey !== 'home') {
     const targetPage = pages.find(p => p.key === initialKey) || { key: initialKey, status: 'ready' }
     openPage(targetPage)
@@ -269,52 +366,13 @@ onMounted(() => {
 })
 onUnmounted(() => {
   window.removeEventListener('prototype-go-home', handleGoHome)
+  window.removeEventListener('prototype-open-page', handleOpenCustomPage)
   window.removeEventListener('resize', syncDirectoryMode)
 })
 
-// 原型页面注册表：key → 异步加载函数
-// 每个原型页面在 prototype/<模块>/<页面>/App.vue
-const pageLoaders = {
-  waybillManage: () => import('../prototype/托运单管理/App.vue').then(m => markRaw(m.default)),
-  inquiryHall: () => import('../prototype/询价大厅/App.vue').then(m => markRaw(m.default)),
-  containerPlan: () => import('../prototype/集装箱运输计划创建/App.vue').then(m => markRaw(m.default)),
-  transportPlan: () => import('../prototype/运输计划/App.vue').then(m => markRaw(m.default)),
-  multimodalManage: () => import('../prototype/联运计划管理页/App.vue').then(m => markRaw(m.default)),
-  transportChannel: () => import('../prototype/运输通道管理/App.vue').then(m => markRaw(m.default)),
-  multimodalCreate: () => import('../prototype/创建联运计划/App.vue').then(m => markRaw(m.default)),
-  inquiryShipper: () => import('../prototype/广林询价三端/App.vue').then(m => markRaw(m.default)),
-  shipperSettlement: () => import('../prototype/货主结算/App.vue').then(m => markRaw(m.default)),
-  waybillQuote: () => import('../prototype/承运商报价/App.vue').then(m => markRaw(m.default)),
-  shipownerMobileHome: () => import('../prototype/船东移动端/ShipownerHome.vue').then(m => markRaw(m.default)),
-  cargoBiddingDetail: () => import('../prototype/船东移动端/CargoBiddingDetail.vue').then(m => markRaw(m.default)),
-  biddingQuotePage: () => import('../prototype/船东移动端/BiddingQuotePage.vue').then(m => markRaw(m.default)),
-}
-
-// 页面清单（首页卡片展示 + 状态标记）
-// category: general 通用功能 / custom 项目定制
-// platform: web 通用-Web端 / mobile 通用-移动端（仅 category=general 时生效）
-// status: ready 已迁完 / pending 待迁移
-const pages = [
-  // 通用功能 · Web 端
-  { key: 'waybillManage', name: '托运单管理', module: '托运单管理 · 列表 + 创建', icon: '📦', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'waybillQuote', name: '承运商报价', module: '托运单管理 · 报价页', icon: '💰', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'inquiryHall', name: '货源大厅', module: '托运单管理 · 承运商报价入口', icon: '🏷️', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'multimodalCreate', name: '创建联运计划', module: '多式联运', icon: '🚢', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'multimodalManage', name: '联运计划管理', module: '多式联运', icon: '📋', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'transportPlan', name: '运输计划', module: '运输计划 · 列表', icon: '🚛', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'shipperSettlement', name: '货主结算', module: '多式联运', icon: '🧾', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'containerPlan', name: '集装箱计划创建', module: '公路计划', icon: '🚂', status: 'ready', category: 'general', platform: 'web' },
-  { key: 'transportChannel', name: '运输通道管理', module: '运输通道', icon: '🛣️', status: 'ready', category: 'general', platform: 'web' },
-  // 通用功能 · 移动端
-  { key: 'shipownerMobileHome', name: '船东移动端', module: '移动端 H5 · 货源/运力大厅 + 竞价详情', icon: '📱', status: 'ready', category: 'general', platform: 'mobile' },
-  { key: 'cargoBiddingDetail', name: '货源竞价详情页', module: '移动端 H5 · 货源竞价详情', icon: '📄', status: 'ready', category: 'general', platform: 'mobile' },
-  { key: 'biddingQuotePage', name: '移动端报价填写页', module: '移动端 H5 · 参与竞价报价表单', icon: '📝', status: 'ready', category: 'general', platform: 'mobile' },
-  // 项目定制
-  { key: 'inquiryShipper', name: '货源询价（广林三端）', module: '广林项目定制 · 货主/无车承运人/承运商', icon: '📮', status: 'ready', category: 'custom' },
-]
-
 const generalWebPages = computed(() => pages.filter(p => p.category === 'general' && p.platform === 'web'))
 const generalMobilePages = computed(() => pages.filter(p => p.category === 'general' && p.platform === 'mobile'))
+const beigangPages = computed(() => pages.filter(p => p.category === 'beigang'))
 const customPages = computed(() => pages.filter(p => p.category === 'custom'))
 
 const currentComponent = shallowRef(null)
@@ -350,7 +408,6 @@ function syncDirectoryMode() {
   directoryMode.value = nextMode
   directoryOverlayOpen.value = false
   directoryCollapsed.value = nextMode === 'compact'
-  window.setTimeout(() => window.AnnotationCore?.refresh?.(), 220)
 }
 
 function resetViewportScroll() {
@@ -366,6 +423,10 @@ function resetViewportScroll() {
 function openPage(page) {
   console.log('[openPage] clicked', page.key, 'status=', page.status)
   if (page.status !== 'ready') return
+  if (route.meta.pageKey !== page.key) {
+    router.push({ name: page.key })
+    return
+  }
   const loader = pageLoaders[page.key]
   console.log('[openPage] loader=', loader)
   if (!loader) return
@@ -380,19 +441,33 @@ function openPage(page) {
 }
 
 function goHome() {
+  if (route.meta.pageKey !== 'home') {
+    router.push({ name: 'home' })
+    return
+  }
   currentComponent.value = null
   setCurrentPage('home')
   resetViewportScroll()
 }
 
+watch(() => route.meta.pageKey, (pageKey) => {
+  if (!pageKey || pageKey === 'home') {
+    currentComponent.value = null
+    setCurrentPage('home')
+    resetViewportScroll()
+    return
+  }
+
+  const targetPage = pages.find(page => page.key === pageKey)
+  if (targetPage) openPage(targetPage)
+})
+
 function togglePrototypeDirectory() {
   if (directoryMode.value === 'overlay') {
     directoryOverlayOpen.value = false
-    window.setTimeout(() => window.AnnotationCore?.refresh?.(), 220)
     return
   }
   directoryCollapsed.value = !directoryCollapsed.value
-  window.setTimeout(() => window.AnnotationCore?.refresh?.(), 220)
 }
 
 </script>
@@ -540,7 +615,7 @@ function togglePrototypeDirectory() {
 
 .prototype-workbench-toolbar {
   position: fixed;
-  z-index: 70;
+  z-index: 10000;
   top: 0;
   right: 0;
   left: 0;
@@ -595,6 +670,75 @@ function togglePrototypeDirectory() {
   font-size: 14px;
 }
 
+.workbench-annotation-actions {
+  margin-right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.workbench-annotation-toggle,
+.workbench-annotation-edit {
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #dfe4ec;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475467;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.workbench-annotation-toggle:hover,
+.workbench-annotation-edit:hover {
+  border-color: #9dbbf7;
+  color: #165dff;
+}
+
+.workbench-annotation-toggle.active,
+.workbench-annotation-edit.active {
+  border-color: #2468f2;
+  background: #eef4ff;
+  color: #165dff;
+}
+
+.workbench-annotation-icon {
+  font-size: 9px;
+  color: #98a2b3;
+}
+
+.workbench-annotation-toggle.active .workbench-annotation-icon {
+  color: #2468f2;
+}
+
+.workbench-annotation-edit-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.workbench-annotation-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #f2f4f7;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.workbench-annotation-toggle.active .workbench-annotation-count {
+  background: #2468f2;
+  color: #ffffff;
+}
+
 .directory-overlay-trigger {
   flex: 0 0 auto;
   width: 30px;
@@ -618,41 +762,6 @@ function togglePrototypeDirectory() {
 .workbench-current-label {
   color: #98a2b3;
   font-size: 12px;
-}
-
-.workbench-annotation-tools {
-  height: 100%;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  border-left: 1px solid #edf0f4;
-}
-
-.prototype-annotation-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.prototype-annotation-toggle .btn {
-  height: 30px;
-  padding: 0 13px;
-  border: 1px solid #d8dee8;
-  border-radius: 4px;
-  background: #ffffff;
-  color: #475467;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.prototype-annotation-toggle .btn:hover {
-  border-color: #2468f2;
-  color: #2468f2;
-}
-
-.prototype-annotation-toggle .btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
 }
 
 .prototype-directory {

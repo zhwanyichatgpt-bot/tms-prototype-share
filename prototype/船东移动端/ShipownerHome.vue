@@ -83,7 +83,7 @@
       <img class="panel-header-gradient" src="/shipowner-panel-header-gradient.svg" alt="" />
 
       <!-- 7. 一级业务分类：高亮品牌蓝为选中态，半透明白色为未选中态透出地图 -->
-      <div class="dual-header-tabs" aria-label="业务分类切换">
+      <div class="dual-header-tabs annot-shipowner-home-rule-market-filter" aria-label="业务分类切换">
         <!-- 矢量弧线拼接背景 -->
         <svg class="header-tab-svg" viewBox="0 0 375 44" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -161,7 +161,7 @@
       </nav>
 
       <!-- 9. 货源/运力 竞价卡片列表 -->
-      <section class="cargo-list" aria-label="竞价列表">
+      <section class="cargo-list annot-shipowner-home-field-market-cards" aria-label="竞价列表">
         <article
           v-for="cargo in sortedCargoList"
           :key="cargo.id"

@@ -1,6 +1,6 @@
 <template>
-  <div v-if="record" class="cqd-overlay" @click.self="close">
-    <div class="cqd-dialog">
+  <div v-if="record" class="cqd-overlay" data-annotation-container="modal" @click.self="close">
+    <div class="cqd-dialog" data-annotation-content="modal">
       <!-- 顶部标题栏 -->
       <div class="cqd-header">
         <span class="cqd-title">运力竞价详情</span>
@@ -15,7 +15,7 @@
         </div>
 
         <!-- 浅蓝渐变信息卡：两行六项基础信息 -->
-        <div class="cqd-info">
+        <div class="cqd-info annot-transport-plan-field-quote-summary">
           <div class="cqd-info-item">
             <span class="cqd-label">竞价编号</span>
             <span class="cqd-value">{{ record.biddingNo }}</span>
@@ -42,8 +42,8 @@
           </div>
         </div>
 
-        <!-- 竞价结果栏：竞价成功后展示 -->
-        <div v-if="record.status === '竞价成功'" class="cqd-result">
+        <!-- 竞价结果栏：需求确认后展示 -->
+        <div v-if="record.status === '已确认'" class="cqd-result">
           <span class="cqd-result-label">竞价结果：</span>
           <span class="cqd-result-carrier">{{ record.confirmedCarrier }}</span>
           <span class="cqd-result-divider">　</span>
@@ -55,7 +55,7 @@
         </div>
 
         <!-- 分区标题：承运商报价 -->
-        <div class="cqd-section-head">
+        <div class="cqd-section-head annot-transport-plan-rule-quote-list">
           <span class="cqd-bar"></span>
           <span class="cqd-quote-title">承运商报价（{{ record.quotes.length }}）</span>
         </div>
@@ -93,7 +93,7 @@
                   <span :class="['cqd-status', quote.status === '已确认' ? 'won' : quote.status === '已拒绝' ? 'lost' : 'quoting']">{{ quote.status }}</span>
                 </td>
                 <td class="cq-col-op">
-                  <template v-if="record.status === '报价中' && quote.status === '报价中'">
+                  <template v-if="record.status === '竞价中' && quote.status === '报价中'">
                     <a class="cqd-link" @click="confirmQuote(quote)">确认</a>
                     <a class="cqd-link cqd-reject" @click="rejectQuote(quote)">拒绝</a>
                   </template>
@@ -118,7 +118,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'confirm-quote', 'reject-quote'])
 
-// 已确认报价金额（竞价成功后展示在竞价结果栏）
+// 已确认报价金额（需求确认后展示在确认结果栏）
 const confirmedPrice = computed(() => {
   if (!props.record) return null
   if (props.record.confirmedPrice != null) return props.record.confirmedPrice
@@ -148,8 +148,8 @@ const ruleLabel = computed(() => {
 })
 
 function statusClass(status) {
-  if (status === '报价中') return 'quoting'
-  if (status === '竞价成功') return 'won'
+  if (status === '竞价中') return 'quoting'
+  if (status === '已确认') return 'won'
   return 'lost'
 }
 

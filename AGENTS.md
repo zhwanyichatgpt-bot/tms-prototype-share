@@ -1,7 +1,7 @@
 # tms-prototype-validation
 
-Codex PM 工作流项目。从需求讨论到可交互原型的全链路：
-discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型）→ prototype-annotation（标注）。
+Codex PM 工作流项目。从需求讨论到可交互原型与研发标注的全链路：
+discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型）→ annotation（标注）。
 
 ## 语言要求
 
@@ -12,7 +12,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 
 1. **Primary-Skill-First** — 每个任务默认只选一个最直接匹配的主 skill；不因为任务附带了讨论、验证或页面内容就叠加多个 skill。只有主 skill 无法覆盖实际操作时才追加，并先说明必要性。
 2. **Review-Proportionally** — 普通局部修改默认由当前智能体做一次局部自查；只有高风险、跨模块或用户明确要求时才调用 reviewer/子智能体，且先遵守高消耗确认规则。
-3. **Verify-Before-Claim** — 验证强度按改动类型分级：标注/PRD/文档内容仅运行对应的确定性校验；原型代码改动运行一次 `npm run build`；只有用户要求查看界面或报告具体视觉/交互问题时才启动 dev server 和局部浏览器检查。
+3. **Verify-Before-Claim** — 验证强度按改动类型分级：PRD/文档内容仅运行对应的确定性校验；原型或标注运行时代码改动运行一次 `npm run build`；只有用户要求查看界面或报告具体视觉/交互问题时才启动 dev server 和局部浏览器检查。
 4. **Handoff-Guided** — skill 之间是引导式接力：每个 skill 完成后只**提示**下一步，不自动触发下游 skill，由用户拍板
 5. **Restraint** — 只做被要求的事，需求没提的视觉效果/交互/字段/组件一律不加
 
@@ -22,7 +22,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 
 1. **首次进入**：新主题、新业务对象、新交付目标，或用户首次要求核对项目资料。只在此时启动对应 skill 的完整入口，并一次性建立最小证据包。
 2. **续接模式**：主题、业务对象和交付目标未变化，用户仅做确认、纠正、缩写、补充边界或追问既有结论。此时不重新启动 skill 工作流，不重复读取 skill、记忆、PRD、讨论记录或原型，默认不调用工具，直接基于已取得的证据回答。
-3. **阶段切换**：新增文件/图片/链接、证据冲突，或从讨论切换到沉淀、PRD、原型、标注。退出续接模式，但只读取新阶段必需的最小资料，不重跑上游流程；仍需遵守引导式接力，由用户决定是否进入下一阶段。
+3. **阶段切换**：新增文件/图片/链接、证据冲突，或从讨论切换到沉淀、PRD、原型。退出续接模式，但只读取新阶段必需的最小资料，不重跑上游流程；仍需遵守引导式接力，由用户决定是否进入下一阶段。
 
 ### 默认工具预算
 
@@ -32,8 +32,8 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 | 首次事实核对 | 1 次批量读取 |
 | 证据冲突的针对性核对 | 最多 2 次 |
 | 沉淀讨论记录 | 查重、一次写入、一次校验 |
-| 标注文字/`spec.yaml` 调整 | 精准读取、一次写入、一次确定性校验 |
 | 单个原型页面代码修改 | 精准读取、一次局部修改、一次构建 |
+| 单页原型标注 | 按 annotation Skill 完成需求分析、锚点注入、JSON 生成和一次确定性校验 |
 | 用户明确要求的局部视觉/交互检查 | 1 轮，最多 8 个浏览器动作 |
 
 - PRD 任务继续遵循当前 `prd-manager` / `prd-manager-v2` 自身流程，本轮不增加项目级 PRD 工具预算。
@@ -68,6 +68,7 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 - 业务规则目录：context/business-rules/
 - 迁移索引目录：migration/
 - 原型目录：prototype/
+- 标注数据目录：public/annotations/
 - 组件库：Element Plus
 - 开发命令：npm run dev
 - 构建命令：npm run build
@@ -85,36 +86,35 @@ discussion（讨论）→ prd-manager（PRD）→ prototype-validator（原型�
 | discussion | 我想做 XX、有个想法、需求清单、讨论一下、梳理一下、聊聊 XX 需求 |
 | prd-manager | 写 PRD、生成 PRD、原型反哺、补充 PRD、修改 PRD 第X章、审查 PRD |
 | prototype-validator | 生成原型、做原型、原型验证、基于 PRD 做页面、实现页面、APP 原型 |
-| prototype-annotation | 标注页面、生成标注、添加标注、原型标注 |
+| annotation | 标注页面、生成标注、添加标注、原型标注 |
 | diagram-generator | 流程图、架构图、时序图、泳道图、ER图、画图、生成图表 |
 
 ### 附加 skill 的边界
 
-- 仅修改 `spec.yaml` 标注内容：只用 `prototype-annotation`，不叠加 TDD、浏览器或 reviewer。
 - 修改原型页面代码：主 skill 用 `prototype-validator`；只在真正需要写测试时追加 TDD。
-- 修改标注运行时/编辑器：按工具开发处理，先说明消耗，再做一次聚焦测试。
+- 生成或编辑原型标注：主 skill 使用项目级 `annotation`，按该 Skill 的原始分析、定位、展示和保存规则执行，不混入旧标注方案。
 - 讨论不是每个任务的前置 skill；只有用户的主目标就是梳理方案时才使用 `discussion`。
 
 ## 低消耗执行分级
 
 | 任务类型 | 默认执行 | 消耗 |
 |----------|----------|------|
-| 标注文字/规则/spec 调整 | 精准读取 + 一次写入 + 一次确定性校验 | 低 |
 | 单个原型页面代码修改 | 局部修改 + 一次构建 | 中 |
-| 标注工具、跨页交互、全量检查 | 先说明必要性、消耗与低耗替代方案，用户确认后执行 | 中/高 |
+| 单页原型标注 | 按 annotation Skill 执行 + 一次确定性校验 | 中 |
 
 ## Agent 编排
 
 - 默认使用当前单智能体完成任务。
 - reviewer、专用 agent、多智能体并行均属于可选高消耗能力，不得自动启动。
 - 只有用户明确要求，或已说明必要性和消耗并获得确认后，才可调用子智能体。
+- `annotation` Skill 获得用户授权后，按其原流程依次调用项目已注册的 `annotation-prd-analyzer` 和 `annotation-code-locator`；主智能体负责最终 class 注入、JSON 写入和验证。
 
 ## 工作流链路（引导式接力）
 
 ```
-discussion ──→ prd-manager ──→ prototype-validator ──→ prototype-annotation
-                    ↑                                          │
-                    └────────── 用户验证认可后反哺 ─────────────┘
+discussion ──→ prd-manager ──→ prototype-validator ──→ annotation
+                    ↑                                      │
+                    └────── 用户验证认可后反哺 ─────────────┘
 ```
 
 - 每步完成只**提示**下一步，用户拍板才进入下一环（不自动链式触发）
@@ -136,4 +136,3 @@ discussion ──→ prd-manager ──→ prototype-validator ──→ prototy
 8. **需求边界**：不擅自修改 PRD、讨论记录和业务规则。
 9. **冲突阻断**：发现需求冲突或业务规则不明确时，暂停该冲突部分并提出问题。
 10. **代码隔离**：保留其他模块和其他开发者已有修改，不进行无关重构。
-

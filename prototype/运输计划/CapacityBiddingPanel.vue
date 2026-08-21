@@ -1,5 +1,5 @@
 <template>
-  <div class="bidding-panel">
+  <div class="bidding-panel annot-transport-plan-rule-capacity-bidding">
     <!-- 顶部紧凑标题行 -->
     <div class="bp-head">
       <span class="bp-title">竞价记录（{{ sortedRecords.length }}）</span>
@@ -41,6 +41,7 @@
 
         <!-- 操作 -->
         <div class="bp-ops">
+          <a v-if="record.status === '竞价中' && record.quotes.length === 0" class="bp-link bp-cancel" @click.stop="$emit('cancel', record)">取消</a>
           <a class="bp-link" @click.stop="$emit('view-detail', record)">查看报价</a>
         </div>
       </div>
@@ -55,7 +56,7 @@ const props = defineProps({
   plan: { type: Object, required: true },
 })
 
-defineEmits(['view-detail', 'publish'])
+defineEmits(['view-detail', 'publish', 'cancel'])
 
 const highlightNew = ref(false)
 
@@ -75,8 +76,8 @@ watch(() => sortedRecords.value.length, () => {
 })
 
 function statusClass(status) {
-  if (status === '报价中') return 'quoting'
-  if (status === '竞价成功') return 'won'
+  if (status === '竞价中') return 'quoting'
+  if (status === '已确认') return 'won'
   return 'lost'
 }
 </script>
@@ -217,4 +218,7 @@ function statusClass(status) {
   text-decoration: none;
 }
 .bp-link:hover { opacity: 0.8; }
+.bp-cancel {
+  color: #e5484d;
+}
 </style>

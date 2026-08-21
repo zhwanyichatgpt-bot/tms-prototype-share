@@ -64,7 +64,7 @@ const mockRecords = [
 
 const dispatchRecords = computed(() => {
   const fromBidding = (props.plan.capacityBiddingRecords || [])
-    .filter(r => r.status === '竞价成功' && r.dispatchNo)
+    .filter(r => r.status === '已确认' && r.dispatchNo)
     .map(r => ({
       vehicle: 'YD12313121312',
       status: '待执行',
@@ -80,7 +80,7 @@ const dispatchRecords = computed(() => {
       org: '这里显示调度企业名称',
     }))
 
-  // 竞价成功生成的调度在前，设计稿示例调度在后
+  // 竞价已确认生成的调度在前，设计稿示例调度在后
   return [...fromBidding, ...mockRecords]
 })
 </script>

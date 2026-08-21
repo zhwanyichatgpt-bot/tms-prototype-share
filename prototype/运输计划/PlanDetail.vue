@@ -1446,7 +1446,7 @@
             </div>
 
             <!-- 统一四页签容器 -->
-            <div class="detail-tabbar">
+            <div class="detail-tabbar annot-transport-plan-field-detail-tabs">
               <span class="detail-tab" :class="{ active: activeViewTab === '货品路线' }" @click="switchTab('货品路线')">货品路线</span>
               <span class="detail-tab" :class="{ active: activeViewTab === '运力竞价' }" @click="switchTab('运力竞价')">运力竞价</span>
               <span class="detail-tab" :class="{ active: activeViewTab === '调度记录' }" @click="switchTab('调度记录')">调度记录</span>
@@ -1460,6 +1460,7 @@
                 :plan="plan"
                 @view-detail="openBiddingDetail"
                 @publish="$emit('publish')"
+                @cancel="handleCancelRecord"
               />
               <DispatchRecordPanel
                 v-else-if="activeViewTab === '调度记录'"
@@ -1485,7 +1486,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import CapacityBiddingPanel from './CapacityBiddingPanel.vue'
 import CapacityBiddingDetailDialog from './CapacityBiddingDetailDialog.vue'
 import DispatchRecordPanel from './DispatchRecordPanel.vue'
@@ -1538,7 +1539,7 @@ function closeBiddingDetail() {
 
 function handleConfirmQuote(quote) {
   const record = biddingDetailRecord.value
-  if (!record || record.status !== '报价中') return
+  if (!record || record.status !== '竞价中') return
   record.quotes.forEach(q => {
     if (q.carrier === quote.carrier) {
       q.status = '已确认'
@@ -1546,7 +1547,7 @@ function handleConfirmQuote(quote) {
       q.status = '已拒绝'
     }
   })
-  record.status = '竞价成功'
+  record.status = '已确认'
   record.confirmedCarrier = quote.carrier
   record.confirmedPrice = quote.price
   record.dispatchNo = `DD${Date.now().toString().slice(-8)}`
@@ -1555,11 +1556,27 @@ function handleConfirmQuote(quote) {
 
 function handleRejectQuote(carrier) {
   const record = biddingDetailRecord.value
-  if (!record || record.status !== '报价中') return
+  if (!record || record.status !== '竞价中') return
   const quote = (record.quotes || []).find(q => q.carrier === carrier)
   if (!quote) return
   quote.status = '已拒绝'
   ElMessage.info(`已拒绝「${carrier}」的报价。`)
+}
+
+function handleCancelRecord(record) {
+  if (!record || record.status !== '竞价中' || record.quotes.length > 0) return
+  ElMessageBox.confirm(
+    `确认取消「${record.biddingNo}」本次运力竞价吗？取消后，本次占用的运力将释放返还至剩余可发布运力，且不可恢复。`,
+    '取消竞价',
+    {
+      confirmButtonText: '确认取消',
+      cancelButtonText: '再想想',
+      type: 'warning',
+    }
+  ).then(() => {
+    record.status = '已取消'
+    ElMessage.success(`已取消「${record.biddingNo}」本次运力竞价，占用的运力已释放。`)
+  }).catch(() => {})
 }
 
 function handleViewDispatch() {

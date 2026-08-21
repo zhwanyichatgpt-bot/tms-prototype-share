@@ -1,6 +1,6 @@
 <template>
   <WorkspaceShell current-title="创建联运计划">
-    <div class="page-root annotation-plan-page">
+    <div class="page-root">
       <!-- 页面标题 -->
       <div class="page-header plan-source-anchor">
         <div>
@@ -15,7 +15,7 @@
       </div>
 
       <!-- 基础信息 -->
-      <div class="section-card basic-info-card annotation-plan-basic">
+      <div class="section-card basic-info-card">
         <div class="section-header">
           <span class="section-title">基础信息</span>
           <div class="section-actions">
@@ -58,7 +58,7 @@
       </div>
 
       <!-- 货品信息 -->
-      <div class="section-card cargo-info-card annotation-plan-cargo">
+      <div class="section-card cargo-info-card">
         <div class="section-header">
           <span class="section-title">货品信息</span>
           <span v-if="!isManualCreate" class="section-extra">来源托运单，已锁定</span>
@@ -132,8 +132,8 @@
       </div>
 
       <!-- 路线规划 -->
-      <div class="section-card route-info-card annotation-plan-route">
-        <div class="section-header annotation-plan-route-header">
+      <div class="section-card route-info-card">
+        <div class="section-header">
           <span class="section-title">路线规划</span>
           <span v-if="!isManualCreate" class="section-extra">报价路线只读，执行段由系统聚合生成</span>
           <button v-else type="button" class="link-btn" @click="addRouteSegment">+ 添加执行段</button>
@@ -142,7 +142,7 @@
           <div
             v-for="(segment, index) in routeSegments"
             :key="segment.id"
-            class="route-card annotation-plan-segment-card"
+            class="route-card"
             :class="{ 'has-sub-plan': segment.subPlan }"
           >
             <div class="route-toolbar">
@@ -161,7 +161,7 @@
                   <option value="集装箱运输">集装箱运输</option>
                 </select>
               </div>
-              <div class="route-toolbar-actions annotation-plan-subplan-actions">
+              <div class="route-toolbar-actions">
                 <button
                   v-if="!segment.subPlan"
                   type="button"
@@ -180,7 +180,7 @@
             </div>
 
             <!-- shared 模式：节点行 + 货物行 -->
-            <div v-if="!isManualCreate" class="node-lines readonly-node-lines annotation-plan-cargo-summary">
+            <div v-if="!isManualCreate" class="node-lines readonly-node-lines">
               <div
                 v-for="node in segmentDisplayNodes(segment)"
                 :key="`${segment.id}-${node.index}`"
@@ -237,7 +237,7 @@
       </div>
 
       <!-- 费用信息 -->
-      <div class="section-card fee-info-card annotation-plan-fee">
+      <div class="section-card fee-info-card">
         <div class="section-header">
           <span class="section-title">费用信息</span>
           <span class="section-extra">{{ isManualCreate ? '配置货主侧计划费用规则' : '已带入承运商报价，可配置货主侧费用' }}</span>
@@ -425,7 +425,7 @@
         </div>
 
         <!-- 其他费用（PRD 点3：计价方式联动 + 增减项） -->
-        <div v-if="feeConfig.enabled" class="extra-fee-block annotation-plan-extra-fee">
+        <div v-if="feeConfig.enabled" class="extra-fee-block">
           <div class="extra-title">其他费用</div>
           <table class="extra-fee-table">
             <thead>
@@ -469,7 +469,7 @@
       </div>
 
       <!-- 附件 -->
-      <div class="section-card attachment-card annotation-plan-attachment">
+      <div class="section-card attachment-card">
         <div class="section-header">
           <span class="section-title">附件</span>
         </div>
@@ -480,7 +480,7 @@
       </div>
 
       <!-- 底部操作栏 -->
-      <div class="page-footer annotation-plan-actions">
+      <div class="page-footer">
         <div class="footer-info">
           <span class="footer-tip">已创建 <b>{{ createdSubPlanCount }}</b> 个子计划</span>
         </div>
@@ -598,7 +598,7 @@
             <button type="button" class="modal-close" @click="closeSubPlanDialog">×</button>
           </div>
         </template>
-        <div v-if="currentSubPlan" class="sub-plan-detail annotation-subplan-dialog-anchor">
+        <div v-if="currentSubPlan" class="sub-plan-detail">
           <div class="detail-row">
             <span class="detail-label">子计划编号</span>
             <span class="detail-value">{{ currentSubPlan.id }}</span>
@@ -627,7 +627,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
 import {
@@ -689,82 +689,6 @@ const boxPriceRows = ref([{ id: 'box-1', boxType: 'GP', boxSize: '20尺', price:
 
 // PRD 点4：抽屉筛选
 const drawerFilters = reactive({ keyword: '', createDate: '', creator: '' })
-
-// ============ 标注引擎集成（保留不动） ============
-const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
-
-function loadAnnotationScript() {
-  return new Promise((resolve, reject) => {
-    if (window.AnnotationCore) {
-      resolve()
-      return
-    }
-    const scriptUrl = `${annotationBaseUrl}annotation-core.js`
-    const existing = document.querySelector(`script[src="${scriptUrl}"]`)
-    if (existing) {
-      existing.addEventListener('load', () => resolve(), { once: true })
-      existing.addEventListener('error', reject, { once: true })
-      return
-    }
-    const script = document.createElement('script')
-    script.src = scriptUrl
-    script.onload = () => resolve()
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
-
-async function bootAnnotation() {
-  await nextTick()
-  await loadAnnotationScript()
-  console.log('[annotation] AnnotationCore loaded:', !!window.AnnotationCore)
-  const spec = await window.AnnotationCore.init({
-    pageId: '创建联运计划',
-    specUrl: `${annotationBaseUrl}create-plan.spec.yaml`,
-    jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
-    readOnly: (() => { const p = new URLSearchParams(window.location.search); return p.get('readOnly') === '1' || p.get('readonly') === '1'; })(),
-  })
-
-  const toggleBtn = document.getElementById('toolbarAnnotationToggleBtn')
-  if (toggleBtn) {
-    toggleBtn.onclick = null
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (window.AnnotationCore?.isEnabled?.()) {
-        window.AnnotationCore.disable()
-        toggleBtn.style.borderColor = ''
-        toggleBtn.style.background = ''
-        toggleBtn.style.color = ''
-      } else {
-        window.AnnotationCore.enable()
-        toggleBtn.style.borderColor = 'rgba(219,91,91,0.36)'
-        toggleBtn.style.background = '#fff5f5'
-        toggleBtn.style.color = '#bb3f3f'
-        const bindBadgeClicks = () => {
-          document.querySelectorAll('.annotation-node[data-annotation-id]:not(.hidden)').forEach((node) => {
-            if (node.dataset.clickBound) return
-            node.dataset.clickBound = 'true'
-            node.addEventListener('click', (ev) => {
-              ev.stopPropagation()
-              window.AnnotationCore?.open?.(node.dataset.annotationId)
-            })
-          })
-        }
-        setTimeout(() => { window.AnnotationCore?.refresh?.(); bindBadgeClicks() }, 50)
-        setTimeout(() => { window.AnnotationCore?.refresh?.(); bindBadgeClicks() }, 200)
-      }
-    })
-  }
-}
-
-function refreshAnnotation() {
-  nextTick(() => {
-    requestAnimationFrame(() => {
-      window.AnnotationCore?.refresh?.()
-    })
-  })
-}
 
 // ============ computed ============
 const createdSubPlanCount = computed(() => routeSegments.value.filter(seg => seg.subPlan).length)
@@ -1259,7 +1183,6 @@ function removeRouteSegment(index) {
     ).then(() => {
       routeSegments.value.splice(index, 1)
       renumberRouteSegments()
-      refreshAnnotation()
     }).catch(() => {})
     return
   }
@@ -1310,12 +1233,10 @@ function createSubPlan(segment) {
     onSegCalcChange(segment)
   }
   ElMessage.success(`已创建${subPlanType}，子计划编号：${subPlanId}`)
-  refreshAnnotation()
 }
 function viewSubPlan(segment) {
   currentSubPlan.value = segment.subPlan
   subPlanDialogVisible.value = true
-  refreshAnnotation()
 }
 function closeSubPlanDialog() {
   subPlanDialogVisible.value = false
@@ -1348,7 +1269,6 @@ function removeBoxPriceRow(index) {
 function openWaybillDrawer() {
   selectedDrawerWaybillId.value = waybillOrder.value && waybillOrder.value.id ? waybillOrder.value.id : ''
   waybillDrawerVisible.value = true
-  refreshAnnotation()
 }
 function closeWaybillDrawer() {
   waybillDrawerVisible.value = false
@@ -1388,7 +1308,6 @@ function applyWaybillRelation(waybill) {
   formData.remark = waybill.remark || ''
   sourceType.value = 'shared'
   applyFeeDefaults({})
-  refreshAnnotation()
   ElMessage.success('已关联托运单')
 }
 function clearWaybillRelation() {
@@ -1396,7 +1315,6 @@ function clearWaybillRelation() {
   confirmedQuote.value = null
   quoteSegments.value = []
   routeSegments.value = routeSegments.value.map(segment => ({ ...segment, locked: false }))
-  refreshAnnotation()
   ElMessage.success('已解除关联，字段保留可继续编辑')
 }
 
@@ -1502,14 +1420,6 @@ function doSubmit() {
 // ============ 生命周期 ============
 onMounted(() => {
   loadSharedData()
-  bootAnnotation().catch((error) => {
-    console.warn('[prototype-annotation] 创建联运计划标注加载失败:', error)
-  })
-})
-
-onUnmounted(() => {
-  window.AnnotationCore?.disable?.()
-  window.AnnotationCore?.close?.()
 })
 </script>
 
@@ -1575,13 +1485,6 @@ onUnmounted(() => {
 .btn-default { background: #fff; color: #4e5969; border-color: #c9cdd4; }
 .btn-default:hover { border-color: #165dff; color: #165dff; }
 .btn-sm { height: 28px; padding: 0 12px; font-size: 13px; }
-
-/* ===== 原型标注按钮（沿用现有 ws-btn 风格） ===== */
-.ws-btn {
-  height: 32px; padding: 0 16px; border: 1px solid #c9cdd4; border-radius: 4px;
-  background: #fff; color: #4e5969; font-size: 13px; cursor: pointer;
-}
-.ws-btn:hover { border-color: #165dff; color: #165dff; }
 
 /* ===== 页面标题 ===== */
 .page-header {

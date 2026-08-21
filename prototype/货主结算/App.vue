@@ -16,7 +16,7 @@
     <!-- ============ 新增页 ============ -->
     <div v-if="pageMode === 'add'" class="add-view">
       <!-- 基础信息 -->
-      <section class="form-section annotation-add-basic">
+      <section class="form-section" :class="{ 'annot-shipper-settlement-field-basic-info': !selectedPlans.length }">
         <h3 class="section-title">基础信息</h3>
         <el-form :model="form" label-width="100px">
           <el-row :gutter="16">
@@ -54,14 +54,19 @@
       </section>
 
       <!-- 核算联运计划 -->
-      <section class="form-section annotation-add-plans">
+      <section class="form-section">
         <div class="section-header">
           <h3 class="section-title">核算联运计划</h3>
-          <el-button type="primary" link @click="openPlanSelector">+ 添加联运计划</el-button>
+          <el-button :class="{ 'annot-shipper-settlement-action-add-plan': !selectedPlans.length }" type="primary" link @click="openPlanSelector">+ 添加联运计划</el-button>
         </div>
         <el-empty v-if="!selectedPlans.length" description="请添加联运计划" />
 
-        <div v-for="(plan, pIdx) in selectedPlans" :key="plan.id" class="plan-card">
+        <div
+          v-for="(plan, pIdx) in selectedPlans"
+          :key="plan.id"
+          class="plan-card"
+          :class="{ 'annot-shipper-settlement-rule-plan-calculation': pIdx === 0 }"
+        >
           <div class="plan-card-header">
             <strong>{{ plan.id }} {{ plan.name }}</strong>
             <el-tag :class="plan.settlementType === 'whole' ? 'tag-whole' : 'tag-segment'" size="small" effect="light">
@@ -177,7 +182,7 @@
           </template>
 
           <!-- 计划小计 -->
-          <div class="plan-subtotal">
+          <div class="plan-subtotal" :class="{ 'annot-shipper-settlement-rule-fee-adjustment': pIdx === 0 }">
             <strong>计划核算运费合计：¥{{ calcPlanCheckFee(plan).toFixed(2) }}</strong>
           </div>
         </div>
@@ -188,20 +193,20 @@
       </section>
 
       <!-- 底部操作栏 -->
-      <footer class="page-footer annotation-add-submit">
+      <footer class="page-footer">
         <el-button @click="pageMode = 'detail'">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="submitSettlement">提交结算单</el-button>
+        <el-button :class="{ 'annot-shipper-settlement-action-submit': selectedPlans.length }" type="primary" :loading="submitting" @click="submitSettlement">提交结算单</el-button>
       </footer>
     </div>
 
     <!-- ============ 详情页 ============ -->
     <div v-else class="detail-view">
       <!-- 基础信息 + 全单费用汇总 -->
-      <section class="form-section annotation-detail-basic">
+      <section class="form-section annot-shipper-settlement-field-detail-basic-info">
         <h3 class="section-title">基础信息</h3>
         <div class="info-grid">
           <div><span>结算单号</span><strong>{{ detail.settlementNo }}</strong></div>
-          <div><span>状态</span><el-tag :type="detailStatusType(detail.status)" size="small">{{ detail.status }}</el-tag></div>
+          <div class="annot-shipper-settlement-action-status-payment"><span>状态</span><el-tag :type="detailStatusType(detail.status)" size="small">{{ detail.status }}</el-tag></div>
           <div><span>结算对象</span><strong>{{ detail.settlementObject }}</strong></div>
           <div><span>结算方</span><strong>{{ detail.settlementParty }}</strong></div>
           <div><span>结算日期</span><strong>{{ detail.settlementDate }}</strong></div>
@@ -210,7 +215,7 @@
           <div><span>备注</span><strong>{{ detail.remark || '-' }}</strong></div>
         </div>
 
-        <div class="fee-summary-bar">
+        <div class="fee-summary-bar annot-shipper-settlement-field-fee-overview">
           <div class="fee-cell"><span>基础运费合计</span><strong>¥{{ detail.feeSummary.baseFee.toLocaleString() }}</strong></div>
           <div class="fee-divider"></div>
           <div class="fee-cell"><span>补贴金额合计</span><strong>¥{{ detail.feeSummary.subsidy.toLocaleString() }}</strong></div>
@@ -225,7 +230,7 @@
       <!-- 主内容区：左计划汇总 + 右计费详情 -->
       <div class="detail-main">
         <!-- 左侧：联运计划汇总 -->
-        <div class="detail-left annotation-detail-plan-list">
+        <div class="detail-left">
           <h4 class="sub-title">联运计划汇总（点击切换）</h4>
           <div
             v-for="p in detail.plans"
@@ -255,7 +260,7 @@
         <div class="detail-right">
           <template v-if="currentPlan">
             <!-- 计费类型 -->
-            <div class="calc-group annotation-detail-billing-type">
+            <div class="calc-group">
               <h4 class="calc-title">计费类型</h4>
               <div class="info-grid">
                 <div><span>联运计划号</span><strong>{{ currentPlan.id }}</strong></div>
@@ -268,7 +273,7 @@
             </div>
 
             <!-- 基础运费 -->
-            <div class="calc-group annotation-detail-base-fee">
+            <div class="calc-group">
               <h4 class="calc-title">基础运费</h4>
               <template v-if="currentPlan.type === 'whole'">
                 <el-table :data="currentPlan.items" border size="small">
@@ -320,7 +325,7 @@
             </div>
 
             <!-- 补贴费用 -->
-            <div class="calc-group annotation-detail-subsidy">
+            <div class="calc-group">
               <h4 class="calc-title">补贴费用</h4>
               <el-table :data="currentPlan.subsidyRows" border size="small" empty-text="无补贴">
                 <el-table-column v-if="currentPlan.type === 'segment'" prop="segment" label="所属路段" width="120" />
@@ -333,7 +338,7 @@
             </div>
 
             <!-- 扣减费用 -->
-            <div class="calc-group annotation-detail-deduction">
+            <div class="calc-group">
               <h4 class="calc-title">扣减费用</h4>
               <el-table :data="currentPlan.deductionRows" border size="small" empty-text="无扣减">
                 <el-table-column v-if="currentPlan.type === 'segment'" prop="segment" label="所属路段" width="120" />
@@ -346,7 +351,7 @@
             </div>
 
             <!-- 核算结果 -->
-            <div class="calc-group annotation-detail-result">
+            <div class="calc-group">
               <h4 class="calc-title">核算结果</h4>
               <div class="result-bar">
                 <div class="result-row">
@@ -375,9 +380,9 @@
     </div>
 
     <!-- ============ 计划选择抽屉 ============ -->
-    <el-drawer v-model="planSelectorVisible" title="添加联运计划" direction="rtl" size="960px" class="annotation-add-plan-selector" :append-to-body="false">
+    <el-drawer v-model="planSelectorVisible" title="添加联运计划" direction="rtl" size="960px" :append-to-body="false">
       <el-empty v-if="!candidatePlans.length" description="当前结算方暂无可结算联运计划" />
-      <el-table :data="candidatePlans" border @selection-change="onPlanSelectChange">
+      <el-table class="annot-shipper-settlement-field-selectable-plans" :data="candidatePlans" border @selection-change="onPlanSelectChange">
         <el-table-column type="selection" width="50" :selectable="row => row.selectable" />
         <el-table-column prop="id" label="联运计划号" width="160" />
         <el-table-column prop="route" label="路线" min-width="160" />
@@ -414,12 +419,8 @@
       v-model="subsidyDialogVisible"
       :title="subsidyType === 'subsidy' ? '维护补贴项' : '维护扣减项'"
       width="640px"
-      class="annotation-add-adjustment-dialog"
       :append-to-body="false"
-      @opened="refreshAnnotation"
-      @closed="refreshAnnotation"
     >
-      <div class="annotation-add-adjustment-dialog-anchor"></div>
       <el-table :data="subsidyItems" border size="small">
         <el-table-column label="项目名称" min-width="160">
           <template #default="{ row }"><el-input v-model="row.name" size="small" placeholder="项目名称" /></template>
@@ -446,7 +447,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   settlementObjects, settlementParties,
@@ -460,64 +461,6 @@ import {
 
 const pageMode = ref('add')
 const submitting = ref(false)
-const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
-
-function loadAnnotationScript() {
-  return new Promise((resolve, reject) => {
-    if (window.AnnotationCore) {
-      resolve()
-      return
-    }
-
-    const scriptUrl = `${annotationBaseUrl}annotation-core.js`
-    const existing = document.querySelector(`script[src="${scriptUrl}"]`)
-    if (existing) {
-      existing.addEventListener('load', () => resolve(), { once: true })
-      existing.addEventListener('error', reject, { once: true })
-      return
-    }
-
-    const script = document.createElement('script')
-    script.src = scriptUrl
-    script.onload = () => resolve()
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
-
-async function bootAnnotation() {
-  await nextTick()
-  await loadAnnotationScript()
-  await window.AnnotationCore.init({
-    pageId: '货主结算',
-    specUrl: `${annotationBaseUrl}shipper-settlement.spec.yaml`,
-    jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
-    readOnly: (() => { const p = new URLSearchParams(window.location.search); return p.get('readOnly') === '1' || p.get('readonly') === '1'; })(),
-  })
-}
-
-onMounted(() => {
-  bootAnnotation().catch((error) => {
-    console.warn('[prototype-annotation] 货主结算标注加载失败:', error)
-  })
-})
-
-onUnmounted(() => {
-  window.AnnotationCore?.disable?.()
-  window.AnnotationCore?.close?.()
-})
-
-watch(pageMode, () => {
-  refreshAnnotation()
-})
-
-function refreshAnnotation() {
-  nextTick(() => {
-    requestAnimationFrame(() => {
-      window.AnnotationCore?.refresh?.()
-    })
-  })
-}
 
 // ============ 新增页 ============
 const form = reactive({ objectId: 'OBJ001', partyId: '', date: formatLocalDate(), remark: '', totalAmount: 0 })
@@ -770,33 +713,6 @@ function confirmPay() {
   align-items: center;
   gap: 10px;
 }
-.top-actions .prototype-annotation-toggle {
-  display: inline-flex;
-  align-items: center;
-}
-.top-actions .annotation-toggle-btn {
-  height: 28px;
-  padding: 0 12px;
-  border: 1px solid #dcdfe6 !important;
-  border-radius: 4px;
-  background: #ffffff !important;
-  color: #4e5969 !important;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 26px;
-  cursor: pointer;
-}
-.top-actions .annotation-toggle-btn:hover {
-  border-color: #165dff !important;
-  color: #165dff !important;
-  background: #f5f9ff !important;
-}
-.top-actions .prototype-annotation-toggle.active .annotation-toggle-btn {
-  border-color: #165dff !important;
-  color: #165dff !important;
-  background: #e8f3ff !important;
-}
-
 .form-section {
   background: #fff;
   border: 1px solid #e7ebf0;
@@ -879,15 +795,6 @@ function confirmPay() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.annotation-add-adjustment-dialog-anchor {
-  position: relative;
-  height: 0;
-}
-.annotation-add-adjustment-dialog-anchor :deep(.annotation-add-adjustment-node) {
-  top: -18px;
-  left: -18px;
 }
 
 .sub-block {

@@ -1,0 +1,3 @@
+# annotation-prd-analyzer
+description = "原型标注需求分析器。只读取本项目相关 PRD、业务规则和实际页面事实，按列表、详情、页签、抽屉、弹窗等状态分组，把强关联字段、状态、操作和结果合并为少量研发可读标注候选；输出 title、category、content、source、location、container、group，不写选择器、不修改代码。"
+sandbox_mode = "workspace-write"

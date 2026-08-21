@@ -1,0 +1,10 @@
+[features]
+multi_agent = true
+
+[agents.annotation-prd-analyzer]
+description = "产品需求分析器，在生成页面标注前分析需求文档，输出完整的功能点清单。"
+config_file = "agents/annotation-prd-analyzer.toml"
+
+[agents.annotation-code-locator]
+description = "代码定位分析器，根据功能点清单定位页面 DOM，并输出标注 class 注入清单。"
+config_file = "agents/annotation-code-locator.toml"

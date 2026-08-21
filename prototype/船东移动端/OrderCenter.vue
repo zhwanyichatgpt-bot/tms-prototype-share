@@ -5,7 +5,7 @@
       <img class="oc-status-art" src="/shipowner-statusbar.svg" alt="" />
 
       <!-- 顶部 Header：标题“订单” + 胶囊 Tab [报价] [订单] -->
-      <header class="oc-header">
+      <header class="oc-header annot-shipowner-order-field-header">
         <div class="oc-title-group">
           <span class="oc-title">订单</span>
           <span class="oc-title-decor"></span>
@@ -33,7 +33,7 @@
       </header>
 
       <!-- 搜索行：长搜索框 + 筛选按钮 -->
-      <div class="oc-search-row">
+      <div class="oc-search-row annot-shipowner-order-field-search">
         <div class="oc-search">
           <van-icon name="search" size="15" color="#8C99A8" />
           <input
@@ -49,14 +49,14 @@
             aria-label="搜索托运单号或托运企业"
           />
         </div>
-        <button class="oc-filter-btn" type="button" aria-label="筛选" @click="showFilter = true">
+        <button class="oc-filter-btn annot-shipowner-order-action-filter" type="button" aria-label="筛选" @click="showFilter = true">
           <span>筛选</span>
           <van-icon name="arrow-down" size="11" />
         </button>
       </div>
 
       <!-- 快捷状态过滤 chips -->
-      <div class="oc-status-row" aria-label="快捷状态过滤">
+      <div class="oc-status-row annot-shipowner-order-field-status" aria-label="快捷状态过滤">
         <button
           v-for="s in activeStatusOptions"
           :key="s.value"
@@ -70,7 +70,7 @@
       </div>
 
       <!-- ================= 报价 Tab 列表 ================= -->
-      <section v-if="currentTab === 'quote'" class="oc-list" aria-label="报价单列表">
+      <section v-if="currentTab === 'quote'" class="oc-list annot-shipowner-order-field-quote-list" aria-label="报价单列表">
         <article
           v-for="q in filteredQuotes"
           :key="q.quoteNo"
@@ -145,7 +145,7 @@
       </section>
 
       <!-- ================= 订单 Tab 列表 ================= -->
-      <section v-else class="oc-list" aria-label="托运订单列表">
+      <section v-else class="oc-list annot-shipowner-order-field-order-list" aria-label="托运订单列表">
         <article
           v-for="order in filteredOrders"
           :key="order.orderNo"
@@ -207,7 +207,7 @@
 
       <!-- 底部导航：高亮“订单” (第二项) -->
       <div class="oc-bottom-mask"></div>
-      <nav class="oc-bottom-nav" aria-label="底部导航">
+      <nav class="oc-bottom-nav annot-shipowner-order-field-tabbar" aria-label="底部导航">
         <img src="/shipowner-tabbar-order.svg?v=hall2" alt="大厅、订单、运单、我的" />
         <button
           v-for="(nav, index) in navs"
@@ -683,8 +683,8 @@ const onNav = (nav) => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 44px 16px 8px 16px;
-  gap: 16px;
+  padding: 44px 18px 12px 18px;
+  gap: 18px;
   position: relative;
   z-index: 10;
 }
@@ -743,8 +743,8 @@ const onNav = (nav) => {
 .oc-search-row {
   display: flex;
   align-items: center;
-  padding: 4px 16px 8px 16px;
-  gap: 10px;
+  padding: 6px 16px 12px 16px;
+  gap: 12px;
 }
 
 .oc-search {
@@ -789,8 +789,8 @@ const onNav = (nav) => {
 .oc-status-row {
   display: flex;
   align-items: center;
-  padding: 0 16px 8px 16px;
-  gap: 8px;
+  padding: 0 16px 12px 16px;
+  gap: 10px;
   overflow-x: auto;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
@@ -828,7 +828,7 @@ const onNav = (nav) => {
 .oc-list {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 16px 80px 16px;
+  padding: 6px 16px 92px 16px;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -842,9 +842,9 @@ const onNav = (nav) => {
 
 .oc-card {
   background: #ffffff;
-  border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 10px;
+  border-radius: 14px;
+  padding: 15px 16px;
+  margin-bottom: 14px;
   box-shadow: 0 4px 14px rgba(23, 54, 100, 0.04);
   cursor: pointer;
   transition: transform 0.15s ease;
@@ -859,7 +859,7 @@ const onNav = (nav) => {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 13px;
 }
 
 .oc-biz-badge {
@@ -968,8 +968,8 @@ const onNav = (nav) => {
 .oc-route-block {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 13px;
 }
 
 .oc-route-row {
@@ -1010,7 +1010,7 @@ const onNav = (nav) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .oc-tag-row {
@@ -1077,7 +1077,7 @@ const onNav = (nav) => {
 .oc-card-divider {
   height: 1px;
   background: #f0f2f7;
-  margin: 8px 0;
+  margin: 12px 0;
 }
 
 .oc-doc-row {
@@ -1101,7 +1101,8 @@ const onNav = (nav) => {
 .oc-publisher-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  min-height: 24px;
   font-size: 11px;
   color: #8c99a8;
 }

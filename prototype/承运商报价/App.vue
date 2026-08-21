@@ -112,9 +112,19 @@
                     <select class="q-select-sm" v-model="seg.carryForm" @change="onCarryFormChange(seg)">
                       <option v-for="c in carryFormOptions" :key="c" :value="c">{{ c }}</option>
                     </select>
-                    <span class="seg-from">{{ seg.from || '起点' }}</span>
+                    <select class="segment-address-select" v-model="seg.from" @change="onRouteAddressChange(idx, 'from')">
+                      <option value="" disabled>请选择起点</option>
+                      <optgroup v-for="group in routeAddressGroupsFor(idx, 'from')" :key="`from-${idx}-${group.key}`" :label="group.label">
+                        <option v-for="option in group.options" :key="`from-${idx}-${option.value}`" :value="option.value" :disabled="option.disabled">{{ option.label }}</option>
+                      </optgroup>
+                    </select>
                     <span class="seg-arrow">→</span>
-                    <span class="seg-to">{{ seg.to || '终点' }}</span>
+                    <select class="segment-address-select" v-model="seg.to" @change="onRouteAddressChange(idx, 'to')">
+                      <option value="" disabled>请选择终点</option>
+                      <optgroup v-for="group in routeAddressGroupsFor(idx, 'to')" :key="`to-${idx}-${group.key}`" :label="group.label">
+                        <option v-for="option in group.options" :key="`to-${idx}-${option.value}`" :value="option.value" :disabled="option.disabled">{{ option.label }}</option>
+                      </optgroup>
+                    </select>
                     <input class="duration-input" v-model="seg.duration" placeholder="时效" />
                     <div class="seg-actions">
                       <button v-if="idx > 0" class="text-btn" @click="moveSegment(idx, -1)">↑</button>
@@ -203,7 +213,7 @@
                   <span class="seg-num"><i></i>路段{{ idx + 1 }}</span>
                   <span class="mode-tag" :class="'mode-' + seg.mode">{{ seg.mode }}</span>
                   <span class="seg-carry">{{ seg.carryForm }}</span>
-                  <span>{{ seg.from }} → {{ seg.to }}</span>
+                  <span>{{ routeAddressLabel(seg.from, '起点') }} → {{ routeAddressLabel(seg.to, '终点') }}</span>
                 </div>
                 <div class="field-grid three">
                   <div class="field">
@@ -437,6 +447,57 @@ const routeSectionTitle = computed(() => form.transportMode === '多式联运' ?
 const singleRouteLoad = computed(() => waybill.value.loadOrderNodes)
 const singleRouteUnload = computed(() => waybill.value.unloadOrderNodes)
 
+const routeAddressGroups = computed(() => {
+  const waybillOptions = isContainer.value
+    ? waybill.value.containerNodes.map(node => ({
+      value: `waybill:${node.id}`,
+      label: `${node.nodeType}｜${node.name}${node.address && node.address !== node.name ? `｜${node.address}` : ''}`,
+    }))
+    : [
+      ...waybill.value.loadOrderNodes.map(node => ({
+        value: `waybill:${node.id}`,
+        label: `装货点｜${node.name}${node.address && node.address !== node.name ? `｜${node.address}` : ''}`,
+      })),
+      ...waybill.value.unloadOrderNodes.map(node => ({
+        value: `waybill:${node.id}`,
+        label: `卸货点｜${node.name}${node.address && node.address !== node.name ? `｜${node.address}` : ''}`,
+      })),
+    ]
+
+  return [
+    { key: 'waybill', label: '托运单地址', options: waybillOptions },
+    {
+      key: 'common',
+      label: '常用地址',
+      options: carrierAddressOptions.map(address => ({
+        value: `common:${address.id}`,
+        label: address.name,
+      })),
+    },
+  ]
+})
+
+function routeAddressGroupsFor(idx, field) {
+  const isIntermediateAddress = field === 'from' ? idx > 0 : idx < segments.value.length - 1
+  const currentValue = segments.value[idx]?.[field]
+  return routeAddressGroups.value
+    .map(group => {
+      if (group.key !== 'common' || isIntermediateAddress) return group
+      return {
+        ...group,
+        options: group.options.map(option => ({ ...option, disabled: option.value !== currentValue })),
+      }
+    })
+    .filter(group => group.options.length)
+}
+
+function routeAddressLabel(value, fallback = '') {
+  const option = routeAddressGroups.value
+    .flatMap(group => group.options)
+    .find(item => item.value === value)
+  return option?.label || value || fallback
+}
+
 function switchWaybill(id) {
   currentWaybillId.value = id
   waybill.value = id === 'TY20260701002' ? containerWaybill : bulkWaybill
@@ -464,7 +525,7 @@ function initSegments() {
       segs.push({
         mode: i === 0 ? '公路' : (i === nodes.length - 2 ? '公路' : '铁路'),
         carryForm: '集装箱运输',
-        from: nodes[i].name, to: nodes[i + 1].name,
+        from: `waybill:${nodes[i].id}`, to: `waybill:${nodes[i + 1].id}`,
         duration: '1天',
         cargoItems: [{ cargoName: '集装箱', qty: waybill.value.containerBoxes.reduce((s, b) => s + b.quantity, 0), unit: '箱' }],
         billingDimension: '按集装箱', billingBasis: '', unitPrice: 0,
@@ -477,9 +538,9 @@ function initSegments() {
   const unload = waybill.value.unloadOrderNodes[0]
   const cargo = waybill.value.cargoFlows[0]
   return [
-    { mode: '公路', carryForm: '散货运输', from: load?.name || '', to: '上海铁路货运站', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 80, extraFees: [] },
-    { mode: '铁路', carryForm: '散货运输', from: '上海铁路货运站', to: '武汉港', duration: '2天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 60, extraFees: [] },
-    { mode: '公路', carryForm: '散货运输', from: '武汉港', to: unload?.name || '', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按卸货口径', unitPrice: 70, extraFees: [] },
+    { mode: '公路', carryForm: '散货运输', from: load ? `waybill:${load.id}` : '', to: 'common:c-addr1', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 80, extraFees: [] },
+    { mode: '铁路', carryForm: '散货运输', from: 'common:c-addr1', to: 'common:c-addr2', duration: '2天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按装货口径', unitPrice: 60, extraFees: [] },
+    { mode: '公路', carryForm: '散货运输', from: 'common:c-addr2', to: unload ? `waybill:${unload.id}` : '', duration: '1天', cargoItems: [{ cargoName: cargo?.cargoName, qty: cargo?.quantity, unit: cargo?.unit }], billingDimension: '按重量', billingBasis: '按卸货口径', unitPrice: 70, extraFees: [] },
   ]
 }
 
@@ -518,6 +579,13 @@ function addSegment() {
   recalculateRoute()
 }
 function removeSegment(idx) { segments.value.splice(idx, 1); recalculateRoute() }
+function onRouteAddressChange(idx, field) {
+  const current = segments.value[idx]
+  if (!current) return
+  if (field === 'from' && idx > 0) segments.value[idx - 1].to = current.from
+  if (field === 'to' && idx < segments.value.length - 1) segments.value[idx + 1].from = current.to
+  recalculateRoute()
+}
 function moveSegment(idx, dir) {
   const n = idx + dir; if (n < 0 || n >= segments.value.length) return
   const arr = segments.value; const tmp = arr[idx]; arr[idx] = arr[n]; arr[n] = tmp
@@ -540,7 +608,7 @@ function recalculateRoute() {
     segments.value.forEach((s, i) => { if (!s.from || !s.to) errors.push(`路段 ${i + 1} 起点终点必填`) })
     if (isContainer.value) {
       const allPts = segments.value.flatMap(s => [s.from, s.to])
-      waybill.value.containerNodes.forEach(n => { if (!allPts.includes(n.name)) errors.push(`集装箱节点「${n.nodeType}-${n.name}」未被覆盖`) })
+      waybill.value.containerNodes.forEach(n => { if (!allPts.includes(`waybill:${n.id}`)) errors.push(`集装箱节点「${n.nodeType}-${n.name}」未被覆盖`) })
     }
   }
   routeErrors.value = errors
@@ -696,6 +764,11 @@ watch(() => form.transportMode, () => recalculateRoute())
 .duration-input {
   height: 30px; width: 70px; padding: 0 8px; border: 1px solid #e5e8ef; border-radius: 3px; font-size: 12px; outline: none;
 }
+.segment-address-select {
+  width: 100%; min-width: 0; height: 30px; padding: 0 8px; border: 1px solid #e5e8ef;
+  border-radius: 3px; font-size: 12px; color: #1f2430; background: #fff; outline: none;
+}
+.segment-address-select:focus { border-color: #2f68ed; box-shadow: 0 0 0 2px rgba(47, 104, 237, 0.1); }
 
 /* segmented 按钮组 */
 .segmented { display: inline-flex; gap: 0; border: 1px solid #e5e8ef; border-radius: 4px; overflow: hidden; }

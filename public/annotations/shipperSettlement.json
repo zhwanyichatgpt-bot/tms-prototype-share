@@ -1,0 +1,151 @@
+{
+  "page": "shipperSettlement",
+  "title": "货主结算",
+  "updatedAt": "2026-08-20",
+  "annotations": [
+    {
+      "id": "annot-shipper-settlement-field-basic-info",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-field-basic-info",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "基础信息与结算范围",
+      "content": "| 字段 | 规则 |\n|---|---|\n| 结算对象 | 必填，沿用既有结算页面字段。 |\n| 结算方 | 必填，决定后续可以选择的联运计划。 |\n| 结算日期 | 必填，默认当前日期，可修改。 |\n| 结算总额 | 系统根据已选联运计划、补贴和扣减自动计算，只读。 |\n| 备注 | 选填。 |\n\n已添加联运计划后修改结算方，必须清空已选联运计划及对应费用明细，防止跨结算方核算。",
+      "category": "field",
+      "source": "5.1 基础信息",
+      "container": "page",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-action-add-plan",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-action-add-plan",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "添加联运计划",
+      "content": "**前置条件：**已选择结算方。\n\n点击后打开联运计划选择抽屉，支持多选。确认选择后，计划回填到核算区域并按联运计划分组展示。已选计划可以移除，移除后系统同步重算结算总额。",
+      "category": "action",
+      "source": "5.2.1、5.2.2 添加联运计划",
+      "container": "page",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-field-selectable-plans",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-field-selectable-plans",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "可结算联运计划选择",
+      "content": "联运计划可被选择需同时满足：\n\n- 结算方与当前选择一致。\n- 计划已生效，且未作废、未失效。\n- 存在完整的客户侧费用规则。\n- 未结算量大于 0，关键结算依据数据已形成。\n- 未被异常、争议或冻结状态锁定。\n- 本次可结算量未被其他有效结算单占用。\n\n不可选择时必须展示明确原因，例如未结算量为 0、缺少费用规则、缺少装卸确认量、计划已作废或存在结算争议锁定。",
+      "category": "rule",
+      "source": "5.2.2、5.2.3 添加联运计划",
+      "container": "drawer",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-rule-plan-calculation",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-rule-plan-calculation",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "核算联运计划与计费规则",
+      "content": "### 共通规则\n\n联运计划按计划分组；分段结算在计划内继续按子计划（路段）分组。运输总量、已结算量、未结算量、基础运费和核算运费由系统计算，只读展示。\n\n本次结算量默认等于未结算量，可以减少但不能增加，必须满足 `0 < 本次结算量 <= 未结算量`，且不能跨货品、箱型或路段挪用。\n\n运输单价可按本次结算调整，调整只影响当前结算单，不反改联运计划原费用规则，并需保留调整记录。\n\n### 计费分支\n\n| 场景 | 单价层级与计算方式 |\n|---|---|\n| 整票散货 / 普货 | 联运计划级统一单价；基础运费为各货品行本次结算量乘计划单价后汇总。 |\n| 整票集装箱 | 箱型级单价；按各箱型本次结算量乘对应箱型单价后汇总。 |\n| 分段散货 / 普货 | 子计划级统一单价；各路段独立计算并汇总。 |\n| 分段集装箱 | 子计划 + 箱型级单价；各路段、各箱型独立计算并汇总。 |",
+      "category": "rule",
+      "source": "4 核心规则、5.3、5.4、5.5、7 字段编辑规则、11.4",
+      "container": "page",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-rule-fee-adjustment",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-rule-fee-adjustment",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "费用调整与核算结果",
+      "content": "补贴和扣减均按货品 / 箱型明细行维护，支持新增、修改和删除；分段结算时还必须记录所属子计划。\n\n补贴、扣减只影响当前结算单，不反改联运计划费用规则。每个可结算明细行都应提供维护入口，不允许出现无法维护的空白单元格。\n\n**核算运费 = 基础运费 + 补贴金额 - 扣减金额。**",
+      "category": "rule",
+      "source": "5.6 补贴金额与扣减金额、5.3 核算联运计划",
+      "container": "page",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-action-submit",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-action-submit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "提交校验与结算占用",
+      "content": "提交时按四组规则校验：\n\n1. **基础信息：**结算对象、结算方和结算日期完整。\n2. **计划范围：**至少存在一个仍处于可结算状态的联运计划，且费用规则完整。\n3. **核算数据：**本次结算量合法、运输单价大于 0、基础运费计算成功，补贴和扣减金额格式合法。\n4. **重复占用：**同一内部运单的同一数量范围未被其他有效结算单占用。\n\n提交后生成正式结算单并进入待审核，不进入草稿；同时占用本次结算量，避免重复结算。",
+      "category": "action",
+      "source": "2 核心链路、3.3 状态流转、8 提交校验",
+      "container": "page",
+      "group": "create",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-field-detail-basic-info",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-field-detail-basic-info",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "结算单信息与只读边界",
+      "content": "详情页展示结算单号、状态、结算对象、结算方、结算日期、创建信息、备注和结算金额。\n\n详情页核心结算数据全部只读，不允许修改结算量、运输单价、补贴、扣减和核算结果；不展示 OA 流程、OA 单号或查看 OA 流程入口。",
+      "category": "field",
+      "source": "5.9.1、5.9.3 货主结算单详情页",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-field-fee-overview",
+      "type": "selector",
+      "selector": ".annot-shipper-settlement-field-fee-overview",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "费用汇总与计费详情",
+      "content": "### 结算数据保持不变\n\n详情页展示结算单提交时已经确认并保存的计费条件、计费依据、运输单价、本次结算量和费用结果。联运计划后续调整这些内容，不影响已经生成的结算单。详情页全部只读。\n\n### 基础运费\n\n| 结算场景 | 展示与计算规则 |\n|---|---|\n| 整票散货 / 普货 | 按货品行展示，使用联运计划级统一单价。 |\n| 整票集装箱 | 按箱型展示，每个箱型使用自己的运输单价。 |\n| 分段散货 / 普货 | 按子计划（路段）分组，每个路段使用自己的计费条件、计费依据、单价和单位。 |\n| 分段集装箱 | 按子计划和箱型展示，每个路段、每个箱型独立计算。 |\n\n整票按装货口径时取首段累计装货确认量，按卸货口径时取末段累计卸货确认量；分段结算由各子计划按自己的计费依据取量；集装箱路段按箱型箱数统计。已结算量不包含已作废结算单，未结算量 = 运输总量 - 已结算量。\n\n### 补贴与扣减\n\n补贴、扣减按货品 / 箱型明细展示；分段结算还需展示所属子计划（路段）。每条记录展示费用项目和金额。没有补贴或扣减时使用轻量空态，不使用大面积插画。\n\n### 联动与金额汇总\n\n左侧按联运计划汇总，点击计划后，右侧切换为该计划的计费详情。金额按以下层级汇总：\n\n1. 明细金额 = 本次结算量 × 对应运输单价。\n2. 分段结算先汇总各路段小计。\n3. 联运计划基础运费汇总全部货品、箱型或路段金额。\n4. 联运计划核算运费 = 基础运费 + 补贴 - 扣减。\n5. 全单结算总额 = 全部联运计划核算运费之和。",
+      "category": "field",
+      "source": "5.9.4、5.9.5、5.9.6、5.9.8",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-shipper-settlement-action-status-payment",
+      "type": "position",
+      "selector": "",
+      "position": {
+        "x": 919.40625,
+        "y": 207.75
+      },
+      "title": "状态动作与确认打款",
+      "content": "| 当前状态 | 页面动作 |\n|---|---|\n| 待审核 | 不显示确认打款。 |\n| 待打款 | 显示确认打款。 |\n| 已打款 | 不显示确认打款。 |\n| 已作废 | 不显示确认打款。 |\n\n详情页不提供应用内审核通过或审核驳回，也不提供查看依据、运单选择、内部运单占用明细、税率计算或草稿相关操作。",
+      "category": "action",
+      "source": "5.9.7 详情页动作规则",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-20"
+    }
+  ]
+}

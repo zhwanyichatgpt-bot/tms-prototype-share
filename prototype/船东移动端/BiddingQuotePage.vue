@@ -4,7 +4,7 @@
       <!-- 可滚动内容区 -->
       <div ref="scrollContainer" class="detail-scroll">
         <!-- 1. 顶部航线地图区 (220px 适中高度，还原完整 3D 港口气泡、时间与航线) -->
-        <section class="map-section">
+        <section class="map-section annot-shipowner-quote-field-route">
           <img class="map-image" src="/cargo-detail-map.png" alt="运输路线地图" />
           <img class="status-bar" src="/shipowner-statusbar.svg" alt="" />
 
@@ -49,7 +49,7 @@
         <!-- 2. 下方内容面板区 (圆角衔接) -->
         <section class="detail-sheet">
           <!-- 喇叭提示栏 (统一展示报价截止时间) -->
-          <div class="bidding-notice">
+          <div class="bidding-notice annot-shipowner-quote-field-context">
             <div class="notice-left">
               <img src="/cargo-detail-notice.svg" alt="" />
               <span>竞价中，报价截止：{{ deadlineText }}</span>
@@ -60,13 +60,13 @@
           </div>
 
           <!-- 3. 紧凑单行货物摘要 -->
-          <div class="compact-cargo-bar">
+          <div class="compact-cargo-bar annot-shipowner-quote-field-cargo-summary">
             <span class="cargo-specs">{{ cargoNameText }} · {{ cargoQuantityText }} · {{ transportModeText }}</span>
             <span class="ref-price">参考运费 {{ referencePriceText }}</span>
           </div>
 
           <!-- 4. 报价企业信息卡片 (紧凑 3 行：企业只读、联系人与电话可编辑校验) -->
-          <section class="design-card">
+          <section class="design-card annot-shipowner-quote-field-company-contact">
             <div class="card-sec-header"><span class="sec-title">报价企业信息</span></div>
 
             <div class="form-row-horizontal readonly-bg">
@@ -119,7 +119,7 @@
           <!-- 5.1 参与货源竞价 专属表单区 -->
           <template v-if="isFreight">
             <!-- 运输方案卡片 -->
-            <section class="design-card">
+            <section class="design-card annot-shipowner-quote-rule-transport-plan">
               <div class="card-sec-header"><span class="sec-title">运输方案</span></div>
 
               <div
@@ -163,7 +163,7 @@
             </section>
 
             <!-- 费用报价卡片 -->
-            <section class="design-card">
+            <section class="design-card annot-shipowner-quote-rule-fee">
               <div class="card-sec-header"><span class="sec-title">费用报价</span></div>
 
               <div
@@ -243,7 +243,7 @@
             </section>
 
             <!-- 服务承诺卡片 -->
-            <section class="design-card">
+            <section class="design-card annot-shipowner-quote-rule-service-commitment">
               <div class="card-sec-header"><span class="sec-title">服务承诺</span></div>
 
               <div
@@ -322,7 +322,7 @@
 
           <!-- 5.2 参与运力竞价 专属表单区 -->
           <template v-else>
-            <section class="design-card">
+            <section class="design-card annot-shipowner-quote-rule-capacity-fee">
               <div class="card-sec-header"><span class="sec-title">运力报价</span></div>
 
               <!-- 计费依据 (支持 按重量 与 按船) -->
@@ -384,7 +384,7 @@
       </div>
 
       <!-- 6. 固定底部操作栏 -->
-      <footer class="detail-action">
+      <footer class="detail-action annot-shipowner-quote-action-submit">
         <div class="price-sum-box">
           <span class="sum-label">报价总额</span>
           <strong class="sum-val">{{ computedTotalDisplay }}</strong>
@@ -445,6 +445,7 @@
 
       <!-- 8. 核心报价确认弹窗 (全量挂载至 mobileContainerRef) -->
       <van-dialog
+        class="annot-shipowner-quote-modal-confirm"
         v-model:show="showConfirmDialogModal"
         title="确认提交报价"
         show-cancel-button
@@ -1083,14 +1084,14 @@ const executeSubmit = () => {
   width: 375px;
   min-height: 520px;
   margin-top: -8px;
-  padding: 0 0 16px;
+  padding: 0 0 24px;
   border-radius: 12px 12px 0 0;
   background: #eff1f6;
 }
 
 /* 喇叭提示栏 */
 .bidding-notice {
-  height: 40px;
+  height: 46px;
   padding: 0 16px;
   display: flex;
   align-items: center;
@@ -1128,8 +1129,8 @@ const executeSubmit = () => {
 /* 3. 紧凑单行货物摘要 */
 .compact-cargo-bar {
   width: 343px;
-  margin: 0 16px 8px;
-  padding: 8px 12px;
+  margin: 0 16px 12px;
+  padding: 10px 12px;
   border-radius: 8px;
   background: #ffffff;
   display: flex;
@@ -1152,15 +1153,15 @@ const executeSubmit = () => {
 /* 白色分组卡片规范 */
 .design-card {
   width: 343px;
-  margin: 0 16px 12px;
-  padding: 12px 14px;
+  margin: 0 16px 16px;
+  padding: 14px 16px;
   border-radius: 10px;
   background: #ffffff;
   box-shadow: 0 1px 4px rgba(39, 62, 103, 0.04);
 }
 
 .card-sec-header {
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1174,7 +1175,7 @@ const executeSubmit = () => {
 
 /* 区分只读与填写表单行 */
 .form-row-horizontal {
-  min-height: 42px;
+  min-height: 46px;
   display: flex;
   align-items: center;
   justify-content: space-between;

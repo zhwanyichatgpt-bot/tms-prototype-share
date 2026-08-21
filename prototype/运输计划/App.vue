@@ -40,7 +40,7 @@
       <!-- 内容区 -->
       <div class="tp-body">
         <!-- 查询区 -->
-        <div class="query-row">
+        <div class="query-row annot-transport-plan-filter-list">
           <div class="query-field search-field">
             <input class="q-input" v-model="filters.planName" placeholder="输入计划名称/编号搜索" />
           </div>
@@ -81,7 +81,7 @@
         </div>
 
         <!-- 运输计划表格 -->
-        <div class="table-wrap">
+        <div class="table-wrap annot-transport-plan-field-list-actions">
           <table class="plan-table">
             <thead>
               <tr class="table-header">
@@ -184,7 +184,7 @@
     </div>
 
     <!-- 二次确认弹窗 -->
-    <el-dialog v-model="confirmVisible" :title="confirmTitle" width="420px" :append-to-body="false">
+    <el-dialog v-model="confirmVisible" class="annot-transport-plan-action-status-confirm" :title="confirmTitle" width="420px" :append-to-body="false">
       <span>{{ confirmMessage }}</span>
       <template #footer>
         <el-button @click="confirmVisible = false">取消</el-button>

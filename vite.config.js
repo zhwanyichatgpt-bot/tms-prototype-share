@@ -1,18 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { annotationPlugin } from './vite-annotation-plugin.mjs'
+import { annotationPlugin } from './viteAnnotationPlugin'
 
 export default defineConfig({
-  plugins: [
-    annotationPlugin({
-      specRoot: 'prototype',
-      pages: {
-        货主结算: 'public/annotation/shipper-settlement.spec.yaml',
-        创建联运计划: 'public/annotation/create-plan.spec.yaml',
-      },
-    }),
-    vue(),
-  ],
+  plugins: [annotationPlugin(), vue()],
   build: {
     rollupOptions: {
       onwarn(warning, warn) {

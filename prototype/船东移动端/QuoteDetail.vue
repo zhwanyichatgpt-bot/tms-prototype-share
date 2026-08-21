@@ -3,7 +3,7 @@
     <main class="qd-screen" aria-label="报价详情">
       <div class="qd-scroll">
         <!-- 1. 顶部航线地图区（复用货源详情视觉） -->
-        <section class="map-section">
+        <section class="map-section annot-shipowner-quote-detail-field-route">
           <img class="map-image" src="/cargo-detail-map.png" alt="运输路线地图" />
           <img class="status-bar" src="/shipowner-statusbar.svg" alt="" />
 
@@ -35,7 +35,7 @@
           </div>
 
           <!-- 3. 摘要卡片 -->
-          <section class="design-card summary-card">
+          <section class="design-card summary-card annot-shipowner-quote-detail-field-summary">
             <div class="summary-top">
               <strong>{{ cargoName }}</strong>
               <div class="my-price">
@@ -70,7 +70,7 @@
           </section>
 
           <!-- 4. 起终点地址卡片 -->
-          <section class="design-card address-card" :class="{ expanded: requirementExpanded }">
+          <section class="design-card address-card annot-shipowner-quote-detail-rule-route" :class="{ expanded: requirementExpanded }">
             <div class="address-list">
               <div class="address-item">
                 <span class="address-mark start">起</span>
@@ -103,7 +103,7 @@
           </section>
 
           <!-- 5. 我的报价卡片（承运商端重点区） -->
-          <section class="design-card my-quote-card">
+          <section class="design-card my-quote-card annot-shipowner-quote-detail-rule-result">
             <div class="mq-header">
               <span class="mq-title">我的报价</span>
               <em class="mq-status" :class="statusCls">{{ quote.status }}</em>
@@ -140,7 +140,7 @@
           </section>
 
           <!-- 6. 发布信息卡片 -->
-          <section class="design-card info-card">
+          <section class="design-card info-card annot-shipowner-quote-detail-field-publish-info">
             <div>
               <span>报价单号</span>
               <button type="button" class="copy-value" @click="onCopyCode">
@@ -155,7 +155,7 @@
       </div>
 
       <!-- 7. 底部固定操作栏（仅在报价中展示修改报价，已确认/已完成去除操作按钮） -->
-      <footer class="detail-action" v-if="showAction">
+      <footer class="detail-action annot-shipowner-quote-detail-action-edit" v-if="showAction">
         <button type="button" class="primary" @click="onAction">
           修改报价
         </button>
@@ -492,13 +492,13 @@ const onAction = () => {
   width: 375px;
   min-height: 470px;
   margin-top: -75px;
-  padding: 0 0 16px;
+  padding: 0 0 24px;
   border-radius: 12px 12px 0 0;
   background: #eff1f6;
 }
 
 .bidding-notice {
-  height: 42px;
+  height: 46px;
   padding: 0 16px;
   display: flex;
   align-items: center;
@@ -516,7 +516,7 @@ const onAction = () => {
 
 .design-card {
   width: 343px;
-  margin: 0 16px 12px;
+  margin: 0 16px 16px;
   border-radius: 10px;
   background: #ffffff;
 }

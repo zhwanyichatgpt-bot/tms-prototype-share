@@ -3,7 +3,7 @@
     <main class="detail-screen" aria-label="详情">
       <div class="detail-scroll">
         <!-- 1. 顶部航线地图区 -->
-        <section class="map-section">
+        <section class="map-section annot-shipowner-detail-field-route">
           <img class="map-image" src="/cargo-detail-map.png" alt="运输路线地图" />
           <img class="status-bar" src="/shipowner-statusbar.svg" alt="" />
 
@@ -40,7 +40,7 @@
           </div>
 
           <!-- 3. 摘要卡片 -->
-          <section class="design-card summary-card">
+          <section class="design-card summary-card annot-shipowner-detail-field-summary">
             <div class="summary-top">
               <strong>{{ cargoName }}</strong>
               <div class="estimated-price">
@@ -75,7 +75,7 @@
           </section>
 
           <!-- 4. 起终点地址卡片 -->
-          <section class="design-card address-card" :class="{ expanded: requirementExpanded }">
+          <section class="design-card address-card annot-shipowner-detail-rule-route-requirement" :class="{ expanded: requirementExpanded }">
             <div class="address-list">
               <div class="address-item">
                 <span class="address-mark start">起</span>
@@ -108,7 +108,7 @@
           </section>
 
           <!-- 5. 底部发布信息卡片 -->
-          <section class="design-card info-card">
+          <section class="design-card info-card annot-shipowner-detail-field-publish-info">
             <div>
               <span>{{ codeLabel }}</span>
               <button type="button" class="copy-value" @click="onCopyCode">
@@ -123,7 +123,7 @@
       </div>
 
       <!-- 6. 底部固定操作栏 -->
-      <footer class="detail-action">
+      <footer class="detail-action annot-shipowner-detail-action-quote-entry">
         <button
           type="button"
           @click="openQuoteSheet"
@@ -527,13 +527,13 @@ const submitQuote = () => {
   width: 375px;
   min-height: 470px;
   margin-top: -75px;
-  padding: 0 0 16px;
+  padding: 0 0 24px;
   border-radius: 12px 12px 0 0;
   background: #eff1f6;
 }
 
 .bidding-notice {
-  height: 42px;
+  height: 46px;
   padding: 0 16px;
   display: flex;
   align-items: center;
@@ -551,7 +551,7 @@ const submitQuote = () => {
 
 .design-card {
   width: 343px;
-  margin: 0 16px 12px;
+  margin: 0 16px 16px;
   border-radius: 10px;
   background: #ffffff;
 }

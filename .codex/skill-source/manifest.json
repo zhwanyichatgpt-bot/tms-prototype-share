@@ -1,0 +1,20 @@
+{
+  "canonical_runtime": "codex",
+  "project": "TMS3.0原型验证",
+  "source_root": ".codex/skill-source/project",
+  "entrypoints": [".agents/skills", ".claude/skills"],
+  "skills": {
+    "annotation": {
+      "canonical": "annotation",
+      "status": "active",
+      "targets": ["codex", "claude"],
+      "notes": "完整目录内容一致，已统一主源"
+    },
+    "prd-manager-v2": {
+      "canonical": "prd-manager-v2",
+      "status": "active",
+      "targets": ["codex", "claude"],
+      "notes": "从项目 .codex-tmp 迁入；包含项目 PRD references、reviewer 和 validator"
+    }
+  }
+}

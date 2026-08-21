@@ -1,90 +1,151 @@
 /**
- * 询价大厅（货源大厅）页面 Mock 数据
- * 从主仓 waybill/hall 迁移，1:1 保留数据结构
+ * 货源大厅（询价大厅）页面 Mock 数据
+ * 按照 Pixso 画板 30:4665 1:1 补充全字段真实样例
  */
 
-// 运输方式选项
-export const transportModeOptions = ['公路', '铁路', '水路']
+export const transportModeOptions = ['全部', '汽运', '水运', '火运', '联运']
+export const businessTypeOptions = ['全部', '普通运输', '集装箱运输']
+export const quoteModeOptions = ['全部', '竞价', '抢单']
+export const vehicleTypeOptions = ['不限', '厢式', '高栏', '平板']
+export const sortTabs = ['最新', '长途', '短途', '价格最优', '零担运输', '整车运输']
 
-// 运输类型选项
-export const carryFormOptions = ['散货运输', '集装箱运输']
-
-// 报价模式选项
-export const quoteModeOptions = ['整段报价', '分段报价']
-
-// 计费依据选项（统一口径，原 billingBasisOptions）
-export const billingBasisOptions = ['按装货口径', '按卸货口径']
-
-// 计费条件选项（统一口径，原 billingDimensionOptions）
-export const billingDimensionOptions = ['按重量', '按体积', '按车', '按集装箱']
-
-// 示例路线节点
-export const routeNodes = [
-  { id: 'addr-load-1', name: '安徽宿迁一号装货点', type: '装' },
-  { id: 'addr-load-2', name: '安徽宿迁二号装货点', type: '装' },
-  { id: 'addr-transit-1', name: '宿迁铁路货运站', type: '中转' },
-  { id: 'addr-transit-2', name: '金华铁路到达站', type: '中转' },
-  { id: 'addr-unload-1', name: '浙江金华一号卸货点', type: '卸' },
-  { id: 'addr-unload-2', name: '浙江金华二号卸货点', type: '卸' },
-]
-
-// 示例承运商地址
-export const carrierAddressOptions = [
-  { id: 'carrier-1', name: '宿迁集散中心', type: 'carrier' },
-  { id: 'carrier-2', name: '金华配送中心', type: 'carrier' },
-]
-
-// Demo 货源数据（共享 store 无数据时降级使用）
 export const demoWaybills = [
   {
+    id: 'TY2435678901',
+    businessType: '普通运输',
+    cargoTypeTag: '散货',
+    transportMode: '多式联运',
+    channelSource: '超好运',
+    shipperCompany: '厦门港口物流有限公司',
+    tradeCount: 2000,
+    shipmentVolume: 10000,
+    score: 4.5,
+    status: '已承接',
+    quoteMode: '抢单',
+    priceType: '一口价',
+    expectedPrice: '35',
+    priceUnit: '吨/元',
+    startCity: '福建 福州',
+    endCity: '福建 厦门',
+    cargoDesc: '煤炭  |  50吨  |  200方  |  无包装',
+    timeWindow: '8月10日上午10:00装货 - 8月15日下午10:00卸货',
+    vehicleRequirement: '9.6米厢式货车  |  总里程89km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '01:23:45',
+  },
+  {
+    id: 'TY2435678902',
+    businessType: '普通运输',
+    cargoTypeTag: '散货',
+    transportMode: '公路',
+    channelSource: '超好运',
+    shipperCompany: '厦门港口物流有限公司',
+    tradeCount: 2000,
+    shipmentVolume: 10000,
+    score: 4.5,
+    status: '已发布',
+    quoteMode: '竞价',
+    priceType: '一口价',
+    expectedPrice: '35',
+    priceUnit: '吨/元',
+    startCity: '福建 福州',
+    endCity: '福建 厦门',
+    cargoDesc: '粮食 | 玉米 | 50吨',
+    timeWindow: '8月12日上午09:00装货 - 8月14日下午18:00卸货',
+    vehicleRequirement: '13米高栏车  |  总里程120km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '03:12:08',
+  },
+  {
+    id: 'TY2435678903',
+    businessType: '集装箱运输',
+    cargoTypeTag: '集装箱',
+    transportMode: '水路',
+    channelSource: '至简平台',
+    shipperCompany: '厦门港口物流有限公司',
+    tradeCount: 1800,
+    shipmentVolume: 8500,
+    score: 4.8,
+    status: '已发布',
+    quoteMode: '竞价',
+    priceType: '期望单价',
+    expectedPrice: '1200',
+    priceUnit: '元/箱',
+    startCity: '湖北 武汉',
+    endCity: '福建 福州',
+    cargoDesc: '普通集装箱 | 20GP | 2箱',
+    timeWindow: '8月15日上午10:00装货 - 8月20日下午17:00卸货',
+    vehicleRequirement: '散货内河集装箱船  |  总航程650km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '05:40:22',
+  },
+  {
     id: 'TY2435678904',
-    businessType: '散杂货',
-    transportMode: '公路运输',
-    shipperCompany: '福州港务集团',
-    contactName: '李明',
-    contactPhone: '13966668888',
-    status: '竞价中',
-    expectedPrice: 35,
-    billingBasis: '按重量',
-    taxRequirement: '增值税专用发票，税率13%',
-    paymentMethod: '月结',
-    loadNodes: [{ name: '福建 福州' }],
-    unloadNodes: [{ name: '福建 厦门' }],
-    cargoItems: [{ cargoName: '煤炭', weight: 50, quantity: 200, unit: '方', package: '无包装', loadNodeName: '福建 福州' }],
-    publishTime: '2026-07-05 10:00:30',
+    businessType: '普通运输',
+    cargoTypeTag: '散货',
+    transportMode: '多式联运',
+    channelSource: '超好运',
+    shipperCompany: '厦门港口物流有限公司',
+    tradeCount: 2000,
+    shipmentVolume: 10000,
+    score: 4.5,
+    status: '已承接',
+    quoteMode: '抢单',
+    priceType: '一口价',
+    expectedPrice: '35',
+    priceUnit: '吨/元',
+    startCity: '福建 福州',
+    endCity: '福建 厦门',
+    cargoDesc: '粮食 | 玉米 | 50吨',
+    timeWindow: '8月10日上午10:00装货 - 8月15日下午10:00卸货',
+    vehicleRequirement: '9.6米厢式货车  |  总里程89km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '00:45:10',
   },
   {
     id: 'TY2435678905',
-    businessType: '集装箱',
-    transportMode: '水路运输',
+    businessType: '普通运输',
+    cargoTypeTag: '散货',
+    transportMode: '公路',
+    channelSource: '超好运',
     shipperCompany: '厦门港口物流有限公司',
-    contactName: '王强',
-    contactPhone: '13800008888',
-    status: '竞价中',
-    expectedPrice: 35,
-    billingBasis: '按集装箱',
-    taxRequirement: '增值税专用发票，税率9%',
-    paymentMethod: '月结',
-    loadNodes: [{ name: '福建 福州' }],
-    unloadNodes: [{ name: '福建 厦门' }],
-    cargoItems: [{ cargoName: '粮食', weight: 50, quantity: 1, unit: '箱', package: '20GP', loadNodeName: '福建 福州' }],
-    publishTime: '2026-07-05 10:00:30',
+    tradeCount: 2000,
+    shipmentVolume: 10000,
+    score: 4.5,
+    status: '已承接',
+    quoteMode: '抢单',
+    priceType: '一口价',
+    expectedPrice: '35',
+    priceUnit: '吨/元',
+    startCity: '福建 福州',
+    endCity: '福建 厦门',
+    cargoDesc: '粮食 | 玉米 | 50吨',
+    timeWindow: '8月10日上午10:00装货 - 8月15日下午10:00卸货',
+    vehicleRequirement: '9.6米厢式货车  |  总里程89km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '01:10:00',
   },
   {
     id: 'TY2435678906',
-    businessType: '散杂货',
-    transportMode: '多式联运',
+    businessType: '普通运输',
+    cargoTypeTag: '散货',
+    transportMode: '水路',
+    channelSource: '至简平台',
     shipperCompany: '厦门港口物流有限公司',
-    contactName: '陈林',
-    contactPhone: '13700008888',
-    status: '竞价中',
-    expectedPrice: 35,
-    billingBasis: '按重量',
-    taxRequirement: '增值税专用发票，税率13%',
-    paymentMethod: '到付',
-    loadNodes: [{ name: '福建 福州' }],
-    unloadNodes: [{ name: '福建 厦门' }],
-    cargoItems: [{ cargoName: '玉米', weight: 50, quantity: 50, unit: '吨', package: '散装', loadNodeName: '福建 福州' }],
-    publishTime: '2026-07-05 10:00:30',
-  },
+    tradeCount: 2000,
+    shipmentVolume: 10000,
+    score: 4.5,
+    status: '已发布',
+    quoteMode: '竞价',
+    priceType: '一口价',
+    expectedPrice: '35',
+    priceUnit: '吨/元',
+    startCity: '福建 福州',
+    endCity: '福建 厦门',
+    cargoDesc: '粮食 | 玉米 | 50吨',
+    timeWindow: '8月10日上午10:00装货 - 8月15日下午10:00卸货',
+    vehicleRequirement: '9.6米厢式货车  |  总里程89km',
+    publishTime: '2025-08-15 10:00:30',
+    countdown: '02:30:15',
+  }
 ]

@@ -1,0 +1,5 @@
+interface:
+  display_name: "annotation"
+  short_description: "从本项目需求与实际页面生成少量、分组、可读且容器隔离的研发原型标注。"
+policy:
+  allow_implicit_invocation: true

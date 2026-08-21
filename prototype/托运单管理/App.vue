@@ -77,7 +77,7 @@
 
       <!-- 3. 操作按钮行 -->
       <div class="action-row">
-        <button class="btn-primary annotation-create-entry" @click="openTypeSelectDialog">新增托运单</button>
+        <button class="btn-primary" @click="openTypeSelectDialog">新增托运单</button>
       </div>
 
       <!-- 4. 托运单表头栏 -->
@@ -774,7 +774,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import BulkWaybillCreate from './BulkWaybillCreate.vue'
 import {
@@ -826,59 +826,6 @@ function getRouteDetails(item) {
     unloadTime: item.unloadTime || '2026-10-01 00:00:00',
     nodeCount: item.nodeCount || 2,
   }
-}
-
-const annotationBaseUrl = `${import.meta.env.BASE_URL}annotation/`
-const annotationSpecUrl = new URL('./spec.yaml', import.meta.url).href
-
-function loadAnnotationScript() {
-  return new Promise((resolve, reject) => {
-    if (window.AnnotationCore) {
-      resolve()
-      return
-    }
-
-    const scriptUrl = `${annotationBaseUrl}annotation-core.js`
-    const existing = document.querySelector(`script[src="${scriptUrl}"]`)
-    if (existing) {
-      existing.remove()
-    }
-
-    const script = document.createElement('script')
-    script.src = scriptUrl
-    script.onload = resolve
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
-
-async function bootAnnotation() {
-  await nextTick()
-  await loadAnnotationScript()
-  await window.AnnotationCore.init({
-    pageId: '托运单管理',
-    specUrl: annotationSpecUrl,
-    jsYamlSrc: `${annotationBaseUrl}vendor/js-yaml.min.js`,
-    unitGates: {
-      business_type_entry: () => !showTypeSelectDialog.value && !showBulkCargoDialog.value && !showContainerDialog.value,
-      management_list_status: () => !showTypeSelectDialog.value && !showBulkCargoDialog.value && !showContainerDialog.value,
-      bulk_cargo_nodes: () => showBulkCargoDialog.value,
-      bulk_cargo_flow: () => showBulkCargoDialog.value,
-      container_boxes_and_nodes: () => showContainerDialog.value,
-      quote_and_publish_settings: () => showBulkCargoDialog.value || showContainerDialog.value,
-      draft_publish_and_writeback: () => showBulkCargoDialog.value || showContainerDialog.value,
-    },
-    readOnly: (() => {
-      const params = new URLSearchParams(window.location.search)
-      return params.get('readOnly') === '1' || params.get('readonly') === '1'
-    })(),
-  })
-}
-
-function refreshAnnotation() {
-  nextTick(() => {
-    requestAnimationFrame(() => window.AnnotationCore?.refresh?.())
-  })
 }
 
 // ============ 列表与筛选数据 ============
@@ -1065,7 +1012,6 @@ const showContainerDialog = ref(false)
 
 function openTypeSelectDialog() {
   showTypeSelectDialog.value = true
-  refreshAnnotation()
 }
 
 function selectBusinessType(type) {
@@ -1076,13 +1022,11 @@ function selectBusinessType(type) {
     showContainerDialog.value = true
     initEmptyContainerData()
   }
-  refreshAnnotation()
 }
 
 function handleCreatedWaybill(newWaybill) {
   waybillList.value.unshift(newWaybill)
   currentSubView.value = 'list'
-  refreshAnnotation()
 }
 
 // ============ 散杂货表单 ============
@@ -1255,7 +1199,6 @@ function closeCreateDialog(done) {
   containerNodes.value = []
   containerBoxes.value = []
   if (typeof done === 'function') done()
-  refreshAnnotation()
 }
 
 // ============ 校验 ============
@@ -1404,14 +1347,6 @@ function saveContainerWaybill(status) {
 
 onMounted(() => {
   loadWaybillList()
-  bootAnnotation().catch((error) => {
-    console.warn('[prototype-annotation] 托运单管理标注加载失败:', error)
-  })
-})
-
-onUnmounted(() => {
-  window.AnnotationCore?.disable?.()
-  window.AnnotationCore?.close?.()
 })
 </script>
 

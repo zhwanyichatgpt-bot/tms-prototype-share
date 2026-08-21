@@ -11,7 +11,7 @@
   >
     <div class="create-body">
       <!-- 运输信息 -->
-      <section class="form-section">
+      <section class="form-section annot-transport-plan-rule-publish-quantity">
         <h3 class="section-title">运输信息</h3>
 
         <div class="mix-field">
@@ -78,7 +78,7 @@
       </section>
 
       <!-- 运费设置 -->
-      <section class="form-section">
+      <section class="form-section annot-transport-plan-rule-publish-terms">
         <h3 class="section-title">运费设置</h3>
 
         <div class="freight-mode-row">
@@ -254,7 +254,7 @@
     <template #footer>
       <div class="modal-footer">
         <el-button class="footer-cancel" @click="handleCancel">取消</el-button>
-        <el-button type="primary" class="footer-submit" @click="handleConfirm">提交</el-button>
+        <el-button type="primary" class="footer-submit annot-transport-plan-action-publish-submit" @click="handleConfirm">提交</el-button>
       </div>
     </template>
 
@@ -449,7 +449,7 @@ function handleCancel() {
 </script>
 
 <style scoped>
-:deep(.pd-overlay) {
+:global(.pd-overlay) {
   top: var(--canvas-toolbar-height, 48px);
   left: calc(var(--canvas-offset-left, 232px) + 16px);
   right: 16px;
@@ -458,16 +458,17 @@ function handleCancel() {
   overflow: hidden;
 }
 
-:deep(.pd-drawer) {
+:global(.pd-drawer) {
   top: 0 !important;
   bottom: 0 !important;
   height: 100% !important;
   max-width: 100%;
+  transform: none !important;
   display: flex;
   flex-direction: column;
 }
 
-:deep(.pd-drawer .el-drawer__header) {
+:global(.pd-drawer .el-drawer__header) {
   height: 56px;
   padding: 0 24px;
   margin-bottom: 0;
@@ -478,14 +479,14 @@ function handleCancel() {
   flex: 0 0 auto;
 }
 
-:deep(.pd-drawer .el-drawer__body) {
+:global(.pd-drawer .el-drawer__body) {
   flex: 1;
   min-height: 0;
   padding: 0 24px;
   overflow-y: auto;
 }
 
-:deep(.pd-drawer .el-drawer__footer) {
+:global(.pd-drawer .el-drawer__footer) {
   padding: 12px 24px;
   border-top: 1px solid #eef1f5;
   background: #fff;
