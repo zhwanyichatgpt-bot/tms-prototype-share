@@ -1,0 +1,15 @@
+export const pageCatalog = Object.freeze([
+  { key: 'waybillManage', scope: 'common', projectId: null, requirement: 'TMS 通用托运单管理', remark: '用于验证托运单列表、详情和创建流程。' },
+  { key: 'waybillQuote', scope: 'common', projectId: null, requirement: 'TMS 通用承运商报价', remark: '用于验证承运商查看托运需求并提交报价。' },
+  { key: 'inquiryHall', scope: 'common', projectId: null, requirement: 'TMS 通用货源大厅', remark: '用于验证承运商查看货源、进入详情和参与报价的入口。' },
+  { key: 'multimodalCreate', scope: 'common', projectId: null, requirement: 'TMS 通用多式联运', remark: '用于验证多式联运计划的创建和路线组织。' },
+  { key: 'multimodalManage', scope: 'common', projectId: null, requirement: 'TMS 通用多式联运', remark: '用于验证联运计划列表、状态和管理操作。' },
+  { key: 'shipperSettlement', scope: 'common', projectId: null, requirement: 'TMS 通用货主结算', remark: '用于验证货主结算单据、费用和确认流程。' },
+  { key: 'containerPlan', scope: 'common', projectId: null, requirement: 'TMS 通用公路计划', remark: '用于验证集装箱运输计划创建和上下游衔接。' },
+  { key: 'transportChannel', scope: 'common', projectId: null, requirement: 'TMS 通用运输通道', remark: '用于验证运输通道、运输方案和发布管理。' },
+  { key: 'transportPlan', scope: 'project', projectId: 'beigang', requirement: '北港水运1.0.3.4', remark: '用于验证北港水运计划及社会运力发布、竞价和调度衔接。' },
+  { key: 'shipownerMobileHome', scope: 'project', projectId: 'beigang', requirement: '北港水运1.0.3.4', remark: '用于验证北港承运商企业移动端的货源大厅、运力大厅和订单中心。' },
+  { key: 'cargoBiddingDetail', scope: 'project', projectId: 'beigang', requirement: '北港水运1.0.3.4', remark: '用于验证北港移动端货源或运力竞价详情。' },
+  { key: 'biddingQuotePage', scope: 'project', projectId: 'beigang', requirement: '北港水运1.0.3.4', remark: '用于验证北港移动端参与竞价时的报价填写和提交。' },
+  { key: 'inquiryShipper', scope: 'project', projectId: 'guanglin', requirement: '广林项目货源询价', remark: '用于验证广林项目货主、无车承运人和承运商三端询价闭环。' },
+])

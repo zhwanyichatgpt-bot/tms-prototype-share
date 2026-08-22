@@ -1,0 +1,168 @@
+{
+  "versionId": "TMS-BEIGANG-202608-01",
+  "page": "biddingQuotePage",
+  "title": "移动端报价填写页",
+  "updatedAt": "2026-08-22",
+  "annotations": [
+    {
+      "id": "annot-shipowner-quote-field-route",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-field-route",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价对应的运输路线",
+      "content": "路线、港口和运输时间来自当前需求，报价填写页只读展示。承运商不能在提交过程中切换报价对象，所有金额和方案都必须归属于这条路线。",
+      "category": "field",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-field-context",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-field-context",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价截止与竞价状态",
+      "content": "顶部提示展示竞价状态和报价截止时间。截止后不能提交新报价或修改原报价；已报价状态需要转为只读，保留当前已保存数据。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、5.3、7.4",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-field-cargo-summary",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-field-cargo-summary",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "需求数量与参考运费摘要",
+      "content": "展示货品/运力规格、需求数量、运输方式和参考金额，作为报价计算上下文。参考金额不是承运商最终报价；数量缺失或为 0 时不得用不完整数据生成可靠总额。",
+      "category": "field",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-field-company-contact",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-field-company-contact",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价企业与联系人校验",
+      "content": "报价企业从当前登录承运商带入且只读；联系人和联系电话必填，联系电话必须是 11 位手机号。只读状态保留已保存值，不允许绕过表单校验修改。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-rule-transport-plan",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-rule-transport-plan",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "货源运输方案",
+      "content": "货源分支中运输方式必填；运输方案和预计运输时长选填。运输方式、计费依据和价格单位必须保持一致，选择器在只读状态下不再开放。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-rule-fee",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-rule-fee",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "货源费用报价与总额",
+      "content": "货源分支中计费依据和运输单价必填，运输单价必须大于 0；其他费用可选。报价总额按“运输单价 × 需求数量 + 其他费用”计算，计费条件、计费依据与价格单位必须一致。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4；context/business-rules/02-统一术语与字段口径/计费条件与计费依据口径.md",
+      "container": "page",
+      "group": "quote",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-rule-service-commitment",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-rule-service-commitment",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "货源服务承诺",
+      "content": "货源报价分支中：配送方式必填；增值服务可多选；方案概述必填，最多 500 字；附件证书可添加和删除。只读状态保留已保存内容，不再开放编辑。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4、7.6",
+      "container": "page",
+      "group": "quote-freight",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-rule-capacity-fee",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-rule-capacity-fee",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运力计费依据与报价金额",
+      "content": "运力报价分支中：计费依据与发布端一致；按船时填写单船报价，否则填写运输单价；报价说明选填，最多 200 字；按船报价总额等于单船报价，其余情况按单价与需求数量计算。只读状态展示已保存值。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4、7.6",
+      "container": "page",
+      "group": "quote-capacity",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-action-submit",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-action-submit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价提交校验与只读结果",
+      "content": "提交前校验联系人、电话和金额；货源分支还校验运输方式、计费依据、配送方式和方案概述。截止、锁定或不满足必填条件时停留当前页并提示原因。确认提交后生成/覆盖当前路线的有效报价并进入已报价只读状态；只读状态下底部操作改为返回详情。",
+      "category": "action",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、5.7、7.4",
+      "container": "page",
+      "group": "quote-submit",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-quote-modal-confirm",
+      "type": "selector",
+      "selector": ".annot-shipowner-quote-modal-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价提交确认信息",
+      "content": "确认弹窗汇总报价企业、联系人、联系电话、计费依据、报价金额、预计运输时长和报价总额。返回修改不保存；确认提交才写入报价结果，弹窗金额和口径必须与表单当前值一致。",
+      "category": "action",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
+      "container": "modal",
+      "group": "quote-submit",
+      "createdAt": "2026-08-21"
+    }
+  ]
+}

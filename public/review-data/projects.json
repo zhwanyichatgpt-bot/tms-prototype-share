@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "id": "beigang",
+      "name": "北港水运",
+      "status": "active",
+      "createdAt": "2026-08-22T00:00:00.000Z",
+      "updatedAt": "2026-08-22T00:00:00.000Z"
+    },
+    {
+      "id": "guanglin",
+      "name": "广林项目",
+      "status": "active",
+      "createdAt": "2026-08-22T00:00:00.000Z",
+      "updatedAt": "2026-08-22T00:00:00.000Z"
+    }
+  ],
+  "updatedAt": "2026-08-22T00:00:00.000Z"
+}

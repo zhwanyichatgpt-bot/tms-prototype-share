@@ -4,7 +4,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:release": "node scripts/build-review-release.mjs",
     "preview": "vite preview",
+    "test:review": "node --test review/*.test.mjs",
+    "test:review:coverage": "node --experimental-test-coverage --test-coverage-exclude=src/page-registry.js --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=75 --test review/*.test.mjs",
+    "record:change": "node scripts/record-version-change.mjs",
     "test:settlement": "node --test prototype/货主结算/settlement-rules.test.mjs"
   },
   "dependencies": {

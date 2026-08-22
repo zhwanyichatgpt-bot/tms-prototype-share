@@ -32,6 +32,7 @@ export interface AnnotationItem {
 
 /** 页面标注数据 */
 export interface PageAnnotation {
+  versionId?: string
   page: string
   title: string
   updatedAt: string

@@ -1,6 +1,7 @@
 import { markRaw } from 'vue'
+import { pageCatalog } from '../review/page-catalog.mjs'
 
-const pageDefinitions = [
+const rawPageDefinitions = [
   // 通用功能 · Web 端
   { key: 'waybillManage', name: '托运单管理', module: '托运单管理 · 列表 + 创建', icon: '📦', status: 'ready', category: 'general', platform: 'web', load: () => import('../prototype/托运单管理/App.vue') },
   { key: 'waybillQuote', name: '承运商报价', module: '托运单管理 · 报价页', icon: '💰', status: 'ready', category: 'general', platform: 'web', load: () => import('../prototype/承运商报价/App.vue') },
@@ -18,6 +19,13 @@ const pageDefinitions = [
   // 项目定制
   { key: 'inquiryShipper', name: '货源询价（广林三端）', module: '广林项目定制 · 货主/无车承运人/承运商', icon: '📮', status: 'ready', category: 'custom', load: () => import('../prototype/广林询价三端/App.vue') },
 ]
+
+const pageIdentityByKey = new Map(pageCatalog.map(identity => [identity.key, identity]))
+const pageDefinitions = rawPageDefinitions.map(definition => {
+  const identity = pageIdentityByKey.get(definition.key)
+  if (!identity) throw new Error(`页面 ${definition.key} 缺少版本归属信息`)
+  return { ...identity, ...definition }
+})
 
 export const pages = pageDefinitions.map(({ load, ...page }) => page)
 

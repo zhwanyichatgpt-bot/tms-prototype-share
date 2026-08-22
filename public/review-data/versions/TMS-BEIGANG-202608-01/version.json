@@ -1,0 +1,33 @@
+{
+  "id": "TMS-BEIGANG-202608-01",
+  "name": "北港水运1.0.3.4",
+  "scope": "project",
+  "projectId": "beigang",
+  "baseVersionId": null,
+  "targetReleaseDate": "2026-08-28",
+  "pages": [
+    {
+      "pageKey": "transportPlan",
+      "order": 1
+    },
+    {
+      "pageKey": "shipownerMobileHome",
+      "order": 2
+    },
+    {
+      "pageKey": "cargoBiddingDetail",
+      "order": 3
+    },
+    {
+      "pageKey": "biddingQuotePage",
+      "order": 4
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-08-22T07:34:28.633Z",
+  "lastPublishedAt": "2026-08-22T07:34:28.633Z",
+  "completedAt": null,
+  "createdAt": "2026-08-22T07:27:37.056Z",
+  "updatedAt": "2026-08-22T07:34:28.633Z"
+}

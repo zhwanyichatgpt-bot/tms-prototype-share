@@ -1,11 +1,15 @@
 <template>
   <div class="app-shell">
-    <el-container class="app-container">
+    <VersionManageView v-if="appView === 'manage'" />
+    <ReviewEntryView v-else-if="appView === 'entry'" />
+    <template v-else>
+      <el-container class="app-container">
       <el-header v-if="currentPage === 'home'" class="app-header">
         <div class="header-inner">
-          <h1 class="app-title">TMS 3.0 原型验证</h1>
-          <p class="app-sub">PM 工作流 · 原型迁移标准化（Vue 3 + Element Plus）</p>
+          <h1 class="app-title">全部原型</h1>
+          <p class="app-sub">项目当前登记的全部原型页面，包括尚未纳入研发版本的内容</p>
         </div>
+        <el-button v-if="route.name === 'prototypeCatalog'" @click="router.push({ name: 'versionManage' })">返回版本管理</el-button>
       </el-header>
 
       <el-main
@@ -16,7 +20,18 @@
         }"
       >
         <!-- 首页导航 -->
-        <div v-if="currentPage === 'home'" class="home-view">
+        <div v-if="isVersionWorkbench && versionWorkbenchLoading" class="workbench-loading">
+          <el-skeleton :rows="8" animated />
+        </div>
+
+        <el-result
+          v-else-if="isVersionWorkbench && versionWorkbenchError"
+          icon="error"
+          title="版本读取失败"
+          :sub-title="versionWorkbenchError"
+        />
+
+        <div v-else-if="currentPage === 'home'" class="home-view">
           <p class="home-tip">点击下方卡片进入对应原型页面</p>
 
           <!-- 通用功能 · Web 端 -->
@@ -163,7 +178,7 @@
           <header class="prototype-workbench-toolbar">
             <button type="button" class="workbench-project" @click="goHome">
               <span class="workbench-project-mark">T</span>
-              <span class="workbench-project-name">TMS 3.0 原型</span>
+              <span class="workbench-project-name">{{ versionContext?.name || 'TMS 3.0 原型' }}</span>
             </button>
 
             <div class="workbench-current-page">
@@ -175,11 +190,11 @@
                 title="展开原型目录"
                 @click="directoryOverlayOpen = true"
               >☰</button>
-              <span class="workbench-current-label">当前页面</span>
-              <strong>{{ activePage?.name }}</strong>
+              <span class="workbench-current-label">{{ versionContext ? `${versionRevisionLabel} · 当前页面` : '当前页面' }}</span>
+              <strong>{{ activeWorkbenchName }}</strong>
             </div>
 
-            <div class="workbench-annotation-actions">
+            <div v-if="!isRequirementCatalog" class="workbench-annotation-actions">
               <button
                 type="button"
                 class="workbench-annotation-toggle"
@@ -219,7 +234,7 @@
             <div class="directory-header">
               <div v-if="directoryContentVisible" class="directory-header-main">
                 <strong>原型目录</strong>
-                <span>{{ pages.length }} 个页面</span>
+                <span>{{ isVersionWorkbench ? `${workbenchPages.length + 1} 项` : `${workbenchPages.length} 个页面` }}</span>
               </div>
               <button
                 type="button"
@@ -232,6 +247,37 @@
             </div>
 
             <template v-if="directoryContentVisible">
+              <div v-if="isVersionWorkbench" class="directory-section">
+                <div class="directory-section-header version-directory-heading">
+                  <span class="directory-section-title">当前版本</span>
+                  <span class="version-directory-revision">{{ versionRevisionLabel }}</span>
+                </div>
+                <div class="directory-section-body">
+                  <button
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: isRequirementCatalog }"
+                    @click="openRequirementCatalog"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">需求目录</span>
+                  </button>
+                  <button
+                    v-for="page in workbenchPages"
+                    :key="page.key"
+                    type="button"
+                    class="directory-item"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :disabled="page.status !== 'ready'"
+                    @click="openPage(page)"
+                  >
+                    <span class="directory-item-dot" />
+                    <span class="directory-item-name">{{ page.name }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <template v-else>
               <div class="directory-section">
                 <div
                   class="directory-section-header"
@@ -351,16 +397,25 @@
                   </button>
                 </div>
               </div>
+              </template>
             </template>
           </aside>
 
           <div class="prototype-workbench-canvas">
-            <component :is="currentComponent" />
+            <VersionRequirementView
+              v-if="isRequirementCatalog"
+              :version="versionContext"
+              :changes="versionChanges"
+              :pages="versionWorkbenchPages"
+              :projects="versionProjects"
+            />
+            <component :is="currentComponent" v-else />
           </div>
         </div>
       </el-main>
-    </el-container>
-    <AnnotationOverlay v-if="currentPage !== 'home'" />
+      </el-container>
+      <AnnotationOverlay v-if="currentPage !== 'home' && !isRequirementCatalog" />
+    </template>
   </div>
 </template>
 
@@ -373,23 +428,42 @@ import 'element-plus/es/components/tag/style/css'
 import { prototypeStore, setCurrentPage } from './shared/prototype-store'
 import { pageLoaders, pages } from './page-registry'
 import { useAnnotationControl } from './components/Annotation/useAnnotation'
+import ReviewEntryView from './views/ReviewEntryView.vue'
+import VersionManageView from './views/VersionManageView.vue'
+import VersionRequirementView from './views/VersionRequirementView.vue'
+import { createReviewDataClient } from './review/review-data-client.mjs'
+import { formatRevisionLabel } from './review/review-ui-policy.mjs'
+import {
+  REQUIREMENT_CATALOG_KEY,
+  resolveVersionWorkbench,
+} from './review/version-workbench.mjs'
 
 const route = useRoute()
 const router = useRouter()
+const reviewClient = createReviewDataClient()
+const appView = computed(() => route.meta.view || 'legacy')
+const isVersionWorkbench = computed(() => appView.value === 'reviewPrototype')
+const versionContext = ref(null)
+const versionChanges = ref({ revisions: [] })
+const versionProjects = ref([])
+const versionWorkbenchPages = ref([])
+const versionWorkbenchLoading = ref(false)
+const versionWorkbenchError = ref('')
 const {
   visible: annotationVisible,
   editMode: annotationEditing,
   annotations: annotationItems,
+  setEditMode: setAnnotationEditing,
   toggleVisible: toggleAnnotationVisible,
   toggleEditMode: toggleAnnotationEditing,
 } = useAnnotationControl()
-const annotationCanEdit = import.meta.env.DEV
+const annotationCanEdit = computed(() => import.meta.env.DEV)
 const annotationCount = computed(() => annotationItems.value.length)
 const AnnotationOverlay = defineAsyncComponent(
   () => import('./components/Annotation/AnnotationOverlay.vue'),
 )
 
-// 监听子页面 WorkspaceShell 发出的返回首页事件
+// 监听子页面发出的返回首页事件
 function handleGoHome() {
   goHome()
 }
@@ -411,8 +485,17 @@ onMounted(() => {
   window.addEventListener('prototype-open-page', handleOpenCustomPage)
   window.addEventListener('resize', syncDirectoryMode)
 
+  if (appView.value !== 'legacy') {
+    resetViewportScroll()
+    return
+  }
+
   // 页面首次加载/刷新：优先使用路由，兼容旧的 ?page=xxx 地址
   const initialKey = route.meta.pageKey || prototypeStore.currentPage
+  if (initialKey === 'home') {
+    currentComponent.value = null
+    setCurrentPage('home')
+  }
   if (initialKey && initialKey !== 'home') {
     const targetPage = pages.find(p => p.key === initialKey) || { key: initialKey, status: 'ready' }
     openPage(targetPage)
@@ -426,10 +509,11 @@ onUnmounted(() => {
   window.removeEventListener('resize', syncDirectoryMode)
 })
 
-const generalWebPages = computed(() => pages.filter(p => p.category === 'general' && p.platform === 'web'))
-const generalMobilePages = computed(() => pages.filter(p => p.category === 'general' && p.platform === 'mobile'))
-const beigangPages = computed(() => pages.filter(p => p.category === 'beigang'))
-const customPages = computed(() => pages.filter(p => p.category === 'custom'))
+const workbenchPages = computed(() => isVersionWorkbench.value ? versionWorkbenchPages.value : pages)
+const generalWebPages = computed(() => workbenchPages.value.filter(p => p.category === 'general' && p.platform === 'web'))
+const generalMobilePages = computed(() => workbenchPages.value.filter(p => p.category === 'general' && p.platform === 'mobile'))
+const beigangPages = computed(() => workbenchPages.value.filter(p => p.category === 'beigang'))
+const customPages = computed(() => workbenchPages.value.filter(p => p.category === 'custom'))
 
 const collapsedSections = reactive({
   generalWeb: false,
@@ -449,7 +533,14 @@ const directoryOverlayOpen = ref(false)
 
 // 响应式读取当前页（来自 store）
 const currentPage = computed(() => prototypeStore.currentPage)
-const activePage = computed(() => pages.find(p => p.key === currentPage.value))
+const activePage = computed(() => workbenchPages.value.find(p => p.key === currentPage.value))
+const isRequirementCatalog = computed(() => (
+  isVersionWorkbench.value && currentPage.value === REQUIREMENT_CATALOG_KEY
+))
+const activeWorkbenchName = computed(() => (
+  isRequirementCatalog.value ? '需求目录' : activePage.value?.name
+))
+const versionRevisionLabel = computed(() => formatRevisionLabel(versionContext.value?.revision))
 const directoryContentVisible = computed(() => directoryMode.value === 'overlay' || !directoryCollapsed.value)
 const directoryExpanded = computed(() => (
   directoryMode.value === 'overlay' ? directoryOverlayOpen.value : !directoryCollapsed.value
@@ -488,17 +579,22 @@ function resetViewportScroll() {
 }
 
 function openPage(page) {
-  console.log('[openPage] clicked', page.key, 'status=', page.status)
   if (page.status !== 'ready') return
-  if (route.meta.pageKey !== page.key) {
+  if (isVersionWorkbench.value && !workbenchPages.value.some(item => item.key === page.key)) return
+  if (isVersionWorkbench.value && route.params.pageKey !== page.key) {
+    router.push({
+      name: 'versionPrototype',
+      params: { versionId: route.params.versionId, pageKey: page.key },
+    })
+    return
+  }
+  if (!isVersionWorkbench.value && route.meta.pageKey !== page.key) {
     router.push({ name: page.key })
     return
   }
   const loader = pageLoaders[page.key]
-  console.log('[openPage] loader=', loader)
   if (!loader) return
   loader().then(comp => {
-    console.log('[openPage] loaded component=', comp)
     currentComponent.value = comp
     setCurrentPage(page.key)
     resetViewportScroll()
@@ -507,9 +603,24 @@ function openPage(page) {
   })
 }
 
+function openRequirementCatalog() {
+  if (!isVersionWorkbench.value) return
+  if (route.params.pageKey) {
+    router.push({ name: 'versionReview', params: { versionId: route.params.versionId } })
+    return
+  }
+  currentComponent.value = null
+  setCurrentPage(REQUIREMENT_CATALOG_KEY)
+  resetViewportScroll()
+}
+
 function goHome() {
+  if (isVersionWorkbench.value) {
+    router.push({ name: 'versionReview', params: { versionId: route.params.versionId } })
+    return
+  }
   if (route.meta.pageKey !== 'home') {
-    router.push({ name: 'home' })
+    router.push({ name: 'prototypeCatalog' })
     return
   }
   currentComponent.value = null
@@ -518,6 +629,7 @@ function goHome() {
 }
 
 watch(() => route.meta.pageKey, (pageKey) => {
+  if (appView.value !== 'legacy') return
   if (!pageKey || pageKey === 'home') {
     currentComponent.value = null
     setCurrentPage('home')
@@ -528,6 +640,46 @@ watch(() => route.meta.pageKey, (pageKey) => {
   const targetPage = pages.find(page => page.key === pageKey)
   if (targetPage) openPage(targetPage)
 })
+
+async function loadVersionWorkbench() {
+  if (!isVersionWorkbench.value) return
+  versionWorkbenchLoading.value = true
+  versionWorkbenchError.value = ''
+  try {
+    const [bundle, projectItems] = await Promise.all([
+      reviewClient.getVersionBundle(String(route.params.versionId)),
+      reviewClient.getProjects(),
+    ])
+    const pageKey = route.params.pageKey ? String(route.params.pageKey) : undefined
+    const context = resolveVersionWorkbench(bundle.version, pageKey, pages)
+    versionContext.value = bundle.version
+    versionChanges.value = bundle.changes
+    versionProjects.value = projectItems
+    versionWorkbenchPages.value = context.pages
+    if (context.activeKey === REQUIREMENT_CATALOG_KEY) {
+      openRequirementCatalog()
+    } else {
+      openPage(context.activePage)
+    }
+  } catch (error) {
+    console.warn('[version-workbench] 无法进入版本页面:', error)
+    if (error?.code === 'PAGE_NOT_IN_VERSION' && route.params.pageKey) {
+      router.replace({ name: 'versionReview', params: { versionId: route.params.versionId } })
+    } else {
+      versionWorkbenchError.value = error?.message || '版本数据读取失败'
+    }
+  } finally {
+    versionWorkbenchLoading.value = false
+  }
+}
+
+watch(
+  () => [appView.value, route.params.versionId, route.params.pageKey],
+  () => {
+    if (isVersionWorkbench.value) loadVersionWorkbench()
+  },
+  { immediate: true },
+)
 
 function togglePrototypeDirectory() {
   if (directoryMode.value === 'overlay') {
@@ -590,6 +742,15 @@ function togglePrototypeDirectory() {
 .home-view {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.workbench-loading {
+  max-width: 1120px;
+  margin: 48px auto;
+  padding: 32px;
+  border: 1px solid #e5e9f0;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
 .home-tip {
@@ -723,8 +884,22 @@ function togglePrototypeDirectory() {
 }
 
 .workbench-project-name {
+  min-width: 0;
+  overflow: hidden;
   font-size: 14px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.version-directory-heading {
+  cursor: default;
+}
+
+.version-directory-revision {
+  color: #165dff;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .workbench-current-page {
@@ -1022,30 +1197,6 @@ function togglePrototypeDirectory() {
   transition: margin-left 0.2s ease;
 }
 
-.prototype-workbench-canvas :deep(.ws-root) {
-  min-height: calc(100vh - 48px);
-  /* WorkspaceShell 自带 92px 业务品牌头（58顶栏+34tab条），画布已让 48px，这里只补 92px */
-  padding-top: 92px;
-}
-
-.prototype-workbench-canvas :deep(.ws-topbar) {
-  top: 48px;
-  left: 232px;
-  transition: left 0.2s ease;
-}
-
-.prototype-workbench-canvas :deep(.ws-workbench-row) {
-  top: 106px;
-  left: 232px;
-  transition: left 0.2s ease;
-}
-
-.prototype-workbench-canvas :deep(.ws-sider) {
-  top: 140px;
-  left: 232px;
-  transition: left 0.2s ease;
-}
-
 .prototype-workbench.directory-collapsed {
   --canvas-offset-left: 48px;
 }
@@ -1075,12 +1226,6 @@ function togglePrototypeDirectory() {
 
 .prototype-workbench.directory-collapsed .prototype-workbench-canvas {
   margin-left: 48px;
-}
-
-.prototype-workbench.directory-collapsed .prototype-workbench-canvas :deep(.ws-topbar),
-.prototype-workbench.directory-collapsed .prototype-workbench-canvas :deep(.ws-workbench-row),
-.prototype-workbench.directory-collapsed .prototype-workbench-canvas :deep(.ws-sider) {
-  left: 48px;
 }
 
 .prototype-workbench.directory-overlay {
@@ -1113,12 +1258,6 @@ function togglePrototypeDirectory() {
 
 .prototype-workbench.directory-overlay .prototype-workbench-canvas {
   margin-left: 0;
-}
-
-.prototype-workbench.directory-overlay .prototype-workbench-canvas :deep(.ws-topbar),
-.prototype-workbench.directory-overlay .prototype-workbench-canvas :deep(.ws-workbench-row),
-.prototype-workbench.directory-overlay .prototype-workbench-canvas :deep(.ws-sider) {
-  left: 0;
 }
 
 /* 项目定制卡片左侧橙色标记 */

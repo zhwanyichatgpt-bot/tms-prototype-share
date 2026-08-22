@@ -1,0 +1,88 @@
+{
+  "versionId": "TMS-BEIGANG-202608-01",
+  "page": "cargoBiddingDetail",
+  "title": "货源竞价详情页",
+  "updatedAt": "2026-08-22",
+  "annotations": [
+    {
+      "id": "annot-shipowner-detail-field-route",
+      "type": "selector",
+      "selector": ".annot-shipowner-detail-field-route",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "需求路线与港口信息",
+      "content": "地图、起点和终点共同表达本次需求的运输路线。货源需求使用“装货港/卸货港”；运力需求使用“始发港/目的港”。航线距离、港口名称和后续报价对象必须来自同一条需求记录。",
+      "category": "field",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.1",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-detail-field-summary",
+      "type": "selector",
+      "selector": ".annot-shipowner-detail-field-summary",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "需求摘要、时间窗口与参考价格",
+      "content": "展示货品/运力规格、预估总运费或参考采购、起止时间、运输时长、报价截止时间、竞价状态和需求标签。参考价格只用于承运商判断，不等同于最终报价。",
+      "category": "field",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.1",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-detail-rule-route-requirement",
+      "type": "selector",
+      "selector": ".annot-shipowner-detail-rule-route-requirement",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "起终点地址与承运要求",
+      "content": "展示起终点完整地址和需求描述。需求描述默认截断，点击“展开更多/收起”只改变展示，不改变内容。货源分支重点说明货品、装卸和运输要求；运力分支重点说明载重、船龄、证照、航区等承运能力要求。",
+      "category": "rule",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.1",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-detail-field-publish-info",
+      "type": "selector",
+      "selector": ".annot-shipowner-detail-field-publish-info",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "需求编号与发布信息",
+      "content": "展示需求编号、发布企业和发布时间；编号支持复制，并作为详情、报价和后续订单/任务的关联键。复制失败只提示失败，不影响页面继续操作。",
+      "category": "field",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.2",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-21"
+    },
+    {
+      "id": "annot-shipowner-detail-action-quote-entry",
+      "type": "selector",
+      "selector": ".annot-shipowner-detail-action-quote-entry",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "参与竞价与已报价分支",
+      "content": "| 当前状态 | 操作 | 结果 |\n|---|---|---|\n| 尚未报价 | 参与竞价 | 进入报价填写页并带入当前需求 |\n| 已提交有效报价 | 查看我的报价 | 进入报价详情，只展示本人报价 |\n| 运力需求已被抢单确认 | 不可参与 | 提示已被其他承运商确认 |\n\n操作不得创建新的需求记录；返回后保留当前需求和报价状态。",
+      "category": "action",
+      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.1",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-21"
+    }
+  ]
+}

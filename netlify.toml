@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build:release"
   publish = "dist"
 
 # SPA 重定向：所有路由都回 index.html

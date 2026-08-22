@@ -1,0 +1,168 @@
+{
+  "versionId": "TMS-BEIGANG-202608-01",
+  "page": "transportPlan",
+  "title": "水运计划",
+  "updatedAt": "2026-08-22",
+  "annotations": [
+    {
+      "id": "annot-transport-plan-filter-list",
+      "type": "selector",
+      "selector": ".annot-transport-plan-filter-list",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "查询条件与状态范围",
+      "content": "**查询方式**\n\n- 支持按计划名称或编号、托运企业、创建时间和业务员查询。\n- 点击搜索后，从第一页展示符合条件的结果。\n- 点击刷新，重新加载当前运输计划数据。\n\n**状态范围**\n\n- 状态页签用于限定计划生命周期范围。\n- 页面中的“执行中”同时包含实际状态为“执行中”和“待执中”的计划。\n- 筛选条件、状态页签和分页共同决定当前列表结果。",
+      "category": "filter",
+      "source": "运输计划实际页面、运输计划状态规则",
+      "container": "page",
+      "group": "list",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-field-list-actions",
+      "type": "selector",
+      "selector": ".annot-transport-plan-field-list-actions",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "计划列表与状态操作",
+      "content": "**列表展示**\n\n每条运输计划展示：计划编号与名称、计划状态、结算状态、托运企业、运输类型、是否拼车、执行进度、装卸时间和计费信息。\n\n**状态与操作**\n\n| 计划状态 | 可用操作 |\n|---|---|\n| 草稿 | 详情；不可发布运力 |\n| 待执行 | 详情、编辑；有剩余运力时可发布 |\n| 执行中 / 待执中 | 详情、暂停、作废；有剩余运力时可发布 |\n| 已暂停 | 详情、开启、作废；有剩余运力时可发布 |\n| 已完成 | 仅查看详情；不可发布运力 |\n| 已作废 | 详情、删除；不可发布运力 |\n\n**发布限制**\n\n同一计划可以分多次发布，但尚未释放或尚未转为已安排的发布量合计，不能超过当前剩余可发布运力。",
+      "category": "rule",
+      "source": "运输计划实际页面、社会运力采购闭环第4章",
+      "container": "page",
+      "group": "list",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-action-status-confirm",
+      "type": "selector",
+      "selector": ".annot-transport-plan-action-status-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "状态操作二次确认",
+      "content": "**适用操作**\n\n暂停、开启、作废和删除均需二次确认。\n\n| 操作 | 确认后的结果 |\n|---|---|\n| 暂停 | 计划进入“已暂停”，之后可通过“开启”恢复为“待执行” |\n| 作废 | 仅执行中、待执中或已暂停计划可操作；确认后进入“已作废”且不可恢复 |\n| 删除 | 仅已作废计划可操作；确认后移除该计划 |\n\n**取消规则**\n\n取消确认时，不得改变计划状态或列表数据。",
+      "category": "action",
+      "source": "运输计划实际页面状态操作",
+      "container": "modal",
+      "group": "list",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-field-detail-tabs",
+      "type": "selector",
+      "selector": ".annot-transport-plan-field-detail-tabs",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "计划详情与业务页签",
+      "content": "**页签内容**\n\n| 页签 | 展示内容 |\n|---|---|\n| 货品路线 | 装卸节点、货品和关联运单 |\n| 运力竞价 | 社会运力发布与报价记录，并可继续发布剩余运力 |\n| 调度记录 | 报价确认后形成的正式调度记录 |\n| 结算信息 | 运输执行后的结算结果 |\n\n**联动规则**\n\n- 切换页签不得改变运输计划本身。\n- 从详情返回列表时保留列表数据。\n- 确认承运商后生成的调度记录，应能在“调度记录”页签继续查看。",
+      "category": "field",
+      "source": "运输计划实际页面、社会运力采购闭环第6章",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-rule-capacity-bidding",
+      "type": "selector",
+      "selector": ".annot-transport-plan-rule-capacity-bidding",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运力竞价记录与确认结果",
+      "content": "**记录展示**\n\n- 同一运输计划可以产生多条独立运力需求。\n- 竞价记录按发布时间倒序展示。\n- 每条记录展示本次发布运力、可见范围、报价截止时间、报价数量和关联调度编号。\n\n**取消规则**\n\n| 当前情况 | 是否可取消 | 处理结果 |\n|---|---|---|\n| 竞价中且没有有效报价 | 可以 | 释放本次占用量，返还剩余可发布运力 |\n| 已有有效报价 | 不可以 | 保留当前竞价记录 |\n\n**确认结果**\n\n1. 选中的承运商报价变为“已确认”。\n2. 其他仍有效报价变为“已拒绝”。\n3. 竞价记录变为“已确认”，并生成正式调度编号。\n4. 确认后不可更换承运商；拒绝单家报价只影响该报价。\n\n抢单模式不产生报价列表，由承运商抢单后直接确认。",
+      "category": "rule",
+      "source": "社会运力采购闭环5.4、5.5、7.6",
+      "container": "page",
+      "group": "detail",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-rule-publish-quantity",
+      "type": "selector",
+      "selector": ".annot-transport-plan-rule-publish-quantity",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "本次发布运力与占用范围",
+      "content": "**页面数据**\n\n- 从原运输计划带入装卸节点、货品和计划运量。\n- 计划运量、已安排运量和剩余可发布运量只读。\n- 本次发布运量由用户按货品填写，页面自动汇总。\n\n**数量校验**\n\n1. 每条货品必须满足：`0 <= 本次发布运量 <= 剩余可发布运量`。\n2. 本次至少有一条货品的发布运量大于 0。\n\n**运量流转**\n\n1. 发布成功后，立即占用本次发布运量。\n2. 确认承运商后，占用量转为已安排运量。\n3. 竞价截止未确认，或符合条件的需求被取消时，释放占用量并返还原运输计划。",
+      "category": "rule",
+      "source": "社会运力采购闭环第2章、第4章、5.4、7.3",
+      "container": "drawer",
+      "group": "publish",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-rule-publish-terms",
+      "type": "selector",
+      "selector": ".annot-transport-plan-rule-publish-terms",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运费设置与可见范围",
+      "content": "**发布模式**\n\n| 模式 | 处理方式 |\n|---|---|\n| 竞价 | 承运商报价，由发布企业选择并确认 |\n| 抢单 | 承运商直接抢单确认，不产生报价记录 |\n\n**运费设置**\n\n- 必填项：报价有效期、计费依据、期望运输单价。\n- 计费依据：按装货重量、按卸货重量、按装卸货最大值、按装卸货最小值、按船计费。\n- 计费依据决定价格单位和后续调度运价口径。\n- 预估总运费根据本次发布运量和期望运输单价计算。\n\n**可见范围**\n\n| 可见范围 | 选择要求 |\n|---|---|\n| 全平台 | 无需额外选择 |\n| 指定平台 | 至少选择一个平台 |\n| 指定承运商 | 至少选择一家承运商 |\n\n单据凭证选填；备注最多 200 字。",
+      "category": "rule",
+      "source": "社会运力采购闭环5.4、7.3、7.6",
+      "container": "drawer",
+      "group": "publish",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-action-publish-submit",
+      "type": "selector",
+      "selector": ".annot-transport-plan-action-publish-submit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "发布校验与处理结果",
+      "content": "**提交校验**\n\n1. 本次发布运量合法。\n2. 报价有效期填写完整。\n3. 已选择计费依据，且期望运输单价大于 0。\n4. 指定平台或指定承运商时，选择条件完整。\n\n校验不通过时，停留当前页面并提示对应原因。\n\n**确认发布后**\n\n- 生成独立竞价编号。\n- 记录关联计划、发布货品与数量、报价规则、可见范围和有效期。\n- 立即占用本次发布运量。\n- 竞价模式进入“竞价中”；抢单模式进入“可抢状态”，由首个有效抢单直接完成确认。\n\n**取消规则**\n\n取消确认时，不生成记录，也不占用运量。",
+      "category": "action",
+      "source": "社会运力采购闭环2.1、2.3、5.4",
+      "container": "drawer",
+      "group": "publish",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-field-quote-summary",
+      "type": "selector",
+      "selector": ".annot-transport-plan-field-quote-summary",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "竞价信息与报价条件",
+      "content": "**竞价信息**\n\n- 展示竞价编号、竞价状态、本次发布运力和可见范围。\n- 报价有效期限定承运商可提交报价的时间范围。\n- 报价规则由计费依据和期望运输单价组成。\n\n**结果展示**\n\n竞价确认后，补充展示中选承运商、确认报价和生成的正式调度编号；未确认时不展示结果栏。",
+      "category": "field",
+      "source": "社会运力采购闭环5.4、5.5",
+      "container": "modal",
+      "group": "quote",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "id": "annot-transport-plan-rule-quote-list",
+      "type": "selector",
+      "selector": ".annot-transport-plan-rule-quote-list",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "承运商报价与处理规则",
+      "content": "**报价列表**\n\n- 按承运商展示联系人、报价单价、预估总运费、报价时间、报价说明和报价状态。\n- 没有承运商报价时显示空状态，不生成占位数据。\n\n**报价处理**\n\n| 当前情况 | 可用操作 | 处理结果 |\n|---|---|---|\n| 竞价中且报价有效 | 确认 | 选中报价变为已确认，其余有效报价变为已拒绝，并生成正式调度记录 |\n| 竞价中且报价有效 | 拒绝 | 仅当前报价变为已拒绝，其他报价不受影响 |\n| 竞价已确认或已截止 | 查看 | 不再允许确认或拒绝 |\n\n确认或拒绝前均需二次确认；确认承运商后不可更换。",
+      "category": "rule",
+      "source": "社会运力采购闭环5.5、7.6",
+      "container": "modal",
+      "group": "quote",
+      "createdAt": "2026-08-20"
+    }
+  ]
+}
