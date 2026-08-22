@@ -170,6 +170,32 @@ export const mockCargoList = [
     unit: '元/吨',
     publisher: '长江航运集团',
     publishTime: '08:40 发布'
+  },
+  {
+    id: 'C2004',
+    businessType: 'capacity',
+    recommendRate: '96%',
+    timeRange: '8月16日 09:00 → 8月21日 18:00',
+    deadline: '08月15日 17:00',
+    startTime: '08月16日 09:00',
+    endTime: '08月21日 18:00',
+    origin: '福州 马尾区·马尾港',
+    originDistance: '30 海里',
+    destination: '泉州 丰泽区·泉州港',
+    destinationDistance: '150 海里',
+    routeDistance: '150海里',
+    platformTag: '平台 象笨笨',
+    cargoName: '砂石料整船包干',
+    cargoQuantity: '1船',
+    cargoType: '沿海运输',
+    transportType: '散货船',
+    capacityRequirement: '载重1000-1500吨散货船',
+    cargoSpec: '整船包干',
+    price: 35000,
+    unit: '元/船',
+    billingMode: '按船',
+    publisher: '福建海运实业',
+    publishTime: '10:00 发布'
   }
 ]
 

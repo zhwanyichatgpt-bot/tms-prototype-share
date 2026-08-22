@@ -24,13 +24,13 @@
       "baseVersionId": null,
       "targetReleaseDate": "2026-08-28",
       "status": "in_progress",
-      "revision": "R0",
+      "revision": "R1",
       "publishedAt": "2026-08-22T07:34:28.633Z",
       "lastPublishedAt": "2026-08-22T07:34:28.633Z",
       "completedAt": null,
       "createdAt": "2026-08-22T07:27:37.056Z",
-      "updatedAt": "2026-08-22T07:34:28.633Z"
+      "updatedAt": "2026-08-22T09:53:48.372Z"
     }
   ],
-  "updatedAt": "2026-08-22T09:00:39.400Z"
+  "updatedAt": "2026-08-22T09:53:48.372Z"
 }

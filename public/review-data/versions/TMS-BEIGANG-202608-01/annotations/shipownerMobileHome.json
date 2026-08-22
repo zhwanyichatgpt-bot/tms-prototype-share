@@ -85,22 +85,6 @@
       "createdAt": "2026-08-21"
     },
     {
-      "id": "annot-shipowner-detail-field-publish-info",
-      "type": "selector",
-      "selector": ".annot-shipowner-detail-field-publish-info",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "需求编号与发布信息",
-      "content": "展示货源编号或运力编号、发布企业和发布时间。编号支持复制，复制失败时只提示失败，不影响返回或参与竞价。编号必须与当前详情和后续报价记录保持关联。",
-      "category": "field",
-      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、7.2",
-      "container": "page",
-      "group": "detail",
-      "createdAt": "2026-08-21"
-    },
-    {
       "id": "annot-shipowner-detail-action-quote-entry",
       "type": "selector",
       "selector": ".annot-shipowner-detail-action-quote-entry",
@@ -125,7 +109,7 @@
         "y": 0
       },
       "title": "报价对应的运输路线",
-      "content": "报价填写页继续展示当前需求的起点、终点、运输时间和航线距离。路线信息只读，报价金额、计费依据和运输方案都必须归属于这条路线，不允许在提交时切换需求。",
+      "content": "- 路线、港口和运输时间来自当前需求，仅作只读展示。\n- 报价金额、计费依据和运输方案必须归属于当前路线，提交时不可切换需求。",
       "category": "field",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
       "container": "page",
@@ -140,26 +124,10 @@
         "x": 0,
         "y": 0
       },
-      "title": "报价截止与需求上下文",
-      "content": "顶部提示展示竞价状态和报价截止时间；截止后不能提交新报价或修改原报价。报价填写区必须继续显示货品/运力规格、数量、运输方式和参考金额，帮助承运商确认正在报价的对象。",
+      "title": "报价状态与对象摘要",
+      "content": "**报价状态**\n\n- 展示竞价状态和报价截止时间。\n- 截止后不能新增或修改报价。\n\n**报价对象**\n\n- 货品/运力规格、需求数量和运输方式来自发布需求。\n- 参考金额仅用于比较；数量缺失或为 0 时不得生成可靠的报价总额。",
       "category": "rule",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、5.3、7.4",
-      "container": "page",
-      "group": "quote",
-      "createdAt": "2026-08-21"
-    },
-    {
-      "id": "annot-shipowner-quote-field-cargo-summary",
-      "type": "selector",
-      "selector": ".annot-shipowner-quote-field-cargo-summary",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "货品数量与参考运费摘要",
-      "content": "该摘要是报价计算的上下文：货品/运力规格、需求数量和运输方式来自发布需求，参考运费仅供比较。数量为 0 或缺失时不能据此推导可靠的总额，应在提交前提示补充或由业务规则阻止提交。",
-      "category": "field",
-      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
       "container": "page",
       "group": "quote",
       "createdAt": "2026-08-21"
@@ -221,7 +189,7 @@
         "y": 0
       },
       "title": "货源服务承诺",
-      "content": "货源报价分支中：配送方式必填；增值服务可多选；方案概述必填，页面限制 500 字；附件证书可添加和删除。只读状态保留已保存内容，不再开放编辑。",
+      "content": "**必填**\n\n- 配送方式。\n- 方案概述，最多 500 字。\n\n**选填**\n\n- 增值服务，可多选。\n- 附件证书，可添加和删除。\n\n**只读状态**\n\n- 展示已保存内容，不允许继续编辑。",
       "category": "rule",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4、7.6",
       "container": "page",
@@ -237,7 +205,7 @@
         "y": 0
       },
       "title": "运力计费依据与报价金额",
-      "content": "运力报价分支中：计费依据与发布端保持一致；按船时输入单船报价，否则输入运输单价；报价说明选填，页面限制 200 字；按船报价总额等于单船报价，其余情况按单价与需求数量计算。只读状态展示已保存值。",
+      "content": "**按船计费**\n\n- 不展示计费依据。\n- 填写单船报价，单位为元/船。\n- 报价总额等于单船报价。\n\n**按量计费**\n\n- 计费依据必填。\n- 可选：按装货重量、按卸货重量、按装卸货重量最大值、按装卸货重量最小值。\n- 填写运输单价。\n\n**共同规则**\n\n- 报价说明选填，最多 200 字。\n- 只读状态展示已保存内容。",
       "category": "rule",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4、7.6",
       "container": "page",
@@ -253,7 +221,7 @@
         "y": 0
       },
       "title": "报价提交校验与结果",
-      "content": "**提交前校验**\n\n1. 联系人和联系电话完整且格式正确。\n2. 货源报价还需校验运输方式、计费依据、运输单价、配送方式和方案概述。\n3. 报价截止后、需求已被锁定或已存在不可覆盖的有效报价时，禁止提交。\n\n校验通过后打开确认弹窗；确认提交后生成/覆盖当前承运商在该需求路线上的有效报价，并进入“已报价”只读状态。",
+      "content": "**提交前校验**\n\n1. 联系人和联系电话完整且格式正确。\n2. 货源报价还需校验运输方式、计费依据、运输单价、配送方式和方案概述。\n3. 运力按量计费时必须校验计费依据；按船计费时不校验计费依据，只校验单船报价。\n4. 报价截止后、需求已被锁定或已存在不可覆盖的有效报价时，禁止提交。\n\n校验通过后打开确认弹窗；确认提交后生成/覆盖当前承运商在该需求路线上的有效报价，并进入“已报价”只读状态。",
       "category": "action",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、5.7、7.4",
       "container": "page",
@@ -269,7 +237,7 @@
         "y": 0
       },
       "title": "报价提交确认信息",
-      "content": "确认弹窗集中展示企业、联系人、联系电话、计费依据、单价或单船报价、预计运输时长和报价总额。\n\n- 点击“返回修改”不保存、不生成报价。\n- 点击“确认提交”才写入报价结果并回到已报价状态。\n- 弹窗中的金额和口径必须与表单当前值一致。",
+      "content": "确认弹窗集中展示企业、联系人、联系电话、报价金额、预计运输时长和报价总额；运力按量计费时同时展示计费依据，按船计费时不展示计费依据，报价金额单位为元/船。\n\n- 点击“返回修改”不保存、不生成报价。\n- 点击“确认提交”才写入报价结果并回到已报价状态。\n- 弹窗中的金额和口径必须与表单当前值一致。",
       "category": "action",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.3、7.4",
       "container": "modal",
@@ -285,7 +253,7 @@
         "y": 0
       },
       "title": "报价对应路线",
-      "content": "报价详情继续展示该报价对应的起点、终点和运输路线。路线、需求对象和报价单号必须保持关联；这里不允许切换到其他货源或运力需求。",
+      "content": "**路线与报价对象**\n\n- 起点、终点、运输路线、需求对象和报价单号必须保持关联。\n- 报价详情中不允许切换到其他货源或运力需求。\n\n**需求约束**\n\n- 展示起终点港口和完整地址。\n- 需求描述默认折叠，可展开查看完整运输/承运要求；内容来自发布需求，只读且不可修改。",
       "category": "field",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.7",
       "container": "page",
@@ -309,22 +277,6 @@
       "createdAt": "2026-08-21"
     },
     {
-      "id": "annot-shipowner-quote-detail-rule-route",
-      "type": "selector",
-      "selector": ".annot-shipowner-quote-detail-rule-route",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "路线地址与需求约束",
-      "content": "展示起终点港口和完整地址，需求描述默认折叠，点击后查看完整运输/承运要求。报价详情中的需求描述来自发布需求，只读且不能由承运商修改。",
-      "category": "rule",
-      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.2、5.7",
-      "container": "page",
-      "group": "quote-detail",
-      "createdAt": "2026-08-21"
-    },
-    {
       "id": "annot-shipowner-quote-detail-rule-result",
       "type": "selector",
       "selector": ".annot-shipowner-quote-detail-rule-result",
@@ -336,22 +288,6 @@
       "content": "| 内容 | 规则 |\n|---|---|\n| 运输单价/单位 | 展示本人提交的报价口径和金额 |\n| 预计总运费 | 按当前计费依据和需求数量展示计算结果 |\n| 报价说明 | 展示本人填写的说明 |\n| 报价时间 | 展示提交时间 |\n| 已确认结果 | 货源显示托运订单号；运力显示运输任务号 |\n\n此处只展示当前承运商自己的报价，不展示其他承运商价格。",
       "category": "rule",
       "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.7、7.6",
-      "container": "page",
-      "group": "quote-detail",
-      "createdAt": "2026-08-21"
-    },
-    {
-      "id": "annot-shipowner-quote-detail-field-publish-info",
-      "type": "selector",
-      "selector": ".annot-shipowner-quote-detail-field-publish-info",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "报价单号与发布信息",
-      "content": "报价单号支持复制；同时展示发布企业和报价截止时间。报价单号用于后续查询、修改和与托运订单/运输任务关联。复制操作不改变报价状态。",
-      "category": "field",
-      "source": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md 5.7",
       "container": "page",
       "group": "quote-detail",
       "createdAt": "2026-08-21"
@@ -396,41 +332,9 @@
         "x": 0,
         "y": 0
       },
-      "title": "订单与报价搜索",
-      "content": "搜索框随当前页签切换搜索对象：报价页签搜索报价单号或发布企业；订单页签搜索托运单号或托运企业。搜索只影响当前列表展示，不改变单据状态。",
+      "title": "报价与订单查询",
+      "content": "**关键词搜索**\n\n- 报价页签：搜索报价单号或发布企业。\n- 订单页签：搜索托运单号或托运企业。\n\n**状态筛选**\n\n- 报价：全部、报价中、已确认、已拒绝、已截止。\n- 订单：全部、待执行、执行中、已完成。\n\n**条件筛选**\n\n- 报价：需求类型、发布企业。\n- 订单：业务来源、托运企业。\n- 确定后应用，重置后恢复全部；查询只影响当前列表，不改变单据状态。",
       "category": "field",
-      "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 6.2",
-      "container": "page",
-      "group": "order",
-      "createdAt": "2026-08-21"
-    },
-    {
-      "id": "annot-shipowner-order-field-status",
-      "type": "selector",
-      "selector": ".annot-shipowner-order-field-status",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "状态快捷筛选",
-      "content": "报价页签按报价状态筛选：全部、报价中、已确认、已拒绝、已截止；订单页签按运输执行状态筛选：全部、待执行、执行中、已完成。切换页签后使用对应状态集合。",
-      "category": "filter",
-      "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 4.2、6.2",
-      "container": "page",
-      "group": "order",
-      "createdAt": "2026-08-21"
-    },
-    {
-      "id": "annot-shipowner-order-action-filter",
-      "type": "selector",
-      "selector": ".annot-shipowner-order-action-filter",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "条件筛选入口",
-      "content": "筛选面板随当前页签切换筛选条件：报价页签支持货源需求/运力需求和发布企业；订单页签支持业务来源和托运企业。点击确定后应用条件，点击重置恢复全部。",
-      "category": "action",
       "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 6.2",
       "container": "page",
       "group": "order",
@@ -445,7 +349,7 @@
         "y": 0
       },
       "title": "我的报价记录",
-      "content": "报价页签展示当前承运企业在货源大厅和运力大厅提交的报价记录。每条记录展示需求类型、路线、需求运量、我的报价、发布企业、报价截止时间和当前状态。报价记录只允许查看本人报价，不展示其他承运商价格。报价中可进入修改报价；已确认时根据业务类型关联托运订单或运输任务。",
+      "content": "**记录范围**\n\n- 仅展示当前企业提交的报价，不展示其他承运商价格。\n\n**记录内容**\n\n- 展示需求类型、路线、运量、我的报价、发布企业、截止时间和状态。\n\n**后续操作**\n\n- 报价中：可修改报价。\n- 已确认：关联托运订单或运输任务。",
       "category": "field",
       "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 4.1、6.2",
       "container": "page",
@@ -466,22 +370,6 @@
       "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 5、6.2",
       "container": "page",
       "group": "order-order",
-      "createdAt": "2026-08-21"
-    },
-    {
-      "id": "annot-shipowner-order-field-tabbar",
-      "type": "selector",
-      "selector": ".annot-shipowner-order-field-tabbar",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "title": "底部应用导航",
-      "content": "底部导航保留大厅、订单、运单、我的四个应用入口。当前页面属于订单应用，进入订单后默认展示报价页签；大厅继续承载货源需求和运力需求两类市场入口。",
-      "category": "field",
-      "source": "discussions/projects/beigang/承运商分包外采_流程梳理.md 6.2",
-      "container": "page",
-      "group": "order",
       "createdAt": "2026-08-21"
     }
   ]

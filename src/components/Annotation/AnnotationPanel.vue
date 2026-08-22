@@ -19,7 +19,6 @@
       <div class="panel-body">
         <div class="panel-meta">
           <span class="meta-tag" :class="`meta-tag-${annotation.category}`">{{ categoryLabel }}</span>
-          <span v-if="annotation.source" class="meta-source">{{ annotation.source }}</span>
         </div>
         <div class="panel-content" v-html="renderedContent"></div>
       </div>
@@ -276,11 +275,6 @@ const renderedContent = computed(() => {
 .meta-tag-rule,
 .meta-tag-custom { background: #1677ff; }
 .meta-tag-custom { background: #8c8c8c; }
-
-.meta-source {
-  font-size: 11px;
-  color: #8c8c8c;
-}
 
 .panel-content {
   font-size: 13px;

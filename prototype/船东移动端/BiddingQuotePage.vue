@@ -325,8 +325,9 @@
             <section class="design-card annot-shipowner-quote-rule-capacity-fee">
               <div class="card-sec-header"><span class="sec-title">运力报价</span></div>
 
-              <!-- 计费依据 (支持 按重量 与 按船) -->
+              <!-- 计费依据 (按船时无此选项，按量计费时提供：按装货重量、按卸货重量、按装卸货重量最大值、按装卸货重量最小值) -->
               <div
+                v-if="!isByShip"
                 id="field-capacityBasis"
                 class="form-row-horizontal"
                 @click="openCapacityBasisPicker"
@@ -344,7 +345,7 @@
                 class="form-row-horizontal no-border"
                 :class="{ 'row-error': errors.unitPrice }"
               >
-                <span class="row-label required">{{ form.basis === '按船' ? '单船报价' : '运输单价' }}</span>
+                <span class="row-label required">{{ isByShip ? '单船报价' : '运输单价' }}</span>
                 <div class="row-val-action">
                   <input
                     v-if="!isReadOnlyState"
@@ -353,11 +354,11 @@
                     type="number"
                     step="0.01"
                     class="row-inline-input number highlight-price"
-                    placeholder="请输入"
+                    :placeholder="isByShip ? '请输入单船报价' : '请输入'"
                     @input="clearError('unitPrice')"
                   />
                   <span v-else class="row-val highlight-price">{{ form.unitPrice || '--' }}</span>
-                  <span class="unit-suffix">{{ form.basis === '按船' ? '元/船' : '元/吨' }}</span>
+                  <span class="unit-suffix">{{ isByShip ? '元/船' : '元/吨' }}</span>
                 </div>
               </div>
               <span v-if="errors.unitPrice" class="inline-err-text">{{ errors.unitPrice }}</span>
@@ -469,13 +470,13 @@
           </div>
 
           <template v-if="isCapacity">
-            <div class="confirm-row">
+            <div v-if="!isByShip" class="confirm-row">
               <span class="lbl">计费依据：</span>
               <span class="val">{{ form.basis }}</span>
             </div>
             <div class="confirm-row">
               <span class="lbl">报价金额：</span>
-              <span class="val highlight">{{ form.unitPrice }} {{ form.basis === '按船' ? '元/船' : '元/吨' }}</span>
+              <span class="val highlight">{{ form.unitPrice }} {{ isByShip ? '元/船' : '元/吨' }}</span>
             </div>
           </template>
           <template v-else>
@@ -541,6 +542,15 @@ const isFreight = computed(() => {
 const isCapacity = computed(() => !isFreight.value)
 const isReadOnlyState = computed(() => props.readOnly || urlReadOnly)
 
+// 运力竞价是否按船计费（按船时不展示计费依据，直接单船报价）
+const isByShip = computed(() => {
+  if (!isCapacity.value) return false
+  return props.cargoData?.billingMode === '按船' ||
+         props.cargoData?.billingCondition === '按船' ||
+         props.cargoData?.unit === '元/船' ||
+         props.cargoData?.priceUnit === '元/船'
+})
+
 // 动态提取 cargoData (防写死)
 const originPort = computed(() => {
   if (!props.cargoData) return '福州港'
@@ -598,11 +608,13 @@ const transportActions = [
   { name: '多式联运' },
 ]
 
-const basisActions = computed(() =>
-  isCapacity.value
-    ? [{ name: '按重量' }, { name: '按船' }]
-    : [{ name: '按装货口径' }, { name: '按卸货口径' }]
-)
+// 计费依据选项（货源竞价与按量运力竞价统一标准装卸重量口径）
+const basisActions = [
+  { name: '按装货重量' },
+  { name: '按卸货重量' },
+  { name: '按装卸货重量最大值' },
+  { name: '按装卸货重量最小值' },
+]
 
 const deliveryActions = [
   { name: '港到港' },
@@ -623,7 +635,7 @@ const form = reactive({
   contactPhone: props.initialQuote?.contactPhone || '',
   transportType: props.initialQuote?.transportType || '水路运输',
   referencedScheme: props.initialQuote?.referencedScheme || '',
-  basis: props.initialQuote?.basis || (isCapacity.value ? '按重量' : '按装货口径'),
+  basis: props.initialQuote?.basis || '按装货重量',
   unitPrice: props.initialQuote?.unitPrice || '',
   extraFeeName: props.initialQuote?.extraFeeName || '',
   extraFeeAmount: props.initialQuote?.extraFeeAmount || '',
@@ -649,14 +661,14 @@ const clearError = (field) => {
   errors[field] = ''
 }
 
-// 实时计算报价总额 (基于实际货量或按船算计)
+// 实时计算报价总额 (基于实际货量或单船包干)
 const computedTotalDisplay = computed(() => {
   const price = Number(form.unitPrice)
   if (!form.unitPrice || isNaN(price) || price <= 0) {
     return '¥--'
   }
   let total = 0
-  if (isCapacity.value && form.basis === '按船') {
+  if (isByShip.value) {
     total = price
   } else {
     total = price * numericQuantity.value
@@ -691,7 +703,7 @@ const openBasisPicker = () => {
   if (!isReadOnlyState.value) showBasisSheet.value = true
 }
 const openCapacityBasisPicker = () => {
-  if (!isReadOnlyState.value) showBasisSheet.value = true
+  if (!isReadOnlyState.value && !isByShip.value) showBasisSheet.value = true
 }
 const onSelectBasis = (item) => {
   if (form.basis !== item.name) {
@@ -770,7 +782,7 @@ const onSubmitOrReturn = () => {
 
   const priceNum = Number(form.unitPrice)
   if (!form.unitPrice || isNaN(priceNum) || priceNum <= 0) {
-    errors.unitPrice = form.basis === '按船' ? '请输入单船报价' : '请输入运输单价'
+    errors.unitPrice = isByShip.value ? '请输入单船报价' : '请输入运输单价'
     isValid = false
     if (!firstErrId) firstErrId = 'field-unitPrice'
   }
@@ -796,6 +808,12 @@ const onSubmitOrReturn = () => {
       isValid = false
       if (!firstErrId) firstErrId = 'field-schemeOverview'
     }
+  } else {
+    if (!isByShip.value && !form.basis) {
+      errors.basis = '请选择计费依据'
+      isValid = false
+      if (!firstErrId) firstErrId = 'field-capacityBasis'
+    }
   }
 
   // 2. 校验失败：聚焦与定位
@@ -818,10 +836,10 @@ const executeSubmit = () => {
     companyName: companyName.value,
     contactPerson: form.contactPerson,
     contactPhone: form.contactPhone,
-    basis: form.basis,
+    basis: isByShip.value ? '按船' : form.basis,
     unitPrice: form.unitPrice,
     totalDisplay: computedTotalDisplay.value,
-    unitSuffix: form.basis === '按船' ? '元/船' : '元/吨',
+    unitSuffix: isByShip.value ? '元/船' : '元/吨',
   }
 
   const quotePayload = isCapacity.value
