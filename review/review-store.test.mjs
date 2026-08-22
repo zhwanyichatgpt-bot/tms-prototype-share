@@ -108,7 +108,7 @@ test('发布研发地址写入 R0，后续修订写入 R1 且按倒序保存', a
   assert.deepEqual(r1.changes.revisions.map(item => item.revision), ['R1', 'R0'])
 })
 
-test('标记完成不冻结版本，仍可发布和记录变更', async () => {
+test('标记完成不冻结版本，仍可记录变更但不能重复生成研发地址', async () => {
   const { store } = await setupStore()
   const draft = await store.createVersion({
     name: '通用能力 8 月交付',
@@ -124,8 +124,10 @@ test('标记完成不冻结版本，仍可发布和记录变更', async () => {
     items: [{ type: 'rule', pageKeys: ['waybillManage'], before: 'A', after: 'B', devImpact: '按 B 执行' }],
   })
   assert.equal(revision.version.revision, 'R1')
-  const republished = await store.publishVersion(draft.id)
-  assert.equal(republished.version.status, 'completed')
+  await assert.rejects(
+    () => store.publishVersion(draft.id),
+    error => error.code === 'REVIEW_ADDRESS_ALREADY_PUBLISHED',
+  )
 })
 
 test('两个版本使用同一页面时生成独立标注文件且互不覆盖', async () => {

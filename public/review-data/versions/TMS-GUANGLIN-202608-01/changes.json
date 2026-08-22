@@ -1,0 +1,21 @@
+{
+  "versionId": "TMS-GUANGLIN-202608-01",
+  "revisions": [
+    {
+      "revision": "R0",
+      "date": "2026-08-22T09:00:39.400Z",
+      "reason": "首次发布研发地址",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "inquiryShipper"
+          ],
+          "before": "未发布研发地址",
+          "after": "发布 1 个原型页面",
+          "devImpact": "请以本版本原型和标注作为本次研发依据"
+        }
+      ]
+    }
+  ]
+}

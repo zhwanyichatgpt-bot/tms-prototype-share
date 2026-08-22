@@ -131,6 +131,16 @@ test('首次发布研发地址必须有上线日期和页面，并自动形成 R
   assert.equal(result.revisionBatch.items[0].type, 'initial_delivery')
 })
 
+test('研发地址生成后拒绝重复生成', () => {
+  const draft = createReviewVersion(commonDraftInput, { existingIds: [], pageCatalog: PAGE_CATALOG, now: NOW })
+  const { version: published } = publishReviewVersion(draft, '2026-08-23T08:00:00.000Z')
+
+  assert.throws(
+    () => publishReviewVersion(published, '2026-08-24T08:00:00.000Z'),
+    error => error.code === 'REVIEW_ADDRESS_ALREADY_PUBLISHED' && error.status === 409,
+  )
+})
+
 test('标记完成只改变完成状态，不冻结版本', () => {
   const draft = createReviewVersion(commonDraftInput, { existingIds: [], pageCatalog: PAGE_CATALOG, now: NOW })
   const completed = markVersionCompleted(draft, '2026-08-23T08:00:00.000Z')

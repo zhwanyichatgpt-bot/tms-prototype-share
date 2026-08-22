@@ -197,6 +197,9 @@ function initialRevision(version, timestamp) {
 }
 
 export function publishReviewVersion(version, now = new Date().toISOString()) {
+  if (version.publishedAt || version.revision !== 'pending') {
+    fail('REVIEW_ADDRESS_ALREADY_PUBLISHED', '研发地址已经生成，可直接复制使用', 409)
+  }
   const timestamp = validateTimestamp(now)
   const next = {
     ...clone(version),
@@ -206,14 +209,12 @@ export function publishReviewVersion(version, now = new Date().toISOString()) {
   }
   let revisionBatch = null
 
-  if (version.revision === 'pending') {
-    if (!version.targetReleaseDate) fail('RELEASE_DATE_REQUIRED', '发布研发地址前必须填写计划上线日期')
-    if (!Array.isArray(version.pages) || version.pages.length === 0) {
-      fail('VERSION_PAGES_REQUIRED', '发布研发地址前必须至少选择一个页面')
-    }
-    next.revision = 'R0'
-    revisionBatch = initialRevision(next, timestamp)
+  if (!version.targetReleaseDate) fail('RELEASE_DATE_REQUIRED', '生成研发地址前必须填写计划上线日期')
+  if (!Array.isArray(version.pages) || version.pages.length === 0) {
+    fail('VERSION_PAGES_REQUIRED', '生成研发地址前必须至少选择一个页面')
   }
+  next.revision = 'R0'
+  revisionBatch = initialRevision(next, timestamp)
 
   return { version: next, revisionBatch }
 }

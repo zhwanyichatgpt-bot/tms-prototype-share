@@ -66,7 +66,7 @@
           <el-table-column label="研发评审地址" min-width="300">
             <template #default="{ row }">
               <div class="review-address-cell">
-                <code>{{ row.publishedAt ? reviewAddress(row) : '尚未发布' }}</code>
+                <code>{{ row.publishedAt ? reviewAddress(row) : '尚未生成' }}</code>
                 <el-button v-if="row.publishedAt" link type="primary" @click="copyReviewAddress(row)">复制地址</el-button>
               </div>
             </template>
@@ -76,7 +76,7 @@
               <div class="row-actions">
                 <el-button link type="primary" @click="openReview(row)">查看版本</el-button>
                 <el-button v-if="row.revision === 'pending'" link type="primary" @click="openEditDialog(row)">编辑</el-button>
-                <el-button link type="primary" @click="publishReviewAddress(row)">发布研发地址</el-button>
+                <el-button v-if="!row.publishedAt" link type="primary" @click="publishReviewAddress(row)">生成研发地址</el-button>
                 <el-button v-if="row.status !== 'completed'" link type="primary" @click="markCompleted(row)">标记完成</el-button>
               </div>
             </template>

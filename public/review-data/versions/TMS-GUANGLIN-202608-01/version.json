@@ -1,0 +1,21 @@
+{
+  "id": "TMS-GUANGLIN-202608-01",
+  "name": "广林定制化需求",
+  "scope": "project",
+  "projectId": "guanglin",
+  "baseVersionId": null,
+  "targetReleaseDate": "2026-07-12",
+  "pages": [
+    {
+      "pageKey": "inquiryShipper",
+      "order": 1
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-08-22T09:00:39.400Z",
+  "lastPublishedAt": "2026-08-22T09:00:39.400Z",
+  "completedAt": null,
+  "createdAt": "2026-08-22T08:57:30.387Z",
+  "updatedAt": "2026-08-22T09:00:39.400Z"
+}
