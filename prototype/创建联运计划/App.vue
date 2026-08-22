@@ -1,6 +1,5 @@
 <template>
-  <WorkspaceShell current-title="创建联运计划">
-    <div class="page-root">
+  <div class="page-root">
       <!-- 页面标题 -->
       <div class="page-header plan-source-anchor">
         <div>
@@ -622,14 +621,12 @@
           <button type="button" class="btn btn-default" @click="closeSubPlanDialog">关闭</button>
         </template>
       </el-dialog>
-    </div>
-  </WorkspaceShell>
+  </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
 import {
   defaultWaybillOrder,
   defaultConfirmedQuote,
@@ -1458,7 +1455,7 @@ onMounted(() => {
 }
 
 .page-root {
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 48px);
   padding-bottom: 70px;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   color: #1d2129;

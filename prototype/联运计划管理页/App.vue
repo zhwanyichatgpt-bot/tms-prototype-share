@@ -1,6 +1,5 @@
 <template>
-  <WorkspaceShell current-title="联运计划">
-    <div class="plan-page">
+  <div class="plan-page">
       <header class="page-header">
         <h1 class="page-title">联运计划管理</h1>
         <button class="ws-btn primary" @click="handleCreate">新增联运计划</button>
@@ -138,15 +137,13 @@
         <el-button type="primary" @click="handleConfirm">确定</el-button>
       </template>
     </el-dialog>
-    </div>
-  </WorkspaceShell>
+  </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import mockData from './mock-data'
-import WorkspaceShell from '../../src/components/WorkspaceShell.vue'
 
 const plans = ref(mockData.plans.map(p => ({ ...p, subPlans: [...p.subPlans] })))
 const statusTabs = mockData.statusTabs
@@ -324,7 +321,7 @@ function handleConfirm() {
 }
 
 .plan-page {
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 48px);
 }
 
 .page-header {
