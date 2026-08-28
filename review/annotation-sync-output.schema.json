@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["synced", "no_changes", "conflict"]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": { "type": "string", "enum": ["update", "add", "merge", "delete"] },
+          "pageKey": { "type": "string" },
+          "annotationId": { "type": ["string", "null"] },
+          "sourceIds": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" },
+          "annotationJson": { "type": ["string", "null"] }
+        },
+        "required": ["action", "pageKey", "annotationId", "sourceIds", "reason", "annotationJson"]
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": { "type": "string" },
+          "annotationId": { "type": ["string", "null"] },
+          "prdRule": { "type": "string" },
+          "prototypeRule": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["pageKey", "annotationId", "prdRule", "prototypeRule", "reason"]
+      }
+    }
+  },
+  "required": ["status", "actions", "conflicts"]
+}

@@ -1,0 +1,38 @@
+/* =====================================================
+ * TMS 业务系统框架 —— 尺寸 / 颜色 / 层级 变量
+ * 只放框架级变量，不放页面业务样式
+ * ===================================================== */
+
+:root {
+  /* —— 框架尺寸（按 1920×1364 设计稿坐标，页面级 0.85 缩放由宿主控制） —— */
+  --tms-topbar-height: 60px;
+  --tms-workbar-height: 36px;
+  --tms-sidenav-width: 44px;
+  --tms-sidenav-item-size: 27px;
+  --tms-sidenav-gap: 74px;
+
+  --tms-main-bg: #f2f1f6;
+  --tms-sheet-bg: #ffffff;
+  --tms-topbar-radius: 12px 12px 0 0;
+
+  /* —— 文字色 —— */
+  --tms-text-primary: #3d4050;      /* 主文字 */
+  --tms-text-body: #333333;         /* 业务正文 */
+  --tms-text-secondary: #91939e;    /* 次要文字 */
+  --tms-text-muted: #909499;        /* 弱提示 */
+  --tms-text-tag: #595e85;          /* 标签文字 */
+
+  /* —— 品牌 / 焦点色 —— */
+  --tms-brand-blue: #3a65ff;        /* 激活 / 链接 / 操作 */
+  --tms-brand-blue-weak: #eef4ff;
+
+  /* —— 边框与分隔 —— */
+  --tms-border: #e6e8f0;
+  --tms-divider: rgba(0, 0, 0, 0.06);
+
+  /* —— 层级 —— */
+  --tms-z-topbar: 30;
+  --tms-z-workbar: 29;
+  --tms-z-sidenav: 28;
+  --tms-z-flyout: 40;
+}

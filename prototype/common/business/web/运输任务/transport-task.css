@@ -1,0 +1,269 @@
+/* 运输任务业务样式：坐标严格基于 Pixso 26:148（1920×1364）。 */
+.transport-task-viewport {
+  position: relative;
+  width: 1632px;
+  min-width: 1632px;
+  height: 1159.4px;
+  min-height: 1159.4px;
+  overflow: visible;
+  background: #fff;
+}
+
+.transport-task-stage {
+  position: relative;
+  width: 1632px;
+  min-width: 1632px;
+  height: 1159.4px;
+  min-height: 1159.4px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.transport-task-stage .tms-web-shell { position: absolute; left: 0; top: 0; }
+
+.transport-task-page {
+  position: absolute;
+  left: -64px;
+  top: -108px;
+  width: 1920px;
+  height: 1364px;
+  color: #333;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 状态页签 */
+.tt-statustabs { position: absolute; left: 84px; top: 126.44px; width: 560px; height: 30.56px; }
+.tt-statustabs-item {
+  position: absolute;
+  top: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #333;
+  font: 400 16px/24px "PingFang SC", "Microsoft YaHei", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tt-statustabs-item.active { color: #3a65ff; }
+.tt-statustabs-indicator { position: absolute; top: 28.56px; width: 23px; height: 2px; background: #3a65ff; }
+
+/* 筛选区 */
+.tt-filterbar { position: absolute; left: 0; top: 173px; width: 1920px; height: 32px; font-size: 14px; }
+.tt-filterbar button, .tt-filterbar input { font-family: inherit; }
+.tt-filter-field, .tt-filter-item {
+  position: absolute;
+  top: 0;
+  height: 32px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background: #fff;
+}
+.tt-searchbox { left: 84px; width: 270px; display: flex; align-items: center; }
+.tt-searchbox-icon { width: 17px; height: 17px; margin: 0 10px; flex: 0 0 auto; }
+.tt-searchbox-input, .tt-filter-address-input {
+  min-width: 0;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #333;
+  font-size: 14px;
+}
+.tt-searchbox-input { width: 220px; }
+.tt-searchbox-input::placeholder, .tt-filter-address-input::placeholder { color: #ccc; opacity: 1; }
+.tt-filter-item {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: #3d4050;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+.tt-filter-business { left: 370px; width: 120px; }
+.tt-filter-schedule { left: 506px; width: 120px; }
+.tt-filter-business .tt-filter-chevron, .tt-filter-schedule .tt-filter-chevron { margin-left: auto; }
+.tt-filter-time { left: 642px; width: 408px; padding-right: 10px; }
+.tt-filter-time::after { content: ''; width: 1px; height: 30px; position: absolute; left: 95px; top: 0; background: #e0e0e0; }
+.tt-filter-time > span:first-child { width: 92px; }
+.tt-filter-time-ph { margin-left: 24px; color: #ccc !important; }
+.tt-filter-time-sep { margin-left: 18px; color: #ccc !important; }
+.tt-filter-time-sep + .tt-filter-time-ph { margin-left: 18px; }
+.tt-filter-time .tt-filter-chevron { position: absolute; left: 79px; top: 13px; }
+.tt-filter-calendar { position: absolute; left: 104px; top: 8px; }
+.tt-filter-address { left: 1066px; width: 280px; gap: 20px; }
+.tt-filter-address-to { left: 1362px; }
+.tt-filter-address > span { flex: 0 0 56px; color: #1b1b1b; }
+.tt-filter-address-input { width: 165px; }
+.tt-filter-more, .tt-filter-reset, .tt-filter-submit {
+  position: absolute;
+  top: 0;
+  height: 32px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.tt-filter-more { left: 1712px; width: 44px; padding: 0; border: 0; background: transparent; color: #333; font-size: 14px; }
+.tt-filter-more span { margin-right: 4px; font-size: 16px; }
+.tt-filter-reset { left: 1772px; width: 32px; padding: 0; border: 1px solid #e3e3e3; background: #fff; color: #3d4050; font-size: 25px; line-height: 28px; }
+.tt-filter-submit { left: 1820px; width: 80px; padding: 0; border: 0; background: #3a65ff; color: #fff; font-size: 14px; }
+.tt-filter-divider { position: absolute; left: 64px; top: 225px; width: 1856px; height: 1px; background: #ebebeb; }
+
+/* 主任务与折叠任务 */
+.tt-tasklist { position: absolute; left: 84px; top: 246px; width: 1816px; }
+.tt-card { position: relative; width: 1816px; height: 69.354px; background: #f7f7f7; }
+.tt-card.expanded { height: 586px; background: #fff; }
+.tt-card + .tt-card { margin-top: 8.646px; }
+.tt-card-header {
+  position: relative;
+  width: 1816px;
+  height: 69.354px;
+  background: #f7f7f7;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.tt-card.expanded .tt-card-header { height: 66px; }
+.tt-card-icon {
+  position: absolute;
+  left: 14px;
+  top: 13px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid #d6d8de;
+  border-radius: 2px;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease;
+}
+.tt-card-icon:hover {
+  border-color: #3a65ff;
+}
+.tt-card-icon:focus-visible {
+  outline: 2px solid #3a65ff;
+  outline-offset: 1px;
+}
+.tt-card-icon::after { content: ''; position: absolute; left: 5px; top: 4px; border-top: 4px solid #333; border-left: 3px solid transparent; border-right: 3px solid transparent; pointer-events: none; }
+.tt-card:not(.expanded) .tt-card-icon::after { left: 6px; top: 4px; transform: rotate(-90deg); }
+.tt-card-id, .tt-card-dispatch, .tt-card-status, .tt-card-company, .tt-card-waypoint, .tt-card-actions, .tt-card-progress, .tt-card-tags { position: absolute; }
+.tt-card-id { left: 45.25px; top: 9.76px; color: #333; font-size: 14px; line-height: 20px; }
+.tt-card-dispatch { left: 176px; top: 13.08px; color: #b3b3b3; font-size: 12px; line-height: 17px; }
+.tt-card-status {
+  left: 440px;
+  top: 14px;
+  width: 84px;
+  height: 24px;
+  box-sizing: border-box;
+  border: 1px solid;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+}
+.tt-card-tags { left: 44px; top: 34px; height: 21px; display: flex; gap: 8px; }
+.tt-card-tag { height: 21px; padding: 0 6px; box-sizing: border-box; border: 1px solid #d5dbea; border-radius: 0; background: #fff; color: #595e85; font-size: 12px; line-height: 19px; }
+.tt-card-company { top: 12.76px; width: 196px; height: 44px; overflow: hidden; color: #333; font-size: 14px; line-height: 20px; text-overflow: ellipsis; }
+.tt-card-carrier { left: 617px; }
+.tt-card-shipper { left: 907px; }
+.tt-card-company i { display: flex; align-items: center; width: max-content; height: 21px; margin-top: 2px; padding: 0 6px; box-sizing: border-box; font-style: normal; font-size: 12px; }
+.tt-card-company i b { margin-right: 4px; font-weight: 400; }
+.tt-card-carrier i { color: #808cb6; background: #edf1ff; }
+.tt-card-shipper i { color: #aa7b57; background: #fff1db; }
+.tt-card-progress { left: 1197px; top: 12.76px; }
+.tt-card-waypoint { left: 1450px; top: 0; width: 100px; height: 66px; display: flex; align-items: center; color: #333; font-size: 14px; outline: 0; cursor: default; }
+.tt-card-waypoint b { color: #3a65ff; font-weight: 400; }
+.tt-card-actions { left: 1624px; top: 12.76px; height: 20px; display: flex; align-items: center; gap: 26px; }
+.tt-card-action, .tt-subtask-action { padding: 0; border: 0; background: transparent; color: #3a65ff; font: 400 14px/20px inherit; white-space: nowrap; cursor: pointer; }
+.tt-card-hr { display: none; }
+
+/* 展开任务摘要 */
+.tt-summary { position: relative; width: 1816px; height: 64px; }
+.tt-summary-col { position: absolute; top: 10.76px; height: 40px; display: block; padding: 0; border: 0; }
+.tt-summary-col:nth-child(1) { left: 44px; width: 137px; }
+.tt-summary-col:nth-child(2) { left: 289px; width: 116px; }
+.tt-summary-col:nth-child(3) { left: 512px; width: 57px; }
+.tt-summary-col:nth-child(4) { left: 670px; width: 80px; }
+.tt-summary-col:nth-child(5) { left: 828px; width: 60px; }
+.tt-summary-col:nth-child(6) { left: 968px; width: 140px; }
+.tt-summary-col:nth-child(7) { left: 1192px; width: 220px; }
+.tt-summary-label, .tt-summary-value { display: block; line-height: 20px; white-space: nowrap; }
+.tt-summary-label { color: #999; font-size: 14px; }
+.tt-summary-value { color: #333; font-size: 14px; overflow: visible; }
+
+/* 子任务明细 */
+.tt-card-subtasks { width: 1816px; height: 456px; }
+.tt-subtask { position: relative; width: 1816px; height: 91.2px; box-sizing: border-box; border-top: 1px solid #e6e6e6; color: #333; font-size: 14px; }
+.tt-subtask-seq, .tt-subtask-main, .tt-subtask-status, .tt-subtask-detail, .tt-subtask-actions { position: absolute; }
+.tt-subtask-seq { left: 44px; top: 14.76px; width: 20px; line-height: 20px; }
+.tt-subtask-main { left: 88px; top: 10.76px; width: 130px; height: 62px; }
+.tt-subtask-no { color: #333; font-size: 14px; line-height: 20px; }
+.tt-subtask-time { color: #b3b3b3; font-size: 12px; line-height: 17px; margin-top: 3px; }
+.tt-subtask-org { color: #333; font-size: 14px; line-height: 20px; margin-top: 1px; }
+.tt-subtask-status { left: 216px; top: 11.08px; width: 48px; height: 18px; box-sizing: border-box; border: 1px solid; border-radius: 12px; font-size: 12px; line-height: 16px; text-align: center; }
+.tt-subtask-detail { inset: 0; }
+.tt-subtask-detail-cell, .tt-subtask-detail > .tt-progress { position: absolute; top: 12.08px; }
+.tt-subtask-detail-cell:nth-child(1) { left: 345px; width: 220px; }
+.tt-subtask-detail-cell:nth-child(2) { left: 619px; width: 190px; }
+.tt-subtask-detail-cell:nth-child(3) { left: 907px; width: 220px; top: 13.08px; }
+.tt-cell-label, .tt-cell-value { display: block; white-space: nowrap; }
+.tt-cell-label { color: #b3b3b3; font-size: 12px; line-height: 17px; }
+.tt-cell-value { color: #333; font-size: 14px; line-height: 20px; }
+.tt-cell-cargo { margin-top: 1.68px; }
+.tt-cell-cargo i { margin-right: 6px; color: #3a65ff; font-style: normal; }
+.tt-time-value { position: relative; margin-top: 3px; padding-left: 13px; }
+.tt-time-value + .tt-time-value { margin-top: 5px; }
+.tt-time-value i { position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; }
+.tt-time-value i.start { background: #3a65ff; }
+.tt-time-value i.end { background: #20be8d; }
+.tt-time-value:first-of-type::after { content: ''; position: absolute; left: 2px; top: 17px; width: 1px; height: 8px; background: #d9d9d9; }
+.tt-cell-value-tag { display: block; width: max-content; height: 24px; margin-top: 4px; padding: 0 8px; background: #eef1fa; color: #8082b8; font: normal 12px/24px inherit; }
+.tt-subtask-detail > .tt-progress:nth-child(4) { left: 1198px; }
+.tt-subtask-detail > .tt-progress:nth-child(5) { left: 1294px; }
+.tt-subtask-detail > .tt-progress:nth-child(6) { left: 1450px; }
+.tt-subtask-detail > .tt-progress:nth-child(7) { left: 1538px; }
+.tt-subtask-actions { left: 1624px; top: 10.76px; width: 166px; height: 20px; display: flex; gap: 20px; }
+
+/* 进度 */
+.tt-progress { position: relative; width: 56px; height: 53px; color: #333; }
+.tt-progress-label, .tt-progress-value, .tt-progress-track { position: absolute; left: 0; white-space: nowrap; }
+.tt-progress-label { top: 0; color: #b3b3b3; font-size: 12px; line-height: 17px; }
+.tt-progress-value { top: 32.68px; color: #333; font-size: 14px; line-height: 20px; }
+.tt-progress-track { top: 25.92px; width: 56px; height: 4px; overflow: hidden; border-radius: 2px; background: #ececec; }
+.tt-progress-fill { display: block; height: 4px; border-radius: 2px; background: #3a65ff; }
+.tt-card-progress.tt-progress { width: 160px; height: 31px; }
+.tt-card-progress .tt-progress-label { top: 0; color: #333; font-size: 14px; line-height: 20px; }
+.tt-card-progress .tt-progress-value { left: 64px; top: 0; font-size: 14px; line-height: 20px; }
+.tt-card-progress .tt-progress-track { top: 26.24px; width: 160px; }
+.tt-card-progress .tt-progress-fill { width: 45% !important; }
+.tt-progress.sink .tt-progress-value { top: 21px; }
+
+/* 分页 */
+.tt-pagination { position: absolute; left: 1290px; top: 1260px; width: 606px; height: 32px; display: flex; align-items: center; color: #323234; font-size: 14px; line-height: 22px; white-space: nowrap; }
+.tt-pagination-total { width: 76px; }
+.tt-pagination-size { width: 88px; height: 32px; padding-left: 8px; box-sizing: border-box; border: 1px solid #ebebeb; border-radius: 2px; line-height: 30px; }
+.tt-pagination-arrow { width: 32px; height: 32px; padding: 0; border: 0; background: #fff; color: #555; font-size: 22px; cursor: pointer; }
+.tt-pagination-pages { display: flex; align-items: center; }
+.tt-pagination-page { width: 32px; height: 32px; padding: 0; border: 0; border-radius: 2px; background: #fff; color: #323234; font-size: 14px; cursor: pointer; }
+.tt-pagination-page.active { border: 1px solid #333; font-weight: 600; }
+.tt-pagination-page-static { display: inline-flex; align-items: center; justify-content: center; }
+.tt-pagination-ellipsis { width: 36px; text-align: center; color: #999; }
+.tt-pagination-jump { margin-left: 6px; }
+.tt-pagination-input { width: 48px; height: 24px; margin: 0 4px; box-sizing: border-box; border: 1px solid #ebebeb; border-radius: 2px; text-align: center; color: #333; font-size: 14px; }
+
+/* 途经点浮层 */
+.tt-waypoint-pop { position: absolute; z-index: 40; width: 318px; height: 302px; }
+.tt-waypoint-pop-card { width: 318px; height: 302px; padding: 14px 10px 14px 16px; box-sizing: border-box; overflow-y: auto; border: 1px solid #e5e5e5; border-radius: 4px; background: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); }
+.tt-waypoint-pop-row { position: relative; min-height: 88px; padding: 0 10px 10px 30px; box-sizing: border-box; }
+.tt-waypoint-pop-row + .tt-waypoint-pop-row { margin-top: 4px; }
+.tt-waypoint-pop-sign { position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 4px; color: #fff; font-size: 11px; line-height: 18px; text-align: center; }
+.tt-waypoint-pop-sign.blue { background: #3a65ff; }
+.tt-waypoint-pop-sign.green { background: #20be8d; }
+.tt-waypoint-pop-title { color: #333; font-size: 14px; font-weight: 600; line-height: 20px; }
+.tt-waypoint-pop-address { margin-top: 3px; color: #777; font-size: 13px; line-height: 20px; }
+.tt-waypoint-pop-time { margin-top: 5px; color: #aaa; font-size: 12px; line-height: 17px; }
+.tt-waypoint-pop-card::-webkit-scrollbar { width: 6px; }
+.tt-waypoint-pop-card::-webkit-scrollbar-thumb { border-radius: 3px; background: #c7c7c7; }

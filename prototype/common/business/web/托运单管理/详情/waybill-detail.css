@@ -1,0 +1,1205 @@
+/**
+ * 托运单详情页 —— 模块化样式表
+ * 作用域限定在 .waybill-detail-page 及其父级阶段内，不产生全局污染
+ */
+
+.waybill-detail-stage {
+  width: 1920px;
+  min-height: 1080px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 页面内容区（嵌在 TmsWebShell 内部插槽中） */
+.waybill-detail-page {
+  width: 1872px;
+  min-height: 840px;
+  padding: 14px 20px 20px 24px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #333333;
+}
+
+/* —— 1. 面包屑与页头 —— */
+.waybill-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  margin-bottom: 12px;
+}
+
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.crumb-parent {
+  color: #666666;
+  cursor: pointer;
+}
+.crumb-parent:hover {
+  color: #3a65ff;
+}
+
+.crumb-sep {
+  margin: 0 8px;
+  color: #999999;
+}
+
+.crumb-current {
+  color: #333333;
+  font-weight: 600;
+}
+
+.back-link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #606266;
+  font-size: 13px;
+  transition: color 0.15s ease;
+}
+.back-link-action:hover {
+  color: #3a65ff;
+}
+.back-link-action:hover svg path {
+  stroke: #3a65ff;
+}
+
+/* —— 2. 左右两栏主布局 —— */
+.waybill-main-layout {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+/* —— 3. 左侧信息面板（宽 440px） —— */
+.waybill-left-panel {
+  flex: 0 0 440px;
+  width: 440px;
+  background: linear-gradient(180deg, #f2f7ff 0%, #f8f9ff 100%);
+  border: 1px solid #e6ecff;
+  border-radius: 4px;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-header-section {
+  padding-bottom: 4px;
+}
+
+.header-id-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.waybill-no {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323234;
+}
+
+.waybill-status-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #f0f3ff;
+  border: 1px solid #3a65ff;
+  color: #3a65ff;
+}
+
+.header-tag-row {
+  margin-bottom: 6px;
+}
+
+.waybill-type-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #ffffff;
+  border: 1px solid #dfe4f1;
+  border-radius: 2px;
+  color: #595e85;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.meta-create-time {
+  display: block;
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 10px;
+}
+
+/* 80x28 终止与打印操作按钮 */
+.header-btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action-sm {
+  width: 80px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  background-color: #3a65ff;
+  color: #ffffff;
+  border: 0;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-action-sm:hover {
+  opacity: 0.88;
+}
+
+/* 左侧通用白色卡片 */
+.panel-card {
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 2px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.card-field-row {
+  display: flex;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 20px;
+  margin-bottom: 6px;
+}
+.card-field-row:last-child {
+  margin-bottom: 0;
+}
+
+.field-label {
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.field-value {
+  color: #333333;
+  word-break: break-all;
+}
+
+.remark-value {
+  color: #666666;
+}
+
+.copy-icon {
+  margin-left: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.copy-icon:hover rect, .copy-icon:hover path {
+  stroke: #3a65ff;
+}
+
+/* 费用信息卡片 */
+.cost-item-row {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 20px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cost-amount-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+  font-family: "Douyin Sans", -apple-system, sans-serif;
+}
+
+.cost-unit {
+  font-size: 13px;
+  color: #333333;
+  margin-right: 6px;
+}
+
+.cost-tags {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.cost-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background-color: #ebeff7;
+  color: #808cb6;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-link-action {
+  border: 0;
+  background: transparent;
+  color: #3a65ff;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+}
+
+.settlement-grid {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f2f5;
+  text-align: center;
+}
+
+.settle-box {
+  flex: 1;
+}
+
+.settle-amount .num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+}
+.settle-amount .unit {
+  font-size: 12px;
+  color: #666;
+  margin-left: 2px;
+}
+
+.settle-label {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 2px;
+}
+
+/* 货品信息卡片 */
+.goods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goods-item {
+  border: 1px solid #edf0f5;
+  border-radius: 4px;
+  padding: 8px 10px;
+  background-color: #fbfcfe;
+}
+
+.goods-item-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.goods-icon {
+  margin-right: 6px;
+}
+
+.goods-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.goods-spec {
+  font-size: 12px;
+  color: #999999;
+  margin-left: 4px;
+  flex: 1;
+}
+
+.goods-arrow {
+  transition: transform 0.2s;
+  font-size: 11px;
+}
+.goods-arrow.open {
+  transform: rotate(180deg);
+}
+
+.goods-item-body {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #e6e9f0;
+}
+
+.goods-prop-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 20px;
+  margin-bottom: 2px;
+}
+
+.prop-label {
+  color: #999999;
+}
+
+.prop-value {
+  color: #333333;
+  font-weight: 500;
+}
+
+.goods-remark-row {
+  flex-direction: column;
+  margin-top: 4px;
+}
+.goods-remark-row .prop-value {
+  color: #666666;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* 附件卡片 */
+.attachment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #3a65ff;
+  cursor: pointer;
+}
+.attachment-item:hover {
+  text-decoration: underline;
+}
+
+/* —— 4. 右侧多功能区（三段式结构） —— */
+.waybill-right-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 顶部选项卡 */
+.panel-top-tabs-bar {
+  display: flex;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.top-tabs-group {
+  display: flex;
+  gap: 28px;
+}
+
+.top-tab-btn {
+  position: relative;
+  padding: 6px 4px 10px;
+  border: 0;
+  background: transparent;
+  color: #666666;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.top-tab-btn.active {
+  color: #3a65ff;
+  font-weight: 700;
+}
+.top-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background-color: #3a65ff;
+}
+
+/* 固定三段式主体舞台 (1352 × 751) */
+.waybill-stage-grid {
+  display: flex;
+  width: 1352px;
+  height: 751px;
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+/* —— 4.1 左栏：路段信息 (约 352px) —— */
+.waybill-segments-col {
+  width: 352px;
+  flex-shrink: 0;
+  border-right: 1px solid #edf1f7;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ffffff;
+}
+
+.segment-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.seg-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background-color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.seg-arrow {
+  font-size: 11px;
+  color: #666666;
+}
+
+.seg-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.seg-mode-badge {
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.mode-truck { background-color: #e6f9f0; color: #1eb57e; }
+.mode-ship { background-color: #e8f0fe; color: #3a65ff; }
+.mode-train { background-color: #fef0f0; color: #f56c6c; }
+
+.seg-cargo-badge {
+  padding: 1px 5px;
+  border-radius: 2px;
+  background-color: #f0f2f7;
+  color: #606266;
+  font-size: 10px;
+}
+
+.seg-current-stage-tag {
+  margin-left: auto;
+  background-color: #f0f3ff;
+  border: 1px solid #3a65ff;
+  color: #3a65ff;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.header-progress-inline {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.header-progress-inline .pct {
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a65ff;
+}
+.header-progress-inline .mini-bar {
+  width: 32px;
+  height: 6px;
+  background-color: #ebeef5;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.header-progress-inline .mini-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a65ff 0%, #649bff 100%);
+  border-radius: 6px;
+}
+
+.seg-card-body {
+  padding: 10px;
+  border-top: 1px solid #edf0f6;
+}
+
+.seg-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 6px;
+}
+
+.seg-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.seg-icon-sign {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.seg-icon-sign.sign-load { background-color: #3a65ff; }
+
+.progress-info-text {
+  font-size: 12px;
+  color: #333333;
+  flex: 1;
+}
+.detail-paren {
+  font-style: normal;
+  font-size: 10px;
+  color: #999999;
+}
+
+.progress-percent {
+  font-size: 12px;
+  font-weight: 700;
+  color: #3a65ff;
+}
+
+.progress-track-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #eef1f6;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.progress-track-bar .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a65ff 0%, #649bff 100%);
+  border-radius: 6px;
+}
+
+.seg-total-desc {
+  font-size: 11px;
+  color: #666666;
+  line-height: 16px;
+}
+
+.route-point-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.route-sign-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.route-sign-badge.load { background-color: #3a65ff; }
+.route-sign-badge.unload { background-color: #20be8d; }
+
+.route-city-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.route-city-time .city { font-weight: 600; color: #333; }
+.route-city-time .time { font-size: 10px; color: #999; }
+
+.route-address {
+  font-size: 11px;
+  color: #666666;
+  line-height: 14px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #edf0f5;
+  text-align: center;
+}
+
+.metric-cell .val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333333;
+}
+.metric-cell .lbl {
+  font-size: 10px;
+  color: #999999;
+  margin-top: 1px;
+}
+
+.actions-body {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-seg-action {
+  flex: 1;
+  height: 28px;
+  background-color: #3a65ff;
+  color: #ffffff;
+  border: 0;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* —— 4.2 中栏：真实地图区域 (约 652px) —— */
+.waybill-map-col {
+  width: 652px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background-color: #eaf0f7;
+}
+
+.map-inner-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.map-real-canvas {
+  position: absolute;
+  inset: 0;
+  background-color: #eef3f9;
+  background-image:
+    linear-gradient(rgba(240, 244, 252, 0.45), rgba(240, 244, 252, 0.45)),
+    url('/transport-plan-assets-detail/map-embedded.png');
+  background-size: cover;
+  background-position: center;
+}
+
+/* 城市标记点 */
+.map-city-mark {
+  position: absolute;
+  font-size: 10px;
+  color: #7b889b;
+  font-weight: 500;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.map-city-mark .c-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #9aa7b9;
+}
+
+.p-zhengzhou { left: 120px; top: 130px; }
+.p-luoyang { left: 70px; top: 140px; }
+.p-xuchang { left: 130px; top: 190px; }
+.p-zhoukou { left: 180px; top: 190px; }
+.p-bozhou { left: 260px; top: 210px; }
+.p-lianyungang { left: 450px; top: 140px; }
+.p-huaian { left: 440px; top: 230px; }
+.p-yangzhou { left: 450px; top: 350px; }
+.p-zhenjiang { left: 460px; top: 370px; }
+.p-nanjing { left: 420px; top: 370px; }
+.p-hefei { left: 330px; top: 370px; }
+.p-liuan { left: 270px; top: 410px; }
+.p-wuhu { left: 390px; top: 420px; }
+.p-chizhou { left: 320px; top: 480px; }
+.p-tongling { left: 360px; top: 460px; }
+.p-anqing { left: 290px; top: 510px; }
+.p-wuhan { left: 160px; top: 520px; }
+.p-huangshi { left: 220px; top: 550px; }
+.p-xianning { left: 180px; top: 590px; }
+.p-jingdezhen { left: 350px; top: 640px; }
+.p-huangshan { left: 400px; top: 600px; }
+.p-quzhou { left: 480px; top: 640px; }
+
+/* 胶囊切换 */
+.view-mode-capsule {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 15;
+  display: flex;
+  background-color: #ffffff;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.capsule-btn {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: #606266;
+  font-size: 12px;
+  cursor: pointer;
+}
+.capsule-btn.active {
+  background-color: #3a65ff;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* SVG 联运路线 */
+.map-routes-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.map-overlay-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.map-pin {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.pin-fuyang {
+  left: 175px;
+  top: 220px;
+}
+
+.pin-jiujiang {
+  left: 250px;
+  top: 565px;
+}
+
+.pin-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.pin-badge.load-badge { background-color: #3a65ff; }
+.pin-badge.unload-badge { background-color: #20be8d; }
+
+.pin-label {
+  background-color: rgba(30, 35, 45, 0.85);
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 11px;
+}
+
+/* 鑫淮港口卡片 */
+.map-popup-port {
+  position: absolute;
+  left: 280px;
+  top: 80px;
+  width: 256px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  padding: 10px 12px;
+  pointer-events: auto;
+}
+
+.port-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.port-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.port-tag {
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+.tag-transfer { background-color: #e8f0fe; color: #3a65ff; }
+.tag-bulk { background-color: #f0f2f7; color: #6b778c; }
+
+.port-time-row {
+  font-size: 11px;
+  color: #666666;
+  line-height: 16px;
+}
+
+.port-cargo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.port-cargo-item {
+  background-color: #f4f6fa;
+  padding: 3px 6px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #333333;
+  width: calc(50% - 2px);
+  box-sizing: border-box;
+}
+.port-cargo-item.full-row {
+  width: 100%;
+}
+
+.map-node-capsule {
+  position: absolute;
+  left: 280px;
+  top: 375px;
+  background-color: rgba(30, 35, 45, 0.88);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-alert-icon {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* 底部图例开关 */
+.map-bottom-legend {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 5px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  z-index: 15;
+}
+
+.legend-switch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #333333;
+  cursor: pointer;
+}
+.legend-switch input { display: none; }
+.switch-bullet {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: #3a65ff;
+}
+
+/* —— 4.3 右栏：北斗轨迹运单 (约 348px) —— */
+.waybill-beidou-col {
+  width: 348px;
+  flex-shrink: 0;
+  border-left: 1px solid #edf1f7;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ffffff;
+}
+
+.beidou-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.beidou-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2e3d74;
+}
+
+.beidou-remain {
+  font-size: 14px;
+  color: #333333;
+}
+
+.beidou-notice-box {
+  display: flex;
+  align-items: center;
+  background-color: #f4f7ff;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.notice-pin-icon {
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.notice-text {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.notice-links {
+  font-size: 14px;
+}
+.notice-links a {
+  color: #3a65ff;
+  text-decoration: none;
+}
+.notice-links .sep {
+  margin: 0 4px;
+  color: #999999;
+}
+
+.waybill-type-tabs {
+  display: flex;
+  gap: 32px;
+}
+
+.type-tab-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 5px;
+  border: 0;
+  background: transparent;
+  color: #333333;
+  font-size: 14px;
+  cursor: pointer;
+}
+.type-tab-btn.active {
+  color: #3a65ff;
+  font-weight: 700;
+}
+.type-tab-label {
+  line-height: 20px;
+}
+.type-tab-underline {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 23px;
+  height: 2px;
+  background-color: #3a65ff;
+}
+
+.waybill-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 32px;
+  height: 32px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 0 8px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.search-svg-icon {
+  flex-shrink: 0;
+}
+
+.search-input {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  font-size: 14px;
+  color: #333333;
+}
+.search-input::placeholder {
+  color: #cccccc;
+}
+
+.waybill-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.waybill-card-item {
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  padding: 10px 12px;
+  background-color: #ffffff;
+}
+
+.wb-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.wb-no {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.wb-status {
+  font-size: 12px;
+  padding: 1px 6px;
+  border-radius: 12px;
+  background-color: #f0f3ff;
+  border: 1px solid #3a65ff;
+  color: #3a65ff;
+  font-weight: 600;
+}
+
+.wb-voucher-link {
+  font-size: 12px;
+  color: #333333;
+  cursor: pointer;
+}
+.wb-voucher-link:hover {
+  color: #3a65ff;
+}
+
+.wb-driver-row {
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 8px;
+}
+
+.wb-timeline-flow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.timeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.node-date {
+  font-size: 12px;
+  color: #999999;
+  height: 16px;
+  line-height: 16px;
+}
+
+.node-time {
+  font-size: 12px;
+  color: #333333;
+  height: 16px;
+  line-height: 16px;
+}
+
+.node-dot-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 14px;
+}
+
+.node-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #c0c4cc;
+  z-index: 2;
+}
+.timeline-node.active .node-dot {
+  background-color: #3a65ff;
+  width: 8px;
+  height: 8px;
+}
+
+.node-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+.node-line.active {
+  height: 4px;
+  background: linear-gradient(90deg, #06b6fd 0%, #3a65ff 100%);
+}
+
+.node-label {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 2px;
+}
+.timeline-node.active .node-label {
+  color: #333333;
+  font-weight: 600;
+}

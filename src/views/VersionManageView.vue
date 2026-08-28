@@ -71,11 +71,18 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" width="250">
+          <el-table-column label="操作" fixed="right" width="310">
             <template #default="{ row }">
               <div class="row-actions">
                 <el-button link type="primary" @click="openReview(row)">查看版本</el-button>
                 <el-button v-if="row.revision === 'pending'" link type="primary" @click="openEditDialog(row)">编辑</el-button>
+                <el-button
+                  link
+                  type="primary"
+                  :loading="syncingVersionId === row.id"
+                  :disabled="Boolean(syncingVersionId) && syncingVersionId !== row.id"
+                  @click="openAnnotationSync(row)"
+                >同步标注</el-button>
                 <el-button v-if="!row.publishedAt" link type="primary" @click="publishReviewAddress(row)">生成研发地址</el-button>
                 <el-button v-if="row.status !== 'completed'" link type="primary" @click="markCompleted(row)">标记完成</el-button>
               </div>
@@ -131,6 +138,82 @@
       </template>
     </el-dialog>
 
+    <el-dialog v-model="syncDialogVisible" title="版本标注同步" width="820px" :close-on-click-modal="!syncLoading" destroy-on-close>
+      <div v-loading="syncLoading" class="sync-dialog-body">
+        <div v-if="syncLoading && !syncResult" class="sync-progress-copy">
+          <strong>正在同步本次改动</strong>
+          <p>只分析上次同步后发生变化的内容，并直接更新相关标注；不会检查其他页面或无关标注。</p>
+        </div>
+        <template v-else-if="syncResult">
+          <div class="sync-heading">
+            <div>
+              <strong>{{ syncVersion?.name }}</strong>
+              <span>{{ syncVersion?.id }}</span>
+            </div>
+            <el-tag :type="syncStatusType(syncResult.status)" effect="light">{{ syncStatusLabel(syncResult.status) }}</el-tag>
+          </div>
+
+          <el-alert
+            v-if="syncResult.status === 'conflict'"
+            type="warning"
+            :closable="false"
+            show-icon
+            title="发现真实规则冲突，本次未写入标注"
+            description="请先统一下方 PRD 与原型口径，修改后再次点击同步标注。"
+          />
+          <el-alert
+            v-else-if="syncResult.status === 'no_changes'"
+            type="success"
+            :closable="false"
+            show-icon
+            title="本次没有需要修改的标注"
+            description="本次改动与现有标注无关，或相关标注已经准确。"
+          />
+          <el-alert
+            v-else
+            type="success"
+            :closable="false"
+            show-icon
+            :title="`已自动同步 ${syncResult.changes.length} 条标注`"
+            description="只更新当前版本中与本次改动直接相关的标注。"
+          />
+
+          <div v-if="syncResult.changes.length" class="sync-entry-list">
+            <article v-for="entry in syncResult.changes" :key="syncEntryKey(entry)" class="sync-entry">
+              <header>
+                <div>
+                  <el-tag size="small" :type="syncActionType(entry.action)" effect="light">{{ SYNC_ACTION_LABELS[entry.action] }}</el-tag>
+                  <strong>{{ pageName(entry.pageKey) }}</strong>
+                  <span>{{ entry.title }}</span>
+                </div>
+                <small>{{ entry.reason }}</small>
+              </header>
+              <div class="sync-compare">
+                <section v-if="entry.before"><span>修改前</span><p>{{ entry.before }}</p></section>
+                <section v-if="entry.after"><span>修改后</span><p>{{ entry.after }}</p></section>
+              </div>
+            </article>
+          </div>
+
+          <div v-if="syncResult.conflicts.length" class="sync-entry-list sync-conflict-list">
+            <article v-for="entry in syncResult.conflicts" :key="syncEntryKey(entry)" class="sync-entry">
+              <header>
+                <div><el-tag size="small" type="warning" effect="light">规则冲突</el-tag><strong>{{ pageName(entry.pageKey) }}</strong></div>
+                <small>{{ entry.reason }}</small>
+              </header>
+              <div class="sync-compare">
+                <section><span>PRD / 业务规则</span><p>{{ entry.prdRule }}</p></section>
+                <section><span>当前原型</span><p>{{ entry.prototypeRule }}</p></section>
+              </div>
+            </article>
+          </div>
+        </template>
+      </div>
+      <template #footer>
+        <el-button :disabled="syncLoading" @click="syncDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -154,6 +237,13 @@ const versionDialogVisible = ref(false)
 const editingVersionId = ref('')
 const editingBundle = ref(null)
 const versionFormRef = ref()
+const syncDialogVisible = ref(false)
+const syncLoading = ref(false)
+const syncingVersionId = ref('')
+const syncVersion = ref(null)
+const syncResult = ref(null)
+
+const SYNC_ACTION_LABELS = Object.freeze({ update: '修改', add: '新增', merge: '合并', delete: '删除' })
 
 const versionForm = reactive({ name: '', scope: 'common', projectId: '', baseVersionId: '', targetReleaseDate: '', pageKeys: [] })
 const versionRules = {
@@ -163,6 +253,7 @@ const versionRules = {
 }
 
 const projectMap = computed(() => new Map(projects.value.map(project => [project.id, project])))
+const pageMap = computed(() => new Map(pages.map(page => [page.key, page])))
 const activeProjects = computed(() => projects.value.filter(project => project.status === 'active'))
 const filteredVersions = computed(() => versions.value.filter(version => {
   const matchKeyword = !keyword.value || `${version.name} ${version.id}`.toLowerCase().includes(keyword.value.toLowerCase())
@@ -185,6 +276,11 @@ watch([() => versionForm.scope, () => versionForm.projectId], () => {
 })
 
 function scopeText(version) { return scopeLabel(version, projectMap.value) }
+function pageName(pageKey) { return pageMap.value.get(pageKey)?.name || pageKey }
+function syncStatusLabel(status) { return { conflict: '规则冲突', synced: '同步完成', no_changes: '无需修改' }[status] || status }
+function syncStatusType(status) { return status === 'conflict' ? 'warning' : 'success' }
+function syncActionType(action) { return { update: 'primary', add: 'success', merge: 'primary', delete: 'danger' }[action] || 'info' }
+function syncEntryKey(entry) { return `${entry.action || 'conflict'}:${entry.pageKey}:${entry.annotationId || entry.title || entry.reason}` }
 function pageOwnershipText(page) {
   if (page.scope === 'common') return '通用'
   return projectMap.value.get(page.projectId)?.name || page.projectId || '定制项目'
@@ -303,6 +399,25 @@ async function markCompleted(row) {
   }
 }
 
+async function openAnnotationSync(row) {
+  syncDialogVisible.value = true
+  syncLoading.value = true
+  syncingVersionId.value = row.id
+  syncVersion.value = row
+  syncResult.value = null
+  try {
+    syncResult.value = await client.syncAnnotations(row.id)
+    if (syncResult.value.status === 'synced') ElMessage.success(`已同步 ${syncResult.value.changes.length} 条标注`)
+    else if (syncResult.value.status === 'no_changes') ElMessage.success('本次没有需要修改的标注')
+  } catch (error) {
+    ElMessage.error(error.message || '标注同步失败')
+    syncDialogVisible.value = false
+  } finally {
+    syncLoading.value = false
+    syncingVersionId.value = ''
+  }
+}
+
 function openReview(row) { router.push({ name: 'versionReview', params: { versionId: row.id } }) }
 function openPrototypeCatalog() { router.push({ name: 'prototypeCatalog' }) }
 onMounted(loadData)
@@ -344,5 +459,12 @@ onMounted(loadData)
 .change-list-heading, .revision-item-title { display: flex; align-items: center; justify-content: space-between; }
 .change-list-heading { margin: 8px 0 12px; }.revision-item-form { margin-bottom: 14px; padding: 16px; border: 1px solid #e5e9f0; border-radius: 6px; background: #fafbfc; }
 .revision-item-title { margin-bottom: 10px; color: #475467; font-size: 13px; font-weight: 600; }
+.sync-dialog-body { min-height: 180px; }
+.sync-progress-copy { padding: 44px 24px; text-align: center; }.sync-progress-copy strong { color: #344054; font-size: 16px; }.sync-progress-copy p { margin: 10px 0 0; color: #667085; font-size: 12px; }
+.sync-heading { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.sync-heading div { display: flex; flex-direction: column; gap: 4px; }.sync-heading strong { color: #344054; font-size: 16px; }.sync-heading span { color: #98a2b3; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+.sync-entry-list { max-height: 430px; margin-top: 16px; overflow: auto; display: flex; flex-direction: column; gap: 10px; }.sync-conflict-list { max-height: 520px; }
+.sync-entry { padding: 14px; border: 1px solid #e5e9f0; border-radius: 6px; }.sync-entry header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }.sync-entry header div { display: flex; align-items: center; gap: 8px; }.sync-entry header strong { color: #344054; font-size: 13px; }.sync-entry header span { color: #667085; font-size: 12px; }.sync-entry header small { max-width: 310px; color: #98a2b3; font-size: 11px; text-align: right; }
+.sync-compare { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }.sync-compare section { padding: 10px 12px; border-radius: 5px; background: #f7f8fa; }.sync-compare span { color: #98a2b3; font-size: 11px; }.sync-compare p { max-height: 130px; overflow: auto; margin: 6px 0 0; color: #475467; font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
 @media (max-width: 820px) { .page-heading { align-items: flex-start; flex-direction: column; gap: 20px; }.summary-strip { width: 100%; }.summary-strip div { flex: 1; min-width: 0; }.form-grid, .revision-item-grid, .revision-patch-grid { grid-template-columns: 1fr; }.span-2 { grid-column: auto; }.page-selector :deep(.el-checkbox-group) { grid-template-columns: 1fr; } }
 </style>

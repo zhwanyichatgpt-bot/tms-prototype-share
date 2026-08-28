@@ -1,0 +1,23 @@
+{
+  "versionId": "TMS-BEIGANG-202608-02",
+  "revisions": [
+    {
+      "revision": "R0",
+      "date": "2026-08-28T01:45:59.675Z",
+      "reason": "首次发布研发地址",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "waybillCenterBeigang",
+            "waybillCenterDetailBeigang",
+            "shipownerWaybill"
+          ],
+          "before": "未发布研发地址",
+          "after": "发布 3 个原型页面",
+          "devImpact": "请以本版本原型和标注作为本次研发依据"
+        }
+      ]
+    }
+  ]
+}

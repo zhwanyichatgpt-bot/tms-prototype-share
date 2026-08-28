@@ -1,0 +1,120 @@
+{
+  "versionId": "TMS-BEIGANG-202608-02",
+  "page": "waybillCenterDetailBeigang",
+  "title": "北港运单详情",
+  "updatedAt": "2026-08-28",
+  "annotations": [
+    {
+      "id": "annot-waybill-detail-beigang-rule-current-change",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-rule-current-change",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "当前变更与处理状态",
+      "content": "- “地址变更”页签与运输路线、任务信息同层；有处理中申请时页签显示提醒点。\n- 当前卡片展示变更次数、当前状态、新旧地址、发起方与发起时间；价格只显示当前角色有权查看的部分。\n- 实际承运商视角将“待实际承运商处理”显示为“待本企业确认”；运单主状态不因变更处理节点而改写。",
+      "category": "rule",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 3.2、3.3、5.4",
+      "container": "page",
+      "group": "address-change-tab",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-rule-change-history",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-rule-change-history",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "历史变更按时间倒序保留",
+      "content": "历史区只保留已生效、已拒绝和已撤回的终态记录，按时间倒序展示。已拒绝或已撤回的记录不在原申请上继续协调；如需再次调整，必须新建下一条变更。",
+      "category": "rule",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R10、R11、5.4",
+      "container": "page",
+      "group": "address-change-tab",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-field-address-compare",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-field-address-compare",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "地址对比与记录追溯",
+      "content": "抽屉以同一条地址变更记录展示变更编号、次数、发起方、发起时间和新旧卸货地址。该记录只绑定当前运单，不改变原托运单、计划、任务及承运关系。",
+      "category": "field",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R01、R03、5.4",
+      "container": "drawer",
+      "group": "change-drawer",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-rule-price-visibility",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-rule-price-visibility",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运输单价按合同关系分层隔离",
+      "content": "| 当前角色 | 可查看价格 | 不可查看 |\n|---|---|---|\n| 合同承运商 | 托运企业单价；本企业给直接下游的单价 | 实际承运商给船东的单价 |\n| 实际承运商 | 合同承运商给本企业的单价；本企业给船东的单价 | 托运企业给合同承运商的单价 |\n\n各层价格均记录调整前和调整后值，但只向对应合同关系的企业展示。",
+      "category": "rule",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R12、5.2、7.2、7.5",
+      "container": "drawer",
+      "group": "change-drawer",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-rule-processing-status",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-rule-processing-status",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "处理进度只记录已发生节点",
+      "content": "- 委外链路为：合同承运商发起 → 实际承运商确认 → 船东处理。\n- 直接指派链路为：合同承运商发起 → 船东处理。\n- 时间线只展示已实际发生的动作、操作人和时间，不增加“协调中”节点；船东确认是整体生效的最终条件。",
+      "category": "rule",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 2.2、2.3、2.4、R08、R09",
+      "container": "drawer",
+      "group": "change-drawer",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-rule-actual-carrier-price",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-rule-actual-carrier-price",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "实际承运商确认时维护给船东的单价",
+      "content": "1. 原单价读取当前船东指派中本企业给船东的运输单价，调整后单价默认等于原价。\n2. 调整后单价必填且必须大于 0，可保持原价或修改。\n3. 点击“确认并发送船东”后，将本层调整前后单价写入同一条变更记录，仅进入待船东处理，此时地址和各层价格均未生效。\n4. 选择拒绝时必须填写拒绝原因；提交后本次记录直接结束，不再发送船东，所有拟调整价格均不生效。",
+      "category": "rule",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R09、R12、5.2、7.2",
+      "container": "drawer",
+      "group": "change-drawer",
+      "createdAt": "2026-08-27"
+    },
+    {
+      "id": "annot-waybill-detail-beigang-action-withdraw",
+      "type": "selector",
+      "selector": ".annot-waybill-detail-beigang-action-withdraw",
+      "position": {
+        "x": 447.3948974609375,
+        "y": 10.84661865234375
+      },
+      "title": "撤回以船东确认为不可逆边界",
+      "content": "合同承运商在船东确认前可撤回本企业发起的变更；撤回后申请转为“已撤回”，运单继续使用申请前的有效地址和价格。船东已确认后不得撤回；如仍需修改，必须新建下一条变更。",
+      "category": "action",
+      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R11、5.4",
+      "container": "drawer",
+      "group": "change-drawer",
+      "createdAt": "2026-08-27"
+    }
+  ]
+}

@@ -34,45 +34,14 @@
         <div v-else-if="currentPage === 'home'" class="home-view">
           <p class="home-tip">点击下方卡片进入对应原型页面</p>
 
-          <!-- 通用功能 · Web 端 -->
-          <h2 class="category-title">通用功能</h2>
+          <!-- 通用原型 -->
+          <h2 class="category-title">通用原型</h2>
           <p class="category-desc">TMS 3.0 核心业务能力，适用于所有项目</p>
-          <div class="subcategory-title">Web 端</div>
-          <el-row :gutter="16">
-            <el-col
-              v-for="page in generalWebPages"
-              :key="page.key"
-              :xs="24"
-              :sm="12"
-              :md="8"
-            >
-              <div
-                class="page-card-wrapper"
-                :class="{ disabled: page.status !== 'ready' }"
-                @click="openPage(page)"
-              >
-                <el-card shadow="hover" class="page-card">
-                  <div class="page-card-body">
-                    <div class="page-meta">
-                      <div class="page-name">{{ page.name }}</div>
-                      <div class="page-module">{{ page.module }}</div>
-                      <div class="page-status">
-                        <el-tag v-if="page.status === 'ready'" type="success" size="small">已就绪</el-tag>
-                        <el-tag v-else type="info" size="small">待迁移</el-tag>
-                      </div>
-                    </div>
-                  </div>
-                </el-card>
-              </div>
-            </el-col>
-          </el-row>
-
-          <!-- 通用功能 · 移动端 (如有) -->
-          <template v-if="generalMobilePages.length">
-            <div class="subcategory-title" style="margin-top: 24px">移动端</div>
-            <el-row :gutter="16">
+          <template v-for="(group, groupIndex) in commonDirectoryGroups" :key="group.key">
+            <div class="subcategory-title" :style="groupIndex ? { marginTop: '24px' } : undefined">{{ group.label }}</div>
+            <el-row v-if="group.pages.length" :gutter="16">
               <el-col
-                v-for="page in generalMobilePages"
+                v-for="page in group.pages"
                 :key="page.key"
                 :xs="24"
                 :sm="12"
@@ -83,7 +52,7 @@
                   :class="{ disabled: page.status !== 'ready' }"
                   @click="openPage(page)"
                 >
-                  <el-card shadow="hover" class="page-card mobile">
+                  <el-card shadow="hover" class="page-card" :class="{ mobile: page.platform === 'mobile' }">
                     <div class="page-card-body">
                       <div class="page-meta">
                         <div class="page-name">{{ page.name }}</div>
@@ -98,6 +67,7 @@
                 </div>
               </el-col>
             </el-row>
+            <p v-else class="category-empty">暂无已注册原型</p>
           </template>
 
           <!-- 北港水运1.0.3.4 -->
@@ -132,12 +102,12 @@
             </el-col>
           </el-row>
 
-          <!-- 项目定制 -->
-          <h2 class="category-title" style="margin-top: 36px">项目定制</h2>
-          <p class="category-desc">针对特定客户（如广林项目）的定制化功能，基于通用能力扩展</p>
+          <!-- 广林项目 -->
+          <h2 class="category-title" style="margin-top: 36px">广林项目</h2>
+          <p class="category-desc">广林项目定制能力，基于通用能力扩展</p>
           <el-row :gutter="16">
             <el-col
-              v-for="page in customPages"
+              v-for="page in guanglinPages"
               :key="page.key"
               :xs="24"
               :sm="12"
@@ -278,63 +248,34 @@
               </div>
 
               <template v-else>
-              <div class="directory-section">
+              <div v-for="group in commonDirectoryGroups" :key="group.key" class="directory-section">
                 <div
                   class="directory-section-header"
                   role="button"
-                  :aria-expanded="!collapsedSections.generalWeb"
-                  @click="toggleSection('generalWeb')"
+                  :aria-expanded="!collapsedSections[group.key]"
+                  @click="toggleSection(group.key)"
                 >
-                  <span class="directory-section-title">通用功能 · Web 端</span>
-                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.generalWeb }">
+                  <span class="directory-section-title">{{ group.label }}</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections[group.key] }">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </span>
                 </div>
-                <div v-show="!collapsedSections.generalWeb" class="directory-section-body">
+                <div v-show="!collapsedSections[group.key]" class="directory-section-body">
                   <button
-                    v-for="page in generalWebPages"
+                    v-for="page in group.pages"
                     :key="page.key"
                     type="button"
                     class="directory-item"
-                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
+                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready', 'is-child': page.parentKey }"
                     :disabled="page.status !== 'ready'"
                     @click="openPage(page)"
                   >
                     <span class="directory-item-dot" />
                     <span class="directory-item-name">{{ page.name }}</span>
                   </button>
-                </div>
-              </div>
-
-              <div v-if="generalMobilePages.length" class="directory-section">
-                <div
-                  class="directory-section-header"
-                  role="button"
-                  :aria-expanded="!collapsedSections.generalMobile"
-                  @click="toggleSection('generalMobile')"
-                >
-                  <span class="directory-section-title">通用功能 · 移动端</span>
-                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.generalMobile }">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </span>
-                </div>
-                <div v-show="!collapsedSections.generalMobile" class="directory-section-body">
-                  <button
-                    v-for="page in generalMobilePages"
-                    :key="page.key"
-                    type="button"
-                    class="directory-item"
-                    :class="{ active: currentPage === page.key, disabled: page.status !== 'ready' }"
-                    :disabled="page.status !== 'ready'"
-                    @click="openPage(page)"
-                  >
-                    <span class="directory-item-dot" />
-                    <span class="directory-item-name">{{ page.name }}</span>
-                  </button>
+                  <div v-if="!group.pages.length" class="directory-empty">暂无已注册原型</div>
                 </div>
               </div>
 
@@ -372,19 +313,19 @@
                 <div
                   class="directory-section-header"
                   role="button"
-                  :aria-expanded="!collapsedSections.custom"
-                  @click="toggleSection('custom')"
+                  :aria-expanded="!collapsedSections.guanglin"
+                  @click="toggleSection('guanglin')"
                 >
-                  <span class="directory-section-title">项目定制</span>
-                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.custom }">
+                  <span class="directory-section-title">广林项目</span>
+                  <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.guanglin }">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </span>
                 </div>
-                <div v-show="!collapsedSections.custom" class="directory-section-body">
+                <div v-show="!collapsedSections.guanglin" class="directory-section-body">
                   <button
-                    v-for="page in customPages"
+                    v-for="page in guanglinPages"
                     :key="page.key"
                     type="button"
                     class="directory-item"
@@ -510,16 +451,38 @@ onUnmounted(() => {
 })
 
 const workbenchPages = computed(() => isVersionWorkbench.value ? versionWorkbenchPages.value : pages)
-const generalWebPages = computed(() => workbenchPages.value.filter(p => p.category === 'general' && p.platform === 'web'))
-const generalMobilePages = computed(() => workbenchPages.value.filter(p => p.category === 'general' && p.platform === 'mobile'))
-const beigangPages = computed(() => workbenchPages.value.filter(p => p.category === 'beigang'))
-const customPages = computed(() => workbenchPages.value.filter(p => p.category === 'custom'))
+const commonDirectoryGroups = computed(() => [
+  {
+    key: 'commonPortal',
+    label: '门户端',
+    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'portal'),
+  },
+  {
+    key: 'commonBusinessWeb',
+    label: '业务端 · Web',
+    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'business' && page.platform === 'web'),
+  },
+  {
+    key: 'commonBusinessMobile',
+    label: '业务端 · 移动端',
+    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'business' && page.platform === 'mobile'),
+  },
+  {
+    key: 'commonDriverMobile',
+    label: '司机端 · 移动端',
+    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'driver' && page.platform === 'mobile'),
+  },
+])
+const beigangPages = computed(() => workbenchPages.value.filter(page => page.projectId === 'beigang'))
+const guanglinPages = computed(() => workbenchPages.value.filter(page => page.projectId === 'guanglin'))
 
 const collapsedSections = reactive({
-  generalWeb: false,
-  generalMobile: false,
+  commonPortal: false,
+  commonBusinessWeb: false,
+  commonBusinessMobile: false,
+  commonDriverMobile: false,
   beigang: false,
-  custom: false,
+  guanglin: false,
 })
 
 function toggleSection(key) {
@@ -780,6 +743,12 @@ function togglePrototypeDirectory() {
   padding-left: 8px;
   border-left: 3px solid #3a65ff;
   line-height: 18px;
+}
+
+.category-empty {
+  margin: 0;
+  color: #98a2b3;
+  font-size: 13px;
 }
 
 .page-card-wrapper {
@@ -1152,6 +1121,16 @@ function togglePrototypeDirectory() {
   font-size: 13px;
   text-align: left;
   cursor: pointer;
+}
+
+.directory-item.is-child {
+  padding-left: 26px;
+}
+
+.directory-empty {
+  padding: 8px 10px;
+  color: #b0b8c4;
+  font-size: 12px;
 }
 
 .directory-item:hover {

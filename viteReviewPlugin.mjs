@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { createAnnotationSyncService } from './review/annotation-sync-service.mjs'
 import { pageCatalog as defaultPageCatalog } from './review/page-catalog.mjs'
 import { createReviewStore } from './review/review-store.mjs'
 import { ReviewValidationError, assertSafeSegment } from './review/version-model.mjs'
@@ -76,6 +77,9 @@ function routeFor(req) {
   if (segments.length === 3 && segments[0] === 'versions' && segments[2] === 'complete') {
     return { action: 'completeVersion', method: 'POST', versionId: decodeVersionId(segments[1]) }
   }
+  if (segments.length === 4 && segments[0] === 'versions' && segments[2] === 'annotation-sync' && segments[3] === 'run') {
+    return { action: 'runAnnotationSync', method: 'POST', versionId: decodeVersionId(segments[1]) }
+  }
   return { action: 'notFound', method: null }
 }
 
@@ -84,6 +88,7 @@ export function createReviewAdminMiddleware({
   pageCatalog = defaultPageCatalog,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   now = () => new Date().toISOString(),
+  annotationSyncService,
 }) {
   const store = createReviewStore({
     dataDir: path.join(projectRoot, 'public', 'review-data'),
@@ -91,6 +96,7 @@ export function createReviewAdminMiddleware({
     now,
   })
   const ready = store.initialize()
+  const syncService = annotationSyncService || createAnnotationSyncService({ projectRoot, pageCatalog, now })
 
   return function reviewAdminMiddleware(req, res, next) {
     let route
@@ -133,6 +139,8 @@ export function createReviewAdminMiddleware({
         data = await store.publishVersion(route.versionId)
       } else if (route.action === 'completeVersion') {
         data = await store.completeVersion(route.versionId)
+      } else if (route.action === 'runAnnotationSync') {
+        data = await syncService.run(route.versionId)
       }
       sendJson(res, status, { ok: true, data })
     })().catch(error => {

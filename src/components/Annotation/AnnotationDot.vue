@@ -183,7 +183,7 @@ const categoryMap: Record<string, string> = {
 const categoryLabel = computed(() => categoryMap[props.annotation.category] || props.annotation.category)
 
 // ═══ 拖拽逻辑 ═══
-// 编辑模式下拖拽移动（用 Pointer Events 统一鼠标 + 触摸，移动端同样可拖）
+// 编辑模式下两类标注都可拖拽：position 保存绝对坐标，selector 保存相对宿主的偏移量
 const handleDragStart = (e: PointerEvent) => {
   if (!props.editMode) return
   const startX = e.clientX
@@ -205,7 +205,13 @@ const handleDragStart = (e: PointerEvent) => {
     document.removeEventListener('pointerup', onUp)
     document.removeEventListener('pointercancel', onUp)
     if (hasMoved && dragPos.value) {
-      emit('move', props.annotation.id, { x: dragPos.value.x, y: dragPos.value.y })
+      const nextPosition = props.annotation.type === 'selector' && selectorPos.value
+        ? {
+            x: dragPos.value.x - 9 - selectorPos.value.x,
+            y: dragPos.value.y - 9 - selectorPos.value.y
+          }
+        : { x: dragPos.value.x, y: dragPos.value.y }
+      emit('move', props.annotation.id, nextPosition)
     }
     isDragging.value = false
     dragPos.value = null
@@ -336,12 +342,12 @@ const dotStyle = computed(() => {
     }
   }
 
-  // 选择器定位：selectorPos 已是"圆点左上角坐标"，不需要再减 13
+  // 选择器定位：默认锚点位置 + 用户在编辑模式下保存的相对偏移量
   if (props.annotation.type === 'selector' && selectorPos.value) {
     return {
       position: 'fixed' as const,
-      left: `${selectorPos.value.x}px`,
-      top: `${selectorPos.value.y}px`,
+      left: `${selectorPos.value.x + props.annotation.position.x}px`,
+      top: `${selectorPos.value.y + props.annotation.position.y}px`,
       zIndex: isInContainer ? 1100 : 9990
     }
   }
@@ -359,20 +365,28 @@ const dotStyle = computed(() => {
 let rafId: number | null = null
 
 /**
- * 初始定位：rAF 轮询直到找到稳定元素，然后停止高频轮询
- * 找到后，后续更新交给全局 tracker（scroll/resize/mutation 统一驱动）
+ * 初始定位：rAF 轮询直到找到元素，再继续追踪一段布局稳定窗口。
+ * 避免工作台缩放、过渡动画或异步内容完成前就固化了旧坐标。
+ * 稳定后，后续更新交给全局 tracker（scroll/resize/mutation 统一驱动）。
  */
 const startInitialTracking = () => {
   if (props.annotation.type !== 'selector') return
 
-  let attempts = 0
-  const MAX_ATTEMPTS = 300 // 最多轮询 300 帧 ≈ 5 秒
+  let missingAttempts = 0
+  let settleFrames = 0
+  const MAX_MISSING_ATTEMPTS = 300 // 目标未出现时最多等待约 5 秒
+  const SETTLE_FRAMES = 30 // 目标出现后继续追踪约 0.5 秒，覆盖布局缩放和过渡
 
   const tick = () => {
-    attempts++
     const found = updateSelectorPos()
+    if (found) {
+      settleFrames++
+    } else {
+      missingAttempts++
+      settleFrames = 0
+    }
 
-    if (found || attempts >= MAX_ATTEMPTS) {
+    if (settleFrames >= SETTLE_FRAMES || missingAttempts >= MAX_MISSING_ATTEMPTS) {
       rafId = null
       return
     }

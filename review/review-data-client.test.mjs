@@ -44,6 +44,22 @@ test('管理写操作使用本地开发接口并发送 JSON', async () => {
   assert.deepEqual(JSON.parse(calls[0].options.body), { name: '通用版本', scope: 'common' })
 })
 
+test('点击标注同步直接触发当前版本的局部同步接口', async () => {
+  const calls = []
+  const client = createReviewDataClient({
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options })
+      return jsonResponse({ ok: true, data: { status: 'no_changes', changes: [], conflicts: [] } })
+    },
+  })
+
+  await client.syncAnnotations('TMS-BEIGANG-202608-01')
+
+  assert.equal(calls[0].url, '/__review_admin__/versions/TMS-BEIGANG-202608-01/annotation-sync/run')
+  assert.equal(calls[0].options.method, 'POST')
+  assert.deepEqual(JSON.parse(calls[0].options.body), {})
+})
+
 test('读取失败和管理接口错误都转换为可展示错误', async () => {
   const readClient = createReviewDataClient({
     fetchImpl: async () => jsonResponse({}, 404),

@@ -122,3 +122,23 @@ test('接口只接受已声明的路径和方法', async t => {
   response = await request(server.baseUrl, '/__review_admin__/unknown', { body: {} })
   assert.equal(response.status, 404)
 })
+
+test('开发接口点击后直接运行当前版本局部标注同步', async t => {
+  const calls = []
+  const annotationSyncService = {
+    async run(versionId) {
+      calls.push(['run', versionId])
+      return { versionId, status: 'synced', changes: [{ annotationId: 'annot-a' }] }
+    },
+  }
+  const server = await startServer({ annotationSyncService })
+  t.after(server.close)
+
+  let response = await request(
+    server.baseUrl,
+    '/__review_admin__/versions/TMS-BEIGANG-202608-01/annotation-sync/run',
+  )
+  assert.equal(response.status, 200)
+  assert.equal((await response.json()).data.status, 'synced')
+  assert.deepEqual(calls, [['run', 'TMS-BEIGANG-202608-01']])
+})

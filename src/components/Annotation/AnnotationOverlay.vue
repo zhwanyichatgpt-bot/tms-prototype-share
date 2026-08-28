@@ -157,9 +157,15 @@ const overlayClickTarget = computed<Element | null>(() => {
   return null
 })
 
-// 拖拽移动标注点：直接存屏幕坐标
+// position 保存屏幕坐标；selector 只更新相对宿主的偏移量，保留组件绑定
 const handleDotMove = (id: string, pos: { x: number; y: number }) => {
-  updateAnnotation(id, { position: pos, type: 'position', selector: '' })
+  const annotation = annotations.value.find(item => item.id === id)
+  if (!annotation) return
+  if (annotation.type === 'selector') {
+    updateAnnotation(id, { position: pos })
+    return
+  }
+  updateAnnotation(id, { position: pos })
 }
 
 // 编辑器状态

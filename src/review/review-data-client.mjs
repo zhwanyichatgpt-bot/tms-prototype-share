@@ -79,5 +79,9 @@ export function createReviewDataClient({
     completeVersion(versionId) {
       return write(`${adminBase}/versions/${encodeURIComponent(versionId)}/complete`, 'POST')
     },
+
+    syncAnnotations(versionId) {
+      return write(`${adminBase}/versions/${encodeURIComponent(versionId)}/annotation-sync/run`, 'POST')
+    },
   }
 }

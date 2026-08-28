@@ -23,5 +23,7 @@ test('每个原型都有可供产品选择时识别的需求和用途备注', ()
   for (const page of pages) {
     assert.ok(page.requirement?.trim(), `${page.key} 缺少对应需求`)
     assert.ok(page.remark?.trim(), `${page.key} 缺少用途备注`)
+    assert.ok(page.sourcePaths?.length, `${page.key} 缺少原型源码范围`)
+    assert.ok(page.evidencePaths?.length, `${page.key} 缺少需求证据范围`)
   }
 })
