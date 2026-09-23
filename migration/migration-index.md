@@ -1,3 +1,5 @@
+> 当前产品目录已于 2026-09-12 整理；本文件保留历史迁移依据。现行位置见 [本次整理报告](2026-09-12-产品架构整理/整理报告.md)及路径对照。
+
 # TMS3.0 功能记录迁移索引
 
 迁移日期：2026-07-05
@@ -21,19 +23,19 @@
 
 目标：`prd/`
 
-- `prd/公路计划管理_集装箱运输计划创建_PRD_v1.md`
-- `prd/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md`
-- `prd/多式联运_创建联运计划_PRD_v1.md`
-- `prd/多式联运_联运计划管理页_PRD_v1.md`
-- `prd/多式联运_货主结算_PRD_v1.md`
-- `prd/托运单管理_托运单创建与管理_PRD_v1.md`
-- `prd/托运单管理_承运商报价页面_PRD_v2.md`
+- `prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md`
+- `prd/common/products/lianyun/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md`
+- `prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md`
+- `prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md`
+- `prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md`
+- `prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md`
+- `prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md`
 - `prd/询价大厅_承运商端_PRD_v1.md`
 - `prd/询价管理_无车承运人端_PRD_v1.md`
 - `prd/货源询价_广林项目定制总览_PRD_v1.md`
 - `prd/货源询价管理_货主端_PRD_v1.md`
-- `prd/运输余量扣量与返还控制_PRD_v1.md`
-- `prd/运输通道管理_运输通道与运输方案管理_PRD_v2.md`
+- `prd/common/products/lianyun/运输余量扣量与返还控制_PRD_v1.md`
+- `prd/common/products/lianyun/运输通道管理_运输通道与运输方案管理_PRD_v2.md`
 
 ## 已迁移：业务规则
 
@@ -41,23 +43,23 @@
 
 目标：`context/business-rules/01-系统业务模型/`
 
-- `context/business-rules/01-系统业务模型/业务对象定位与关系.md`
-- `context/business-rules/01-系统业务模型/系统功能流转总览.md`
+- `context/business-rules/common/products/lianyun/01-系统业务模型/业务对象定位与关系.md`
+- `context/business-rules/common/products/lianyun/01-系统业务模型/系统功能流转总览.md`
 
 来源：`04-业务规则/02-统一术语与字段口径/`
 
 目标：`context/business-rules/02-统一术语与字段口径/`
 
-- `context/business-rules/02-统一术语与字段口径/系统术语与字段命名口径.md`
-- `context/business-rules/02-统一术语与字段口径/计费条件与计费依据口径.md`
+- `context/business-rules/common/products/lianyun/02-统一术语与字段口径/系统术语与字段命名口径.md`
+- `context/business-rules/common/products/lianyun/02-统一术语与字段口径/计费条件与计费依据口径.md`
 
 来源：`04-业务规则/03-跨模块业务原则/`
 
 目标：`context/business-rules/03-跨模块业务原则/`
 
-- `context/business-rules/03-跨模块业务原则/一单制凭证客户展示原则.md`
-- `context/business-rules/03-跨模块业务原则/联运计划结算分层原则.md`
-- `context/business-rules/03-跨模块业务原则/运输余量扣量与返还控制原则.md`
+- `context/business-rules/common/products/lianyun/03-跨模块业务原则/一单制凭证客户展示原则.md`
+- `context/business-rules/common/products/lianyun/03-跨模块业务原则/联运计划结算分层原则.md`
+- `context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md`
 
 ## 已迁移：讨论记录
 
@@ -65,16 +67,16 @@
 
 目标：`discussions/`
 
-- `discussions/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md`
-- `discussions/2026-04-12_托运单管理需求讨论.md`
-- `discussions/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md`
-- `discussions/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md`
+- `discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md`
+- `discussions/common/products/lianyun/2026-04-12_托运单管理需求讨论.md`
+- `discussions/pending-classification/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md`
+- `discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md`
 - `discussions/2026-05-15_询价管理_长协询价与广林项目定制流程讨论.md`
 - `discussions/2026-05-16_货源询价_广林项目定制PRD拆分与原型重构讨论.md`
 - `discussions/2026-05-16_货源询价_路线明细行内维护与配载方式讨论.md`
-- `discussions/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md`
-- `discussions/2026-06-02_多式联运_货主结算功能讨论.md`
-- `discussions/运输通道管理_运输通道与运输方案功能分析结论_v2.md`
+- `discussions/common/products/lianyun/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md`
+- `discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md`
+- `discussions/common/products/lianyun/运输通道管理_运输通道与运输方案功能分析结论_v2.md`
 
 ## 明确未迁移
 

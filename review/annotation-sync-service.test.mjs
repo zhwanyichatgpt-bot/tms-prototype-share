@@ -16,7 +16,7 @@ const PAGE_CATALOG = [{
   key: 'shipownerMobileHome',
   scope: 'project',
   projectId: 'beigang',
-  sourcePaths: ['prototype/projects/beigang/企业移动端/'],
+  sourcePaths: ['prototype/projects/beigang/products/lianyun/mobile/'],
   evidencePaths: ['prd/projects/beigang/承运管理_PRD_v1.md'],
 }]
 
@@ -150,7 +150,7 @@ test('真实规则冲突返回具体两边口径且不写标注', async () => {
   const service = createAnnotationSyncService({
     projectRoot,
     pageCatalog: PAGE_CATALOG,
-    listChangedFiles: async () => ['prototype/projects/beigang/企业移动端/ShipownerHome.vue'],
+    listChangedFiles: async () => ['prototype/projects/beigang/products/lianyun/mobile/ShipownerHome.vue'],
     generateCandidates: async () => ({
       actions: [],
       conflicts: [{
@@ -176,4 +176,31 @@ test('真实规则冲突返回具体两边口径且不写标注', async () => {
     projectRoot, 'public', 'review-data', 'versions', VERSION_ID, 'annotations', 'shipownerMobileHome.json',
   ), 'utf8'))
   assert.equal(saved.annotations[0].content, '旧规则')
+})
+
+test('结构迁移后从旧 Git 路径读取原文，保留尚未同步的业务修改', async () => {
+  const { projectRoot } = await setup()
+  await execFileAsync('git', ['init'], { cwd: projectRoot })
+  await execFileAsync('git', ['config', 'user.email', 'test@example.com'], { cwd: projectRoot })
+  await execFileAsync('git', ['config', 'user.name', 'Test'], { cwd: projectRoot })
+  await execFileAsync('git', ['add', '.'], { cwd: projectRoot })
+  await execFileAsync('git', ['commit', '-m', 'baseline'], { cwd: projectRoot })
+  const oldPath = 'prd/projects/beigang/承运管理_PRD_v1.md'
+  const newPath = 'prd/projects/beigang/products/lianyun/承运管理_PRD_v1.md'
+  await mkdir(path.dirname(path.join(projectRoot, newPath)), { recursive: true })
+  await writeFile(path.join(projectRoot, newPath), '# 用户尚未同步的新业务规则')
+  const mapFolder = path.join(projectRoot, 'migration/2026-09-12-产品架构整理')
+  await mkdir(mapFolder, { recursive: true })
+  await writeFile(path.join(mapFolder, 'path-map.json'), JSON.stringify({ files: [{ kind: 'move', oldPath, newPath }] }))
+  const inputs = []
+  const service = createAnnotationSyncService({
+    projectRoot,
+    pageCatalog: [{ ...PAGE_CATALOG[0], evidencePaths: [newPath] }],
+    listChangedFiles: async () => [newPath],
+    generateCandidates: async input => { inputs.push(input); return { actions: [], conflicts: [] } },
+  })
+  await service.run(VERSION_ID)
+  const change = inputs[0].fileChanges.find(item => item.path === newPath)
+  assert.equal(change.before, '# 新规则')
+  assert.equal(change.after, '# 用户尚未同步的新业务规则')
 })

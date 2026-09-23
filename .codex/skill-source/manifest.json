@@ -10,11 +10,23 @@
       "targets": ["codex", "claude"],
       "notes": "完整目录内容一致，已统一主源"
     },
+    "discussion": {
+      "canonical": "discussion",
+      "status": "active",
+      "targets": ["codex", "claude"],
+      "notes": "TMS 项目专用讨论入口，强制通用/定制与版本上下文"
+    },
     "prd-manager-v2": {
       "canonical": "prd-manager-v2",
       "status": "active",
       "targets": ["codex", "claude"],
-      "notes": "V2 为唯一在用 PRD Skill；内容保持业务通用，并同步到全局 Skill 目录"
+      "notes": "V2 为唯一在用 PRD Skill；TMS 版本化约束只在项目主源维护"
+    },
+    "prototype-validator": {
+      "canonical": "prototype-validator",
+      "status": "active",
+      "targets": ["codex", "claude"],
+      "notes": "TMS 项目专用原型验证入口，强制先区分 common/project，按 prototype/common 与 prototype/projects/{projectId} 落源码，复用唯一工作台并维护版本变更"
     }
   }
 }

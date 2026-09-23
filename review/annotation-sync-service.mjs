@@ -1,3 +1,4 @@
+import { loadPreviousPaths } from './migration-paths.mjs'
 import { createHash } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { mkdir, readFile, readdir, rename, writeFile } from 'node:fs/promises'
@@ -133,16 +134,21 @@ async function readTextFiles(projectRoot, files) {
 }
 
 async function readGitHeadFiles(projectRoot, files) {
+  const previousPaths = await loadPreviousPaths(projectRoot)
   const entries = await Promise.all(files.map(async file => {
-    try {
-      const { stdout } = await execFileAsync('git', ['-c', 'core.quotepath=false', 'show', `HEAD:${file}`], {
-        cwd: projectRoot,
-        maxBuffer: 4 * 1024 * 1024,
-      })
-      return [file, stdout]
-    } catch {
-      return [file, null]
+    const candidates = [...new Set([file, previousPaths.get(file)].filter(Boolean))]
+    for (const candidate of candidates) {
+      try {
+        const { stdout } = await execFileAsync('git', ['-c', 'core.quotepath=false', 'show', `HEAD:${candidate}`], {
+          cwd: projectRoot,
+          maxBuffer: 4 * 1024 * 1024,
+        })
+        return [file, stdout]
+      } catch {
+        // 当前路径尚未进入 Git 时尝试迁移前路径；两者均不存在才视为新增。
+      }
     }
+    return [file, null]
   }))
   return Object.fromEntries(entries)
 }

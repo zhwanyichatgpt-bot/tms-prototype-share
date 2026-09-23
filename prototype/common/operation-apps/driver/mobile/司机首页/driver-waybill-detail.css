@@ -1,0 +1,80 @@
+.driver-waybill-detail,
+.driver-waybill-detail * { box-sizing: border-box; }
+.driver-waybill-detail { position: absolute; inset: 0; overflow: hidden; background: #eff1f6; color: #333; }
+.detail-scroll { position: absolute; inset: 0; overflow-y: auto; padding-bottom: 76px; scrollbar-width: none; }
+.detail-scroll::-webkit-scrollbar { display: none; }
+.detail-map-section { position: relative; width: 100%; height: 438px; overflow: hidden; }
+.detail-map-image { position: absolute; inset: 0; width: 100%; height: 438px; object-fit: cover; }
+.detail-back { position: absolute; z-index: 10; top: 42px; left: 8px; display: grid; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #333; font-size: 22px; place-items: center; }
+.detail-map-section h1 { position: absolute; z-index: 9; top: 48px; left: 46px; margin: 0; font-size: 18px; font-weight: 600; }
+.detail-route-image { position: absolute; z-index: 2; top: 150px; left: 142px; width: 106px; height: 139px; }
+.detail-point { position: absolute; z-index: 4; min-width: 94px; max-width: 138px; }
+.detail-point.load-point { top: 205px; left: 115px; }
+.detail-point.unload-point { top: 70px; left: 203px; }
+.detail-point > span { position: absolute; z-index: 2; top: 0; left: 10px; height: 27px; padding: 4px 11px; border-radius: 9px 9px 0 0; background: #3a65ff; color: #fff; font-size: 12px; }
+.detail-point.unload-point > span { background: #34c7a9; }
+.detail-point b { position: relative; top: 20px; display: flex; min-width: 94px; height: 34px; padding: 5px 8px; overflow: hidden; border-radius: 7px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.16); align-items: center; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.detail-point > i { position: absolute; top: 54px; left: 50%; width: 2px; height: 20px; background: #333; }
+.detail-panel { position: relative; z-index: 6; min-height: 470px; margin-top: -75px; padding: 12px 0 24px; border-radius: 12px 12px 0 0; background: #eff1f6; }
+.detail-card { width: 343px; margin: 0 14px 16px; padding: 14px; border-radius: 10px; background: #fff; }
+.detail-summary { display: flex; flex-direction: column; gap: 12px; }
+.detail-summary-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.detail-summary-top strong { font-size: 17px; }
+.detail-summary-top > b { color: #3a65ff; font-size: 18px; }
+.detail-time-row { display: grid; grid-template-columns: 92px 1fr 92px; align-items: center; }
+.detail-time-row > div { display: flex; flex-direction: column; }
+.detail-time-row > div.align-right { align-items: flex-end; }
+.detail-time-row > div b { font-size: 24px; font-weight: 600; }
+.detail-time-row > div span { color: #666; font-size: 11px; }
+.detail-time-row p { display: flex; margin: 0; align-items: center; justify-content: center; }
+.detail-time-row p i { width: 16px; height: 1px; background: #ddd; }
+.detail-time-row p span { padding: 3px 7px; border: 1px solid #ddd; border-radius: 11px; color: #999; font-size: 9px; white-space: nowrap; }
+.detail-tags { display: flex; gap: 4px; }
+.detail-tags span { padding: 2px 5px; border: 1px solid #d6dffc; border-radius: 3px; color: #52689c; font-size: 10px; }
+.detail-addresses { position: relative; display: flex; flex-direction: column; gap: 20px; }
+.detail-addresses > div { display: grid; grid-template-columns: 18px 1fr 14px; gap: 8px; }
+.detail-addresses em { display: grid; width: 15px; height: 15px; border-radius: 3px; font-size: 9px; font-style: normal; place-items: center; }
+.detail-addresses em.start { background: #eef0f5; color: #708096; }
+.detail-addresses em.end { background: #3a65ff; color: #fff; }
+.detail-addresses p { display: flex; margin: 0; flex-direction: column; }
+.detail-addresses p b { font-size: 14px; }
+.detail-addresses p span { margin-top: 2px; color: #717c8e; font-size: 11px; }
+.address-rail { position: absolute; top: 32px; left: 21px; height: 52px; border-left: 1px dashed #d4d7de; }
+.progress-item { display: flex; gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f0f2f7; }
+.progress-item.last { margin: 0; padding: 0; border: 0; }
+.progress-item > span { flex: 0 0 auto; height: 19px; padding: 0 7px; border-radius: 10px; font-size: 10px; font-weight: 600; line-height: 19px; }
+.progress-item > span.running { background: #e8f0ff; color: #3a65ff; }
+.progress-item > span.passed { background: #e9f8f1; color: #0f9d64; }
+.progress-item > span.pending { background: #eef0f5; color: #8a8f99; }
+.progress-item > div { display: flex; flex: 1; flex-direction: column; gap: 4px; }
+.progress-item header { display: flex; justify-content: space-between; }
+.progress-item header b { font-size: 14px; }
+.progress-item time,
+.progress-item p,
+.progress-item small { margin: 0; color: #717c8e; font-size: 11px; }
+.progress-item p.active { color: #1a9e64; font-weight: 600; }
+.vehicle-card { display: flex; justify-content: space-between; gap: 12px; }
+.vehicle-card > div:first-child { display: flex; flex: 1; flex-direction: column; gap: 6px; }
+.vehicle-card > div:first-child > b { font-size: 15px; }
+.vehicle-card p { margin: 0; font-size: 12px; }
+.vehicle-card p span { margin-right: 8px; color: #a7a7a7; }
+.vehicle-tags { display: flex; gap: 4px; }
+.vehicle-tags span { padding: 2px 5px; border-radius: 3px; background: #f0f4f9; color: #52689c; font-size: 9px; }
+.truck-art { position: relative; display: grid; width: 72px; height: 72px; border-radius: 8px; background: linear-gradient(145deg,#eaf1ff,#c9dafb); place-items: center; }
+.truck-art .van-icon { color: #3a65ff; font-size: 38px; }
+.truck-art span { position: absolute; right: 0; bottom: 0; left: 0; border-radius: 0 0 8px 8px; background: rgba(0,0,0,.55); color: #fff; font-size: 9px; line-height: 18px; text-align: center; }
+.detail-info { display: flex; flex-direction: column; gap: 12px; }
+.detail-info > div { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.detail-info span { color: #a7a7a7; }
+.detail-info b,
+.detail-info button { padding: 0; border: 0; background: transparent; color: #606060; font-size: 12px; font-weight: 400; }
+.detail-actions { position: absolute; z-index: 20; right: 0; bottom: 0; left: 0; display: flex; height: 70px; padding: 10px 12px 14px; border-top: 1px solid #f0f2f7; background: #fff; align-items: center; gap: 10px; }
+.detail-more { display: flex; width: 44px; height: 100%; padding: 0; border: 0; background: transparent; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; }
+.detail-more .van-icon { font-size: 22px; }
+/* 装货确认/卸货确认是当前状态的主操作，占操作栏剩余宽度并高亮 */
+.detail-exception { flex: 1; height: 40px; border: 0; border-radius: 8px; background: #3a65ff; color: #fff; font-size: 16px; font-weight: 600; }
+/* 联系货主为次要操作：仅无闭环主操作时承担主按钮，否则窄排为描边次级按钮 */
+.detail-contact { display: flex; height: 40px; border: 0; border-radius: 8px; background: #3a65ff; color: #fff; align-items: center; justify-content: center; gap: 4px; font-size: 14px; }
+.detail-contact.secondary { flex: 1; min-width: 108px; border: 1px solid #4063ff; background: #fff; color: #4063ff; font-weight: 500; }
+.detail-contact .van-icon { font-size: 17px; }
+.detail-contact:not(.secondary) { flex: 1; font-weight: 500; }

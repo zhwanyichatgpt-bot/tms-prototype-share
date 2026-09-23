@@ -1,0 +1,21 @@
+<svg viewBox="0 0 726.333 195.541" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="726.333496" height="195.541016" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_19">
+			<effect x="0.000000" y="0.000000" visibility="hidden" fill="rgb(213,218,233)" fill-opacity="0.509803951" effectType="dropShadow" stdDeviation="13" radius="0" />
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="36" />
+		</g>
+		<filter id="filter_19" width="726.333496" height="195.541016" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_19)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="12" result="effect_layerBlur_1" />
+		</filter>
+		<linearGradient id="paint_linear_65" x1="667.478821" x2="134.436157" y1="-34.3951416" y2="184.813004" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(204,215,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(58,101,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+	</defs>
+	<g opacity="0.319999993" filter="url(#filter_19)">
+		<path id="交叉 13" d="M56.1954 159.541L670.138 159.541C681.292 159.541 690.333 152.016 690.333 142.733L690.333 100.755C690.333 89.9071 682.631 81.113 673.129 81.113L637.124 81.113C629.475 81.113 622.265 77.033 617.633 70.0828L602.17 46.8798C597.601 40.0243 590.49 36 582.945 36L56.117 36C44.9994 36.0352 36 43.5469 36 52.8081L36 142.733C36 152.016 45.0417 159.541 56.1954 159.541Z" fill="url(#paint_linear_65)" fill-rule="evenodd" />
+		<path id="交叉 13" d="M56.1954 159.541L670.138 159.541C681.292 159.541 690.333 152.016 690.333 142.733L690.333 100.755C690.333 89.9071 682.631 81.113 673.129 81.113L637.124 81.113C629.475 81.113 622.265 77.033 617.633 70.0828L602.17 46.8798C597.601 40.0243 590.49 36 582.945 36L56.117 36C44.9994 36.0352 36 43.5469 36 52.8081L36 142.733C36 152.016 45.0417 159.541 56.1954 159.541Z" fill-rule="evenodd" stroke="rgb(255,255,255)" stroke-opacity="0" stroke-width="3.000000" />
+	</g>
+</svg>

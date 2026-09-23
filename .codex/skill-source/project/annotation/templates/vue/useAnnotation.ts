@@ -2,6 +2,7 @@
 import { ref, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import type { AnnotationItem, PageAnnotation } from './types'
+import { annotationLoadUrl } from '../../../review/annotation-paths.mjs'
 
 // 全局状态
 const visible = ref(true)
@@ -70,12 +71,23 @@ const routeToFileName = (route: ReturnType<typeof useRoute>): string => {
 export function useAnnotation() {
   const route = useRoute()
 
+  const annotationTarget = () => {
+    if (route.name === 'versionPrototype') {
+      return {
+        versionId: String(route.params.versionId || ''),
+        pageKey: String(route.params.pageKey || '')
+      }
+    }
+    return { versionId: '', pageKey: routeToFileName(route) }
+  }
+
   /** 加载当前页面标注数据（直接 fetch 静态文件，Vite dev server 提供） */
   const loadAnnotations = async () => {
-    const fileName = routeToFileName(route)
+    const { versionId, pageKey } = annotationTarget()
     try {
       const base = import.meta.env.BASE_URL || '/'
-      const res = await fetch(`${base}annotations/${fileName}.json?t=${Date.now()}`)
+      const loadUrl = annotationLoadUrl({ baseUrl: base, versionId: versionId || null, pageKey })
+      const res = await fetch(`${loadUrl}?t=${Date.now()}`)
       if (res.ok) {
         const data: PageAnnotation = await res.json()
         annotations.value = data.annotations || []
@@ -90,10 +102,11 @@ export function useAnnotation() {
 
   /** 保存标注数据到文件（通过 viteAnnotationPlugin 中间件写入磁盘） */
   const saveAnnotations = async () => {
-    const fileName = routeToFileName(route)
+    const { versionId, pageKey } = annotationTarget()
     const data: PageAnnotation = {
-      page: fileName,
-      title: pageTitle.value || fileName,
+      ...(versionId ? { versionId } : {}),
+      page: pageKey,
+      title: pageTitle.value || pageKey,
       updatedAt: new Date().toISOString().split('T')[0],
       annotations: annotations.value
     }
@@ -123,7 +136,7 @@ export function useAnnotation() {
   }
 
   // 路由变化时重新加载：先清空标注，等页面组件渲染完再加载
-  watch(() => route.path, () => {
+  watch(() => [route.name, route.params.versionId, route.params.pageKey, route.path], () => {
     activeId.value = ''
     annotations.value = []  // 先清空，避免旧标注点在新页面短暂显示
     // nextTick 等 Vue 路由组件挂载，再延迟 400ms 等页面内容（表格、卡片等）渲染完成

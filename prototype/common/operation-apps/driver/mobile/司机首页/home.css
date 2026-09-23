@@ -1,0 +1,361 @@
+.driver-preview {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 24px 0;
+  background: #eef0f5;
+  color: #292f38;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.driver-preview * { box-sizing: border-box; }
+.driver-preview button { font: inherit; }
+.driver-phone {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  overflow: hidden;
+  border: 2px solid #222c4f;
+  border-radius: 30px;
+  background: #eef0f5;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .23), 0 0 0 1px rgba(0, 0, 0, .08);
+}
+.driver-status {
+  position: absolute;
+  z-index: 12;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 38px;
+  padding: 8px 16px 5px;
+  color: #11151a;
+  font-size: 15px;
+  pointer-events: none;
+}
+.driver-status > span { display: flex; align-items: center; gap: 5px; }
+.signal {
+  display: block;
+  width: 17px;
+  height: 11px;
+  background: linear-gradient(to right, #101318 0 17%, transparent 17% 25%, #101318 25% 45%, transparent 45% 53%, #101318 53% 73%, transparent 73% 81%, #101318 81%);
+  clip-path: polygon(0 100%, 0 73%, 17% 73%, 17% 55%, 45% 55%, 45% 35%, 73% 35%, 73% 12%, 100% 12%, 100% 100%);
+}
+.battery {
+  display: block;
+  width: 21px;
+  height: 10px;
+  border: 1.5px solid #111;
+  border-radius: 2px;
+  background: #111;
+  box-shadow: inset 0 0 0 2px #eef0f5;
+}
+.driver-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 118px;
+  background: #eef0f5;
+  scrollbar-width: none;
+}
+.driver-scroll::-webkit-scrollbar { display: none; }
+.home-map {
+  position: relative;
+  height: 347px;
+  overflow: hidden;
+  background: #edf2ff;
+  cursor: pointer;
+}
+.home-map-art {
+  position: absolute;
+  z-index: 1;
+  left: -67px;
+  top: 0;
+  width: 532.5px;
+  height: 536px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.home-map-fade {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+  height: 189px;
+  background: linear-gradient(180deg, rgba(196, 218, 255, .88) 0%, rgba(222, 235, 255, .5) 52%, rgba(235, 243, 255, 0) 100%);
+  pointer-events: none;
+}
+.map-toolbar {
+  position: absolute;
+  z-index: 9;
+  top: 42px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 28px;
+  padding: 0 12px 0 16px;
+}
+.location-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 3px;
+  height: 25px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 13px;
+  background: rgba(238, 245, 255, .78);
+  color: #333;
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+}
+.location-chip .van-icon { margin-left: -1px; font-size: 8px; }
+.location-pin { flex: 0 0 auto; }
+.home-slogan {
+  position: absolute;
+  z-index: 8;
+  top: 73px;
+  left: 18px;
+  margin: 0;
+  color: #173664;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 34px;
+  letter-spacing: -.45px;
+  white-space: nowrap;
+}
+.home-map-marker {
+  position: absolute;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 35px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -50%);
+}
+.home-map-marker img { display: block; width: 31px; height: 35px; }
+.cargo-section {
+  position: relative;
+  z-index: 4;
+  margin-top: -34px;
+  padding: 0 12px 18px;
+  border-radius: 18px 18px 0 0;
+  background: #eef0f5;
+  transition: transform .24s cubic-bezier(.2, .72, .28, 1);
+  will-change: transform;
+}
+.cargo-section.pulling { transition: none; }
+.cargo-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  margin: 0 -12px;
+  padding-left: 15px;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+  background: rgba(255, 255, 255, .94);
+}
+.cargo-tabs > button:not(.scan-tab) {
+  position: relative;
+  z-index: 2;
+  height: 44px;
+  padding: 0 13px;
+  border: 0;
+  background: transparent;
+  color: #8b93a0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.cargo-tabs > button.active { color: #272d35; font-weight: 700; }
+.cargo-tabs > button.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: #4f70ff;
+  transform: translateX(-50%);
+}
+.cargo-tabs .scan-tab {
+  align-self: flex-start;
+  width: 108px;
+  height: 39px;
+  flex: 0 0 108px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.cargo-tabs .scan-tab img {
+  display: block;
+  width: 128px;
+  height: 39px;
+  margin-left: -20px;
+  max-width: none;
+}
+.cargo-list { display: flex; flex-direction: column; gap: 12px; padding-top: 10px; }
+.cargo-card {
+  position: relative;
+  width: 100%;
+  min-height: 142px;
+  padding: 13px 13px 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  color: #30343b;
+  text-align: left;
+  box-shadow: 0 3px 12px rgba(96, 113, 144, .05);
+}
+/* 关注货源卡片内含操作按钮，容器用 div 承载，补上指针与盒模型 */
+div.cargo-card { display: block; cursor: pointer; }
+.cargo-title-row { display: flex; align-items: center; min-height: 21px; font-size: 11px; }
+.cargo-title-row strong { margin-right: 13px; color: #22ba81; font-size: 13px; }
+.cargo-title-row span { font-weight: 600; }
+.cargo-title-row i { width: 1px; height: 12px; margin: 0 9px; background: #cfd4dc; }
+.route-row { display: flex; align-items: center; height: 25px; font-size: 14px; }
+.route-row span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.route-row small { margin-left: 7px; color: #bcc3ce; font-size: 10px; }
+.route-dot { width: 5px; height: 5px; margin-right: 8px; flex: 0 0 auto; border-radius: 50%; }
+.route-dot.load { background: #3f71ff; }
+.route-dot.unload { background: #22c88b; }
+.cargo-meta { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 3px; }
+.tag-list { display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 265px; }
+.tag-list span { height: 20px; padding: 3px 7px; border-radius: 4px; background: #edf2fb; color: #7183a5; font-size: 9px; white-space: nowrap; }
+/* 首个标签为「平台·货源平台」合并标签，用蓝底突出；末尾标签为货种吨位，用绿色区分 */
+.tag-list span:first-child { background: #3974ff; color: #fff; }
+.tag-list span:last-child { background: #e9f8f1; color: #54a982; }
+.price { display: flex; margin-left: 4px; flex-direction: column; align-items: flex-end; color: #3168ff; white-space: nowrap; }
+.price small { margin-bottom: -2px; color: #a9b0be; font-size: 8px; }
+.price strong { font-size: 20px; font-weight: 500; line-height: 1; }
+.price em { margin-left: 2px; font-size: 10px; font-style: normal; }
+.provider-row { display: flex; align-items: center; justify-content: space-between; height: 26px; margin-top: 8px; padding-top: 7px; border-top: 1px solid #eef0f4; color: #a4abb7; font-size: 9px; }
+.provider { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.provider img { width: 18px; height: 16px; object-fit: contain; }
+.provider span { color: #858e9c; white-space: nowrap; }
+
+/* ============ 关注货源（与附近货源共用同一屏，仅列表数据源不同） ============ */
+/* 筛选行：按 Pixso 筛选稿还原——纯文字 + 右侧小三角，无胶囊底。
+   选中非默认值时标签显示选中值并变蓝。
+   选择器带 .driver-preview 前缀：home.css 里的 `.driver-preview button { font: inherit }`
+   特异性更高，会覆盖单独类名写的字号 */
+.follow-filter-wrap { position: relative; }
+/* 筛选行必须浮在遮罩之上：否则面板打开时遮罩会盖住三个标签，
+   真实鼠标点不到，表现为「选了一个维度后其它维度点不动」 */
+.follow-filter { position: relative; z-index: 22; display: flex; align-items: center; padding: 12px 0 4px; }
+.driver-preview .filter-item { display: inline-flex; height: 28px; padding: 0; border: 0; background: transparent; color: #333; flex: 1; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.driver-preview .filter-item.active { color: #3a65ff; }
+.driver-preview .filter-item.disabled { color: #c3cad6; }
+.driver-preview .filter-item.disabled .filter-caret { border-top-color: #c3cad6; }
+.filter-caret { width: 0; height: 0; margin-left: 5px; border-top: 5px solid currentColor; border-right: 4.5px solid transparent; border-left: 4.5px solid transparent; }
+
+/* 筛选面板：浮层形式——绝对定位盖在货源列表上方，不占文档流，
+   否则展开时会把下方卡片整体下推。
+   遮罩从筛选行下方开始：筛选行本身要留在遮罩之上，否则切换维度时点不到 */
+.filter-overlay { position: absolute; z-index: 20; top: 100%; right: -12px; bottom: -1000px; left: -12px; }
+.filter-panel { position: absolute; z-index: 21; top: 100%; right: 0; left: 0; margin-top: 6px; padding: 14px 14px 12px; border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgba(23, 54, 100, .14); }
+.filter-panel-title { margin: 0 0 12px; color: #333; font-size: 14px; font-weight: 600; }
+.filter-panel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.driver-preview .filter-chip { height: 36px; border: 1px solid transparent; border-radius: 6px; background: #f2f3f7; color: #333; font-size: 13px; font-weight: 500; }
+.driver-preview .filter-chip.active { border-color: #3a65ff; background: rgba(58, 101, 255, .1); color: #3a65ff; font-weight: 600; }
+.filter-panel-actions { display: grid; margin-top: 16px; grid-template-columns: 1fr 1fr; gap: 10px; }
+.driver-preview .filter-panel-actions button { height: 42px; border: 0; border-radius: 8px; font-size: 15px; font-weight: 600; }
+.driver-preview .filter-clear { background: #f2f3f7; color: #333; }
+.driver-preview .filter-confirm { background: #3a65ff; color: #fff; }
+
+/* 关注货源状态位（信息有变化 / 即将截止 / 失效原因）：
+   靠右停在装卸时间之后，与附近货源卡片共用一个标题行，不额外占一行高度 */
+.cargo-flag { margin-left: auto; padding: 2px 6px; border-radius: 4px; flex: 0 0 auto; font-size: 9px; font-style: normal; font-weight: 600; white-space: nowrap; }
+.cargo-flag.changed { background: #fcf6eb; color: #d57813; }
+.cargo-flag.soon { background: #fdeceb; color: #e04b41; }
+.cargo-flag.invalid { background: #f2f4f8; color: #8a91a1; }
+
+/* 运价涨跌：箭头紧贴数值，上升用暖色、下降用冷色，只做方向提示不替代具体变化点 */
+.price-trend { margin-right: 2px; font-size: 13px; font-style: normal; font-weight: 700; }
+.price-trend.up { color: #e0552f; }
+.price-trend.down { color: #2fa06a; }
+
+/* 变化点压成一行：单位只出现在结果值后一次，超出宽度省略 */
+.cargo-change { margin-top: 7px; padding: 6px 9px; overflow: hidden; border-radius: 7px; background: #fdf7ec; color: #6b5a3e; font-size: 10px; line-height: 16px; text-overflow: ellipsis; white-space: nowrap; }
+
+.cargo-expire-detail { margin: 7px 0 0; color: #8a91a1; font-size: 10px; line-height: 16px; }
+
+.cargo-empty { display: flex; padding: 56px 0; color: #8c99a8; flex-direction: column; align-items: center; gap: 9px; font-size: 13px; }
+.cargo-empty .van-icon { color: #c4cbd8; font-size: 38px; }
+.cargo-empty p { margin: 0; }
+.cargo-empty small { color: #a8afbb; font-size: 11px; }
+
+/* ============ 任务指派（调度派单，与货源卡片共用骨架） ============ */
+/* 顶部为任务标识：来源标签 + 单号 + 指派时间，均为弱化信息，不抢装卸时间 */
+.task-head { display: flex; align-items: center; gap: 6px; }
+.task-source { padding: 2px 6px; border-radius: 4px; background: #edf2ff; color: #4776f5; flex: 0 0 auto; font-size: 9px; font-style: normal; font-weight: 600; }
+.task-no { min-width: 0; overflow: hidden; color: #8b93a0; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.task-assign { margin-left: auto; color: #a9b0be; flex: 0 0 auto; font-size: 9px; }
+/* 装货时间是卡片最强调的信息：接单截止即装货时间 */
+.task-time-row { display: flex; align-items: baseline; margin: 7px 0 3px; gap: 5px; font-size: 11px; }
+.task-time-row strong { color: #30343b; font-size: 19px; font-weight: 700; line-height: 1; }
+.task-time-row span { color: #8b93a0; font-size: 10px; }
+.task-time-row i { width: 1px; height: 11px; margin: 0 6px; background: #d8dde5; align-self: center; }
+.task-time-row .cargo-flag { align-self: center; }
+.cargo-flag.task-multi { background: #eef2fb; color: #52689c; }
+.task-container-tag { background: #eaf9f4 !important; color: #17ae7c !important; }
+/* 接单是唯一操作，卡片本身也可点进详情 */
+.task-action { display: flex; margin-top: 9px; padding-top: 9px; border-top: 1px solid #eef0f4; justify-content: flex-end; }
+.driver-preview .task-accept { height: 32px; padding: 0 20px; border: 0; border-radius: 8px; background: #3a65ff; color: #fff; font-size: 13px; font-weight: 600; }
+
+.driver-sheet { position: absolute !important; padding: 15px 18px 22px; }
+.driver-sheet header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.driver-sheet h2 { margin: 0; font-size: 17px; }
+.driver-sheet header button { border: 0; background: transparent; font-size: 20px; }
+.cargo-sheet h3 { margin: 8px 0 14px; font-size: 18px; }
+.cargo-sheet p { margin: 9px 0; color: #697386; font-size: 13px; }
+.sheet-price { margin: 18px 0; color: #8490a5; }
+.sheet-price strong { margin: 0 3px; color: #3169ff; font-size: 25px; }
+.recommend-back {
+  position: absolute;
+  z-index: 5;
+  top: 44px;
+  left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 2px 8px rgba(48, 77, 124, .12);
+  color: #263b5b;
+  font-size: 16px;
+  cursor: pointer;
+}
+.recommend-bottom-mask {
+  position: absolute;
+  z-index: 8;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 104px;
+  background: linear-gradient(180deg, rgba(234, 241, 251, 0) 0%, rgba(234, 241, 251, .98) 24%, #eaf1fb 100%);
+  pointer-events: none;
+}
+.recommend-bottom-nav { z-index: 9; }
+@media (max-width: 520px) {
+  .driver-preview { padding: 0; }
+  .driver-phone { width: 100vw; height: 100dvh; border-radius: 0; }
+}

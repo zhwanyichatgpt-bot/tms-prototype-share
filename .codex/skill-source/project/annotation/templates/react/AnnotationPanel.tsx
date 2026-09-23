@@ -122,7 +122,6 @@ export function AnnotationPanel({ annotation, index, editMode, onClose, onEdit, 
           <span className={`meta-tag meta-tag-${annotation.category}`}>
             {categoryMap[annotation.category] || '标注'}
           </span>
-          {annotation.source && <span className="meta-source">{annotation.source}</span>}
         </div>
         <div className="panel-content" dangerouslySetInnerHTML={{ __html: renderedContent }} />
       </div>

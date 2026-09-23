@@ -1,0 +1,18 @@
+{
+  "baselineFiles": 365,
+  "missingFiles": [],
+  "sourceFilesCompared": 121,
+  "sourceNonPathChanges": [],
+  "versionCount": 3,
+  "annotationSourceOnlyUpdates": 9,
+  "unexpectedPublicJsonChanges": [],
+  "brokenCurrentMarkdownLinks": [],
+  "legacyReferences": 56,
+  "pendingClassificationDocuments": 0,
+  "movedFiles": 168,
+  "updatedExistingFiles": 29,
+  "userApprovedDeletions": [
+    "prd/pending-classification/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md",
+    "discussions/pending-classification/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md"
+  ]
+}

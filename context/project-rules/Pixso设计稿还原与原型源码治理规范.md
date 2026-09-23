@@ -35,7 +35,7 @@
 - `src/App.vue` 中的顶部工具栏、页面目录、中央画布和标注能力属于唯一原型验证工作台。
 - Pixso设计稿中的TMS系统顶部栏、工作台页签栏、左侧导航属于业务系统自身框架，是被验证页面的一部分，必须保留。
 - 禁止在业务页面中复制原型验证工作台；也禁止以“只能有一个工作台”为由删除TMS业务系统框架。
-- TMS业务Web页面共同使用的系统框架必须提炼到 `prototype/common/business/web/_shared/`，不得在每个页面复制一份。
+- TMS业务Web页面共同使用的系统框架必须提炼到 `prototype/common/shared/web/`，不得在每个页面复制一份。
 
 ### 1.3 先证据、后结构、再开发
 
@@ -143,7 +143,7 @@ Pixso来源：文件、画板名称、节点ID或容器链接
 ### 5.3 TMS Web建议分层
 
 ```text
-prototype/common/business/web/_shared/
+prototype/common/shared/web/
 ├── layout/          # TMS系统顶部、工作台栏、左侧导航、页面容器
 ├── components/      # 页头、状态页签、筛选栏、分页、空状态等
 ├── business/        # 企业信息、运输进度、货物摘要、地址节点等

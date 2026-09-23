@@ -15,6 +15,13 @@
 ```markdown
 ---
 类型: PRD
+需求归属: [common / project]
+所属项目: [null / projectId]
+产品归属: [productId / null]
+共用端归属: [operationAppId / null]
+适用端: [web / mobile / 跨端]
+研发版本: [pending / versionId]
+修订: [pending / R0 / Rn]
 所属模块: [模块]
 主题: [主题]
 版本: v1

@@ -19,7 +19,7 @@ export interface AnnotationItem {
   id: string
   type: AnnotationType
   selector: string
-  position: { x: number; y: number }
+  position: { x: number; y: number } // position 类型为屏幕坐标；selector 类型为相对宿主默认锚点的偏移量
   title: string
   content: string
   category: AnnotationCategory

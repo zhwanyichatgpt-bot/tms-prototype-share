@@ -11,11 +11,11 @@
       "order": 1
     }
   ],
-  "status": "in_progress",
+  "status": "completed",
   "revision": "R0",
   "publishedAt": "2026-08-22T09:00:39.400Z",
   "lastPublishedAt": "2026-08-22T09:00:39.400Z",
-  "completedAt": null,
+  "completedAt": "2026-08-22T09:09:20.278Z",
   "createdAt": "2026-08-22T08:57:30.387Z",
-  "updatedAt": "2026-08-22T09:00:39.400Z"
+  "updatedAt": "2026-08-22T09:09:20.278Z"
 }

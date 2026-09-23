@@ -1,0 +1,17 @@
+<svg viewBox="0 0 141.848 134.508" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="141.847656" height="134.508301" fill="none" customFrame="#000000">
+	<mask id="mask_384" width="141.847900" height="134.508209" x="0.000488" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 23 拷贝" width="141.847900" height="134.508209" x="0.000488" y="0.000000" rx="20.000000" fill="rgb(255,255,255)" />
+		</g>
+	</mask>
+	<defs>
+		<linearGradient id="paint_linear_63" x1="70.9244385" x2="70.9244385" y1="0" y2="119.901062" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+	</defs>
+	<g id="组 76403" mask="url(#mask_384)" />
+</svg>

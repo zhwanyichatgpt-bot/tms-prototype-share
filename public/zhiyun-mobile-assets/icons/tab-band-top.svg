@@ -1,0 +1,11 @@
+<svg viewBox="0 0 750 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750.000000" height="200.000000" fill="none" customFrame="#000000">
+	<defs>
+		<linearGradient id="paint_linear_6" x1="401.333923" x2="402.059509" y1="200" y2="3.93829346" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(223,229,240)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(230,237,250)" offset="1" stop-opacity="0" />
+		</linearGradient>
+	</defs>
+	<g id="组合 536">
+		<path id="矩形 41387" d="M0 0L750 0L750 200L0 200L0 0Z" fill="url(#paint_linear_6)" fill-rule="evenodd" />
+	</g>
+</svg>

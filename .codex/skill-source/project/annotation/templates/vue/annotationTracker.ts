@@ -27,7 +27,10 @@ function start() {
   if (started) return
   started = true
 
-  window.addEventListener('scroll', scheduleFlush, { passive: true, capture: true })
+  // 视口滚动与页面内部滚动容器分开监听。
+  // Element.scroll 不冒泡，只监听 window 时可能收不到工作台画布、表格等容器的滚动事件。
+  window.addEventListener('scroll', scheduleFlush, { passive: true })
+  document.addEventListener('scroll', scheduleFlush, { passive: true, capture: true })
   window.addEventListener('resize', scheduleFlush, { passive: true })
 
   if (typeof MutationObserver !== 'undefined') {
@@ -46,7 +49,8 @@ function stop() {
   if (!started) return
   started = false
 
-  window.removeEventListener('scroll', scheduleFlush, { capture: true })
+  window.removeEventListener('scroll', scheduleFlush)
+  document.removeEventListener('scroll', scheduleFlush, { capture: true })
   window.removeEventListener('resize', scheduleFlush)
   mutationObserver?.disconnect()
   mutationObserver = null

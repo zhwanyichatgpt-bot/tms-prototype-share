@@ -1,0 +1,1465 @@
+{
+  "date": "2026-09-12",
+  "moves": {
+    "prototype/common/business/web/_shared": "prototype/common/shared/web",
+    "prototype/common/business/web": "prototype/common/products/lianyun/web/business",
+    "prototype/common/portal": "prototype/common/products/lianyun/web/portal",
+    "prototype/common/business/mobile/至简联运": "prototype/common/products/lianyun/mobile",
+    "prototype/common/business/mobile/至简智运": "prototype/common/products/zhiyun/mobile",
+    "prototype/common/business/mobile/至简船运": "prototype/common/products/chuanyun/mobile",
+    "prototype/common/driver/mobile": "prototype/common/operation-apps/driver/mobile",
+    "prototype/projects/beigang/船东": "prototype/projects/beigang/operation-apps/shipowner/mobile",
+    "prototype/projects/beigang/企业移动端": "prototype/projects/beigang/products/lianyun/mobile",
+    "prototype/projects/beigang/运单中心": "prototype/projects/beigang/products/lianyun/web/运单中心",
+    "prototype/projects/beigang/运输计划": "prototype/projects/beigang/products/lianyun/web/运输计划",
+    "prototype/projects/guanglin/广林询价三端": "prototype/projects/guanglin/products/lianyun/web/广林询价三端",
+    "design/多式联运一张图AI分析": "design/common/products/lianyun/多式联运一张图AI分析",
+    "prd/公路计划管理_集装箱运输计划创建_PRD_v1.md": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "prd/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md": "prd/common/products/lianyun/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md",
+    "prd/多式联运_创建联运计划_PRD_v1.md": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "prd/多式联运_联运计划管理页_PRD_v1.md": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "prd/多式联运_货主结算_PRD_v1.md": "prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md",
+    "prd/托运单管理_托运单创建与管理_PRD_v1.md": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "prd/托运单管理_承运商报价页面_PRD_v2.md": "prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md",
+    "prd/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md": "prd/pending-classification/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md",
+    "prd/运输余量扣量与返还控制_PRD_v1.md": "prd/common/products/lianyun/运输余量扣量与返还控制_PRD_v1.md",
+    "prd/运输通道管理_运输通道与运输方案管理_PRD_v2.md": "prd/common/products/lianyun/运输通道管理_运输通道与运输方案管理_PRD_v2.md",
+    "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md",
+    "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md": "prd/projects/beigang/products/lianyun/承运管理_社会运力采购闭环_PRD_v1.md",
+    "prd/projects/guanglin/货源询价管理_货主端_PRD_v1.md": "prd/projects/guanglin/products/lianyun/货源询价管理_货主端_PRD_v1.md",
+    "prd/projects/guanglin/询价管理_无车承运人端_PRD_v1.md": "prd/projects/guanglin/products/lianyun/询价管理_无车承运人端_PRD_v1.md",
+    "prd/projects/guanglin/询价大厅_承运商端_PRD_v1.md": "prd/projects/guanglin/products/lianyun/询价大厅_承运商端_PRD_v1.md",
+    "prd/projects/guanglin/货源询价_广林项目定制总览_PRD_v1.md": "prd/projects/guanglin/products/lianyun/货源询价_广林项目定制总览_PRD_v1.md",
+    "discussions/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md": "discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+    "discussions/2026-04-12_托运单管理需求讨论.md": "discussions/common/products/lianyun/2026-04-12_托运单管理需求讨论.md",
+    "discussions/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md": "discussions/pending-classification/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md",
+    "discussions/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "discussions/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md": "discussions/common/products/lianyun/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md",
+    "discussions/2026-06-02_多式联运_货主结算功能讨论.md": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "discussions/2026-07-05_原型迁移规划_三仓原型整合与新仓标准化讨论.md": "discussions/common/shared/workbench/2026-07-05_原型迁移规划_三仓原型整合与新仓标准化讨论.md",
+    "discussions/2026-07-31_多式联运计划_委托AI分析解读讨论.md": "discussions/common/products/lianyun/2026-07-31_多式联运计划_委托AI分析解读讨论.md",
+    "discussions/2026-08-05_多式联运_集装箱上下游衔接与公路调度讨论.md": "discussions/common/products/lianyun/2026-08-05_多式联运_集装箱上下游衔接与公路调度讨论.md",
+    "discussions/2026-08-22_原型评审系统_通用定制隔离与研发版本管理讨论.md": "discussions/common/shared/workbench/2026-08-22_原型评审系统_通用定制隔离与研发版本管理讨论.md",
+    "discussions/运输通道管理_运输通道与运输方案功能分析结论_v2.md": "discussions/common/products/lianyun/运输通道管理_运输通道与运输方案功能分析结论_v2.md",
+    "discussions/projects/beigang/承运商分包外采_流程梳理.md": "discussions/projects/beigang/products/lianyun/承运商分包外采_流程梳理.md",
+    "discussions/projects/guanglin/2026-05-15_询价管理_长协询价与广林项目定制流程讨论.md": "discussions/projects/guanglin/products/lianyun/2026-05-15_询价管理_长协询价与广林项目定制流程讨论.md",
+    "discussions/projects/guanglin/2026-05-16_货源询价_广林项目定制PRD拆分与原型重构讨论.md": "discussions/projects/guanglin/products/lianyun/2026-05-16_货源询价_广林项目定制PRD拆分与原型重构讨论.md",
+    "discussions/projects/guanglin/2026-05-16_货源询价_路线明细行内维护与配载方式讨论.md": "discussions/projects/guanglin/products/lianyun/2026-05-16_货源询价_路线明细行内维护与配载方式讨论.md",
+    "context/business-rules/03-跨模块业务原则/运输余量扣量与返还控制原则.md": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "context/business-rules/03-跨模块业务原则/联运计划结算分层原则.md": "context/business-rules/common/products/lianyun/03-跨模块业务原则/联运计划结算分层原则.md",
+    "context/business-rules/03-跨模块业务原则/一单制凭证客户展示原则.md": "context/business-rules/common/products/lianyun/03-跨模块业务原则/一单制凭证客户展示原则.md",
+    "context/business-rules/01-系统业务模型/业务对象定位与关系.md": "context/business-rules/common/products/lianyun/01-系统业务模型/业务对象定位与关系.md",
+    "context/business-rules/01-系统业务模型/系统功能流转总览.md": "context/business-rules/common/products/lianyun/01-系统业务模型/系统功能流转总览.md",
+    "context/business-rules/02-统一术语与字段口径/系统术语与字段命名口径.md": "context/business-rules/common/products/lianyun/02-统一术语与字段口径/系统术语与字段命名口径.md",
+    "context/business-rules/02-统一术语与字段口径/计费条件与计费依据口径.md": "context/business-rules/common/products/lianyun/02-统一术语与字段口径/计费条件与计费依据口径.md"
+  },
+  "files": [
+    {
+      "oldPath": ".codex/skill-source/project/annotation/SKILL.md",
+      "newPath": ".codex/skill-source/project/annotation/SKILL.md",
+      "kind": "update",
+      "beforeSha256": "70d07c174212fc19f0f301f56d455da83e1be6af3912ddb0123aa12505ea52f3",
+      "afterSha256": "68b76db833a488d004e645c7a94f6e8476190ce9e34c60e16589cbabaef43d49"
+    },
+    {
+      "oldPath": ".codex/skill-source/project/discussion/SKILL.md",
+      "newPath": ".codex/skill-source/project/discussion/SKILL.md",
+      "kind": "update",
+      "beforeSha256": "c972ee47890c75e3972c8dae45c1750fed1ab34bdbad157a211cf41a6c873ab3",
+      "afterSha256": "9ce7954bb9277e1ac9281269fa53f0f9df120ee8027adae58fe69167d8779cbb"
+    },
+    {
+      "oldPath": ".codex/skill-source/project/discussion/references/discussion-record-template.md",
+      "newPath": ".codex/skill-source/project/discussion/references/discussion-record-template.md",
+      "kind": "update",
+      "beforeSha256": "e7e33312c8404bc46275856b4cc13507fbd153db15987c2157c3d74b3ea046c4",
+      "afterSha256": "29aad9879a12f4d0b897a52b0c17691edb3498e55996be52eb31a4b6696d8538"
+    },
+    {
+      "oldPath": ".codex/skill-source/project/prd-manager-v2/SKILL.md",
+      "newPath": ".codex/skill-source/project/prd-manager-v2/SKILL.md",
+      "kind": "update",
+      "beforeSha256": "cf76ea6f3497df479cd73a77cb6502d7a36486857316055a6d81e1a27778a4ac",
+      "afterSha256": "5be74e04c6eb208295715ea8e8c9db1f112a6cc22e10c6b96be351bb8afc287f"
+    },
+    {
+      "oldPath": ".codex/skill-source/project/prd-manager-v2/references/prd-template-lite.md",
+      "newPath": ".codex/skill-source/project/prd-manager-v2/references/prd-template-lite.md",
+      "kind": "update",
+      "beforeSha256": "e72d8ba69379850c6d23ef60eece91a0a0f5baf09f839a864dc084f2e265fe3c",
+      "afterSha256": "c87c01f2777decc2dc4babb9a9a0e232ef3ac20aea3192087108d7257eab5a86"
+    },
+    {
+      "oldPath": ".codex/skill-source/project/prototype-validator/SKILL.md",
+      "newPath": ".codex/skill-source/project/prototype-validator/SKILL.md",
+      "kind": "update",
+      "beforeSha256": "4cbf4838c5b4046e8028005120efb4c44456cd29e18b49c7198ac8e6ab57f04f",
+      "afterSha256": "aa0ad9a592aef169b2844d504ac6295b50d82daa945c5fdd263954f14829c0e6"
+    },
+    {
+      "oldPath": "AGENTS.md",
+      "newPath": "AGENTS.md",
+      "kind": "update",
+      "beforeSha256": "a9b7f5e10512f51d78de594162b3390c8f9ab0c9f3325df702546b0903c4ac1b",
+      "afterSha256": "47c997c861676603041e9eb611ca149d38495b2319e110b328c6911f3fff3ee9"
+    },
+    {
+      "oldPath": "context/business-rules/01-系统业务模型/业务对象定位与关系.md",
+      "newPath": "context/business-rules/common/products/lianyun/01-系统业务模型/业务对象定位与关系.md",
+      "kind": "move",
+      "beforeSha256": "29ec75583d1c69be7d04d8919f582b6c6ad541acfb76afd936ad837eedbc6147",
+      "afterSha256": "0e1c32d3b21f37a25b96185b477e5b5d0005700ba9dd13d99fd0860cc351e04d"
+    },
+    {
+      "oldPath": "context/business-rules/01-系统业务模型/系统功能流转总览.md",
+      "newPath": "context/business-rules/common/products/lianyun/01-系统业务模型/系统功能流转总览.md",
+      "kind": "move",
+      "beforeSha256": "ffdb567ecf107833cdc391692b85a2ad1eabd5fe2b1fc838d46d3d90f0373c16",
+      "afterSha256": "22295ccab48b451b9444c96ae95a351d69ec3c56c61d2884019a66d381df2122"
+    },
+    {
+      "oldPath": "context/business-rules/02-统一术语与字段口径/系统术语与字段命名口径.md",
+      "newPath": "context/business-rules/common/products/lianyun/02-统一术语与字段口径/系统术语与字段命名口径.md",
+      "kind": "move",
+      "beforeSha256": "186387368c6bc96b12a996136f2c5bcb323abeff804d8a59138c81531b644541",
+      "afterSha256": "aee869369aaa0802bc34f67544a59de413912f8bf5f5811aef7a3158ad6e163d"
+    },
+    {
+      "oldPath": "context/business-rules/02-统一术语与字段口径/计费条件与计费依据口径.md",
+      "newPath": "context/business-rules/common/products/lianyun/02-统一术语与字段口径/计费条件与计费依据口径.md",
+      "kind": "move",
+      "beforeSha256": "e407de5834655851588fab86b0563feb1bdaeca77153ab2d51760c45d2b032f0",
+      "afterSha256": "874af5643b7509cb3bf8e3a16b385af8c7303cfd1ea32001a29b0e20ec12f4c6"
+    },
+    {
+      "oldPath": "context/business-rules/03-跨模块业务原则/一单制凭证客户展示原则.md",
+      "newPath": "context/business-rules/common/products/lianyun/03-跨模块业务原则/一单制凭证客户展示原则.md",
+      "kind": "move",
+      "beforeSha256": "0dd6beb0c1d547ab3324288221b09e463ba03614ddcd0714e38ead7b47747904",
+      "afterSha256": "8bf57ef1ca517729d1d85c9669cdcdae16699ade26b68c5539612faede275965"
+    },
+    {
+      "oldPath": "context/business-rules/03-跨模块业务原则/联运计划结算分层原则.md",
+      "newPath": "context/business-rules/common/products/lianyun/03-跨模块业务原则/联运计划结算分层原则.md",
+      "kind": "move",
+      "beforeSha256": "460598974a8162a39833d99987896adbcb774994f6359f71a8b19140ef44e5ef",
+      "afterSha256": "66bd2d70a23be992f1f5e55d178a9cc508d16e84ca452aa6e385e7011a8ce193"
+    },
+    {
+      "oldPath": "context/business-rules/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+      "newPath": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+      "kind": "move",
+      "beforeSha256": "7489af565098c890fd2259f37415a8ae02da95297349c0cc0696639c5782ce31",
+      "afterSha256": "8f259c46f568fb24d033247061cf50d8000eeb01df05ac17da944f0058eda1a4"
+    },
+    {
+      "oldPath": "context/project-rules/Pixso设计稿还原与原型源码治理规范.md",
+      "newPath": "context/project-rules/Pixso设计稿还原与原型源码治理规范.md",
+      "kind": "update",
+      "beforeSha256": "0aaed996cffc2dba6e85af445fcafa630000dfee2654e77901ce2f599d04a767",
+      "afterSha256": "e8cd0e353339a89688ee66ae497e98d4e3a083a495c5354a6f2022117c36c37b"
+    },
+    {
+      "oldPath": "context/project-rules/原型评审与研发版本发布规则.md",
+      "newPath": "context/project-rules/原型评审与研发版本发布规则.md",
+      "kind": "update",
+      "beforeSha256": "29e334e9c4350596c1c6c76e3e6fee83ecaa8acaa8b1ab956e8129aa29ac4eec",
+      "afterSha256": "b4c57fc3164c633cb740f503cbd991d6290d8aacab89ca65814c9a9f2e963d33"
+    },
+    {
+      "oldPath": "design/多式联运一张图AI分析/01_委托节点AI分析解读研发说明_V0.1.md",
+      "newPath": "design/common/products/lianyun/多式联运一张图AI分析/01_委托节点AI分析解读研发说明_V0.1.md",
+      "kind": "move",
+      "beforeSha256": "c097bcf8dc599fb43036bdc67bf89de431fa1b3ae2d4a5dc67bfe3708103cfbb",
+      "afterSha256": "407ca355cbfbd1d97873df6ae6ac78380699fd5c02eccccbb84b14f32a733a4d"
+    },
+    {
+      "oldPath": "design/多式联运一张图AI分析/02_方案制定节点AI分析解读研发说明_V0.1.md",
+      "newPath": "design/common/products/lianyun/多式联运一张图AI分析/02_方案制定节点AI分析解读研发说明_V0.1.md",
+      "kind": "move",
+      "beforeSha256": "193156b7405808b8e7c49eb9a5ad6aeb8a5a8951f219286d8b0f49dd65957d3b",
+      "afterSha256": "750ac094d27c2ae495d03595ad932e53215c6463643ce68fc81ab6df039354dc"
+    },
+    {
+      "oldPath": "design/多式联运一张图AI分析/03_执行节点AI分析解读研发说明_V0.1.md",
+      "newPath": "design/common/products/lianyun/多式联运一张图AI分析/03_执行节点AI分析解读研发说明_V0.1.md",
+      "kind": "move",
+      "beforeSha256": "6ab90ab19321debdb9e51b47f4e7fa6b4364009d7546fcdfd6833ff02e887969",
+      "afterSha256": "eca7fa27e0d911f43d631e144502040a9c68608b6e76b954564afec8811a9817"
+    },
+    {
+      "oldPath": "design/多式联运一张图AI分析/04_收益节点AI分析解读研发说明_V0.1.md",
+      "newPath": "design/common/products/lianyun/多式联运一张图AI分析/04_收益节点AI分析解读研发说明_V0.1.md",
+      "kind": "move",
+      "beforeSha256": "46308c58b9e0334cb68d0b0d0c11c808555db628d148bf798c9c37e9ecfb406e",
+      "afterSha256": "30d7552f6933195d0af68fbe52965aa48fe235e1114aefc4660c20e542b1b5ef"
+    },
+    {
+      "oldPath": "discussions/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+      "kind": "move",
+      "beforeSha256": "25aa58855ae434f3918723b9c69b89183718ab4f14a9b47e017f1db77c4a1c1f",
+      "afterSha256": "8e118c57a3950a60b2588430b31d2f1f0319b8b93ef337b7e5ff500620668f00"
+    },
+    {
+      "oldPath": "discussions/2026-04-12_托运单管理需求讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-04-12_托运单管理需求讨论.md",
+      "kind": "move",
+      "beforeSha256": "49afaba030d9a57b0d460d809e8305d636c6d5b112673decbc3f9127184ad831",
+      "afterSha256": "5631a403392246d5192084ea5c4bc928b7d6d031eacdac296fd77f305cb352d6"
+    },
+    {
+      "oldPath": "discussions/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md",
+      "newPath": "discussions/pending-classification/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md",
+      "kind": "move",
+      "beforeSha256": "551bd6eb49ff0110026cd2a6e876048c04f45688b0e118e74ecfeb920dec9896",
+      "afterSha256": "3cb336e8e5f0e16b063cc62e7694c966d7c4a6ef25ecaa1c6c750353765fc2ec",
+      "currentStatus": "deleted-by-user-request"
+    },
+    {
+      "oldPath": "discussions/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+      "kind": "move",
+      "beforeSha256": "46d7ab88ae307c5214518fc82147feac767f5c1e4c7bba73a679ed70a232cd7e",
+      "afterSha256": "82bdbe3df601957ae3df961240ea5fe7a27e35d8065eb3912a325e52ad256ad0"
+    },
+    {
+      "oldPath": "discussions/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md",
+      "kind": "move",
+      "beforeSha256": "662278de07d6d8fd27c17254036db2eb87b19b942cee01e753665a23ddcefc4b",
+      "afterSha256": "e328c0ea24960ea7f94dc774894f7420625f2841c0e79d3255820ce90a6c0a79"
+    },
+    {
+      "oldPath": "discussions/2026-06-02_多式联运_货主结算功能讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+      "kind": "move",
+      "beforeSha256": "0c00933973e2d3651c79ac9abc8150a30889444e7b1541691c69e5c937b42d71",
+      "afterSha256": "483193d12351d60c1ad79ecc59b984e0c8f1ac28037c7a5e0d5fd125fc341d0a"
+    },
+    {
+      "oldPath": "discussions/2026-07-05_原型迁移规划_三仓原型整合与新仓标准化讨论.md",
+      "newPath": "discussions/common/shared/workbench/2026-07-05_原型迁移规划_三仓原型整合与新仓标准化讨论.md",
+      "kind": "move",
+      "beforeSha256": "abb35ac9b6e15fd74142de2bfb7b0fa7c41887846cbfff5acf9f0e45291b7c40",
+      "afterSha256": "494566dc6c4dcddd9e74a2687258e7a1ac6eae8cc99afa6fbb8fc43a59e40529"
+    },
+    {
+      "oldPath": "discussions/2026-07-31_多式联运计划_委托AI分析解读讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-07-31_多式联运计划_委托AI分析解读讨论.md",
+      "kind": "move",
+      "beforeSha256": "7082c9dcb2b14dcf9153c058ff683eb13946a37e4bd71e0428c29e79d49a4db2",
+      "afterSha256": "ddc4ef88a7434c8dc34a5593668e8256927988f8357e66607263cd45368dce5b"
+    },
+    {
+      "oldPath": "discussions/2026-08-05_多式联运_集装箱上下游衔接与公路调度讨论.md",
+      "newPath": "discussions/common/products/lianyun/2026-08-05_多式联运_集装箱上下游衔接与公路调度讨论.md",
+      "kind": "move",
+      "beforeSha256": "336698f8fd80280ec7c20d051c724b973107222460c6a3bdadfc6e827f06c474",
+      "afterSha256": "ca1c8424feac637ed37e0c325ba2c35bc25438b195e43026678baef05f2733c6"
+    },
+    {
+      "oldPath": "discussions/2026-08-22_原型评审系统_通用定制隔离与研发版本管理讨论.md",
+      "newPath": "discussions/common/shared/workbench/2026-08-22_原型评审系统_通用定制隔离与研发版本管理讨论.md",
+      "kind": "move",
+      "beforeSha256": "d412e353630e16b4eb9e628fc3450655ce762438f37b2f43e3e4d44ef01849b1",
+      "afterSha256": "c8487f37d29497c72733d35875b14a55fbedacbdbc54da071e9f037f8ccd3f8d"
+    },
+    {
+      "oldPath": "discussions/projects/beigang/承运商分包外采_流程梳理.md",
+      "newPath": "discussions/projects/beigang/products/lianyun/承运商分包外采_流程梳理.md",
+      "kind": "move",
+      "beforeSha256": "879a19f147793d303363111c78f7841a7bef6c2efae6ce5f2d44f3f377fc2be7",
+      "afterSha256": "c4d2241c0088aac593f2137f9e079f8fed148be37c2c0b72990dececb1b66910"
+    },
+    {
+      "oldPath": "discussions/projects/guanglin/2026-05-15_询价管理_长协询价与广林项目定制流程讨论.md",
+      "newPath": "discussions/projects/guanglin/products/lianyun/2026-05-15_询价管理_长协询价与广林项目定制流程讨论.md",
+      "kind": "move",
+      "beforeSha256": "1e9f059bfd23ed5fe93f3c7eabe791fee660510b08b835cf24f577349927a8b6",
+      "afterSha256": "a4e3043a724b40bb7f46d2208abbe1211593efd389adac96d67b9997f8c07258"
+    },
+    {
+      "oldPath": "discussions/projects/guanglin/2026-05-16_货源询价_广林项目定制PRD拆分与原型重构讨论.md",
+      "newPath": "discussions/projects/guanglin/products/lianyun/2026-05-16_货源询价_广林项目定制PRD拆分与原型重构讨论.md",
+      "kind": "move",
+      "beforeSha256": "1e077b110a3f5c14bb8fb68aa081b562214e641481dc677f7d95dedb366f9b9e",
+      "afterSha256": "5e3312630b345560190d003f4c13f36ddd5d2cc2f99bb3294207dc2cb9ea3098"
+    },
+    {
+      "oldPath": "discussions/projects/guanglin/2026-05-16_货源询价_路线明细行内维护与配载方式讨论.md",
+      "newPath": "discussions/projects/guanglin/products/lianyun/2026-05-16_货源询价_路线明细行内维护与配载方式讨论.md",
+      "kind": "move",
+      "beforeSha256": "a966eeece6ef33892f2d1ed3fb20e7cfb92e4eb78fbb83d77524e18aaaf2efca",
+      "afterSha256": "b374f637fcf237777ab7caefb912fc63a8a055ff99a48e6a6617b268ccf9c48f"
+    },
+    {
+      "oldPath": "discussions/运输通道管理_运输通道与运输方案功能分析结论_v2.md",
+      "newPath": "discussions/common/products/lianyun/运输通道管理_运输通道与运输方案功能分析结论_v2.md",
+      "kind": "move",
+      "beforeSha256": "69357297c2bb3a94f2e2a066c20a291a7f299bdaea062913028b2542e89b8936",
+      "afterSha256": "8c92b42c5936dd417c3a7646ac49d16729890fe538f9e00e1802e68725f2ce0b"
+    },
+    {
+      "oldPath": "migration/beigang-migration-index.md",
+      "newPath": "migration/beigang-migration-index.md",
+      "kind": "update",
+      "beforeSha256": "9302c552dd6f5b834074c5312c21c831b6fd8810fe4687e82dc6b30c7b4dc3b4",
+      "afterSha256": "5b8ecf348ab42615ec4c70532b7d028025fc555e5d7eb996ea684a42dc5a73ea"
+    },
+    {
+      "oldPath": "migration/guanglin-migration-index.md",
+      "newPath": "migration/guanglin-migration-index.md",
+      "kind": "update",
+      "beforeSha256": "9d36a71491dc8b48687cdc5f97a8fd74d1e23e1c01bd240830126cdac23993a1",
+      "afterSha256": "11bc265a64eb313128989d96398c6d483e8756e7fe6ba26fd199d7cdfee238c9"
+    },
+    {
+      "oldPath": "migration/migration-index.md",
+      "newPath": "migration/migration-index.md",
+      "kind": "update",
+      "beforeSha256": "34a7c075c993aa4ed54db89614f65b02b7dc56237537995ff43d1e852b45d1f9",
+      "afterSha256": "ae7fecb6d7025f22920a33c79911f77d5ee1ee37671d3feccb1dfc17b529753d"
+    },
+    {
+      "oldPath": "migration/原型迁移进度总览.md",
+      "newPath": "migration/原型迁移进度总览.md",
+      "kind": "update",
+      "beforeSha256": "3b2fe0005c53ef159abe116a297061cc2c6eca52f7c21fa1f9b5ecc4d83624ac",
+      "afterSha256": "f0004921e5f3647b369bfb64d5b2a27cc89fbc43e4d3cc483de9ed510187fc9c"
+    },
+    {
+      "oldPath": "package.json",
+      "newPath": "package.json",
+      "kind": "update",
+      "beforeSha256": "f0e39a313302b2e9734a1488f2b7ee733900e7b95abda046480a3a322effe69a",
+      "afterSha256": "88d408b8d24e5b428c74706de9f4bf853c15156a73f5cc8e4c5598fd35cdcc1b"
+    },
+    {
+      "oldPath": "prd/projects/beigang/承运管理_社会运力采购闭环_PRD_v1.md",
+      "newPath": "prd/projects/beigang/products/lianyun/承运管理_社会运力采购闭环_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "3765fdaf20bf60306154ecff48224e572f5706c78c12be6edb129176e6954fcc",
+      "afterSha256": "92175a5b73c0417fde4c96fbe690deae5949ccabe926c2268a5d700a4e33ff1c"
+    },
+    {
+      "oldPath": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md",
+      "newPath": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "eeb9fad3ecb5d375f4579e5234c04ac49de8fcb4ee3324dd437a97c5a6bb7167",
+      "afterSha256": "8a429d2da9538d28aaf3dc58d5be54bc3358d6d1032e9aa6679585e6c2779787"
+    },
+    {
+      "oldPath": "prd/projects/guanglin/询价大厅_承运商端_PRD_v1.md",
+      "newPath": "prd/projects/guanglin/products/lianyun/询价大厅_承运商端_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "cd22a0b1a6599908da1ff9c6f60cdc8d083c9f50ec2322747b2aae461f05a8dc",
+      "afterSha256": "d9ebf5845478e6debaf5d6a94d254b85dae1be13a4447f4c77602aa49d28f2e4"
+    },
+    {
+      "oldPath": "prd/projects/guanglin/询价管理_无车承运人端_PRD_v1.md",
+      "newPath": "prd/projects/guanglin/products/lianyun/询价管理_无车承运人端_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "d2f4dad1130ca72edd26e9d69452b1fbf776f541dacd2627a249815b985afafc",
+      "afterSha256": "df59b669738404b8cf036fb6e00cde5e92d713bbf3305e46ca757f24ea25089b"
+    },
+    {
+      "oldPath": "prd/projects/guanglin/货源询价_广林项目定制总览_PRD_v1.md",
+      "newPath": "prd/projects/guanglin/products/lianyun/货源询价_广林项目定制总览_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "1b41a54acf9ad0024ca5fca43df9c3c6c752c0b2d6553d53046bc0814ccb74b4",
+      "afterSha256": "03ee3315a58ea4c7a477e31528e0e48c98849147a2bebb8169fd8008580882d4"
+    },
+    {
+      "oldPath": "prd/projects/guanglin/货源询价管理_货主端_PRD_v1.md",
+      "newPath": "prd/projects/guanglin/products/lianyun/货源询价管理_货主端_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "8cf86ef8858460d687f27dbb6c8bf7b50e40d80ba10732535642234bd815ea24",
+      "afterSha256": "942892112cba7432515ee0d91821ca65bcb41a80ced362c05621a30463282023"
+    },
+    {
+      "oldPath": "prd/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "2e41654b5d281312ee54df999b1285728dc9c7cfaef81914947384e577663bff",
+      "afterSha256": "38824aae45f2e4aa5d73a476b622cf36893b78212dcdb75cab798284b4df4af9"
+    },
+    {
+      "oldPath": "prd/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "98b6aa9369cebbb12d3d1bb6ef96c51ea5f6b6e5db5e228045894b5ac6330405",
+      "afterSha256": "b36f504748e57a5a31f80b68043dc29513d9a2e386033c6ddf81036cdf193c6f"
+    },
+    {
+      "oldPath": "prd/多式联运_创建联运计划_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "c926ccbc37f4060504d353083941f7fd3ba007932c721cadbc5c00c39a2690d3",
+      "afterSha256": "eff48480369ad9401beaba9538c1f52e7076a635725f821092950e4317ab15ac"
+    },
+    {
+      "oldPath": "prd/多式联运_联运计划管理页_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "1866a39bcdce316874dd10f8815da6d2eb361de06a6623ddb2446896e4c222ee",
+      "afterSha256": "444946bbf91b10f084e37648f9eb4c3af9cc04b0b7f03628d4bd4319d9452186"
+    },
+    {
+      "oldPath": "prd/多式联运_货主结算_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "d7eb4c944987f7cdee518dbddb4a4aef79c2be78e9b29359c71f02de29c9a22c",
+      "afterSha256": "2da454c5f3e222bd27511847f49617356b7aa2436f3a47a0dd071364670d1f3b"
+    },
+    {
+      "oldPath": "prd/托运单管理_托运单创建与管理_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "04921ca98dd717ad047ef5352c2669778fe004a5b2b7e7526a833642c2645249",
+      "afterSha256": "f56c4fa852fc2991a8fb11bceffbd0b88af543b30d971bda11bba984650d018c"
+    },
+    {
+      "oldPath": "prd/托运单管理_承运商报价页面_PRD_v2.md",
+      "newPath": "prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md",
+      "kind": "move",
+      "beforeSha256": "8d66c6370d34f854b31b8523396f25154bc5024c0f73d4cd3d2a5dd33cabf7f1",
+      "afterSha256": "40ba5bfaa4b325ae92fed8c34908210b13f7cad2b9ed303358b0d32f68c7cefd"
+    },
+    {
+      "oldPath": "prd/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md",
+      "newPath": "prd/pending-classification/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "f7cd0a2b2bae6105b88c9e2c5a904b5081253b90ef5b17238b544df7799426d4",
+      "afterSha256": "f33b1da399505fe446c182bd83124892d31a6cae0d96513da3c1df1127424840",
+      "currentStatus": "deleted-by-user-request"
+    },
+    {
+      "oldPath": "prd/运输余量扣量与返还控制_PRD_v1.md",
+      "newPath": "prd/common/products/lianyun/运输余量扣量与返还控制_PRD_v1.md",
+      "kind": "move",
+      "beforeSha256": "8ea2f0ad21db4ce63120d521528ebd0523a8c1cd907467af3c28e17263f5b3ae",
+      "afterSha256": "fcad0e146e77f5b06c0c811d7337b8ee01b65997f6acf93c7fc513a2eb3c614d"
+    },
+    {
+      "oldPath": "prd/运输通道管理_运输通道与运输方案管理_PRD_v2.md",
+      "newPath": "prd/common/products/lianyun/运输通道管理_运输通道与运输方案管理_PRD_v2.md",
+      "kind": "move",
+      "beforeSha256": "043531b2044bac2f44ddbe8a4db2cffcde9c5d42cdb961f8e32e0031411063dd",
+      "afterSha256": "deca3d90bc046a1306d9312d9ce847ffaf74802abe04ed3c961554db57a97a1b"
+    },
+    {
+      "oldPath": "prototype/common/business/mobile/至简智运/.gitkeep",
+      "newPath": "prototype/common/products/zhiyun/mobile/.gitkeep",
+      "kind": "move",
+      "beforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "afterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "oldPath": "prototype/common/business/mobile/至简联运/.gitkeep",
+      "newPath": "prototype/common/products/lianyun/mobile/.gitkeep",
+      "kind": "move",
+      "beforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "afterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "oldPath": "prototype/common/business/mobile/至简船运/.gitkeep",
+      "newPath": "prototype/common/products/chuanyun/mobile/.gitkeep",
+      "kind": "move",
+      "beforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "afterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/TmsSideNav.vue",
+      "newPath": "prototype/common/shared/web/tms-web-shell/TmsSideNav.vue",
+      "kind": "move",
+      "beforeSha256": "783e44fe558a27ca2ea721ccb58b732adc2b128615cb369e6524dc58df8447de",
+      "afterSha256": "783e44fe558a27ca2ea721ccb58b732adc2b128615cb369e6524dc58df8447de"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/TmsTopbar.vue",
+      "newPath": "prototype/common/shared/web/tms-web-shell/TmsTopbar.vue",
+      "kind": "move",
+      "beforeSha256": "f9804e7c64695e4c7e186368a0cbfedea87c184cf0e7d4a8d26de1bff7e4d03c",
+      "afterSha256": "f9804e7c64695e4c7e186368a0cbfedea87c184cf0e7d4a8d26de1bff7e4d03c"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/TmsWebShell.vue",
+      "newPath": "prototype/common/shared/web/tms-web-shell/TmsWebShell.vue",
+      "kind": "move",
+      "beforeSha256": "61c6c244f6257a71658a7e714869a7715c5a7f699131e8a95d53f15de6f37a40",
+      "afterSha256": "61c6c244f6257a71658a7e714869a7715c5a7f699131e8a95d53f15de6f37a40"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/TmsWorkspaceBar.vue",
+      "newPath": "prototype/common/shared/web/tms-web-shell/TmsWorkspaceBar.vue",
+      "kind": "move",
+      "beforeSha256": "4a8f2ab0077509209d7cec4e064654d3dfaa62ba797a5d96e8db9e80f3ed28b9",
+      "afterSha256": "4a8f2ab0077509209d7cec4e064654d3dfaa62ba797a5d96e8db9e80f3ed28b9"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/index.js",
+      "newPath": "prototype/common/shared/web/tms-web-shell/index.js",
+      "kind": "move",
+      "beforeSha256": "0ecfc982fe3ae852fc495f82c3f59b600e89369e464ea9c8565eafe2995c7474",
+      "afterSha256": "0ecfc982fe3ae852fc495f82c3f59b600e89369e464ea9c8565eafe2995c7474"
+    },
+    {
+      "oldPath": "prototype/common/business/web/_shared/tms-web-shell/shell-tokens.css",
+      "newPath": "prototype/common/shared/web/tms-web-shell/shell-tokens.css",
+      "kind": "move",
+      "beforeSha256": "04e72cb156202fa121475905e7f7f6efc839a5e8c8c92b6baa19f6135d8c2d1e",
+      "afterSha256": "04e72cb156202fa121475905e7f7f6efc839a5e8c8c92b6baa19f6135d8c2d1e"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/App.vue",
+      "kind": "move",
+      "beforeSha256": "830b2759a8aca10644752677ba64a87326b73bf9369538cbc924cd90df066bec",
+      "afterSha256": "aa3be578c4dbda1a21c09ef10eb152a273d874a474be636b9121b67e769782b7"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/BulkWaybillCreate.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/BulkWaybillCreate.vue",
+      "kind": "move",
+      "beforeSha256": "60e2d4e98dc4e3bbfbb3f1ad2a08a2c453ba53b1e98158f826ec20169fbdb6a2",
+      "afterSha256": "60e2d4e98dc4e3bbfbb3f1ad2a08a2c453ba53b1e98158f826ec20169fbdb6a2"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "c898923de5f3f372d7360fbdff8f3df10158a1f223e08a11693e122a6e70051e",
+      "afterSha256": "c898923de5f3f372d7360fbdff8f3df10158a1f223e08a11693e122a6e70051e"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/App.vue",
+      "kind": "move",
+      "beforeSha256": "5234f45695f54ab39bde14e79baf018f0c55bebd21c4e8851ce9a3f3750187aa",
+      "afterSha256": "1b14074c33bb900b89dbe2e36e4cb6cfcf76d9c222ae303e2f6ba19ddec9657e"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillBeidouColumn.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillBeidouColumn.vue",
+      "kind": "move",
+      "beforeSha256": "8e2332e558bf216a4ca11b3be0f29640d3151576e730023a95ef525984a859ea",
+      "afterSha256": "8e2332e558bf216a4ca11b3be0f29640d3151576e730023a95ef525984a859ea"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillDetailHeader.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillDetailHeader.vue",
+      "kind": "move",
+      "beforeSha256": "c5db297a9af1968cc39308c648b72c517713719665210da3213b6a19ac51ced0",
+      "afterSha256": "c5db297a9af1968cc39308c648b72c517713719665210da3213b6a19ac51ced0"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillLeftPanel.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillLeftPanel.vue",
+      "kind": "move",
+      "beforeSha256": "cef0d5cd70b19587ca599c25df565761fcf7e86ebb26a4918a27b865552a979b",
+      "afterSha256": "cef0d5cd70b19587ca599c25df565761fcf7e86ebb26a4918a27b865552a979b"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillMapCenter.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillMapCenter.vue",
+      "kind": "move",
+      "beforeSha256": "fd5afc79094cb767fb4d48d05c1dba194002e8bac3c4904f23c8d409b4e37aee",
+      "afterSha256": "fd5afc79094cb767fb4d48d05c1dba194002e8bac3c4904f23c8d409b4e37aee"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillRightPanel.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillRightPanel.vue",
+      "kind": "move",
+      "beforeSha256": "d9afdefacadf4c2b597bfef9d7bfda62e8c241ed4b929fa5723b7bb7fe139e9b",
+      "afterSha256": "d9afdefacadf4c2b597bfef9d7bfda62e8c241ed4b929fa5723b7bb7fe139e9b"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/components/WaybillSegmentsColumn.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/components/WaybillSegmentsColumn.vue",
+      "kind": "move",
+      "beforeSha256": "fc90c3a97eba61a0a4759b36cfb45e9010e4552f7886580df442fc37203ab971",
+      "afterSha256": "fc90c3a97eba61a0a4759b36cfb45e9010e4552f7886580df442fc37203ab971"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "871e9e98f73555acf306935596ba3dacd2c24f9ac6eddc789a3f419718b498de",
+      "afterSha256": "871e9e98f73555acf306935596ba3dacd2c24f9ac6eddc789a3f419718b498de"
+    },
+    {
+      "oldPath": "prototype/common/business/web/托运单管理/详情/waybill-detail.css",
+      "newPath": "prototype/common/products/lianyun/web/business/托运单管理/详情/waybill-detail.css",
+      "kind": "move",
+      "beforeSha256": "cbedf23208e964945016ae8d0626e64a3b8fc29130b28875bea3b2ad1ed91635",
+      "afterSha256": "cbedf23208e964945016ae8d0626e64a3b8fc29130b28875bea3b2ad1ed91635"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/App.vue",
+      "kind": "move",
+      "beforeSha256": "e1815c88247f8afdee3c259d6878ede6a00a6dd04699efcb103d7d9694f2c8ae",
+      "afterSha256": "ff547fe0a57854f12c35fde2a58dbab035789ad0a58486c553d6a131abd1bceb"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/components/PlanCard.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/components/PlanCard.vue",
+      "kind": "move",
+      "beforeSha256": "277c57b9f6309996b7b9cae9b3816f29eed32eea1a94dd3f24d6831a37196cb5",
+      "afterSha256": "277c57b9f6309996b7b9cae9b3816f29eed32eea1a94dd3f24d6831a37196cb5"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/components/PlanFilterBar.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/components/PlanFilterBar.vue",
+      "kind": "move",
+      "beforeSha256": "9e2a0c43ea792db49aae7c65cfbb78d4391a39481a1af0c7d127daf7af6a29b1",
+      "afterSha256": "9e2a0c43ea792db49aae7c65cfbb78d4391a39481a1af0c7d127daf7af6a29b1"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/components/PlanPagination.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/components/PlanPagination.vue",
+      "kind": "move",
+      "beforeSha256": "0688a5d8988b4c98d7ae77875753908024258a7e336f51a41097e1dda432d4e9",
+      "afterSha256": "0688a5d8988b4c98d7ae77875753908024258a7e336f51a41097e1dda432d4e9"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/components/PlanStatusTabs.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/components/PlanStatusTabs.vue",
+      "kind": "move",
+      "beforeSha256": "0490bfaebad97730941cfe3278fba5dd5b56b903af2b237259c57929e2d24501",
+      "afterSha256": "0490bfaebad97730941cfe3278fba5dd5b56b903af2b237259c57929e2d24501"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/components/PlanToolbar.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/components/PlanToolbar.vue",
+      "kind": "move",
+      "beforeSha256": "1893e8675fcea504408b71504a7ee0c35324584cf1b81334a1a630d1ec6f22c1",
+      "afterSha256": "1893e8675fcea504408b71504a7ee0c35324584cf1b81334a1a630d1ec6f22c1"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "032dc6aaeef4a1e9d15e99154506d57c5162e364eff09505df1bc013b6a5508a",
+      "afterSha256": "032dc6aaeef4a1e9d15e99154506d57c5162e364eff09505df1bc013b6a5508a"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/multimodal-plan.css",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/multimodal-plan.css",
+      "kind": "move",
+      "beforeSha256": "17b3006e4d0833900633cc6af1b26048f650af122216448116ce3cd1c19fb112",
+      "afterSha256": "17b3006e4d0833900633cc6af1b26048f650af122216448116ce3cd1c19fb112"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/App.vue",
+      "kind": "move",
+      "beforeSha256": "854c80d055b362ed0d6701a28b678dd11fa0463dde1740f3901d64c2fc1e27e1",
+      "afterSha256": "79a32d3af4df781183d5eea2c781a122252e2a03c9f735d8b2a27b7d87c104ca"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/AttachmentSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/AttachmentSection.vue",
+      "kind": "move",
+      "beforeSha256": "6f0b3a9f7cf7831c509f11ee0c05c5f81da740bc8419863b718a06976d20f938",
+      "afterSha256": "6f0b3a9f7cf7831c509f11ee0c05c5f81da740bc8419863b718a06976d20f938"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/BasicInfoSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/BasicInfoSection.vue",
+      "kind": "move",
+      "beforeSha256": "58cfe1e5685bdf06a883cb90739bbe5fb10e1a82c7d1d761b40d88ea4f8d106b",
+      "afterSha256": "58cfe1e5685bdf06a883cb90739bbe5fb10e1a82c7d1d761b40d88ea4f8d106b"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/CargoInfoSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/CargoInfoSection.vue",
+      "kind": "move",
+      "beforeSha256": "b69adcb3a56d2f50cf55f49522d1c2cc6accc585a3fce1133776195730e907a6",
+      "afterSha256": "b69adcb3a56d2f50cf55f49522d1c2cc6accc585a3fce1133776195730e907a6"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/ExtraFeeSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/ExtraFeeSection.vue",
+      "kind": "move",
+      "beforeSha256": "9347d2bc77c52b5a4e46ed05c1f1a654fba3f407e9c1aeeb83542a5b16d85c39",
+      "afterSha256": "9347d2bc77c52b5a4e46ed05c1f1a654fba3f407e9c1aeeb83542a5b16d85c39"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/FeeInfoSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/FeeInfoSection.vue",
+      "kind": "move",
+      "beforeSha256": "7fa7bec60774539729b6dcc6899be3afbdcd17da4312434e357a3fbda1434817",
+      "afterSha256": "7fa7bec60774539729b6dcc6899be3afbdcd17da4312434e357a3fbda1434817"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/components/RouteInfoSection.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/components/RouteInfoSection.vue",
+      "kind": "move",
+      "beforeSha256": "c12c6744652e27c56122cd44fa681550aee07b02acc3f5e8ffc286b7c7810a2e",
+      "afterSha256": "c12c6744652e27c56122cd44fa681550aee07b02acc3f5e8ffc286b7c7810a2e"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/create-plan.css",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/create-plan.css",
+      "kind": "move",
+      "beforeSha256": "013396b8f078247f0d5306246a905a5f46ef397c8cc1ab6dbff688fba563decc",
+      "afterSha256": "013396b8f078247f0d5306246a905a5f46ef397c8cc1ab6dbff688fba563decc"
+    },
+    {
+      "oldPath": "prototype/common/business/web/联运计划管理/创建联运计划/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "4e8955dc8b71ceb2f5c1d320dd296906a44c32f7c222cecec265d81fc5f6bbd3",
+      "afterSha256": "4e8955dc8b71ceb2f5c1d320dd296906a44c32f7c222cecec265d81fc5f6bbd3"
+    },
+    {
+      "oldPath": "prototype/common/business/web/货主结算/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/货主结算/App.vue",
+      "kind": "move",
+      "beforeSha256": "c1aef5e82244f38fd0b56d5846cb82333bc2387ad7d0e417dc99b512dd128931",
+      "afterSha256": "c1aef5e82244f38fd0b56d5846cb82333bc2387ad7d0e417dc99b512dd128931"
+    },
+    {
+      "oldPath": "prototype/common/business/web/货主结算/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/货主结算/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "5bd5b290a45fcab436f09b2a3e4e5437ef51fcc4ff66bc09cfc54ed7365fbe64",
+      "afterSha256": "5bd5b290a45fcab436f09b2a3e4e5437ef51fcc4ff66bc09cfc54ed7365fbe64"
+    },
+    {
+      "oldPath": "prototype/common/business/web/货主结算/settlement-rules.mjs",
+      "newPath": "prototype/common/products/lianyun/web/business/货主结算/settlement-rules.mjs",
+      "kind": "move",
+      "beforeSha256": "51e6a9d984eb9d0975c4739a402d5ad84ec348919d1bb3340a359f3696e33265",
+      "afterSha256": "51e6a9d984eb9d0975c4739a402d5ad84ec348919d1bb3340a359f3696e33265"
+    },
+    {
+      "oldPath": "prototype/common/business/web/货主结算/settlement-rules.test.mjs",
+      "newPath": "prototype/common/products/lianyun/web/business/货主结算/settlement-rules.test.mjs",
+      "kind": "move",
+      "beforeSha256": "bfdb954f59c214fbd8894b10d6175a46ab240ec3a70fe13caff5bdad02f77f09",
+      "afterSha256": "bfdb954f59c214fbd8894b10d6175a46ab240ec3a70fe13caff5bdad02f77f09"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/App.vue",
+      "kind": "move",
+      "beforeSha256": "141fa1799565b03bbaac4828ace5181137e7cd0950e4077096be03f3b845f3c2",
+      "afterSha256": "0431d320969b3725fc25f53e74fbaa8b71ce9c5929e9b45cd1040395bde7da2a"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/components/WaybillFilterBar.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/components/WaybillFilterBar.vue",
+      "kind": "move",
+      "beforeSha256": "757b93e026f1c66e3c781efb929790134ff080f0098713071dea65f1fc12bf87",
+      "afterSha256": "757b93e026f1c66e3c781efb929790134ff080f0098713071dea65f1fc12bf87"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/components/WaybillKindTabs.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/components/WaybillKindTabs.vue",
+      "kind": "move",
+      "beforeSha256": "d595d4dab226cbe46f87315cc417fc7de51361167f1956639fc3590fdcb6756f",
+      "afterSha256": "d595d4dab226cbe46f87315cc417fc7de51361167f1956639fc3590fdcb6756f"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/components/WaybillPagination.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/components/WaybillPagination.vue",
+      "kind": "move",
+      "beforeSha256": "8f6620b4dac06a5901e96a982ccadf3ab06179feb289b89a2873135e13f6344c",
+      "afterSha256": "8f6620b4dac06a5901e96a982ccadf3ab06179feb289b89a2873135e13f6344c"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/components/WaybillStatusTabs.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/components/WaybillStatusTabs.vue",
+      "kind": "move",
+      "beforeSha256": "71ba3d772e1b8b610e704d693c6b747d49d07fcf3c0f7eac5bcb4b2f67aa7242",
+      "afterSha256": "71ba3d772e1b8b610e704d693c6b747d49d07fcf3c0f7eac5bcb4b2f67aa7242"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/components/WaybillTable.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/components/WaybillTable.vue",
+      "kind": "move",
+      "beforeSha256": "7f03701d670864c9b1fbc417952185f797d8e5d47e8408703cd5153d87501546",
+      "afterSha256": "7f03701d670864c9b1fbc417952185f797d8e5d47e8408703cd5153d87501546"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "28167534e6ece48b8a9903f0f9821dd09885405b01b2646df58ee1136008c67d",
+      "afterSha256": "f3cda67310d061cd958c0fcd4bdd9ec45ec35186e8d3ef8e4f22b46577269f5c"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/waybill-center.css",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/waybill-center.css",
+      "kind": "move",
+      "beforeSha256": "78e7887926a88cd2766638dc2391308070a7be469f71531b826d2a5b8605c294",
+      "afterSha256": "78e7887926a88cd2766638dc2391308070a7be469f71531b826d2a5b8605c294"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/App.vue",
+      "kind": "move",
+      "beforeSha256": "6ca2658e243d97e88d57910b6d0799c79a1311532b2605399e0bfcb9c2593b53",
+      "afterSha256": "6ca2658e243d97e88d57910b6d0799c79a1311532b2605399e0bfcb9c2593b53"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/components/DetailFees.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/components/DetailFees.vue",
+      "kind": "move",
+      "beforeSha256": "88a9274813ba15e74914ef03e21b2d7aa21dfb9ea7306b9e529473276acb3adb",
+      "afterSha256": "88a9274813ba15e74914ef03e21b2d7aa21dfb9ea7306b9e529473276acb3adb"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/components/DetailHeader.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/components/DetailHeader.vue",
+      "kind": "move",
+      "beforeSha256": "0dec2265a3154e3acd2f82cf16cd38f2b5137ddd0a1782fe3d0720ddcf134104",
+      "afterSha256": "0dec2265a3154e3acd2f82cf16cd38f2b5137ddd0a1782fe3d0720ddcf134104"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/components/DetailLeftPanel.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/components/DetailLeftPanel.vue",
+      "kind": "move",
+      "beforeSha256": "b5d0f35f397d0e47300acc0a8082e8418e07c986a719a0ab245930f54474eaa2",
+      "afterSha256": "b5d0f35f397d0e47300acc0a8082e8418e07c986a719a0ab245930f54474eaa2"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/components/DetailMap.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/components/DetailMap.vue",
+      "kind": "move",
+      "beforeSha256": "db8217e06f5459939114a0c60122d2a48ecb5fed41c312b01fe077f7ec9e3c94",
+      "afterSha256": "db8217e06f5459939114a0c60122d2a48ecb5fed41c312b01fe077f7ec9e3c94"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "1513c8251a8b9d49182abe21b7ef535d28f66f9203b2dd6facfed6fbf917eb6b",
+      "afterSha256": "79996c72f9e8e76256f482357dfb683ae334e1227d173839f8a3507f59d1b4a5"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运单中心/详情/waybill-detail.css",
+      "newPath": "prototype/common/products/lianyun/web/business/运单中心/详情/waybill-detail.css",
+      "kind": "move",
+      "beforeSha256": "3b34b4a19940336f9a4276d8cfa7d53343d5633291388fa629a2c092023b8bd8",
+      "afterSha256": "3b34b4a19940336f9a4276d8cfa7d53343d5633291388fa629a2c092023b8bd8"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/App.vue",
+      "kind": "move",
+      "beforeSha256": "584be70e9bf26f6519068fada4060a8e781972cb02148878e12f2779cc23f484",
+      "afterSha256": "65a874739089b3f68754994de0561e7381cfd4a21535a722e21c3b8dd4a52167"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskDetailRow.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskDetailRow.vue",
+      "kind": "move",
+      "beforeSha256": "04950b0eb9b0561bdc682104889002c6af26f61b32c25132f36b669d3e6c4037",
+      "afterSha256": "04950b0eb9b0561bdc682104889002c6af26f61b32c25132f36b669d3e6c4037"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskFilterBar.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskFilterBar.vue",
+      "kind": "move",
+      "beforeSha256": "a289637ee87ac6ba554cac582f81cbcae98ec26989df11a986df43ce9d1326fd",
+      "afterSha256": "a289637ee87ac6ba554cac582f81cbcae98ec26989df11a986df43ce9d1326fd"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskPagination.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskPagination.vue",
+      "kind": "move",
+      "beforeSha256": "361218fb3488149a21d1977d2c4bdcaec9ecf1ee57d6be2cf230c40fbe4924df",
+      "afterSha256": "361218fb3488149a21d1977d2c4bdcaec9ecf1ee57d6be2cf230c40fbe4924df"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskProgress.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskProgress.vue",
+      "kind": "move",
+      "beforeSha256": "42509f93a1da79edc63fffb4210ae4dc96be0a41dcb0c5dec29c13bd6a0d90f3",
+      "afterSha256": "42509f93a1da79edc63fffb4210ae4dc96be0a41dcb0c5dec29c13bd6a0d90f3"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskStatusTabs.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskStatusTabs.vue",
+      "kind": "move",
+      "beforeSha256": "d2115f1837246cb1355710db34fdf2de68d576add984b919c65a3d96ca02a5bf",
+      "afterSha256": "d2115f1837246cb1355710db34fdf2de68d576add984b919c65a3d96ca02a5bf"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskSummary.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskSummary.vue",
+      "kind": "move",
+      "beforeSha256": "decd406f53e98a00004e3024db5bf2a52d45d8db851bfb4879f4d9b2d7e8934d",
+      "afterSha256": "decd406f53e98a00004e3024db5bf2a52d45d8db851bfb4879f4d9b2d7e8934d"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TaskTopLogo.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TaskTopLogo.vue",
+      "kind": "move",
+      "beforeSha256": "719f7de80591e25c08ad05f358c28f1020e48d0c1655edf715d30de3104e6d8c",
+      "afterSha256": "719f7de80591e25c08ad05f358c28f1020e48d0c1655edf715d30de3104e6d8c"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/TransportTaskCard.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/TransportTaskCard.vue",
+      "kind": "move",
+      "beforeSha256": "491a986727de844e3156165de622cae8bbb1f7ad03028f6598961166f87b4451",
+      "afterSha256": "491a986727de844e3156165de622cae8bbb1f7ad03028f6598961166f87b4451"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/components/WaypointPopover.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/components/WaypointPopover.vue",
+      "kind": "move",
+      "beforeSha256": "555e3a49e1f7b0868fc5168df2b54948795cf3538da9c9a28dbf96f37903c60e",
+      "afterSha256": "555e3a49e1f7b0868fc5168df2b54948795cf3538da9c9a28dbf96f37903c60e"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "5cc358aea91a0f454cc13703b62d2f724e789b842675ea0b81dce38e9bcec15a",
+      "afterSha256": "5cc358aea91a0f454cc13703b62d2f724e789b842675ea0b81dce38e9bcec15a"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/task-model.js",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/task-model.js",
+      "kind": "move",
+      "beforeSha256": "9ea2619594d613cebb50e45c264670a99dcca53940d70661717741791146dec8",
+      "afterSha256": "9ea2619594d613cebb50e45c264670a99dcca53940d70661717741791146dec8"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输任务/transport-task.css",
+      "newPath": "prototype/common/products/lianyun/web/business/运输任务/transport-task.css",
+      "kind": "move",
+      "beforeSha256": "6b07bb16cb9915f62bfaa9a0913b3fa404b432ae7bc025f9b6ae6ff9f11b4d7b",
+      "afterSha256": "6b07bb16cb9915f62bfaa9a0913b3fa404b432ae7bc025f9b6ae6ff9f11b4d7b"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输通道管理/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/运输通道管理/App.vue",
+      "kind": "move",
+      "beforeSha256": "fe01a3842a572a189be0608c883848cfa7c1c1b15d494ca042e4afb285c267c0",
+      "afterSha256": "9b0895de0b2757efafc42d1bde3c00dc5c6f2000df129ccf89334589887d2308"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输通道管理/channel-styles.css",
+      "newPath": "prototype/common/products/lianyun/web/business/运输通道管理/channel-styles.css",
+      "kind": "move",
+      "beforeSha256": "2c6d1932eb18297bc0c621b0a3fe85632d689401ca2f122ced0e4407cc14beb0",
+      "afterSha256": "2c6d1932eb18297bc0c621b0a3fe85632d689401ca2f122ced0e4407cc14beb0"
+    },
+    {
+      "oldPath": "prototype/common/business/web/运输通道管理/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/运输通道管理/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "9144a9175c2eee4c23a2843d671791bce7007fbe62639e66890f98afa4fb868a",
+      "afterSha256": "9144a9175c2eee4c23a2843d671791bce7007fbe62639e66890f98afa4fb868a"
+    },
+    {
+      "oldPath": "prototype/common/business/web/集装箱计划创建/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/集装箱计划创建/App.vue",
+      "kind": "move",
+      "beforeSha256": "d9a677b8dd1655ef2ae50fc08407a013e7c72912e7536e66fb76d55b99d3f4e4",
+      "afterSha256": "d9a677b8dd1655ef2ae50fc08407a013e7c72912e7536e66fb76d55b99d3f4e4"
+    },
+    {
+      "oldPath": "prototype/common/business/web/集装箱计划创建/FeeForm.vue",
+      "newPath": "prototype/common/products/lianyun/web/business/集装箱计划创建/FeeForm.vue",
+      "kind": "move",
+      "beforeSha256": "7d502294bd643a48af0cedc3b319440195dd4edfc396d6ed9fd609da4808ffa1",
+      "afterSha256": "7d502294bd643a48af0cedc3b319440195dd4edfc396d6ed9fd609da4808ffa1"
+    },
+    {
+      "oldPath": "prototype/common/business/web/集装箱计划创建/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/business/集装箱计划创建/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "a3635f82d115d87aeea688c7ed6018dd12b6becd00ee5f95a691eafe422f7fa5",
+      "afterSha256": "a3635f82d115d87aeea688c7ed6018dd12b6becd00ee5f95a691eafe422f7fa5"
+    },
+    {
+      "oldPath": "prototype/common/driver/mobile/.gitkeep",
+      "newPath": "prototype/common/operation-apps/driver/mobile/.gitkeep",
+      "kind": "move",
+      "beforeSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "afterSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "oldPath": "prototype/common/portal/承运商报价/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/portal/承运商报价/App.vue",
+      "kind": "move",
+      "beforeSha256": "816eafc66d95220a8da2cf0613690ae0c26ff3ee2256e5d215b6dabe6aa39966",
+      "afterSha256": "cb3a7fc35e1d6e8681886b108ff09b77658cecd24b11d8f970c0052294e77baa"
+    },
+    {
+      "oldPath": "prototype/common/portal/承运商报价/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/portal/承运商报价/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "d65e2a36eb7fad3af810280ee2f094eb35e9329ab644e7742a48393b5d81aaa6",
+      "afterSha256": "d65e2a36eb7fad3af810280ee2f094eb35e9329ab644e7742a48393b5d81aaa6"
+    },
+    {
+      "oldPath": "prototype/common/portal/货源大厅/App.vue",
+      "newPath": "prototype/common/products/lianyun/web/portal/货源大厅/App.vue",
+      "kind": "move",
+      "beforeSha256": "6054a64f4803cfbacc908cad8a63f118407cf00cd576eff0b1bf603c2fb06b4c",
+      "afterSha256": "c29d3b3b2a2fbfea823f45f562a2373958bbe984a82a53ca327be9f23eee563b"
+    },
+    {
+      "oldPath": "prototype/common/portal/货源大厅/mock-data.js",
+      "newPath": "prototype/common/products/lianyun/web/portal/货源大厅/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "679650d27826c7ccacb83b390183b37f89754dcf5c693dbe2266590e6ea8e4ed",
+      "afterSha256": "679650d27826c7ccacb83b390183b37f89754dcf5c693dbe2266590e6ea8e4ed"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/BiddingQuotePage.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/BiddingQuotePage.vue",
+      "kind": "move",
+      "beforeSha256": "c7ac9dbdba3ed5a0fda981a19f7f100b749fa3477109aebd15a0a37430db0868",
+      "afterSha256": "c7ac9dbdba3ed5a0fda981a19f7f100b749fa3477109aebd15a0a37430db0868"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/CargoBiddingDetail.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/CargoBiddingDetail.vue",
+      "kind": "move",
+      "beforeSha256": "c5552870d2e9a2f5405c6528acb8a79bf6d2b25f9a9850a7d96a04b0c4eac59a",
+      "afterSha256": "c5552870d2e9a2f5405c6528acb8a79bf6d2b25f9a9850a7d96a04b0c4eac59a"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/MyQuotes.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/MyQuotes.vue",
+      "kind": "move",
+      "beforeSha256": "ade5c255105b7b76f22f240db18c53e26e4469ddec0f4a14df15648906c34a2c",
+      "afterSha256": "ade5c255105b7b76f22f240db18c53e26e4469ddec0f4a14df15648906c34a2c"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/OrderCenter.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/OrderCenter.vue",
+      "kind": "move",
+      "beforeSha256": "0a4e85691ad74e975b1d8260cc6f23f9ca61d35297a1c34ed7d109ad2e2912f9",
+      "afterSha256": "0a4e85691ad74e975b1d8260cc6f23f9ca61d35297a1c34ed7d109ad2e2912f9"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/QuoteDetail.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/QuoteDetail.vue",
+      "kind": "move",
+      "beforeSha256": "9752a9f720a23340e34c2e7cf84bb764d1b8f0e6d06741c3d88763a9154998da",
+      "afterSha256": "9752a9f720a23340e34c2e7cf84bb764d1b8f0e6d06741c3d88763a9154998da"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/ShipownerHome.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/ShipownerHome.vue",
+      "kind": "move",
+      "beforeSha256": "594c533c0b545ccb9bae70b99bb0da35ca8269545547d7bd55af963eef8d096b",
+      "afterSha256": "594c533c0b545ccb9bae70b99bb0da35ca8269545547d7bd55af963eef8d096b"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/mock-data.js",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "04ed6d931f625e9da32b43833a9896bc32d2ca9cc1aa5a687f539562d62a04a2",
+      "afterSha256": "04ed6d931f625e9da32b43833a9896bc32d2ca9cc1aa5a687f539562d62a04a2"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/企业移动端/styles.css",
+      "newPath": "prototype/projects/beigang/products/lianyun/mobile/styles.css",
+      "kind": "move",
+      "beforeSha256": "1a2063e42297efd9bb26dce13622728f07ecf7df917ffdf495379543f56eff2b",
+      "afterSha256": "1a2063e42297efd9bb26dce13622728f07ecf7df917ffdf495379543f56eff2b"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/船东/RunCargo.vue",
+      "newPath": "prototype/projects/beigang/operation-apps/shipowner/mobile/RunCargo.vue",
+      "kind": "move",
+      "beforeSha256": "4744edfd5a40b949bfeaa8c0e626aa2acca6b11bd130890412697e3b1706b122",
+      "afterSha256": "4744edfd5a40b949bfeaa8c0e626aa2acca6b11bd130890412697e3b1706b122"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/船东/ShipownerApp.vue",
+      "newPath": "prototype/projects/beigang/operation-apps/shipowner/mobile/ShipownerApp.vue",
+      "kind": "move",
+      "beforeSha256": "44b21cca2fc42e6eab6d473fda85dea7e6944710576f4a7398e7f132b3048016",
+      "afterSha256": "44b21cca2fc42e6eab6d473fda85dea7e6944710576f4a7398e7f132b3048016"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/船东/WaybillCenter.vue",
+      "newPath": "prototype/projects/beigang/operation-apps/shipowner/mobile/WaybillCenter.vue",
+      "kind": "move",
+      "beforeSha256": "590d7325a8cf2b3ef0b65a7d48edf07ab3f7d8363080eaf23bc6bf5c5ca0c077",
+      "afterSha256": "590d7325a8cf2b3ef0b65a7d48edf07ab3f7d8363080eaf23bc6bf5c5ca0c077"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/船东/WaybillDetail.vue",
+      "newPath": "prototype/projects/beigang/operation-apps/shipowner/mobile/WaybillDetail.vue",
+      "kind": "move",
+      "beforeSha256": "98a43a5dddeecb01571ab92d786e0447f0810fe66706c190cc1bf0e2ed4a85f7",
+      "afterSha256": "98a43a5dddeecb01571ab92d786e0447f0810fe66706c190cc1bf0e2ed4a85f7"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/船东/mock-data.js",
+      "newPath": "prototype/projects/beigang/operation-apps/shipowner/mobile/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "bbda4757d279e17d7b5395586deaed27a10f1101b0a5084de5ba568f0e8c439c",
+      "afterSha256": "bbda4757d279e17d7b5395586deaed27a10f1101b0a5084de5ba568f0e8c439c"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/App.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/App.vue",
+      "kind": "move",
+      "beforeSha256": "687e14a94f190ac5bd2569900992ccd908ef04eb0f18fbe8761ec376397be1ef",
+      "afterSha256": "59bee5a0da7192239e4e684620a41543b9f5d7478f1db2f1ce36fadc3b37386b"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/address-change-store.js",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/address-change-store.js",
+      "kind": "move",
+      "beforeSha256": "126abb69d373ca3164cbefc94341cce52958c77fb1927772d55e6449fcaeaa31",
+      "afterSha256": "126abb69d373ca3164cbefc94341cce52958c77fb1927772d55e6449fcaeaa31"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/AddressChangeDialog.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/AddressChangeDialog.vue",
+      "kind": "move",
+      "beforeSha256": "284d954880c08611eddbf44ddaafc06df4b7d5551a85f16b25eea1ad7fc7a95b",
+      "afterSha256": "284d954880c08611eddbf44ddaafc06df4b7d5551a85f16b25eea1ad7fc7a95b"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillFilterBar.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillFilterBar.vue",
+      "kind": "move",
+      "beforeSha256": "757b93e026f1c66e3c781efb929790134ff080f0098713071dea65f1fc12bf87",
+      "afterSha256": "757b93e026f1c66e3c781efb929790134ff080f0098713071dea65f1fc12bf87"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillKindTabs.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillKindTabs.vue",
+      "kind": "move",
+      "beforeSha256": "d595d4dab226cbe46f87315cc417fc7de51361167f1956639fc3590fdcb6756f",
+      "afterSha256": "d595d4dab226cbe46f87315cc417fc7de51361167f1956639fc3590fdcb6756f"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillPagination.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillPagination.vue",
+      "kind": "move",
+      "beforeSha256": "8f6620b4dac06a5901e96a982ccadf3ab06179feb289b89a2873135e13f6344c",
+      "afterSha256": "8f6620b4dac06a5901e96a982ccadf3ab06179feb289b89a2873135e13f6344c"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillStatusTabs.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillStatusTabs.vue",
+      "kind": "move",
+      "beforeSha256": "71ba3d772e1b8b610e704d693c6b747d49d07fcf3c0f7eac5bcb4b2f67aa7242",
+      "afterSha256": "71ba3d772e1b8b610e704d693c6b747d49d07fcf3c0f7eac5bcb4b2f67aa7242"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillTable.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillTable.vue",
+      "kind": "move",
+      "beforeSha256": "5fe8692ad00326b4d2ba0e7f5e71e4c164be24d99840443cc2b82c6eebe50b68",
+      "afterSha256": "5fe8692ad00326b4d2ba0e7f5e71e4c164be24d99840443cc2b82c6eebe50b68"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/components/WaybillTypePanel.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/components/WaybillTypePanel.vue",
+      "kind": "move",
+      "beforeSha256": "5900045125c9256bbbbd0ad02e42dfaf849a2489ba26a51d4825d8a042d9c0f1",
+      "afterSha256": "5900045125c9256bbbbd0ad02e42dfaf849a2489ba26a51d4825d8a042d9c0f1"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/mock-data.js",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "8bbdf58e6e6428e43ce583c3d2896b1344ae7bee48d722ea7eac23c3e430b322",
+      "afterSha256": "8bbdf58e6e6428e43ce583c3d2896b1344ae7bee48d722ea7eac23c3e430b322"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/notes.md",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/notes.md",
+      "kind": "move",
+      "beforeSha256": "5213ccea96b3493cc78dd7d7edeef8e29bf8fdf425ff13c3d6773bd256986ef4",
+      "afterSha256": "6b7fe5f7fa77b9ad7317555f817c146311c4cadad76ceed9c31ab2fecc2d89eb"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/waybill-center.css",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/waybill-center.css",
+      "kind": "move",
+      "beforeSha256": "fe9d2810ca88b847b0c86a27f5d28ddefad16214e037303226b67ad5f5348346",
+      "afterSha256": "fe9d2810ca88b847b0c86a27f5d28ddefad16214e037303226b67ad5f5348346"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/App.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/App.vue",
+      "kind": "move",
+      "beforeSha256": "e6b3b4250268b360997616145ffc8c5955d87392de4b6fba89d721a789dada5e",
+      "afterSha256": "5c11ad306c96b8b91b09eece285d881d8552b4d2636e7f581faa2c8fbf5c58b4"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/components/AddressChangeDrawer.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/components/AddressChangeDrawer.vue",
+      "kind": "move",
+      "beforeSha256": "c4b277899470a6dbacaa13f429a5f774748f17817649124400a07b102608046b",
+      "afterSha256": "c4b277899470a6dbacaa13f429a5f774748f17817649124400a07b102608046b"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/components/DetailFees.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/components/DetailFees.vue",
+      "kind": "move",
+      "beforeSha256": "88a9274813ba15e74914ef03e21b2d7aa21dfb9ea7306b9e529473276acb3adb",
+      "afterSha256": "88a9274813ba15e74914ef03e21b2d7aa21dfb9ea7306b9e529473276acb3adb"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/components/DetailHeader.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/components/DetailHeader.vue",
+      "kind": "move",
+      "beforeSha256": "0dec2265a3154e3acd2f82cf16cd38f2b5137ddd0a1782fe3d0720ddcf134104",
+      "afterSha256": "0dec2265a3154e3acd2f82cf16cd38f2b5137ddd0a1782fe3d0720ddcf134104"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/components/DetailLeftPanel.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/components/DetailLeftPanel.vue",
+      "kind": "move",
+      "beforeSha256": "163105fb54578c713ce3f7ab80f7280e324dc3529e180898ef8ce140e04760dc",
+      "afterSha256": "163105fb54578c713ce3f7ab80f7280e324dc3529e180898ef8ce140e04760dc"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/components/DetailMap.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/components/DetailMap.vue",
+      "kind": "move",
+      "beforeSha256": "db8217e06f5459939114a0c60122d2a48ecb5fed41c312b01fe077f7ec9e3c94",
+      "afterSha256": "db8217e06f5459939114a0c60122d2a48ecb5fed41c312b01fe077f7ec9e3c94"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/mock-data.js",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "934d05c34b9e3e94191f0e7ba7cb45e8c06acef3f5a699b33f02f85c96788cc7",
+      "afterSha256": "934d05c34b9e3e94191f0e7ba7cb45e8c06acef3f5a699b33f02f85c96788cc7"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运单中心/详情/waybill-detail.css",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运单中心/详情/waybill-detail.css",
+      "kind": "move",
+      "beforeSha256": "66ff337f6ed32adf61600f1d7fdbabd20b4e81e682a365ca0751636354d8cae4",
+      "afterSha256": "66ff337f6ed32adf61600f1d7fdbabd20b4e81e682a365ca0751636354d8cae4"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/App.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/App.vue",
+      "kind": "move",
+      "beforeSha256": "98759ed908de59907b5eb390a1b6af6a43ef9605e60facca7bbd84c61c1bcdc0",
+      "afterSha256": "98759ed908de59907b5eb390a1b6af6a43ef9605e60facca7bbd84c61c1bcdc0"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/CapacityBiddingDetailDialog.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/CapacityBiddingDetailDialog.vue",
+      "kind": "move",
+      "beforeSha256": "73640b63919472bf36035137a1cba6d37660c1e0a6e5384e00cb806026ea4dd1",
+      "afterSha256": "73640b63919472bf36035137a1cba6d37660c1e0a6e5384e00cb806026ea4dd1"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/CapacityBiddingPanel.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/CapacityBiddingPanel.vue",
+      "kind": "move",
+      "beforeSha256": "73e82cb57aa2999405c8083a25cd229a3ec224ff897ee0f73f2d3fbf9723c256",
+      "afterSha256": "73e82cb57aa2999405c8083a25cd229a3ec224ff897ee0f73f2d3fbf9723c256"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/DispatchRecordPanel.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/DispatchRecordPanel.vue",
+      "kind": "move",
+      "beforeSha256": "9ad7e5f2013b687d90c2cc8d5fb41404e5d91623eca7f960b235de47a21253d3",
+      "afterSha256": "9ad7e5f2013b687d90c2cc8d5fb41404e5d91623eca7f960b235de47a21253d3"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/PlanCreate.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/PlanCreate.vue",
+      "kind": "move",
+      "beforeSha256": "f1071ae2da4d145a88300d8261b918c216779dbd7b0e76d243753ab255432706",
+      "afterSha256": "f1071ae2da4d145a88300d8261b918c216779dbd7b0e76d243753ab255432706"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/PlanDetail.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/PlanDetail.vue",
+      "kind": "move",
+      "beforeSha256": "59766e132e3e335649e99ea1bb3869cbc58545c243a992d66f3e6a25add40efa",
+      "afterSha256": "59766e132e3e335649e99ea1bb3869cbc58545c243a992d66f3e6a25add40efa"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/PlanTypeDialog.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/PlanTypeDialog.vue",
+      "kind": "move",
+      "beforeSha256": "bb78ee390cd4788bb8ba9ef90fc3e3a6be6c79455fd4150d69ad634a8d84bcbb",
+      "afterSha256": "bb78ee390cd4788bb8ba9ef90fc3e3a6be6c79455fd4150d69ad634a8d84bcbb"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/PublishDemand.vue",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/PublishDemand.vue",
+      "kind": "move",
+      "beforeSha256": "71c3715b733fc7ba2fdfd47525de1378b31abc28f56dc99a416dc6457240961f",
+      "afterSha256": "71c3715b733fc7ba2fdfd47525de1378b31abc28f56dc99a416dc6457240961f"
+    },
+    {
+      "oldPath": "prototype/projects/beigang/运输计划/mock-data.js",
+      "newPath": "prototype/projects/beigang/products/lianyun/web/运输计划/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "5aaf38c8e843dc647d83fdb47cdb73cb161ab91fc011a9f837e0cee9e732ae15",
+      "afterSha256": "5aaf38c8e843dc647d83fdb47cdb73cb161ab91fc011a9f837e0cee9e732ae15"
+    },
+    {
+      "oldPath": "prototype/projects/guanglin/广林询价三端/App.vue",
+      "newPath": "prototype/projects/guanglin/products/lianyun/web/广林询价三端/App.vue",
+      "kind": "move",
+      "beforeSha256": "847fcfd51cfbbdf3d68ab06349b4f23f9243f99a1b248156c78576af0e3f0927",
+      "afterSha256": "847fcfd51cfbbdf3d68ab06349b4f23f9243f99a1b248156c78576af0e3f0927"
+    },
+    {
+      "oldPath": "prototype/projects/guanglin/广林询价三端/guanglin-styles.css",
+      "newPath": "prototype/projects/guanglin/products/lianyun/web/广林询价三端/guanglin-styles.css",
+      "kind": "move",
+      "beforeSha256": "e56934298d4ffce95cdd1433ee4c456cbad9288dca7184a819452953ea52c1ae",
+      "afterSha256": "e56934298d4ffce95cdd1433ee4c456cbad9288dca7184a819452953ea52c1ae"
+    },
+    {
+      "oldPath": "prototype/projects/guanglin/广林询价三端/mock-data.js",
+      "newPath": "prototype/projects/guanglin/products/lianyun/web/广林询价三端/mock-data.js",
+      "kind": "move",
+      "beforeSha256": "21f93d153f4d6fa6f7ac862890675e42395b3e3f180bfd4092738e8ed24a2ad9",
+      "afterSha256": "21f93d153f4d6fa6f7ac862890675e42395b3e3f180bfd4092738e8ed24a2ad9"
+    },
+    {
+      "oldPath": "public/annotations/biddingQuotePage.json",
+      "newPath": "public/annotations/biddingQuotePage.json",
+      "kind": "update",
+      "beforeSha256": "2f13aa984e315e806d84da3636a6bceb7e3be126447e515ec6cc04b7a4f66fd9",
+      "afterSha256": "df8d8612743ff2fe0a2e1cbd2fac62bcc51383dafcba971f66058df84a757564"
+    },
+    {
+      "oldPath": "public/annotations/cargoBiddingDetail.json",
+      "newPath": "public/annotations/cargoBiddingDetail.json",
+      "kind": "update",
+      "beforeSha256": "c9dd61bc54f9a1b56c83cfd262aecf949679d2e38fa102895384f66ec859fc57",
+      "afterSha256": "63c64c5aad71182b33700fa80c38bdcbfc6cca11f152104bdb47a008cb4956f8"
+    },
+    {
+      "oldPath": "public/annotations/shipownerMobileHome.json",
+      "newPath": "public/annotations/shipownerMobileHome.json",
+      "kind": "update",
+      "beforeSha256": "23361347bd51762945513dd2dc2f87e349f3d483464ffb5161f230419b01e755",
+      "afterSha256": "45c8815d62f52cd9bc8bd3ea8f2396c3b22493cbd7508fe6abe4d91b9f891642"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/biddingQuotePage.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/biddingQuotePage.json",
+      "kind": "update",
+      "beforeSha256": "7384218f24350fcb0d238fa034ab66cf251dc8a9153889856d8fcbeabbeb6f10",
+      "afterSha256": "fa589d6a5521b01f537512a76e69fb18ca30848c17207c51383f3b73d34f02b5"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/cargoBiddingDetail.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/cargoBiddingDetail.json",
+      "kind": "update",
+      "beforeSha256": "f817a51072edd1062928d337e68412cc9916c858ebabb89d52d6449d3a424abf",
+      "afterSha256": "1b6fc894dbc633b9250123ac69fc23fbb10c7f6b731fda92ebb4ee9f894ceb1e"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/shipownerMobileHome.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-01/annotations/shipownerMobileHome.json",
+      "kind": "update",
+      "beforeSha256": "9b5b735e663a623483259ce491570f65434c17981ed3b75b4fb8b76d2d52857d",
+      "afterSha256": "7d7fa0957f7ab947dfee1be7eb732ce5fddc4a2a0da628764d37b148090c0b2a"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/shipownerWaybill.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/shipownerWaybill.json",
+      "kind": "update",
+      "beforeSha256": "e4824e1fc5a63696c2259e6c487635d35a099dd93f3fedcc4ac8eff19ae5b457",
+      "afterSha256": "ffdc3fb7793983528822c4666d23c3be4c845bc94a82780d6ba8f2a569b3942b"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/waybillCenterBeigang.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/waybillCenterBeigang.json",
+      "kind": "update",
+      "beforeSha256": "4e5b7d3a1845e51fe44867eedb44b0932961edde68c2db5e229cfad8512e53cc",
+      "afterSha256": "b5b201f8dc9dadd42538d0c90a7f0394bfd9bfa60b6c509ce7ed60dd52b46ca8"
+    },
+    {
+      "oldPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/waybillCenterDetailBeigang.json",
+      "newPath": "public/review-data/versions/TMS-BEIGANG-202608-02/annotations/waybillCenterDetailBeigang.json",
+      "kind": "update",
+      "beforeSha256": "cfd81b32ff6a4d3d0c33f31b86708c196dbaa2321cba8d9438560994b3b7b4ff",
+      "afterSha256": "d884c11589cb7b57da71b3aac4d2c9f6646e4442989ccd459ceb62defa597f2b"
+    },
+    {
+      "oldPath": "review/annotation-sync-service.mjs",
+      "newPath": "review/annotation-sync-service.mjs",
+      "kind": "update",
+      "beforeSha256": "67f7cf3210fe1054de84efa81820111e8a79364f98eef631c21f1cda4a31f167",
+      "afterSha256": "4d8934b1a1360a55737175d49ed1b4c613f3d1ba8896c5c79535ee59e89890f1"
+    },
+    {
+      "oldPath": "review/annotation-sync-service.test.mjs",
+      "newPath": "review/annotation-sync-service.test.mjs",
+      "kind": "update",
+      "beforeSha256": "fd0ee525d04ea23efe051df1bd977ad7fe1726803808c3fa905ef09768ee1cbb",
+      "afterSha256": "96e7e3ba802b1d67000c553819b18af29661902da0b5a6c9e84845df2c4c4eeb"
+    },
+    {
+      "oldPath": "review/page-catalog.mjs",
+      "newPath": "review/page-catalog.mjs",
+      "kind": "update",
+      "beforeSha256": "1617c032d63017cdadac64375769ec222eb4d82c59865c9eda6f22532bc77f80",
+      "afterSha256": "3eefdfe2791198ec7678a142a82993bf9a83f3dcb6c65fd7c21fc3035ec0e27c"
+    },
+    {
+      "oldPath": "src/App.vue",
+      "newPath": "src/App.vue",
+      "kind": "update",
+      "beforeSha256": "18fbf808c7c2adf69c92de3da3cc804e8aadf1c8d7a1fd5b9e2a3168e8fdbedd",
+      "afterSha256": "d03e5b6d12cedf23be225dfb8fcaff8ac1fec0da622a2a56503ea3c77f62538d"
+    },
+    {
+      "oldPath": "src/page-registry.js",
+      "newPath": "src/page-registry.js",
+      "kind": "update",
+      "beforeSha256": "d540f12b3890212d1583179b16e36d5ae93018a47be4cdc2b42e742b7c2c653b",
+      "afterSha256": "49af33d29188415d653ce11380f1caef77047e9978f14743b0df59ca5e6199a0"
+    },
+    {
+      "oldPath": "src/views/VersionManageView.vue",
+      "newPath": "src/views/VersionManageView.vue",
+      "kind": "update",
+      "beforeSha256": "871c950ba7c5a4817f464318544112bd0cf46742ce87dfca06561edbd60fb49e",
+      "afterSha256": "e3abc526837e1b9094c7b9940e56f854ca7810bdf09fc98048141a8efd4b0367"
+    }
+  ],
+  "createdFiles": [
+    "README.md",
+    "context/project-rules/产品架构与目录治理规范.md",
+    "migration/2026-09-12-产品架构整理/legacy-references.json",
+    "migration/2026-09-12-产品架构整理/path-map.json",
+    "migration/2026-09-12-产品架构整理/verification.json",
+    "migration/2026-09-12-产品架构整理/功能归属清单.md",
+    "migration/2026-09-12-产品架构整理/执行记录.md",
+    "migration/2026-09-12-产品架构整理/整理报告.md",
+    "migration/2026-09-12-产品架构整理/迁移对照表.md",
+    "migration/2026-09-12-产品架构整理/遗留事项.md",
+    "review/migration-paths.mjs",
+    "review/product-architecture.test.mjs",
+    "review/product-catalog.mjs",
+    "scripts/check-architecture.mjs"
+  ],
+  "userApprovedDeletions": [
+    {
+      "path": "prd/pending-classification/物流枢纽运营增效大屏_多屏联动展示_PRD_v1.md",
+      "reason": "用户明确确认大屏资料不再需要"
+    },
+    {
+      "path": "discussions/pending-classification/2026-04-24_公路运输大屏_公路子屏内容设计讨论.md",
+      "reason": "用户明确确认大屏资料不再需要"
+    }
+  ]
+}

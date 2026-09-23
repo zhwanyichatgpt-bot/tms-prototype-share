@@ -143,11 +143,19 @@ export function AnnotationDot({ annotation, index, isActive, editMode, modalOpen
   // 初始定位轮询 + 订阅全局 tracker（不再各自挂 scroll/resize/MutationObserver）
   useEffect(() => {
     if (annotation.type !== 'selector') return
-    let attempts = 0
+    let missingAttempts = 0
+    let settleFrames = 0
+    const MAX_MISSING_ATTEMPTS = 300
+    const SETTLE_FRAMES = 30
     const tick = () => {
-      attempts++
       const found = updateSelectorPos()
-      if (found || attempts >= 300) { rafIdRef.current = null; return }
+      if (found) {
+        settleFrames++
+      } else {
+        missingAttempts++
+        settleFrames = 0
+      }
+      if (settleFrames >= SETTLE_FRAMES || missingAttempts >= MAX_MISSING_ATTEMPTS) { rafIdRef.current = null; return }
       rafIdRef.current = requestAnimationFrame(tick)
     }
     rafIdRef.current = requestAnimationFrame(tick)
@@ -170,7 +178,7 @@ export function AnnotationDot({ annotation, index, isActive, editMode, modalOpen
     }
   }, [modalOpen, drawerOpen, annotation.container])
 
-  // 拖拽（用 Pointer Events 统一鼠标 + 触摸，移动端同样可拖）
+  // 编辑模式下两类标注都可拖拽：position 保存绝对坐标，selector 保存相对宿主的偏移量
   const handleDragStart = (e: React.PointerEvent) => {
     if (!editMode) return
     const startX = e.clientX
@@ -194,7 +202,15 @@ export function AnnotationDot({ annotation, index, isActive, editMode, modalOpen
       document.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerup', onUp)
       document.removeEventListener('pointercancel', onUp)
-      if (hasMovedRef.current && dragPosRef.current) onMove(annotation.id, dragPosRef.current)
+      if (hasMovedRef.current && dragPosRef.current) {
+        const nextPosition = annotation.type === 'selector' && selectorPos
+          ? {
+              x: dragPosRef.current.x - 9 - selectorPos.x,
+              y: dragPosRef.current.y - 9 - selectorPos.y
+            }
+          : dragPosRef.current
+        onMove(annotation.id, nextPosition)
+      }
       setIsDragging(false)
       setDragPos(null)
       dragPosRef.current = null
@@ -211,7 +227,12 @@ export function AnnotationDot({ annotation, index, isActive, editMode, modalOpen
     const isInContainer = container !== 'page'
     if (dragPos) return { position: 'fixed', left: dragPos.x - 9, top: dragPos.y - 9, zIndex: 9999, transition: 'none' }
     if (annotation.type === 'selector' && selectorPos) {
-      return { position: 'fixed', left: selectorPos.x, top: selectorPos.y, zIndex: isInContainer ? 1100 : 9990 }
+      return {
+        position: 'fixed',
+        left: selectorPos.x + annotation.position.x,
+        top: selectorPos.y + annotation.position.y,
+        zIndex: isInContainer ? 1100 : 9990
+      }
     }
     return { position: 'fixed', left: annotation.position.x - 9, top: annotation.position.y - 9, zIndex: isInContainer ? 1100 : 9990 }
   }, [dragPos, annotation.type, selectorPos, annotation.position, container])

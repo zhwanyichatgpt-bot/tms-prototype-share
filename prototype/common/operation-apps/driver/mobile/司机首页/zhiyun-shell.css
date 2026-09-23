@@ -1,0 +1,122 @@
+/* 与至简智运货主首页统一的定位入口 */
+.hero-topline {
+  justify-content: flex-start;
+}
+
+.location-chip {
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #333;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.location-pin,
+.location-arrow {
+  display: block;
+  flex: 0 0 auto;
+}
+
+/* 与至简智运货主首页统一的五栏底部导航 */
+.driver-bottom-nav {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  display: block;
+  height: 130.5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.driver-tab-bg-top,
+.driver-tab-bg-bottom,
+.driver-tab-glass {
+  position: absolute;
+  left: 0;
+  width: 375px;
+  pointer-events: none;
+}
+
+.driver-tab-bg-top {
+  top: 0;
+  height: 100px;
+}
+
+.driver-tab-bg-bottom {
+  bottom: -0.5px;
+  height: 30.5px;
+}
+
+.driver-tab-glass {
+  top: 56px;
+  height: 74.5px;
+}
+
+.driver-bottom-nav .driver-tab-item {
+  position: absolute;
+  top: 65.5px;
+  display: flex;
+  width: 22px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  color: #7b8699;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  overflow: visible;
+}
+
+.driver-tab-home { left: 40.5px; }
+.driver-tab-run { left: 108px; }
+.driver-tab-order { left: 267px; }
+.driver-tab-mine { left: 334.5px; }
+
+.driver-tab-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.driver-bottom-nav .driver-tab-item.active {
+  color: #333;
+}
+
+.driver-bottom-nav .driver-tab-assistant {
+  top: 0;
+  left: 154px;
+  width: 68px;
+  height: 130.5px;
+  transform: none;
+}
+
+.driver-tab-ai-image {
+  width: 68px;
+  height: 67px;
+  margin-top: 19.5px;
+  object-fit: contain;
+}
+
+.driver-bottom-nav .driver-tab-assistant span {
+  margin-top: 4.5px;
+  color: #7b8699;
+}
+
+.driver-bottom-nav .driver-tab-assistant.active span {
+  color: #3a65ff;
+  font-weight: 500;
+}

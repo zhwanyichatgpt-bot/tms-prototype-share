@@ -15,7 +15,7 @@
       "title": "地址变更提醒与角色入口",
       "content": "<ul><li><p>运单主状态继续展示已接单、运输中、有异常等原状态；存在地址变更处理中申请时，在运单号附近另行显示统一标签“地址变更”。</p></li><li><p>合同承运商仅可在已接单、运输中或有异常，且当前无进行中地址变更时申请时发起；实际承运商仅处理委外给本企业的运单。</p></li><li><p>同一运单同时最多一条处理中变更；详细处理状态到运单详情“地址变更”页签查看。</p></li></ul><p></p>",
       "category": "rule",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R04、R05、R06、5.3",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md R04、R05、R06、5.3",
       "container": "page",
       "group": "waybill-list",
       "createdAt": "2026-08-27",
@@ -32,7 +32,7 @@
       "title": "变更只绑定当前运单",
       "content": "当前运单信息用于确认本次变更对象，全部只读。提交后只影响该运单，不回写托运单、运输计划、运输任务的基础内容，也不更换原关联和当前指派关系。",
       "category": "field",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R01、R03、5.1",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md R01、R03、5.1",
       "container": "modal",
       "group": "initiate-modal",
       "createdAt": "2026-08-27"
@@ -48,7 +48,7 @@
       "title": "卸货地址与托运企业单价整体变更",
       "content": "1. 新卸货地址和新托运企业运输单价进入同一条申请，不提供分开提交或只同意其中一项。\n2. 新单价默认带出当前值，可保持原价或修改；提交值必须大于 0。\n3. 船东确认后两项一起生效；实际承运商或船东拒绝、合同承运商撤回时均不生效。",
       "category": "rule",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R02、R09、5.1；用户确认 2026-08-27",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md R02、R09、5.1；用户确认 2026-08-27",
       "container": "modal",
       "group": "initiate-modal",
       "createdAt": "2026-08-27"
@@ -64,7 +64,7 @@
       "title": "合同承运商维护本层下游价格",
       "content": "| 运输组织方式 | 合同承运商维护的价格 | 后续处理 |\n|---|---|---|\n| 直接指派船东 | 本企业给船东的运输单价 | 新地址直接发送当前船东 |\n| 委外实际承运商 | 本企业给实际承运商的运输单价 | 实际承运商确认后再发送船东 |\n\n本层调整后单价默认为当前价格，可保持或修改，最终与新地址一起在船东确认后生效。",
       "category": "rule",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R07、R12、5.1",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md R07、R12、5.1",
       "container": "modal",
       "group": "initiate-modal",
       "createdAt": "2026-08-27"
@@ -80,7 +80,7 @@
       "title": "变更原因与说明均为选填",
       "content": "- 变更原因选填，用于说明本次地址及运价调整的业务原因。\n- 变更说明选填，用于补充其他信息。\n- 已填内容写入同一条变更记录，供有权限的下游角色查看。",
       "category": "field",
-      "source": "用户确认 2026-08-27；prototype/projects/beigang/运单中心/components/AddressChangeDialog.vue",
+      "source": "用户确认 2026-08-27；prototype/projects/beigang/products/lianyun/web/运单中心/components/AddressChangeDialog.vue",
       "container": "modal",
       "group": "initiate-modal",
       "createdAt": "2026-08-27"
@@ -96,7 +96,7 @@
       "title": "提交后按现有承运关系流转",
       "content": "1. 校验当前运单状态、操作权限和是否已有处理中申请。\n2. 直接指派场景进入“待船东处理”；委外场景先进入“待实际承运商处理”。\n3. 发起时只生成拟变更记录，当前有效地址和各层价格保持不变，不增加“协调中”状态。",
       "category": "action",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md R05、R06、R07、R08、5.1",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md R05、R06、R07、R08、5.1",
       "container": "modal",
       "group": "initiate-modal",
       "createdAt": "2026-08-27"

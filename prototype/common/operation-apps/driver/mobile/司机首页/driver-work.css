@@ -1,0 +1,88 @@
+.driver-work-page,
+.driver-work-page * { box-sizing: border-box; }
+.driver-work-page { position: absolute; inset: 0; overflow: hidden; color: #333; background: linear-gradient(180deg, #dce7fc 0, #edf2fc 72px, #f0f2f6 150px); }
+.work-title-header { position: relative; z-index: 3; height: 96px; padding: 60px 0 0 22px; }
+.work-title-header h1 { display: flex; align-items: center; gap: 3px; margin: 0; color: #162f4a; font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
+.title-check,
+.section-check { display: inline-block; width: 17px; height: 9px; border-left: 3px solid #3a65ff; border-bottom: 3px solid #3a65ff; transform: rotate(-45deg) translateY(-2px); }
+.work-scroll { position: absolute; inset: 96px 0 0; overflow-y: auto; padding: 0 16px 126px; scrollbar-width: none; }
+.work-scroll::-webkit-scrollbar,
+.waybill-list::-webkit-scrollbar { display: none; }
+
+/* ============ 地图卡 343×256.5；底图为设计稿同源福州路网图，按设计稿取景铺满 ============ */
+.tracking-map-card { position: relative; height: 256.5px; overflow: hidden; border: 2px solid #fff; border-radius: 12px; background: #e6eef8; box-shadow: 0 4px 14px rgba(23, 54, 100, .06); }
+.tracking-map-card > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.map-full-button { position: absolute; z-index: 5; top: 10px; right: 10px; display: grid; width: 36px; height: 36px; padding: 0; place-items: center; border: 0; border-radius: 6px; background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .1); }
+.tracking-empty { position: absolute; z-index: 4; top: 50%; left: 50%; display: flex; width: 250px; padding: 17px 12px; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgba(23, 54, 100, .12); flex-direction: column; align-items: center; transform: translate(-50%, -50%); text-align: center; }
+.tracking-empty-icon { display: grid; width: 72px; height: 72px; border: 1.5px solid #161a28; border-radius: 8px; background: linear-gradient(135deg, #fff 0 55%, #3a65ff 56%); place-items: center; }
+.tracking-empty-icon .van-icon { color: #162f4a; font-size: 34px; }
+.tracking-empty p { margin: 9px 0 4px; font-size: 14px; font-weight: 700; }
+.tracking-empty small { color: #999; font-size: 12px; line-height: 18px; }
+
+/* 有在途运单时：设计稿的运输路线 + 装货地标注 */
+.tracking-route-layer { position: absolute; z-index: 2; inset: -2px; }
+.tracking-route-line { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tracking-port-tag { position: absolute; top: 48px; left: 14px; padding: 2px 7px; border-radius: 5px; background: #3a65ff; color: #fff; font-size: 11px; font-weight: 700; line-height: 15px; }
+.tracking-port-card { position: absolute; top: 64px; left: 14px; padding: 6px 12px; border-radius: 8px; background: #fff; box-shadow: 0 4px 14px rgba(23, 54, 100, .14); color: #333; font-size: 15px; font-weight: 700; line-height: 18px; white-space: nowrap; }
+.tracking-port-card::after { position: absolute; top: 100%; left: 40px; width: 2px; height: 12px; background: #161a28; content: ''; }
+.tracking-route-dot { position: absolute; top: 104px; left: 63px; width: 14px; height: 14px; border: 2.5px solid #fff; border-radius: 50%; background: #3a65ff; box-shadow: 0 2px 6px rgba(23, 54, 100, .22); }
+
+/* 设计稿：进度面板是地图卡底部的蓝色描边圆角框，下缘被首张运单卡覆盖 */
+.track-progress-panel { position: absolute; z-index: 3; top: 161px; right: -2px; left: -2px; display: flex; height: 63.5px; padding: 0 15px; border: 1.5px solid #2e6cf3; border-radius: 12px; background: linear-gradient(180deg, #d7e0fd, #c9dcfb); align-items: flex-start; }
+.track-progress-panel strong { margin-top: 11px; color: #162f4a; font-size: 12px; font-weight: 700; line-height: 16px; }
+.track-progress-more { position: absolute; top: 8px; right: 12px; display: grid; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: rgba(23, 54, 100, .12); color: #455075; font-size: 11px; place-items: center; }
+
+/* 首张在途运单卡上移覆盖地图卡下缘 */
+.work-current-card { position: relative; z-index: 4; margin-top: -57px; }
+.work-current-card .work-waybill-card { margin-bottom: 0; box-shadow: 0 6px 20px rgba(23, 54, 100, .1); }
+
+.work-section-head { display: flex; align-items: center; justify-content: space-between; padding: 28px 2px 14px; }
+.work-section-head > span { display: flex; align-items: center; gap: 4px; font-size: 15px; font-weight: 700; line-height: 19px; }
+.work-section-head button { display: flex; align-items: center; gap: 3px; padding: 0; border: 0; background: transparent; color: #455075; font-size: 14px; font-weight: 500; }
+.work-card-list,
+.waybill-list { display: flex; flex-direction: column; }
+.work-waybill-card { margin-bottom: 10px; padding: 14px 14px 14.5px; border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(23, 54, 100, .04); cursor: pointer; }
+.work-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 13px; line-height: 18.5px; }
+.work-status { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.status-transporting,
+.status-unloading,
+.status-delivered { color: #1cae7c; }
+.status-loading { color: #ff8400; }
+.status-cancelled { color: #999; }
+.work-waybill-no { overflow: hidden; color: #8a91a1; font-size: 13px; font-weight: 500; letter-spacing: -.2px; text-overflow: ellipsis; white-space: nowrap; }
+.work-copy { padding: 0; border: 0; background: transparent; color: #8a91a1; font-size: 12px; }
+.work-freight { margin-left: auto; color: #567bff; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.work-cargo-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.work-cargo-name { display: flex; align-items: baseline; gap: 5px; font-size: 16px; line-height: 24px; }
+.work-cargo-name strong,
+.work-cargo-name b { color: #333; font-size: 16px; font-weight: 700; }
+.work-cargo-name b { font-size: 18px; }
+.work-cargo-row p { max-width: 215px; margin: 0; overflow: hidden; color: #8a91a1; font-size: 12px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }
+.work-time { display: flex; flex: 0 0 auto; flex-direction: column; align-items: flex-end; color: #8a91a1; font-size: 12px; line-height: 17px; }
+.work-time span + span { margin-top: 3px; }
+.work-driver-row { display: flex; height: 28px; align-items: center; justify-content: space-between; font-size: 13px; }
+.work-driver-row > span { display: flex; align-items: center; gap: 5px; color: #333; font-weight: 500; }
+.work-driver-row img { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; }
+.work-driver-row button { height: 28px; padding: 0 15px; border: 1px solid #d4d4d4; border-radius: 100px; background: #fff; color: #333; font-size: 13px; font-weight: 500; }
+.work-driver-row small { color: #9aa2af; }
+.waybill-header { position: relative; z-index: 2; display: flex; height: 92px; padding: 48px 18px 12px; align-items: center; gap: 18px; }
+.waybill-title { display: flex; align-items: baseline; gap: 4px; }
+.waybill-title h1 { margin: 0; color: #173664; font-size: 22px; }
+.waybill-title i { width: 6px; height: 6px; border-radius: 50%; background: #3a65ff; }
+.waybill-mode { display: flex; padding: 3px; border-radius: 100px; background: rgba(23, 54, 100, .08); }
+.waybill-mode button { padding: 4px 14px; border: 0; border-radius: 100px; background: transparent; color: #5a6e85; font-size: 13px; }
+.waybill-mode button.active { background: #fff; color: #173664; font-weight: 700; box-shadow: 0 2px 6px rgba(23, 54, 100, .08); }
+.waybill-search-row { display: flex; align-items: center; gap: 12px; padding: 6px 16px 12px; }
+.waybill-search { display: flex; flex: 1; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 100px; background: #fff; box-shadow: 0 2px 6px rgba(23, 54, 100, .04); }
+.waybill-search input { width: 100%; border: 0; outline: 0; background: transparent; color: #173664; font-size: 13px; }
+.filter-button { display: flex; align-items: center; gap: 3px; padding: 4px 0; border: 0; background: transparent; color: #5a6e85; font-size: 13px; }
+.status-filter { display: flex; gap: 10px; padding: 0 16px 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+.status-filter::-webkit-scrollbar { display: none; }
+.driver-work-page .status-filter button { flex: 0 0 auto; padding: 5px 14px; border: 0; border-radius: 6px; background: rgba(255, 255, 255, .65); color: #5a6e85; font-size: 12px; font-weight: 500; line-height: 17px; }
+.driver-work-page .status-filter button.active { background: #fff; color: #3a65ff; font-weight: 600; box-shadow: 0 2px 6px rgba(58, 101, 255, .12); }
+.waybill-list { position: absolute; inset: 176px 0 0; overflow-y: auto; padding: 6px 16px 126px; scrollbar-width: none; }
+.work-empty,
+.settlement-empty { display: flex; padding: 60px 0; color: #8c99a8; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; }
+.work-empty .van-icon,
+.settlement-empty .van-icon { color: #c4cbd8; font-size: 40px; }
+.settlement-empty small { color: #a8afbb; font-size: 11px; }

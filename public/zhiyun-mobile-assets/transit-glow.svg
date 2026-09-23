@@ -1,0 +1,39 @@
+<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200.000000" height="140.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+		<g id="pixso_custom_effect_17">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="64" />
+		</g>
+		<filter id="filter_17" width="155.000000" height="140.000000" x="45.000488" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_17)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="21.333334" result="effect_layerBlur_1" />
+		</filter>
+		<g id="pixso_custom_effect_18">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="64" />
+		</g>
+		<filter id="filter_18" width="156.000000" height="140.000000" x="14.000488" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_18)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="21.333334" result="effect_layerBlur_1" />
+		</filter>
+	</defs>
+	<mask id="mask_385" width="200.000000" height="140.000000" x="0.000488" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 41166" width="200.000000" height="140.000000" x="0.000488" y="0.000000" fill="rgb(255,255,255)" />
+			<rect id="矩形 41166" width="199.000000" height="139.000000" x="0.500488" y="0.500000" stroke="rgb(255,255,255)" stroke-width="1.000000" />
+		</g>
+	</mask>
+	<g id="蒙版组 76425" mask="url(#mask_385)">
+		<g opacity="0.589999974" filter="url(#filter_17)">
+			<ellipse id="椭圆 2221" rx="24.500000" ry="15.000000" cx="133.500488" cy="75" fill="rgb(58,101,255)" />
+			<ellipse id="椭圆 2221" rx="24.500000" ry="15.000000" cx="133.500488" cy="75" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-width="0.000000" />
+		</g>
+		<g opacity="0.589999974" filter="url(#filter_18)">
+			<ellipse id="椭圆 2222" rx="14.000000" ry="10.500000" cx="92.0004883" cy="70.5" fill="rgb(0,255,246)" />
+			<ellipse id="椭圆 2222" rx="14.000000" ry="10.500000" cx="92.0004883" cy="70.5" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-width="0.000000" />
+		</g>
+	</g>
+</svg>

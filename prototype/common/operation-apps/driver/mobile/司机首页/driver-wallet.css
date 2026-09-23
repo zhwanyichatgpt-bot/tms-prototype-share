@@ -1,0 +1,83 @@
+.driver-wallet-page,
+.driver-wallet-page * { box-sizing: border-box; }
+
+.driver-wallet-page {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eef0f5;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.driver-wallet-page .wallet-status { z-index: 20; background: rgba(238, 240, 245, .96); backdrop-filter: blur(8px); }
+.wallet-scroll { position: absolute; inset: 38px 0 0; overflow-x: hidden; overflow-y: auto; padding-bottom: 28px; scrollbar-width: none; }
+.wallet-scroll::-webkit-scrollbar { display: none; }
+.wallet-header { display: grid; height: 48px; padding: 0 15px; background: #eef0f5; align-items: center; grid-template-columns: 32px 1fr 32px; }
+.driver-wallet-page .wallet-header button { display: grid; width: 30px; height: 30px; padding: 0; border: 0; background: transparent; color: #333; font-size: 18px; place-items: center; }
+.wallet-header h1 { margin: 0; color: #333; font-size: 17px; line-height: 24px; text-align: center; }
+
+.wallet-balance-card { margin: 8px 15px 12px; padding: 15px 14px 13px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; color: #333; box-shadow: 0 2px 8px rgba(34, 44, 79, .05); }
+.wallet-balance-main { display: flex; align-items: flex-end; justify-content: space-between; }
+.wallet-balance-main > div { display: flex; flex-direction: column; gap: 4px; }
+.wallet-balance-main small { color: #8a91a1; font-size: 11px; font-weight: 500; }
+.wallet-balance-main strong { color: #3a65ff; font-size: 28px; line-height: 34px; }
+.wallet-balance-main em { margin-right: 3px; font-size: 14px; font-style: normal; }
+.driver-wallet-page .wallet-balance-main button { min-width: 66px; height: 30px; border: 0; border-radius: 6px; background: linear-gradient(90deg, #3a65ff, #5d87ff); color: #fff; font-size: 12px; font-weight: 600; }
+.wallet-balance-meta { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 13px; padding-top: 11px; border-top: 1px solid #eef0f4; }
+.wallet-balance-meta span { display: flex; padding-left: 11px; border-left: 1px solid #eef0f4; color: #8a91a1; font-size: 10px; flex-direction: column; gap: 4px; }
+.wallet-balance-meta span:first-child { padding-left: 0; border-left: 0; }
+.wallet-balance-meta b { color: #333; font-size: 13px; }
+
+.wallet-tabs { display: grid; margin: 0 15px; border-radius: 8px; background: #fff; grid-template-columns: repeat(2, 1fr); box-shadow: 0 2px 8px rgba(34, 44, 79, .04); }
+.driver-wallet-page .wallet-tabs button { position: relative; height: 40px; border: 0; background: transparent; color: #6d7482; font-size: 12px; font-weight: 500; }
+.driver-wallet-page .wallet-tabs button.active { color: #3a65ff; font-weight: 700; }
+.driver-wallet-page .wallet-tabs button.active::after { content: ""; position: absolute; right: 34px; bottom: 0; left: 34px; height: 3px; border-radius: 2px; background: #3a65ff; }
+.wallet-tabs b { display: inline-grid; min-width: 16px; height: 16px; margin-left: 3px; border-radius: 8px; background: #ff7b35; color: #fff; font-size: 9px; place-items: center; }
+
+.wallet-flow-section,
+.wallet-pending-section { padding: 13px 15px 0; }
+.wallet-filter-row { display: flex; margin-bottom: 8px; align-items: center; justify-content: space-between; }
+.wallet-filter-row > strong { color: #333; font-size: 13px; }
+.driver-wallet-page .wallet-filter-row button { display: flex; padding: 5px 8px; border: 0; border-radius: 6px; background: #fff; color: #6d7482; align-items: center; font-size: 11px; gap: 4px; }
+.wallet-date-group { margin-top: 10px; padding: 0 13px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(34, 44, 79, .04); }
+.wallet-date-group h2 { margin: 0; padding: 11px 0 7px; color: #778297; font-size: 11px; font-weight: 500; }
+.driver-wallet-page .wallet-flow-row { display: flex; width: 100%; min-height: 76px; padding: 11px 0; border: 0; border-top: 1px solid #edf0f4; background: transparent; color: #30394a; align-items: flex-start; text-align: left; }
+.wallet-date-group .wallet-flow-row:nth-of-type(2) { border-top: 0; }
+.wallet-flow-row > i { display: grid; width: 34px; height: 34px; margin-right: 10px; border-radius: 6px; background: #edf3ff; color: #3a65ff; font-size: 18px; font-style: normal; flex: 0 0 auto; place-items: center; }
+.wallet-flow-row > i.withdrawal,
+.wallet-flow-row > i.withdrawing { background: #fff2e8; color: #ef7f35; }
+.wallet-flow-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px; }
+.wallet-flow-content strong { font-size: 13px; line-height: 18px; }
+.wallet-flow-content small { overflow: hidden; color: #647086; font-size: 11px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.wallet-flow-content em { color: #9099a8; font-size: 9px; font-style: normal; }
+.wallet-flow-amount { display: flex; margin-left: 8px; align-items: flex-end; flex-direction: column; gap: 5px; }
+.wallet-flow-amount strong { color: #30394a; font-size: 14px; line-height: 18px; }
+.wallet-flow-amount strong.income { color: #18a876; }
+.wallet-flow-amount small { color: #7c8798; font-size: 10px; }
+.wallet-list-tip { margin: 14px 0 0; color: #9aa3b1; font-size: 10px; text-align: center; }
+
+.wallet-pending-summary { display: flex; min-height: 70px; padding: 12px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; align-items: center; box-shadow: 0 2px 8px rgba(34, 44, 79, .04); }
+.wallet-pending-summary > span { display: grid; width: 35px; height: 35px; margin-right: 10px; border-radius: 6px; background: #fff0df; color: #ef7f35; font-size: 18px; place-items: center; }
+.wallet-pending-summary > div { display: flex; flex-direction: column; gap: 2px; }
+.wallet-pending-summary small { color: #74624f; font-size: 10px; font-weight: 500; }
+.wallet-pending-summary strong { color: #ee7527; font-size: 18px; }
+.wallet-pending-summary p { max-width: 132px; margin: 0 0 0 auto; color: #806a55; font-size: 10px; line-height: 15px; text-align: right; }
+
+.driver-wallet-page .pending-waybill-card { display: block; width: 100%; margin-top: 10px; padding: 12px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; color: #333; box-shadow: 0 2px 8px rgba(34, 44, 79, .04); text-align: left; }
+.pending-waybill-card header { display: flex; align-items: center; justify-content: space-between; }
+.pending-waybill-card header span { color: #ef7424; font-size: 11px; font-weight: 700; }
+.pending-waybill-card header > small { margin-left: 8px; overflow: hidden; color: #8a91a1; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.pending-waybill-card header strong { margin-left: auto; color: #3a65ff; font-size: 16px; line-height: 22px; }
+.pending-cargo-row { display: flex; margin-top: 10px; align-items: flex-start; justify-content: space-between; }
+.pending-cargo-row > div { min-width: 0; }
+.pending-cargo-row > div strong { color: #333; font-size: 15px; line-height: 21px; }
+.pending-cargo-row > div p { max-width: 205px; margin: 5px 0 0; overflow: hidden; color: #8a91a1; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.pending-cargo-row > span { display: flex; margin-left: 8px; color: #8a91a1; align-items: flex-end; flex-direction: column; font-size: 10px; gap: 3px; }
+.pending-cargo-row time { color: #626b7a; font-size: 10px; font-style: normal; white-space: nowrap; }
+.pending-waybill-card footer { display: flex; margin-top: 10px; padding-top: 9px; border-top: 1px solid #edf0f4; color: #626b7a; align-items: center; font-size: 10px; font-weight: 500; }
+.pending-waybill-card footer > span { display: flex; min-width: 0; overflow: hidden; align-items: center; text-overflow: ellipsis; white-space: nowrap; }
+.pending-waybill-card footer > span i { display: grid; width: 17px; height: 17px; margin-right: 5px; border-radius: 50%; background: #3a65ff; color: #fff; font-size: 8px; font-style: normal; flex: 0 0 auto; place-items: center; }
+.pending-waybill-card footer > small { margin-left: auto; color: #8a91a1; font-size: 9px; white-space: nowrap; }
+.pending-waybill-card footer .van-icon { color: #8c96a6; font-size: 12px; }

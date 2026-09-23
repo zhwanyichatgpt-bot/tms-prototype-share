@@ -1,0 +1,29 @@
+<svg viewBox="0 0 750 149" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750.000000" height="149.000000" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_1">
+			<effect x="0.000000" y="4.000000" visibility="visible" fill="rgb(255,255,255)" fill-opacity="1" effectType="innerShadow" stdDeviation="4" radius="0" />
+		</g>
+		<filter id="filter_1" width="750.000000" height="149.000000" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_1)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 " />
+			<feOffset dx="0.000000" dy="4.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="1.33333337" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+			<feBlend result="effect_innerShadow_1" in2="shape" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_4" x1="375.000031" x2="375.000031" y1="61" y2="148.999985" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="0.400000006" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0.800000012" />
+		</linearGradient>
+		<linearGradient id="paint_linear_5" x1="374.999939" x2="374.999939" y1="62.4999886" y2="149" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0" />
+		</linearGradient>
+	</defs>
+	<g filter="url(#filter_1)">
+		<path id="矢量 108" d="M323.322 30.5042C333.766 48.1598 353 60 375 60C396.999 60 416.234 48.1597 426.678 30.5042C435.676 15.2933 449.327 0 467 0L720 0C736.569 0 750 13.4315 750 30L750 149L0 149L0 30C0 13.4315 13.4315 0 30 0L283 0C300.673 0 314.324 15.2933 323.322 30.5042Z" fill="url(#paint_linear_4)" fill-rule="evenodd" />
+	</g>
+	<path id="矢量 108" d="M323.322 30.5042C333.766 48.1598 353 60 375 60C396.999 60 416.234 48.1597 426.678 30.5042C435.676 15.2933 449.327 0 467 0L720 0C736.569 0 750 13.4315 750 30L750 149L0 149L0 30C0 13.4315 13.4315 0 30 0L283 0C300.673 0 314.324 15.2933 323.322 30.5042ZM321.601 31.5225C316.481 22.8683 310.988 16.0518 305.12 11.073C297.992 5.02433 290.618 2 283 2L30 2C14.536 2 2 14.536 2 30L2 147L748 147L748 30C748 14.536 735.464 2 720 2L467 2Q465.845 2 464.697 2.09273L464.695 2.09293L464.691 2.0932L464.691 2.09325Q454.488 2.91982 444.88 11.073C439.012 16.0518 433.519 22.8683 428.399 31.5225Q424.276 38.4927 418.715 44.0157L418.715 44.016Q413.163 49.5296 406.179 53.6008C396.573 59.2003 386.18 62 375 62Q366.274 62 358.187 59.726Q350.732 57.6297 343.82 53.6008Q336.836 49.5295 331.285 44.0157Q325.724 38.4927 321.601 31.5225Z" fill="url(#paint_linear_5)" fill-rule="evenodd" />
+</svg>

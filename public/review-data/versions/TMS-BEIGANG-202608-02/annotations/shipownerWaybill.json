@@ -15,7 +15,7 @@
       "title": "船东运单列表的地址变更提醒",
       "content": "- 运单卡片保留原运单主状态，不将地址变更改成新的主状态。\n- 当存在待船东处理申请时，卡片显示“地址变更”“卸货地址已调整”和“去处理”；点击卡片或“去处理”进入运单详情。\n- 列表不展示完整新旧地址、拒绝原因、合同信息或上游价格。",
       "category": "field",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.5、7.5",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.5、7.5",
       "container": "page",
       "group": "waybill-list",
       "createdAt": "2026-08-27"
@@ -31,7 +31,7 @@
       "title": "运单详情只展示当前有效地址",
       "content": "默认详情不同时展示新旧地址。船东确认后，新卸货地址成为当前有效值，地址卡、地图终点和运输路线统一使用新地址；船东拒绝时继续使用原有效地址。旧地址只在变更记录中查看。",
       "category": "field",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.6、5.7、5.8",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.6、5.7、5.8",
       "container": "page",
       "group": "waybill-detail",
       "createdAt": "2026-08-27"
@@ -47,7 +47,7 @@
       "title": "详情底部操作与更多入口",
       "content": "本期底部操作区为“更多、作废、立即联系”，不再展示签收单。点击“更多”打开功能面板；本期面板只提供“变更记录”，不展示合同、协议或其他未上线能力的占位。",
       "category": "action",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7",
       "container": "page",
       "group": "waybill-detail",
       "createdAt": "2026-08-27"
@@ -63,7 +63,7 @@
       "title": "船东进入详情后必须处理新地址",
       "content": "**展示与隔离**\n\n- 存在待船东处理申请时，进入详情立即展示强制弹窗；不提供关闭按钮，点击遮罩不关闭，未处理前背景不可操作，但允许返回离开详情。\n- 弹窗只展示新旧卸货地址、变更原因、发起企业和发起时间，不展示任何上游价格或合同信息。\n\n**处理结果**\n\n- 点击“确认新地址”直接生效，不增加二次确认。\n- 选择“拒绝”后在当前弹窗内填写拒绝原因，拒绝原因必填；提交后本次变更结束，原有效地址和各层拟调整价格保持不变。",
       "category": "rule",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 2.4、R09、R10、5.6、7.3",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 2.4、R09、R10、5.6、7.3",
       "container": "modal",
       "group": "address-change-modal",
       "createdAt": "2026-08-27"
@@ -79,7 +79,7 @@
       "title": "更多面板本期只开放变更记录",
       "content": "<p>本期“更多”面板只展示“变更记录”。点击后关闭更多面板并打开地址变更记录；</p>",
       "category": "action",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7",
       "container": "modal",
       "group": "more-sheet",
       "createdAt": "2026-08-27",
@@ -96,7 +96,7 @@
       "title": "船东变更记录只展示地址处理信息",
       "content": "- 记录按时间倒序展示次数、处理结果、新旧地址、变更原因、发起企业和发起时间。\n- 系统内“已生效”在船东端可显示为“已确认”；已拒绝记录展示拒绝原因，已撤回记录展示撤回时间。\n- 船东变更记录不展示托运企业单价、上下游承运价格或合同信息。",
       "category": "field",
-      "source": "prd/projects/beigang/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7、7.3、7.5",
+      "source": "prd/projects/beigang/products/lianyun/运单中心_卸货地址及运输单价变更_PRD_v1.md 5.7、7.3、7.5",
       "container": "modal",
       "group": "change-records",
       "createdAt": "2026-08-27"

@@ -36,7 +36,7 @@
 
           <!-- 通用原型 -->
           <h2 class="category-title">通用原型</h2>
-          <p class="category-desc">TMS 3.0 核心业务能力，适用于所有项目</p>
+          <p class="category-desc">按产品与使用端分组的通用原型；具体功能以已注册页面为准</p>
           <template v-for="(group, groupIndex) in commonDirectoryGroups" :key="group.key">
             <div class="subcategory-title" :style="groupIndex ? { marginTop: '24px' } : undefined">{{ group.label }}</div>
             <el-row v-if="group.pages.length" :gutter="16">
@@ -56,7 +56,7 @@
                     <div class="page-card-body">
                       <div class="page-meta">
                         <div class="page-name">{{ page.name }}</div>
-                        <div class="page-module">{{ page.module }}</div>
+                        <div class="page-module">{{ pageProductLabel(page) }} · {{ page.module }}</div>
                         <div class="page-status">
                           <el-tag v-if="page.status === 'ready'" type="success" size="small">已就绪</el-tag>
                           <el-tag v-else type="info" size="small">待迁移</el-tag>
@@ -70,9 +70,9 @@
             <p v-else class="category-empty">暂无已注册原型</p>
           </template>
 
-          <!-- 北港水运1.0.3.4 -->
-          <h2 class="category-title" style="margin-top: 36px">北港水运1.0.3.4</h2>
-          <p class="category-desc">北港水运专项 · 水运计划与承运商企业移动端社会运力采购闭环</p>
+          <!-- 北港项目 -->
+          <h2 class="category-title" style="margin-top: 36px">北港项目</h2>
+          <p class="category-desc">至简联运 Web、企业移动端与至简船东 · 北港定制</p>
           <el-row :gutter="16">
             <el-col
               v-for="page in beigangPages"
@@ -90,7 +90,7 @@
                   <div class="page-card-body">
                     <div class="page-meta">
                       <div class="page-name">{{ page.name }}</div>
-                      <div class="page-module">{{ page.module }}</div>
+                      <div class="page-module">{{ pageProductLabel(page) }} · {{ page.module }}</div>
                       <div class="page-status">
                         <el-tag v-if="page.status === 'ready'" type="success" size="small">已就绪</el-tag>
                         <el-tag v-else type="info" size="small">待迁移</el-tag>
@@ -122,7 +122,7 @@
                   <div class="page-card-body">
                     <div class="page-meta">
                       <div class="page-name">{{ page.name }}</div>
-                      <div class="page-module">{{ page.module }}</div>
+                      <div class="page-module">{{ pageProductLabel(page) }} · {{ page.module }}</div>
                       <div class="page-status">
                         <el-tag v-if="page.status === 'ready'" type="success" size="small">已就绪</el-tag>
                         <el-tag v-else type="info" size="small">待迁移</el-tag>
@@ -286,7 +286,7 @@
                   :aria-expanded="!collapsedSections.beigang"
                   @click="toggleSection('beigang')"
                 >
-                  <span class="directory-section-title">北港水运1.0.3.4</span>
+                  <span class="directory-section-title">北港项目</span>
                   <span class="directory-section-arrow" :class="{ 'is-collapsed': collapsedSections.beigang }">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -361,6 +361,7 @@
 </template>
 
 <script setup>
+import { groupProductPages, pageProductLabel } from '../review/product-catalog.mjs'
 import { shallowRef, computed, defineAsyncComponent, onMounted, onUnmounted, nextTick, ref, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElCard, ElCol, ElContainer, ElHeader, ElMain, ElRow, ElButton, ElTag } from 'element-plus'
@@ -451,28 +452,7 @@ onUnmounted(() => {
 })
 
 const workbenchPages = computed(() => isVersionWorkbench.value ? versionWorkbenchPages.value : pages)
-const commonDirectoryGroups = computed(() => [
-  {
-    key: 'commonPortal',
-    label: '门户端',
-    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'portal'),
-  },
-  {
-    key: 'commonBusinessWeb',
-    label: '业务端 · Web',
-    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'business' && page.platform === 'web'),
-  },
-  {
-    key: 'commonBusinessMobile',
-    label: '业务端 · 移动端',
-    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'business' && page.platform === 'mobile'),
-  },
-  {
-    key: 'commonDriverMobile',
-    label: '司机端 · 移动端',
-    pages: workbenchPages.value.filter(page => page.scope === 'common' && page.channel === 'driver' && page.platform === 'mobile'),
-  },
-])
+const commonDirectoryGroups = computed(() => groupProductPages(workbenchPages.value.filter(page => page.scope === 'common')))
 const beigangPages = computed(() => workbenchPages.value.filter(page => page.projectId === 'beigang'))
 const guanglinPages = computed(() => workbenchPages.value.filter(page => page.projectId === 'guanglin'))
 
@@ -553,7 +533,6 @@ function openPage(page) {
   }
   if (!isVersionWorkbench.value && route.meta.pageKey !== page.key) {
     router.push({ name: page.key })
-    return
   }
   const loader = pageLoaders[page.key]
   if (!loader) return

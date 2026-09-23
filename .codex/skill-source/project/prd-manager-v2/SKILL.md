@@ -11,6 +11,11 @@ description: >
 
 # PRD Manager V2
 
+## 产品与目录上下文
+
+首次进入本项目新主题或写入阶段，先读取 `context/project-rules/产品架构与目录治理规范.md`，锁定 productId 或 operationAppId、使用端、scope/projectId 和版本。下文的 prd/、discussions/、prototype/ 等均为资产根目录，实际落点必须展开产品/端与项目层级；不得继续向历史平铺目录写入。共用端不复制进各产品；同主题续接不重复读取。
+
+
 在可控的上下文和工具往返内，生成业务事实可靠、容易审阅、能够继续支撑原型、研发和标注的 PRD。
 
 ## 核心目标
@@ -29,6 +34,25 @@ description: >
 - 不把当前代码或原型的实现状态自动升级为正式需求。
 - 不为补齐模板编造字段限制、提示文案、异常、性能指标或并发规则。
 - 不用篇幅、章节数、表格数或审查轮次代表质量。
+
+## TMS 版本上下文前置门
+
+在查找、创建、更新或审查 PRD 前先从用户本轮指令、已锁定对话上下文或项目证据确定：
+
+```text
+需求归属：common / project
+所属项目：null / projectId
+研发版本：pending / versionId
+当前修订：pending / R0 / R1 ...
+版本状态：进行中 / 已完成
+允许修改范围：业务对象、模块和文档
+```
+
+- 需求归属不明确时不得创建或更新 PRD；只问通用还是定制，定制必须继续明确项目。
+- 当前任务证据优先级为：当前研发版本 → 当前定制项目基线 → TMS 通用基线。
+- 通用 PRD 不读取定制项目规则；定制 PRD 不得反向改写通用 PRD。
+- “发布研发地址”与“标记完成”相互独立；已完成版本的 PRD 仍可按当前版本语境继续维护。
+- `R0` 之后的 PRD 变更必须与新修订批次和修改记录同步；版本数据层尚未启用时，如实报告待同步项，不伪造已完成状态。
 
 ## 成本与执行硬边界
 
@@ -116,10 +140,11 @@ PRD 不是只在原型完成后补写，也不是讨论尚未收口时提前固�
 ### 第一步：加载项目约定
 
 1. 读取项目根目录 `AGENTS.md` 中的 PM 工作流配置。
-2. 获取讨论记录、PRD、业务规则和原型目录。
-3. 配置缺失时使用：`discussions/`、`prd/`、`context/business-rules/`、`prototype/`。
-4. 查找同主题 PRD；同主题默认原地更新，不创建 v3、v4 等碎片版本。
-5. 不读取 `CLAUDE.md` 或 `.claude/skills/` 作为 Codex 默认配置。
+2. 根据已锁定归属获取讨论记录、PRD、业务规则和原型目录。
+3. PRD 按目录治理规范进入对应产品或共用端目录；历史迁移位置查询 migration/2026-09-12-产品架构整理/path-map.json，不重新创建同主题文件。
+4. 配置缺失时使用：`discussions/`、`prd/`、`context/business-rules/`、`prototype/`，但仍必须应用归属子目录。
+5. 只在当前归属目录和旧平铺目录查找同主题 PRD；同主题默认原地更新，不创建 v3、v4 等碎片版本。
+6. 不读取其他项目目录、`CLAUDE.md` 或 `.claude/skills/` 作为 Codex 默认配置。
 
 ### 第二步：确定最小来源范围
 
@@ -266,7 +291,18 @@ PRD 应能直接提供：
 ## 文件与版本
 
 ```text
-{prd_dir}/{模块名}_{主题名}_PRD_v1.md
+common: {prd_dir}/common/{模块名}_{主题名}_PRD_v1.md
+project: {prd_dir}/projects/{projectId}/{模块名}_{主题名}_PRD_v1.md
+```
+
+新建 PRD frontmatter 必须包含：
+
+```yaml
+需求归属: common | project
+所属项目: null | projectId
+研发版本: pending | versionId
+修订: pending | R0 | R1
+状态: 草稿 | 待原型验证 | 原型验证中 | 待评审 | 已确认
 ```
 
 - v1：首次形成。

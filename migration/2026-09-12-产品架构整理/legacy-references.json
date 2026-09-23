@@ -1,0 +1,338 @@
+[
+  {
+    "file": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "line": 263,
+    "reference": "待确认_多式联运_其他运输方式子计划字段锁定与生效失败展示规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "line": 264,
+    "reference": "待确认_多式联运_联运计划管理页交互与承接边界",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "line": 270,
+    "reference": "04-业务规则/已归档/旧功能规则总览/多式联运_联运计划管理页规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "line": 272,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_联运计划管理页原型验证",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md",
+    "line": 273,
+    "reference": "AI输出/原型验证/联运计划/管理页/current/notes",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md",
+    "line": 416,
+    "reference": "待确认_托运单管理_承运商报价提交承接与状态流转规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md",
+    "line": 417,
+    "reference": "待确认_托运单管理_承运商报价地址与覆盖校验口径",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_承运商报价页面_PRD_v2.md",
+    "line": 418,
+    "reference": "待确认_托运单管理_附件分类与上传规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "line": 321,
+    "reference": "待确认_公路计划管理_结构化地址对象保存方式",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "line": 322,
+    "reference": "待确认_公路计划管理_路线重复地址与节点合法性强校验边界",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "line": 325,
+    "reference": "04-业务规则/已归档/旧功能规则总览/公路计划管理_集装箱运输计划创建规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "line": 326,
+    "reference": "09-AI输入包/公路计划管理/集装箱运输计划创建/公路计划_集装箱运输计划创建页面_功能验证_AI输入包_v1",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/公路计划管理_集装箱运输计划创建_PRD_v1.md",
+    "line": 327,
+    "reference": "AI输出/原型验证/公路计划-集装箱运输计划创建/current/notes",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 11,
+    "reference": "04-业务规则/托运单管理_托运单创建与流转规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 12,
+    "reference": "AI输出/原型验证/托运单管理/创建页/current/notes",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 12,
+    "reference": "AI输出/原型验证/托运单管理/管理列表页/current/notes",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 13,
+    "reference": "待确认_托运单管理_创建页交互与校验边界",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 13,
+    "reference": "待确认_托运单管理_附件分类与上传规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md",
+    "line": 13,
+    "reference": "待确认_托运单管理_管理列表状态口径与重新发起规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md",
+    "line": 13,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_多式联运货主结算详情页原型验证",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md",
+    "line": 805,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_多式联运货主结算详情页原型验证",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/运输余量扣量与返还控制_PRD_v1.md",
+    "line": 14,
+    "reference": "待确认_运输余量扣量与返还控制边界规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md",
+    "line": 283,
+    "reference": "04-业务规则/已归档/旧功能规则总览/多式联运_一单制运输凭证与轨迹查询规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_一单制运输凭证与轨迹查询_PRD_v1.md",
+    "line": 286,
+    "reference": "09-AI输入包/AI输入包_多式联运一单制运输凭证与轨迹查询",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 367,
+    "reference": "待确认_多式联运_其他运输方式子计划字段锁定与生效失败展示规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 368,
+    "reference": "待确认_多式联运_联运计划附件字段与生效校验规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 371,
+    "reference": "04-业务规则/已归档/旧功能规则总览/多式联运_创建联运计划规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 373,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_创建联运计划页原型验证_基础与路线",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 374,
+    "reference": "AI输出/原型验证/联运计划/创建页/current/notes",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md",
+    "line": 375,
+    "reference": "/Users/zh2025/Desktop/TMS项目资料/TMS3.0原型主仓/app/pages/multimodal/create-plan/current/notes.md",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-04-12_托运单管理需求讨论.md",
+    "line": 271,
+    "reference": "01-模块地图/托运单管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-04-12_托运单管理需求讨论.md",
+    "line": 272,
+    "reference": "04-业务规则/托运单管理_托运单创建与流转规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+    "line": 151,
+    "reference": "公路计划管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+    "line": 152,
+    "reference": "公路计划管理_集装箱运输计划创建_子专题入口",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-03-26_公路计划管理_集装箱运输计划创建讨论.md",
+    "line": 154,
+    "reference": "公路计划管理_集装箱运输计划创建规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md",
+    "line": 115,
+    "reference": "待确认_运输余量扣量与返还控制边界规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-01_跨模块规则_运输余量扣量与返还控制讨论.md",
+    "line": 121,
+    "reference": "待确认_运输余量扣量与返还控制边界规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 29,
+    "reference": "待确认_多式联运_结算执行取值与展示逻辑",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 115,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_多式联运货主结算原型验证",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 116,
+    "reference": "多式联运_货主结算_子专题入口",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 118,
+    "reference": "待确认_多式联运_结算执行取值与展示逻辑",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 124,
+    "reference": "多式联运_货主结算_子专题入口",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 128,
+    "reference": "多式联运",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-06-02_多式联运_货主结算功能讨论.md",
+    "line": 130,
+    "reference": "09-AI输入包/联运计划管理/AI输入包_多式联运货主结算原型验证",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "line": 127,
+    "reference": "多式联运_一单制运输凭证与轨迹查询规则总览",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "line": 129,
+    "reference": "多式联运_一单制运输凭证_子专题入口",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "line": 132,
+    "reference": "多式联运",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "line": 133,
+    "reference": "多式联运_大主题启动卡",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "discussions/common/products/lianyun/2026-05-05_多式联运_一单制运输凭证与轨迹查询讨论.md",
+    "line": 136,
+    "reference": "多式联运一单制讨论",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 81,
+    "reference": "计划管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 82,
+    "reference": "调度管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 83,
+    "reference": "运单管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 84,
+    "reference": "异常处理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 85,
+    "reference": "结算管理",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 86,
+    "reference": "货量流水",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  },
+  {
+    "file": "context/business-rules/common/products/lianyun/03-跨模块业务原则/运输余量扣量与返还控制原则.md",
+    "line": 92,
+    "reference": "待确认_运输余量扣量与返还控制边界规则",
+    "type": "旧仓知识引用未迁入或无法唯一对应"
+  }
+]

@@ -1,0 +1,26 @@
+<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="44.000000" height="44.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+	</defs>
+	<mask id="mask_4" width="44.000004" height="44.000004" x="0.000000" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<path id="矩形 41395" d="M0 0L44 0L44 44L0 44L0 0Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		</g>
+	</mask>
+	<g id="蒙版组 76374">
+		<path id="路径" d="M0 0L44 0L44 44L0 44L0 0Z" fill-rule="evenodd" />
+		<g mask="url(#mask_4)">
+			<g id="组 81884">
+				<path id="路径" d="M3.42236 2.42285L40.5775 2.42285L40.5775 40.354L3.42236 40.354L3.42236 2.42285Z" fill-rule="evenodd" />
+				<path id="椭圆 2238" d="M37.1049 26.9262C37.1049 32.4229 32.649 36.8789 27.1523 36.8789C21.6556 36.8789 17.1997 32.4229 17.1997 26.9262C17.1997 21.4296 21.6556 16.9736 27.1523 16.9736C32.649 16.9736 37.1049 21.4296 37.1049 26.9262Z" opacity="0.400000006" fill="rgb(58,101,255)" fill-rule="evenodd" />
+				<g id="组 81883">
+					<path id="路径" d="M3.42236 2.42285L40.5775 2.42285L40.5775 40.354L3.42236 40.354L3.42236 2.42285Z" fill-rule="evenodd" />
+					<path id="路径 46064" d="M24.4667 2.42285L4.83867 15.0316L3.87616 32.6867L8.00116 32.6867L8.83987 17.5479L24.2606 7.24916L36.2189 16.8191L35.7556 28.2064C35.2056 33.0326 32.1393 36.2287 26.9693 36.2287L3.64239 36.2287L3.42236 40.3537L26.9693 40.3537C34.2156 40.3537 39.0693 35.5764 39.853 28.674L40.5776 14.7841L24.4667 2.42285Z" fill="rgb(51,51,51)" fill-rule="evenodd" />
+					<path id="路径 46065" d="M14.5132 26.1121L28.2809 26.1121L28.6418 22.5914L23.2729 17.2217L20.3564 20.1382L22.2045 21.9871L14.7931 21.9871L14.5132 26.1121Z" fill="rgb(51,51,51)" fill-rule="evenodd" />
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

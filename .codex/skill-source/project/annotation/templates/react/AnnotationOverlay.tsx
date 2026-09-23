@@ -88,7 +88,11 @@ export function AnnotationOverlay() {
 
   // 标注点交互
   const handleDotClick = (id: string) => setActiveId(activeId === id ? '' : id)
-  const handleDotMove = (id: string, pos: { x: number; y: number }) => updateAnnotation(id, { position: pos, type: 'position', selector: '' })
+  const handleDotMove = (id: string, pos: { x: number; y: number }) => {
+    const annotation = annotations.find(item => item.id === id)
+    if (!annotation) return
+    updateAnnotation(id, { position: pos })
+  }
 
   // 编辑模式点击添加
   const handleAddClick = (e: React.MouseEvent) => {

@@ -218,6 +218,7 @@
 </template>
 
 <script setup>
+import { pageProductLabel } from '../../review/product-catalog.mjs'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
@@ -282,9 +283,10 @@ function syncStatusType(status) { return status === 'conflict' ? 'warning' : 'su
 function syncActionType(action) { return { update: 'primary', add: 'success', merge: 'primary', delete: 'danger' }[action] || 'info' }
 function syncEntryKey(entry) { return `${entry.action || 'conflict'}:${entry.pageKey}:${entry.annotationId || entry.title || entry.reason}` }
 function pageOwnershipText(page) {
-  if (page.scope === 'common') return '通用'
-  return projectMap.value.get(page.projectId)?.name || page.projectId || '定制项目'
+  const ownership = page.scope === 'common' ? '通用' : projectMap.value.get(page.projectId)?.name || page.projectId || '定制项目'
+  return `${pageProductLabel(page)} · ${ownership}`
 }
+
 function formatDateTime(value) {
   if (!value) return '-'
   return new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
