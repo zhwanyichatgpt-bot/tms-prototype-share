@@ -1,0 +1,22 @@
+{
+  "versionId": "TMS-COMMON-202609-01",
+  "revisions": [
+    {
+      "revision": "R0",
+      "date": "2026-09-23T03:21:13.162Z",
+      "reason": "首次发布研发地址",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "zhiyunShipperHome",
+            "driverHome"
+          ],
+          "before": "未发布研发地址",
+          "after": "发布 2 个原型页面",
+          "devImpact": "请以本版本原型和标注作为本次研发依据"
+        }
+      ]
+    }
+  ]
+}
