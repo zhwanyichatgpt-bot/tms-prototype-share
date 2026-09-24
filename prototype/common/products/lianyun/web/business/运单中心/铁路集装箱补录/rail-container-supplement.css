@@ -1,0 +1,29 @@
+@import '../水路集装箱补录/water-container-supplement.css';
+
+.rcw-page .rcs-content { padding-bottom: 150px; }
+.rcw-transport-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; padding: 4px 16px 18px; }
+.rcw-transport-field { display: block; min-width: 0; color: #5d6570; font-size: 14px; }
+.rcw-transport-field > span:first-child { display: block; margin-bottom: 8px; }
+.rcw-transport-field i { margin-right: 5px; color: #f34d4d; font-style: normal; }
+.rcw-transport-control { position: relative; display: block; }
+.rcw-transport-control input,
+.rcw-transport-control select { width: 100%; height: 38px; padding: 0 44px 0 12px; border: 1px solid #dfe2e7; border-radius: 2px; outline: 0; background: #fff; color: #525966; font: inherit; }
+.rcw-transport-control input:focus,
+.rcw-transport-control select:focus { border-color: #7fa0ff; box-shadow: 0 0 0 2px rgba(58, 101, 255, .08); }
+.rcw-transport-control small { position: absolute; right: 12px; top: 11px; color: #a5abb4; font-size: 12px; }
+.rcw-page .rcs-bulk-route-head { padding-right: 24px; }
+.rcw-page .rcs-bulk-route-head small { padding-left: 51px; }
+.rcw-work-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 28px; }
+.rcw-work-row label { grid-template-columns: 146px 1fr; }
+.rcw-work-row .rcs-proof { justify-self: start; }
+.rcw-manifest-modal { width: 1480px; }
+.rcw-manifest-row { grid-template-columns: .38fr 1.2fr .58fr .85fr 1fr .75fr .9fr 1fr .8fr .48fr; }
+.rcw-manifest-row > span { padding: 8px 10px; }
+.rcw-manifest-row .rcw-row-action { justify-content: center; }
+.rcw-manifest-row .rcw-row-action button { border: 0; background: transparent; color: #3a65ff; cursor: pointer; }
+.rcw-manifest-row .rcw-status { color: #20a77a; }
+.rcw-manifest-row .rcw-status.pending { color: #a0a6ae; }
+.rcw-manifest-scroll { max-height: 360px; overflow-y: auto; }
+.rcw-import-hint { color: #3a65ff; }
+.rcw-error { margin: 12px 24px 0; color: #ed5b58; font-size: 13px; }
+.rcw-submit-error { margin: 10px 0 0; color: #ed5b58; font-size: 13px; }

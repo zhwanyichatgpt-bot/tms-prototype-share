@@ -1,0 +1,42 @@
+{
+  "versionId": "TMS-COMMON-202609-02",
+  "revisions": [
+    {
+      "revision": "R1",
+      "date": "2026-09-24T06:14:10.054Z",
+      "reason": "研发评审后统一收口公路、水路、铁路运单补录。",
+      "items": [
+        {
+          "type": "规则与交互",
+          "pageKeys": [
+            "roadContainerWaybillSupplement",
+            "waterContainerWaybillSupplement",
+            "railContainerWaybillSupplement"
+          ],
+          "before": "公路仅按编号辨认任务且页面曾按多司机、多运单展示；水路、铁路仍按运输计划选择。",
+          "after": "公水铁均按运输任务补录；下拉以运输类型、起终点地址别名和完整任务编号两行展示并支持搜索。公路任务固定箱型，一次补录一车一司机、最多两个同箱型箱号，只生成一张运单；甩挂与提挂分别选任务。",
+          "devImpact": "任务列表需提供运输类型、任务编号和起终点地址别名；按任务带出路线及补录资源，切换任务不得沿用前一任务的运输信息、箱号或凭证。公路不得按一个任务一次生成多张运单。"
+        }
+      ]
+    },
+    {
+      "revision": "R0",
+      "date": "2026-09-24T02:00:14.014Z",
+      "reason": "首次发布研发地址",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "waybillCenter",
+            "roadContainerWaybillSupplement",
+            "waterContainerWaybillSupplement",
+            "railContainerWaybillSupplement"
+          ],
+          "before": "未发布研发地址",
+          "after": "发布 4 个原型页面",
+          "devImpact": "请以本版本原型和标注作为本次研发依据"
+        }
+      ]
+    }
+  ]
+}

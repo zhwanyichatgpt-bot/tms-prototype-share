@@ -90,6 +90,24 @@ export const pageCatalog = Object.freeze([
     ],
   },
   {
+    key: 'roadContainerWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS 通用运单中心公路运单补录', remark: '用于验证按运输任务切换散杂货或集装箱补录；公路集装箱任务固定箱型，单次补录一张运单，甩挂与提挂分别选任务。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/公路集装箱补录/'],
+    evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
+  },
+  {
+    key: 'waterContainerWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS 通用运单中心水路集装箱运单补录', remark: '用于验证按水路运输任务和装卸路段补录箱型箱量、箱清单、作业时间与路段凭证。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/水路集装箱补录/'],
+    evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
+  },
+  {
+    key: 'railContainerWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS 通用运单中心铁路集装箱运单补录', remark: '用于验证铁路运输任务按发到站路段补录箱清单、车皮关系、作业时间与凭证。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/铁路集装箱补录/'],
+    evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
+  },
+  {
     key: 'waybillCenterBeigang', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'project', projectId: 'beigang',
     requirement: '北港运单中心地址及运输单价变更', remark: '用于验证北港定制卸货地址及运输单价变更的发起、处理、撤回与视角差异；源自通用运单中心；已纳入 TMS-BEIGANG-202608-02（北港1.0.3.5版本）。',
     sourcePaths: [

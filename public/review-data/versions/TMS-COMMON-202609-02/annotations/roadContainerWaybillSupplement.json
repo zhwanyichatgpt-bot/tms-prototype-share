@@ -1,0 +1,104 @@
+{
+  "versionId": "TMS-COMMON-202609-02",
+  "page": "roadContainerWaybillSupplement",
+  "title": "公路集装箱运单补录",
+  "updatedAt": "2026-09-24",
+  "annotations": [
+    {
+      "id": "annot-roadContainerWaybillSupplement-rule-plan-selection",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-rule-plan-selection",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "按运输任务切换补录内容",
+      "content": "先选择运输任务。下拉每项首行显示运输类型及起终点地址别名，次行显示完整任务编号；支持按类型、别名、编号搜索。选择集装箱任务后带出固定箱型、司机箱号与任务路线；选择散杂货任务后展示散杂货表单。切换任务时清空前一任务未提交的补录内容。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R01、5.1、7.1；公路补录原型",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-roadContainerWaybillSupplement-rule-plan-quantity",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-rule-plan-quantity",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运输任务固定箱型与箱数",
+      "content": "当前任务只对应一种箱型及尺寸，货品随任务带出，均不可在补录时切换；本区按箱型、尺寸、货品、任务箱数及箱号分配方式分列展示。一次公路运输最多关联两个同箱型箱号；已运输箱数、剩余可补录箱数的跨次计算口径仍见 PRD 8.1 待确认项。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R02、R03、7.1、8.1",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-roadContainerWaybillSupplement-field-actual-containers",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-field-actual-containers",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "一单一车一司机及一至两个箱号",
+      "content": "固定指派任务直接带出车辆、司机和固定箱号；入场匹配任务从任务候选箱清单选择实际箱号。一次补录只用一辆车、一名司机，录入一至两个不重复的同箱型箱号，可维护铅封号和车架号，不展示箱况；各路段共用本次箱号，不逐节点重填。",
+      "category": "field",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R03、R04、7.1",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-roadContainerWaybillSupplement-rule-route-segments",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-rule-route-segments",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "按任务路段录入作业，甩挂提挂分别补录",
+      "content": "每个起点—终点路段分别录入实际作业时间及凭证；提空等空箱路段不展示货品和重量，装货、卸货、提重、还重等载货作业按节点填写适用重量。甩挂前、提挂后属于两个独立运输任务，应分别进入补录；本次页面只填写所选任务的一名司机和一张运单，不展示运单1／运单2。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R04、R05、5.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-roadContainerWaybillSupplement-action-submit",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-action-submit",
+      "position": {
+        "x": 12.70703125,
+        "y": -13.3125
+      },
+      "title": "提交前核对本次单张运单",
+      "content": "点击提交先核对所选任务、同一司机和车辆、实际箱号及本次路线，再进入确认；一次补录只生成一张运单。取消确认或返回不生成运单；不设置补录批次和待复核节点。",
+      "category": "action",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R09、5.5",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-roadContainerWaybillSupplement-rule-confirm",
+      "type": "selector",
+      "selector": ".annot-roadContainerWaybillSupplement-rule-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "确认本次公路单张运单",
+      "content": "确认框展示所选任务、本次一名司机、一辆车及一至两个同箱型箱号；确认后仅生成一张运单。甩挂与提挂分别按独立任务补录，不在此框合并生成多张；取消则返回修改且不生成。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R04、R09；公路补录原型确认框",
+      "container": "modal",
+      "group": "confirm",
+      "createdAt": "2026-09-24"
+    }
+  ]
+}

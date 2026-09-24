@@ -1,0 +1,120 @@
+{
+  "versionId": "TMS-COMMON-202609-02",
+  "page": "railContainerWaybillSupplement",
+  "title": "铁路集装箱运单补录",
+  "updatedAt": "2026-09-24",
+  "annotations": [
+    {
+      "id": "annot-railContainerWaybillSupplement-rule-plan-selection",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-rule-plan-selection",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "按铁路任务带出发到站及箱型组",
+      "content": "选择铁路集装箱运输任务，下拉首行显示运输类型及起终点地址别名，次行显示完整任务编号，可按类型、别名和编号搜索。选中后带出任务状态、铁路运输信息、发站—到站路段及箱型组；切换任务时不得沿用前一任务的运输信息和凭证。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R01、R08、5.1、5.4；铁路补录原型",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-field-transport-info",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-field-transport-info",
+      "position": {
+        "x": -889.6640625,
+        "y": -57.83984375
+      },
+      "title": "铁路运输信息按用户截图字段补录",
+      "content": "车种、车号、装车时间、运单号、运输费用、发车车次、发车时间、到站车次、到站时间和交付时间为必填；其余截图字段为选填。字段顺序与完整名称见 PRD 7.3。付款方式枚举、费用精度和页面车号与逐箱车皮号的约束尚未确认，不以原型示例值定规则。",
+      "category": "field",
+      "source": "用户提供的铁路运输信息字段截图；运单中心_公水铁集装箱运单补录_PRD_v1.md 7.3、8.1",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-rule-route-groups",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-rule-route-groups",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "发到站路段汇总箱量和装卸凭证",
+      "content": "发站—到站按箱型、尺寸、货品汇总计划箱数和已补录装车／卸车数，逐箱信息进入箱清单。同一装车作业及卸车作业各维护路段凭证，不按箱号重复上传；装卸进度来自同一份箱清单。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R08、7.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-action-submit",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-action-submit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "提交前校验铁路必填信息",
+      "content": "提交前校验铁路运输信息截图标星字段，并核对运单号及本次装车、卸车箱数；确认后一个铁路运单号对应一张系统运单。补录不设置批次，也不新增待复核状态。重复提交和失败恢复仍待确认。",
+      "category": "action",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R08、R09、5.4、8.1",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-action-manifest-input",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-action-manifest-input",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "铁路箱清单可批量导入或手工调整",
+      "content": "按当前发到站路段及箱型组维护清单，支持表格导入、装车清单图片识别和手工新增／修改。识别或导入后的箱号、封号、重量及车皮号必须允许人工核对；当前原型导入后新增的行是 Mock 示例，不代表真实解析完成。",
+      "category": "action",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R08、5.4、8.1；铁路补录原型",
+      "container": "modal",
+      "group": "manifest",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-rule-manifest-items",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-rule-manifest-items",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "逐箱记录装卸状态与车皮关系",
+      "content": "同一箱项记录实际箱号、铅封号、重量、车皮车型、车皮号及装车／卸车进度；尺寸和货品由当前任务的发到站路段箱型组带出。页面级车号与逐箱车皮号是否必须一致尚未确认，不能依据当前 Mock 数据写死限制。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R08、7.2、8.1",
+      "container": "modal",
+      "group": "manifest",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-railContainerWaybillSupplement-rule-confirm",
+      "type": "selector",
+      "selector": ".annot-railContainerWaybillSupplement-rule-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "确认铁路运单号与本次箱量",
+      "content": "确认框展示铁路运单号、已补录装车箱数与卸车箱数，取消可返回修改。确认后应保存发到站作业、箱清单、车皮关联和凭证；一个铁路运单号对应一张系统运单，车皮数量限制仍待确认。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R08、R09、8.1",
+      "container": "modal",
+      "group": "confirm",
+      "createdAt": "2026-09-24"
+    }
+  ]
+}

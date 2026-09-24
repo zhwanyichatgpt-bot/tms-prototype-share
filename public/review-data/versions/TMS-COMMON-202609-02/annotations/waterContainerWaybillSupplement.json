@@ -1,0 +1,121 @@
+{
+  "versionId": "TMS-COMMON-202609-02",
+  "page": "waterContainerWaybillSupplement",
+  "title": "水路集装箱运单补录",
+  "updatedAt": "2026-09-24",
+  "annotations": [
+    {
+      "id": "annot-waterContainerWaybillSupplement-rule-plan-selection",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-rule-plan-selection",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "按运输任务带出水路补录内容",
+      "content": "选择水路集装箱运输任务，下拉首行显示运输类型及起终点地址别名，次行显示完整任务编号，可按类型、别名和编号搜索。选中后带出任务状态、装船—卸船路段及箱型组；切换任务时旧任务的航次和未提交作业数据不得沿用。箱量在各装卸路段按箱型展示，不另设计划航次箱量总览。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R01、R02、5.1、5.3；水路补录原型",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-field-voyage",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-field-voyage",
+      "position": {
+        "x": -924.11328125,
+        "y": -51.99609375
+      },
+      "title": "船舶与航次随任务切换",
+      "content": "船舶信息和航次号在运输路线区填写，按所选任务带出并随任务切换；不在每个箱号上重复录入。此资源区不展示承运商字段；顶部任务摘要中的承运企业为任务基本信息。",
+      "category": "field",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md 5.3、7.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-rule-route-groups",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-rule-route-groups",
+      "position": {
+        "x": -1711.33984375,
+        "y": 107.55859375
+      },
+      "title": "装卸路段汇总箱量并共用作业凭证",
+      "content": "同一装船点可对应不同卸船点、箱型和货品。每个装卸路段按箱型、尺寸、货品展示计划箱数及已补录装船／卸船数，逐箱内容进入“补录箱清单”。实际装卸时间和装船、卸船凭证按路段作业填写；一项作业凭证覆盖该路段相应作业，不要求逐箱上传。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R06、R07、7.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-action-submit",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-action-submit",
+      "position": {
+        "x": -23.3359375,
+        "y": -23.48828125
+      },
+      "title": "提交前核对路段与装船箱数",
+      "content": "提交先展示本次装卸路段数和已装船箱数，允许返回修改。确认后保存路段作业、箱清单与凭证；不设置补录批次或待复核节点。水路多路段如何对应系统运单仍待确认，不依据原型固定运单张数。",
+      "category": "action",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R09、5.3、8.1",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-action-manifest-input",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-action-manifest-input",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "箱清单支持表格、图片和人工维护",
+      "content": "<p>1、按当前装卸路段及箱型组打开清单，可导入表格、上传装箱单／理货单图片识别，或手动新增、修改。图片识别结果须先人工核对再保存，</p><p>2、通过计划进行补录师支持上述功能，当通过运输任务进行补录时 默认使用运输任务中已经维护的集装箱清单 进行回显（未运输的集装箱），用户可以进行删除相关集装箱清单内容集装箱。未运输集装箱后续可以继续补录</p>",
+      "category": "action",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R07、5.3、8.1",
+      "container": "modal",
+      "group": "manifest",
+      "createdAt": "2026-09-24",
+      "color": ""
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-rule-manifest-items",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-rule-manifest-items",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "同一箱清单承接装船与卸船",
+      "content": "逐箱维护箱号、铅封号、实际重量及作业进度，箱型和货品随当前任务的装卸路段箱型组带出。同一箱项承接装船到卸船，不分别建立两套无关联明细；主页面的装卸数量应与清单结果一致。逐箱状态枚举和精确计数口径尚待确认。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R07、7.2、8.1",
+      "container": "modal",
+      "group": "manifest",
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": "annot-waterContainerWaybillSupplement-rule-confirm",
+      "type": "selector",
+      "selector": ".annot-waterContainerWaybillSupplement-rule-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "确认本次水路补录范围",
+      "content": "确认前核对装卸路段总数与已装船箱数。取消确认可返回修改；确认后保存本次实际作业、箱清单和路段凭证，不要求每箱单独上传凭证。水路运单生成张数仍待业务确认。",
+      "category": "rule",
+      "source": "运单中心_公水铁集装箱运单补录_PRD_v1.md R06、R09、8.1",
+      "container": "modal",
+      "group": "confirm",
+      "createdAt": "2026-09-24"
+    }
+  ]
+}

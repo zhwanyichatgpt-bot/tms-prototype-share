@@ -1,0 +1,87 @@
+const sampleManifest = (prefix, size, cargo, count, status = '已完成') => Array.from({ length: 5 }, (_, index) => ({
+  key: `${prefix}-${index + 1}`,
+  containerNo: `${prefix}${String(index + 1).padStart(4, '0')}`,
+  size,
+  cargo,
+  sealNo: `SL${String(83010 + index)}`,
+  weight: size === '40GP' ? '30.80' : '18.60',
+  status,
+  totalCount: count,
+}))
+
+export const initialRoutes = [
+  {
+    key: 'nanjing-wuhan',
+    loadPort: '南京港',
+    loadAddress: '江苏省｜南京龙潭港区',
+    unloadPort: '武汉港',
+    unloadAddress: '湖北省｜武汉阳逻港区',
+    loadTime: '2026-09-23 14:30:00',
+    unloadTime: '2026-09-25 09:20:00',
+    loadProof: '装船凭证 1份',
+    unloadProof: '卸船凭证 1份',
+    groups: [
+      { key: 'nj-wh-20', containerType: '普通干货箱', size: '20GP', cargo: '机械设备', plannedCount: 80, loadedCount: 78, unloadedCount: 78, manifest: sampleManifest('MSCU', '20GP', '机械设备', 78) },
+      { key: 'nj-wh-40', containerType: '普通干货箱', size: '40GP', cargo: '机械设备', plannedCount: 40, loadedCount: 40, unloadedCount: 40, manifest: sampleManifest('TGHU', '40GP', '机械设备', 40) },
+    ],
+  },
+  {
+    key: 'nanjing-chongqing',
+    loadPort: '南京港',
+    loadAddress: '江苏省｜南京龙潭港区',
+    unloadPort: '重庆港',
+    unloadAddress: '重庆市｜果园港集装箱码头',
+    loadTime: '2026-09-23 16:10:00',
+    unloadTime: '2026-09-27 11:05:00',
+    loadProof: '装船凭证 1份',
+    unloadProof: '卸船凭证 1份',
+    groups: [
+      { key: 'nj-cq-40', containerType: '普通干货箱', size: '40GP', cargo: '钢材', plannedCount: 120, loadedCount: 116, unloadedCount: 0, manifest: sampleManifest('CAIU', '40GP', '钢材', 116, '已装船') },
+    ],
+  },
+  {
+    key: 'wuhan-chongqing',
+    loadPort: '武汉港',
+    loadAddress: '湖北省｜武汉阳逻港区',
+    unloadPort: '重庆港',
+    unloadAddress: '重庆市｜果园港集装箱码头',
+    loadTime: '2026-09-25 13:40:00',
+    unloadTime: '2026-09-27 12:30:00',
+    loadProof: '装船凭证 1份',
+    unloadProof: '卸船凭证 1份',
+    groups: [
+      { key: 'wh-cq-20', containerType: '普通干货箱', size: '20GP', cargo: '电子配件', plannedCount: 90, loadedCount: 86, unloadedCount: 0, manifest: sampleManifest('OOLU', '20GP', '电子配件', 86, '已装船') },
+    ],
+  },
+]
+
+export const taskScenarios = [
+  {
+    key: 'nanjing-chongqing',
+    number: 'YSRW-2609241126384501',
+    transportType: '集装箱运输',
+    startAlias: '南京港',
+    endAlias: '重庆港',
+    status: '运输中',
+    carrier: '长江集装箱运输有限公司',
+    dispatcher: '水运调度部',
+    assigningCompany: '至简测试企业',
+    assignedAt: '2026-09-24 11:26:38',
+    voyageInfo: { vessel: '江海通达168', voyageNo: 'JHTD-0923' },
+    routeKeys: ['nanjing-wuhan', 'nanjing-chongqing', 'wuhan-chongqing'],
+  },
+  {
+    key: 'wuhan-chongqing',
+    number: 'YSRW-2609241142175628',
+    transportType: '集装箱运输',
+    startAlias: '武汉港',
+    endAlias: '重庆港',
+    status: '运输中',
+    carrier: '长江集装箱运输有限公司',
+    dispatcher: '水运调度部',
+    assigningCompany: '至简测试企业',
+    assignedAt: '2026-09-24 11:42:17',
+    voyageInfo: { vessel: '江海通达169', voyageNo: 'JHTD-0924' },
+    routeKeys: ['wuhan-chongqing'],
+  },
+]

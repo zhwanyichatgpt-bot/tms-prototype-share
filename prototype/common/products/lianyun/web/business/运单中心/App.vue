@@ -4,15 +4,17 @@
  * 职责：组合公共系统框架 + 运单中心业务组件 + 页面级状态，不承载重复运单结构。
  */
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { openPrototypePage } from '../../../../../../../src/review/prototype-navigation.mjs'
 import { TmsWebShell } from '../../../../../shared/web/tms-web-shell/index.js'
 import TaskTopLogo from '../运输任务/components/TaskTopLogo.vue'
+import WaybillTypePanel from './components/WaybillTypePanel.vue'
 import WaybillKindTabs from './components/WaybillKindTabs.vue'
 import WaybillStatusTabs from './components/WaybillStatusTabs.vue'
 import WaybillFilterBar from './components/WaybillFilterBar.vue'
 import WaybillTable from './components/WaybillTable.vue'
 import WaybillPagination from './components/WaybillPagination.vue'
-import { paginationMeta, waybillRows } from './mock-data'
+import { paginationMetaByMode, waybillRows } from './mock-data'
 import './waybill-center.css'
 
 /* —— 顶部栏 / 系统框架数据 —— */
@@ -46,32 +48,56 @@ const navItems = [
 /* —— 页面级状态 —— */
 const kindTab = ref('normal')
 const statusTab = ref('all')
-const page = ref(paginationMeta.current)
+const transportMode = ref('truck')
+const page = ref(1)
+const detailNotice = ref('')
+
+const paginationMeta = computed(() => paginationMetaByMode[transportMode.value])
 
 /* 按运单类型 tab（普通/委外）+ 状态 tab 过滤 */
 const visibleRows = computed(() => {
-  let list = waybillRows
-  if (kindTab.value === 'outsourced') list = list.filter(r => r.kindTab === 'outsourced')
-  else if (kindTab.value === 'normal' || kindTab.value === 'platform') list = list.filter(r => r.kindTab === 'normal')
+  let list = waybillRows.filter(r => r.transportMode === transportMode.value)
+  list = list.filter(r => r.kindTab === kindTab.value)
   if (statusTab.value !== 'all') list = list.filter(r => r.status === statusTab.value)
   return list
 })
+
+function onTransportModeChange(mode) {
+  transportMode.value = mode
+  statusTab.value = 'all'
+  page.value = 1
+  detailNotice.value = ''
+}
 
 function onFilterSearch() {
   page.value = 1
 }
 function onFilterReset() {
   statusTab.value = 'all'
-  page.value = paginationMeta.current
+  page.value = paginationMeta.value.current
 }
 
 const router = useRouter()
+const route = useRoute()
 
 function onAction({ row, action }) {
   if (action === '详情') {
+    if (route.params.versionId) {
+      detailNotice.value = '运单详情未纳入本次评审版本'
+      return
+    }
     /* 携带运单标识，详情页加载同一张运单 */
-    router.push({ path: '/waybillCenterDetail', query: { key: row.key } })
+    openPrototypePage(router, route, 'waybillCenterDetail', { key: row.key })
   }
+}
+
+function onSupplement() {
+  const pageByMode = {
+    truck: 'roadContainerWaybillSupplement',
+    water: 'waterContainerWaybillSupplement',
+    rail: 'railContainerWaybillSupplement',
+  }
+  openPrototypePage(router, route, pageByMode[transportMode.value])
 }
 
 /* 框架动作：原型层保持静态，不外跳 */
@@ -137,18 +163,33 @@ function onMenuSelect() {}
         </template>
 
         <div class="waybill-center-page">
+          <WaybillTypePanel
+            :active-key="transportMode"
+            @change="onTransportModeChange"
+          />
           <div class="wc-main">
             <WaybillKindTabs :active-key="kindTab" @change="kindTab = $event" />
-            <WaybillFilterBar @search="onFilterSearch" @reset="onFilterReset" />
+            <WaybillFilterBar
+              :transport-mode="transportMode"
+              @search="onFilterSearch"
+              @reset="onFilterReset"
+            />
             <WaybillStatusTabs :active-key="statusTab" @change="statusTab = $event" />
 
             <div class="wc-toolbar">
               <button type="button" class="wc-toolbar-btn">导出</button>
+              <button type="button" class="wc-toolbar-btn" @click="onSupplement">运单补录</button>
             </div>
+            <span v-if="detailNotice" class="wc-detail-notice" role="status">{{ detailNotice }}</span>
 
-            <WaybillTable :rows="visibleRows" @action="onAction" />
-            <WaybillPagination :current="page" @change="page = $event" />
+            <WaybillTable
+              :transport-mode="transportMode"
+              :rows="visibleRows"
+              @action="onAction"
+            />
+            <WaybillPagination :current="page" :meta="paginationMeta" @change="page = $event" />
           </div>
+
         </div>
       </TmsWebShell>
     </div>
