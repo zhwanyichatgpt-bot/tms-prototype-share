@@ -14,12 +14,20 @@ import WaybillStatusTabs from './components/WaybillStatusTabs.vue'
 import WaybillFilterBar from './components/WaybillFilterBar.vue'
 import WaybillTable from './components/WaybillTable.vue'
 import WaybillPagination from './components/WaybillPagination.vue'
-import { paginationMetaByMode, waybillRows } from './mock-data'
+import {
+  paginationMetaByMode,
+  roleOptions,
+  statusTabsByRole,
+  waybillKindTabs,
+  waybillRows,
+  waybillTypesByRole,
+} from './mock-data'
 import './waybill-center.css'
 
 /* —— 顶部栏 / 系统框架数据 —— */
 const siteName = '至简集运'
-const organizationName = '至简测试企业'
+const roleKey = ref('contract')
+const organizationName = computed(() => roleOptions.find(item => item.key === roleKey.value)?.organizationName || '')
 const dateText = '2026 年 08 月 25 日'
 const weatherText = '27℃ 多云'
 const tabs = [
@@ -53,14 +61,28 @@ const page = ref(1)
 const detailNotice = ref('')
 
 const paginationMeta = computed(() => paginationMetaByMode[transportMode.value])
+const roleStatusTabs = computed(() => statusTabsByRole[roleKey.value])
+const roleWaybillTypes = computed(() => waybillTypesByRole[roleKey.value])
+const roleKindTabs = computed(() => roleKey.value === 'downstream'
+  ? [{ key: 'outsourced', label: '承接运单' }]
+  : waybillKindTabs)
 
-/* 按运单类型 tab（普通/委外）+ 状态 tab 过滤 */
+/* 先按当前企业投影主阶段与财务进度，再执行页签过滤。 */
 const visibleRows = computed(() => {
   let list = waybillRows.filter(r => r.transportMode === transportMode.value)
   list = list.filter(r => r.kindTab === kindTab.value)
-  if (statusTab.value !== 'all') list = list.filter(r => r.status === statusTab.value)
+  list = list.map(row => ({ ...row, ...row.perspectives[roleKey.value] }))
+  if (statusTab.value !== 'all') list = list.filter(r => r.stage === statusTab.value)
   return list
 })
+
+function onRoleChange(role) {
+  roleKey.value = role
+  kindTab.value = role === 'downstream' ? 'outsourced' : 'normal'
+  statusTab.value = 'all'
+  page.value = 1
+  detailNotice.value = ''
+}
 
 function onTransportModeChange(mode) {
   transportMode.value = mode
@@ -98,6 +120,12 @@ function onSupplement() {
     rail: 'railContainerWaybillSupplement',
   }
   openPrototypePage(router, route, pageByMode[transportMode.value])
+}
+
+/* 批量补录本期仅开放公路，其余运输方式保持置灰。 */
+function onBatchSupplement() {
+  if (transportMode.value !== 'truck') return
+  openPrototypePage(router, route, 'roadBatchWaybillSupplement')
 }
 
 /* 框架动作：原型层保持静态，不外跳 */
@@ -165,20 +193,40 @@ function onMenuSelect() {}
         <div class="waybill-center-page">
           <WaybillTypePanel
             :active-key="transportMode"
+            :items="roleWaybillTypes"
             @change="onTransportModeChange"
           />
           <div class="wc-main">
-            <WaybillKindTabs :active-key="kindTab" @change="kindTab = $event" />
+            <div class="wc-viewbar">
+              <WaybillKindTabs :active-key="kindTab" :tabs="roleKindTabs" @change="kindTab = $event" />
+              <div class="wc-role-switch" aria-label="当前企业视角">
+                <span class="wc-role-switch-label">当前企业视角</span>
+                <button
+                  v-for="role in roleOptions"
+                  :key="role.key"
+                  type="button"
+                  :class="{ active: role.key === roleKey }"
+                  @click="onRoleChange(role.key)"
+                >{{ role.label }}</button>
+              </div>
+            </div>
             <WaybillFilterBar
               :transport-mode="transportMode"
               @search="onFilterSearch"
               @reset="onFilterReset"
             />
-            <WaybillStatusTabs :active-key="statusTab" @change="statusTab = $event" />
+            <WaybillStatusTabs :active-key="statusTab" :tabs="roleStatusTabs" @change="statusTab = $event" />
 
             <div class="wc-toolbar">
               <button type="button" class="wc-toolbar-btn">导出</button>
               <button type="button" class="wc-toolbar-btn" @click="onSupplement">运单补录</button>
+              <button
+                type="button"
+                class="wc-toolbar-btn"
+                :disabled="transportMode !== 'truck'"
+                :title="transportMode === 'truck' ? '按运输任务批量补录车次' : '批量补录暂未开放，本期仅支持公路运输'"
+                @click="onBatchSupplement"
+              >批量补录</button>
             </div>
             <span v-if="detailNotice" class="wc-detail-notice" role="status">{{ detailNotice }}</span>
 

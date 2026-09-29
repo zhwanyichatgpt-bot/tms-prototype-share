@@ -1,0 +1,112 @@
+{
+  "versionId": "TMS-COMMON-202609-02",
+  "page": "roadBatchWaybillSupplement",
+  "title": "公路集装箱运单批量补录",
+  "updatedAt": "2026-09-29",
+  "annotations": [
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-task-scope",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-task-scope",
+      "position": { "x": 0, "y": 0 },
+      "title": "一次批量补录锁定一个运输任务",
+      "content": "车次明细的列由任务路段结构派生，同一批次的车次必须共享同一套列，因此一次批量补录只处理一个任务。\n\n- 下拉每项两行：首行“运输类型｜起点别名 → 终点别名”，次行完整任务编号；可按类型、别名、编号搜索。\n- 切换任务时清空已导入的车次明细与校验结果，不沿用前一任务的车型、箱号与作业时间。\n- 同一任务可先后多次批量补录（例如分批交台账），不支持跨任务合并导入。\n\n**注意：**可批量补录的任务状态与任务可见范围尚未确认（PRD 8.1）。",
+      "category": "rule",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R02、5.1、1.3",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-task-container",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-task-container",
+      "position": { "x": 0, "y": 0 },
+      "title": "任务箱型信息只读带出",
+      "content": "**一个任务可含多个箱型**，各箱型的货品不同（例如 40GP 装电子配件、20GP 装机械设备）。本区按箱型分行展示箱型、尺寸、货品、任务箱数与箱号分配方式，均由所选任务只读带出，本次批量补录不得改选箱型。\n\n行内的箱型与货品由补录人员按台账填写：箱型从本任务的箱型中选择，货品随箱型自动带出。\n\n候选箱池随任务载入但不直接展示为列表，它是实际箱号及其箱型的校验依据。",
+      "category": "rule",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md 5.1、7.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-action-import",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-action-import",
+      "position": { "x": 0, "y": 0 },
+      "title": "台账导入的三种方式与整批替换",
+      "content": "**导入方式**\n\n- 下载模板：模板列与当前任务的车次明细列完全一致（含箱型、货品列）。\n- 上传 Excel：可直接上传自有台账。\n- 粘贴数据：从 Excel 复制后贴入。\n\n**替换语义与箱型匹配**\n\n一次导入整批替换当前车次明细，不与已有行合并。箱型列按标签匹配当前任务的箱型；匹配不到时该行箱型留空，由校验提示补选。\n\n**待确认**\n\n自有台账列名与模板不一致时的匹配与记忆机制尚未确认；是否支持追加上传以承载分批交台账也未确认（PRD 8.1）。",
+      "category": "action",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R04、5.2",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-derive-columns",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-derive-columns",
+      "position": { "x": 0, "y": 0 },
+      "title": "表头字段与作业列生成规则",
+      "content": "**固定字段（按此顺序）**\n\n序号 · 箱型* · 货品 · 司机* · 联系电话 · 车牌号* · 车架号 · 实际箱号①* · 铅封号① · 实际箱号② · 铅封号②\n\n货品随所选箱型自动带出、不可单独编辑；一个任务可含多个箱型且货品不同。\n\n**作业字段：由任务路线节点决定**\n\n按节点先后顺序排列，每个节点出一列时间；装货与卸货节点额外出一列重量。\n\n| 路线形态 | 作业字段 |\n|---|---|\n| 提空还空（本期已实现） | 提空时间、装货时间、装货重量、卸货时间、卸货重量、还空时间 |\n| 含甩挂的路线 | 提空时间、装货时间、装货重量、甩挂时间 |\n| 含提挂的路线 | 提挂时间、卸货时间、卸货重量、还空时间 |\n\n哪个节点出现在任务路线中，就出哪个节点对应的列，节点顺序即列顺序；不出现的节点不产生列。甩挂、提挂形态待任务数据接入后验证。\n\n**系统列与模板**\n\n序号、状态、异常原因由系统生成、不参与导入；导入模板的字段与顺序同表头，一份模板对应一个任务。",
+      "category": "rule",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R03、7.3",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-validation",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-validation",
+      "position": { "x": 0, "y": 320 },
+      "title": "校验规则与提交阻断",
+      "content": "**必填字段**\n\n- 必填：箱型、司机、车牌号、实际箱号①\n- 选填：联系电话、车架号、铅封号①②、实际箱号②、全部作业时间、全部重量\n\n**箱号校验**\n\n1. 必须落在当前任务候选箱池内；计划外的实际箱号走线下处理，不在本功能录入。\n2. 箱号所属箱型必须与本行所选箱型一致——一个车次只允许同一箱型，因此第二个箱号也须同箱型。\n3. 批内箱号不可重复，重复时相关行均判异常。\n4. 每行 1—2 个箱号，实际箱号② 留空表示该车次只装一箱。\n\n**时间校验**\n\n时间全部选填；一旦填写，必须格式正确且按任务路线节点顺序递增（提空早于装货、装货早于卸货、卸货早于还空）。不同路线的时间节点不同，因此不统一规定哪几个时间必填。\n\n**提交阻断**\n\n存在任意异常行时提交按钮禁用，必须逐行修正或删除；不支持部分提交，不允许\"通过的行先生成、错误行挂起\"。异常行整行标红并在状态列后显示具体原因，多个原因以「；」连接。\n\n**注意：**实际箱号已被该任务此前运单占用时的拦截与提示尚未确认（PRD 8.1）。",
+      "category": "rule",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R06、R07、R08、R09、R10、5.3",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-action-submit",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-action-submit",
+      "position": { "x": 0, "y": 0 },
+      "title": "一行车次生成一张运单",
+      "content": "点击生成后先弹出确认汇总，展示任务编号、车次数、生成张数与关联箱数。\n\n确认后一次创建与车次行数量相等的运单，每张运单关联对应车次的箱型、货品、司机、车辆、箱号与作业时间，并占用相应箱号。\n\n**注意：**批量补录不采集装卸货凭证；生成的运单进入运单中心，与单条补录生成的运单同等对待。\n\n**待确认：**单批运单数量上限、生成失败与重复提交的补偿机制尚未确认（PRD 8.1）。",
+      "category": "action",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R05、R11、R12、5.4",
+      "container": "page",
+      "group": "main",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-confirm",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-confirm",
+      "position": { "x": 0, "y": 0 },
+      "title": "确认生成多张运单",
+      "content": "确认框展示任务编号、本批次车次数、将生成的运单张数以及关联箱号总数。\n\n确认后按车次行一次生成多张运单；取消则返回继续修改，不生成任何运单。\n\n本功能不引入批次对象，也不产生批次号与待复核节点。",
+      "category": "rule",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md R11、3.4、5.4",
+      "container": "modal",
+      "group": "confirm",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "id": "annot-roadBatchWaybillSupplement-rule-success",
+      "type": "selector",
+      "selector": ".annot-roadBatchWaybillSupplement-rule-success",
+      "position": { "x": 0, "y": 0 },
+      "title": "生成结果与后续动作",
+      "content": "展示本批次生成的运单张数与关联箱号总数，运单已进入运单中心。\n\n- 继续补录下一批：清空当前车次明细，任务保持选中，可继续导入下一批台账。\n- 返回运单中心：离开批量补录页。\n\n**注意：**本功能不支持整批撤回；生成的运单如需更正，按运单中心的既有能力处理。",
+      "category": "action",
+      "source": "运单中心_公路集装箱运单批量补录_PRD_v1.md 5.4、1.4",
+      "container": "modal",
+      "group": "success",
+      "createdAt": "2026-09-29"
+    }
+  ]
+}

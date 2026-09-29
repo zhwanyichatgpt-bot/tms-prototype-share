@@ -1,0 +1,108 @@
+@import '../公路集装箱补录/road-container-supplement.css';
+
+/* 公路批量补录 —— 车次明细表格与批次操作样式。 */
+
+.rbs-content { padding-bottom: 24px; }
+
+.rbs-section-detail { display: flex; flex-direction: column; }
+
+.rbs-stats { display: flex; align-items: center; gap: 18px; color: #6b7280; font-size: 13px; }
+.rbs-stats b { color: #333943; font-weight: 600; }
+.rbs-stats .is-pass b { color: #12a150; }
+.rbs-stats .is-error b { color: #e5484d; }
+.rbs-toggle {
+  height: 28px; padding: 0 12px; border: 1px solid #dfe3e8; border-radius: 2px;
+  background: #fff; color: #5a6270; font-size: 13px; cursor: pointer;
+}
+.rbs-toggle.active { border-color: #3a65ff; background: #eef3ff; color: #3a65ff; }
+
+.rbs-toolbar { display: flex; margin-bottom: 12px; align-items: center; justify-content: space-between; gap: 20px; }
+.rbs-toolbar-left { display: flex; gap: 10px; }
+.rbs-tool {
+  height: 34px; padding: 0 14px; border: 1px solid #dfe3e8; border-radius: 2px;
+  background: #fff; color: #4c5562; font-size: 13px; cursor: pointer;
+}
+.rbs-tool:hover:not(:disabled) { border-color: #3a65ff; color: #3a65ff; }
+.rbs-tool:disabled { color: #b3b8c0; cursor: not-allowed; }
+.rbs-toolbar-hint { margin: 0; color: #939aa4; font-size: 12px; }
+
+.rbs-empty {
+  display: flex; height: 260px; flex-direction: column; align-items: center; justify-content: center;
+  border: 1px dashed #d8dde4; background: #fafbfc; color: #8a919c; font-size: 14px; gap: 8px;
+}
+.rbs-empty p { margin: 0; }
+.rbs-empty-sub { color: #9aa1ab; font-size: 13px; }
+
+.rbs-table-wrap { height: 660px; overflow: auto; border: 1px solid #e3e6eb; }
+
+.rbs-grid-head,
+.rbs-row { display: grid; min-width: max-content; }
+
+.rbs-grid-head {
+  position: sticky; top: 0; z-index: 2;
+  border-bottom: 1px solid #e3e6eb; background: #f6f6f7;
+}
+.rbs-hcell {
+  display: flex; height: 42px; padding: 0 10px; align-items: center; justify-content: center;
+  border-right: 1px solid #e3e6eb; border-bottom: 1px solid #e3e6eb;
+  color: #444b56; font-size: 13px; font-weight: 600; text-align: center;
+}
+.rbs-hcell i { margin-left: 3px; color: #e5484d; font-style: normal; }
+.rbs-hcheck { justify-content: center; }
+
+.rbs-row { border-bottom: 1px solid #eef0f3; }
+.rbs-row:hover { background: #fafbff; }
+.rbs-row.is-error { background: #fff6f6; }
+.rbs-row.is-error:hover { background: #ffefef; }
+
+.rbs-cell {
+  display: flex; min-width: 0; height: 44px; padding: 0 4px; align-items: center;
+  border-right: 1px solid #eef0f3;
+}
+.rbs-cell input {
+  width: 100%; height: 31px; padding: 0 6px; border: 1px solid transparent; border-radius: 2px;
+  outline: 0; background: transparent; color: #4e5562; font-size: 12px;
+}
+.rbs-cell input:hover { border-color: #e2e6ec; background: #fff; }
+.rbs-cell input:focus { border-color: #7fa0ff; background: #fff; box-shadow: 0 0 0 2px rgba(58, 101, 255, .1); }
+.rbs-cell input::placeholder { color: #b6bcc5; }
+.rbs-cell select {
+  width: 100%; height: 31px; padding: 0 6px; border: 1px solid transparent; border-radius: 2px;
+  outline: 0; background: transparent; color: #4e5562; font-size: 12px;
+}
+.rbs-cell select:hover { border-color: #e2e6ec; background: #fff; }
+.rbs-cell select:focus { border-color: #7fa0ff; background: #fff; box-shadow: 0 0 0 2px rgba(58, 101, 255, .1); }
+.rbs-creadonly { padding: 0 10px; overflow: hidden; color: #6b7280; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.rbs-cnum { justify-content: center; color: #6b7280; font-size: 12.5px; }
+.rbs-ccheck { justify-content: center; }
+.rbs-cstatus { justify-content: center; }
+.rbs-badge { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border-radius: 50%; font-style: normal; font-size: 12px; }
+.rbs-badge.is-pass { background: #e8f7ef; color: #12a150; }
+.rbs-badge.is-error { background: #fdecec; color: #e5484d; font-weight: 700; }
+
+.rbs-creason { padding: 0 10px; }
+.rbs-creason em {
+  overflow: hidden; color: #e5484d; font-size: 12px; font-style: normal;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.rbs-creason .rbs-reason-pass { color: #c2c8d0; }
+
+.rbs-actions-summary { margin-right: auto; color: #6b7280; font-size: 13px; }
+.rbs-actions-summary b { color: #333943; }
+
+.rbs-success-sub { color: #8a919c !important; font-size: 13px !important; }
+
+.rbs-paste-modal { width: 880px; }
+.rbs-paste-modal textarea {
+  width: 100%; height: 300px; margin-top: 12px; padding: 12px 14px;
+  border: 1px solid #dfe3e8; border-radius: 2px; outline: 0;
+  color: #4e5562; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px;
+  line-height: 1.7; resize: none; white-space: pre;
+}
+.rbs-paste-modal textarea:focus { border-color: #7fa0ff; }
+
+.rbs-toast {
+  position: fixed; left: 50%; bottom: 120px; z-index: 40; transform: translateX(-50%);
+  padding: 11px 22px; border-radius: 3px; background: rgba(38, 44, 54, .92);
+  color: #fff; font-size: 13.5px;
+}

@@ -1,7 +1,7 @@
 <script setup>
 /**
  * 运单中心 —— 运单列表
- * 表头 + 行，行由 v-for 数据驱动；状态徽标与来源标签使用映射表。
+ * 表头 + 行，主阶段、执行状态和当前企业财务进度分层展示。
  */
 import { computed } from 'vue'
 import { statusTone, sourceTone, transportModeMeta } from '../mock-data'
@@ -21,7 +21,8 @@ const modeMeta = computed(() => transportModeMeta[props.transportMode] || transp
       <span class="wc-col wc-col-check"><input type="checkbox" aria-label="全选" /></span>
       <span class="wc-col wc-col-seq">序号</span>
       <span class="wc-col wc-col-no">运单号</span>
-      <span class="wc-col wc-col-status">状态</span>
+      <span class="wc-col wc-col-status">当前阶段</span>
+      <span class="wc-col wc-col-finance">结算状态</span>
       <span class="wc-col wc-col-biz">业务类型</span>
       <span class="wc-col wc-col-source">运单来源</span>
       <span class="wc-col wc-col-resource">{{ modeMeta.resourceLabel }}</span>
@@ -40,7 +41,13 @@ const modeMeta = computed(() => transportModeMeta[props.transportMode] || transp
           </span>
       </span>
       <span class="wc-col wc-col-status">
-        <span class="wc-status-badge" :class="statusTone[row.status] || 'gray'">{{ row.statusLabel }}</span>
+        <span class="wc-status-badge" :class="statusTone[row.stage] || 'gray'">{{ row.stageLabel }}</span>
+      </span>
+      <span class="wc-col wc-col-finance">
+        <span v-for="line in row.financeLines" :key="line.label" class="wc-finance-line">
+          <span class="wc-finance-label">{{ line.label }}</span>
+          <strong class="wc-finance-value" :class="line.tone">{{ line.value }}</strong>
+        </span>
       </span>
       <span class="wc-col wc-col-biz">{{ row.bizType }}</span>
       <span class="wc-col wc-col-source">

@@ -96,6 +96,12 @@ export const pageCatalog = Object.freeze([
     evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
   },
   {
+    key: 'roadBatchWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS 通用运单中心公路运单批量补录', remark: '用于验证锁定单个运输任务后按台账批量补录公路集装箱车次：模板下载、Excel 导入与粘贴、按任务路段派生列、全量校验与一次生成多张运单。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/公路批量补录/'],
+    evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
+  },
+  {
     key: 'waterContainerWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用运单中心水路集装箱运单补录', remark: '用于验证按水路运输任务和装卸路段补录箱型箱量、箱清单、作业时间与路段凭证。',
     sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/水路集装箱补录/'],
@@ -163,7 +169,7 @@ export const pageCatalog = Object.freeze([
   },
   {
     key: 'zhiyunShipperHome', productId: 'zhiyun', operationAppId: null, platform: 'mobile', scope: 'common', projectId: null,
-    requirement: '至简智运移动端原型验证', remark: '用于验证智运货主端移动首页及小简AI主动分析首页：发货表单、在途货量、推荐运力、计划建议与风险进展；设计稿 Pixso 画板「至简智运-货主端」（750×1624）。',
+    requirement: '至简智运移动端原型验证；经营方案研发版本 pending', remark: '用于验证智运货主端移动首页、小简AI及单页经营分析；经营模块复用 Pixso 蓝色背景、白卡、浅色分区及对比柱样式，呈现货源进度差额、当前异常及处理进展、自身前后期实际结算线路成本和结算付款待办；汇总与明细由独立 Mock 场景数据计算，不接报价或生产算法。',
     sourcePaths: ['prototype/common/products/zhiyun/mobile/货主端首页/'],
     evidencePaths: ['design/zhiyun/mobile/baseline/货主端首页_基准图.png'],
   },

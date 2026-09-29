@@ -111,6 +111,7 @@
 }
 
 /* 运单类型页签 */
+.wc-viewbar { display: flex; align-items: center; justify-content: space-between; height: 34px; }
 .wc-kindtabs { position: relative; height: 34px; }
 .wc-kindtabs-item {
   height: 34px;
@@ -127,6 +128,10 @@
   color: #fff;
   font-weight: 600;
 }
+.wc-role-switch { display: flex; align-items: center; height: 32px; padding: 2px; border: 1px solid #dfe3eb; border-radius: 4px; background: #f7f8fa; box-sizing: border-box; }
+.wc-role-switch-label { margin: 0 10px 0 8px; color: #909399; font-size: 12px; }
+.wc-role-switch button { height: 26px; padding: 0 12px; border: 0; border-radius: 3px; background: transparent; color: #606266; font: 400 12px/26px inherit; cursor: pointer; }
+.wc-role-switch button.active { background: #fff; color: #3a65ff; font-weight: 600; box-shadow: 0 1px 4px rgba(35, 65, 120, .14); }
 
 /* 筛选栏 */
 .wc-filterbar {
@@ -211,7 +216,7 @@
 .wc-statustabs-item {
   height: 30px;
   padding: 0 4px;
-  margin-right: 28px;
+  margin-right: 22px;
   border: 0;
   background: transparent;
   color: #606266;
@@ -252,7 +257,7 @@
   overflow-x: auto;
   font-size: 14px;
 }
-.wc-table-grid { min-width: 1270px; }
+.wc-table-grid { min-width: 1510px; }
 .wc-table-head {
   display: flex;
   align-items: center;
@@ -282,7 +287,7 @@
 .wc-no-text { display: flex; flex-direction: column; gap: 8px; }
 .wc-no-value { color: #3d4050; font-size: 14px; line-height: 20px; display: flex; align-items: center; }
 .wc-no-time { color: #b3b3b3; font-size: 12px; line-height: 17px; }
-.wc-col-status { width: 100px; }
+.wc-col-status { width: 130px; }
 .wc-status-badge {
   display: inline-block;
   height: 24px;
@@ -299,6 +304,14 @@
 .wc-status-badge.green { color: #20be8d; border-color: #20be8d; background: #e6f9f3; }
 .wc-status-badge.red { color: #f04848; border-color: #f04848; background: #fdecec; }
 .wc-status-badge.gray { color: #909399; border-color: #c0c4cc; background: #f4f4f5; }
+.wc-status-badge.orange { color: #e99121; border-color: #e9a247; background: #fff7e8; }
+.wc-col-finance { width: 240px; display: flex; flex-direction: column; gap: 7px; }
+.wc-finance-line { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 6px; font-size: 12px; line-height: 17px; }
+.wc-finance-label { color: #909399; }
+.wc-finance-value { overflow: hidden; color: #606266; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.wc-finance-value.purple { color: #7b5cff; }
+.wc-finance-value.orange { color: #e99121; }
+.wc-finance-value.green { color: #20a879; }
 .wc-col-biz { width: 90px; }
 .wc-col-source { width: 110px; }
 .wc-source-tag {

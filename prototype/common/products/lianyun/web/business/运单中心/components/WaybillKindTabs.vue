@@ -2,10 +2,9 @@
 /**
  * 运单中心 —— 运单类型页签（普通运单/平台运单/委外运单）
  */
-import { waybillKindTabs } from '../mock-data'
-
 defineProps({
   activeKey: { type: String, default: 'normal' },
+  tabs: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['change'])
 </script>
@@ -13,7 +12,7 @@ const emit = defineEmits(['change'])
 <template>
   <div class="wc-kindtabs" role="tablist">
     <button
-      v-for="tab in waybillKindTabs"
+      v-for="tab in tabs"
       :key="tab.key"
       type="button"
       class="wc-kindtabs-item"

@@ -1,11 +1,9 @@
 <script setup>
-/**
- * 运单中心 —— 状态页签（全部/已接单/运输中/待复核/待结算/已完成/有异常/已作废）
- */
-import { statusTabs } from '../mock-data'
+/** 运单中心 —— 当前企业视角下的运单阶段页签。 */
 
 defineProps({
   activeKey: { type: String, default: 'all' },
+  tabs: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['change'])
 </script>
@@ -13,7 +11,7 @@ const emit = defineEmits(['change'])
 <template>
   <div class="wc-statustabs" role="tablist">
     <button
-      v-for="tab in statusTabs"
+      v-for="tab in tabs"
       :key="tab.key"
       type="button"
       class="wc-statustabs-item"

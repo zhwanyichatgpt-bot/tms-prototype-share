@@ -2,10 +2,9 @@
 /**
  * 运单中心 —— 汽运/水运/铁路运输方式导航。
  */
-import { waybillTypes } from '../mock-data'
-
 defineProps({
   activeKey: { type: String, default: 'truck' },
+  items: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['change'])
@@ -14,7 +13,7 @@ const emit = defineEmits(['change'])
 <template>
   <aside class="wc-typepanel" aria-label="运输方式">
     <section
-      v-for="type in waybillTypes"
+      v-for="type in items"
       :key="type.key"
       class="wc-typepanel-group"
       :class="{ active: type.key === activeKey }"
