@@ -1,0 +1,108 @@
+/* 复用现有智运/联运白卡、按钮和字号变量，仅调整首页编排及新增服务承接。 */
+.ly-location select { appearance:none; max-width:74px; border:0; background:transparent; color:inherit; font:inherit; padding:5px 0; }
+.ly-banner { min-height:124px; padding:11px 14px; }
+.ly-banner h2 { font-size:19px; }
+.ly-banner > span { margin-top:10px; }
+.ly-query-unified { margin-top:12px; }
+.ly-query-unified .lya-simple-query { margin-top:7px; }
+.ly-query-unified .lya-query-addresses>button { padding:11px 8px; border:0; border-radius:8px; background:#f6f8fc; margin-top:7px; min-height:46px; }
+.ly-query-unified .lya-query-addresses>button>span { display:flex; align-items:center; gap:9px; }
+.ly-query-unified .lya-query-addresses small { flex-shrink:0; font-size:12px; }
+.ly-query-unified .lya-query-addresses strong { margin:0; font-size:12px; line-height:20px; overflow-wrap:anywhere; }
+.ly-query-unified .lya-optional-goods { padding:6px 2px; }
+.ly-query-unified .lya-optional-goods input { padding:7px 0; }
+.ly-query-unified .ly-assistant-chat-link { padding-top:9px; }
+.ly-platform-shortcuts { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; }
+.ly-platform-shortcuts button { display:grid; justify-items:center; gap:7px; padding:12px 2px; border:0; border-radius:10px; background:#fff; }
+.ly-platform-shortcuts .van-icon { font-size:27px; color:var(--ly-brand); }
+.ly-platform-shortcuts span { font-size:10px; white-space:nowrap; }
+.ly-catalog-filter { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ly-muted); margin:0 0 10px; }
+.ly-catalog-filter select,.ly-list-filters select { border:1px solid #e4e9f3; background:white; color:#526077; border-radius:7px; padding:6px 10px; font:inherit; max-width:155px; }
+.ly-list-filters { display:flex; gap:12px; font-size:12px; margin-bottom:12px; }
+.ly-list-filters label { display:grid; flex:1; gap:5px; color:var(--ly-muted); min-width:0; }
+.ly-list-filters select { width:100%; max-width:100%; }
+.ly-offer-reason { display:flex; align-items:center; gap:5px; padding:5px 8px; margin-top:9px; color:var(--ly-brand); background:#eef4ff; border-radius:5px; font-size:11px; }
+.ly-scroll .ly-offer-card { padding:13px 14px; }
+.ly-scroll .ly-offer-route { margin:7px 0 8px; }
+.ly-scroll .ly-offer-metrics { margin-bottom:7px; }
+.ly-scroll .ly-offer-company { margin-top:9px; padding-top:8px; }
+.ly-provider-fields { margin:6px 0 9px; }
+.ly-provider-fields > div { padding:2px 0; }
+.ly-provider-bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+.ly-provider-bottom > span { font-size:10px; color:#627ba8; }
+.ly-provider-bottom .ly-provider-action { margin:0; }
+.ly-guide-list { background:#fff; border-radius:12px; padding:3px 12px; }
+.ly-guide-list button { display:flex; align-items:center; gap:8px; border:0; background:none; width:100%; text-align:left; padding:13px 0; font-size:12px; }
+.ly-guide-list button+button { border-top:1px solid #f0f2f7; }
+.ly-guide-list span { flex:1; }
+.ly-guide-list .van-icon { color:var(--ly-brand); }
+.ly-network-route-select { width:100%; border:0; background:#fff; padding:12px; color:#435776; font-size:12px; }
+.ly-screen>[aria-label="平台服务网络详情"] { z-index:15; }
+.ly-service-page .ly-map-actions button { background:var(--ly-button-gradient); color:#fff; border:1px solid var(--ly-brand); text-align:center; }
+.ly-service-page .ly-map-actions button+button { background:#fff; color:var(--ly-brand); }
+.ly-catalog-title { margin-top:10px!important; }
+.ly-catalog-open { display:block; width:100%; padding:0; }
+.ly-catalog-open > small { color:#7d8798; font-size:11px; }
+.ly-catalog-open h2 { margin-top:5px; }
+.ly-catalog-open p { color:var(--ly-muted); font-size:12px; margin-top:10px; line-height:1.7; }
+.ly-catalog-open footer { display:flex; justify-content:space-between; gap:8px; border-top:1px solid #edf0f5; margin-top:12px; padding-top:10px; font-size:12px; color:#65738c; }
+.ly-catalog-open footer span { color:var(--ly-brand); }
+.ly-guide-steps { margin:16px 0; padding-left:20px; }
+.ly-guide-steps li { padding:0 0 16px 5px; color:var(--ly-brand); }
+.ly-guide-steps h3 { color:var(--ly-text); }
+.ly-guide-steps p { color:var(--ly-secondary); font-size:13px; line-height:1.8; margin-top:5px; }
+.ly-request-done>.van-icon { display:block; font-size:40px; color:#21bd88; text-align:center; margin:10px; }
+.ly-request-done>h2,.ly-request-done>p { text-align:center; margin-bottom:12px; }
+.ly-request-done>p { font-size:12px; color:var(--ly-muted); }
+.ly-request-done dd { overflow-wrap:anywhere; }
+.ly-request-done .van-button { margin-top:18px; }
+.ly-platform-page .van-field { padding:16px 0; }
+.ly-platform-page .van-field__label { width:60px; }
+.ly-business-reminder { display:flex; width:100%; justify-content:space-between; padding:12px; margin-top:16px; border:0; border-radius:10px; background:white; color:var(--ly-brand); }
+.ly-business-reminder { align-items:center; text-align:left; }
+.ly-business-reminder strong { font-size:13px; }
+.ly-business-reminder small { display:block; margin-top:5px; color:var(--ly-muted); font-size:11px; }
+.ly-operating-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:14px; }
+.ly-operating-grid>button { position:relative; overflow:hidden; min-height:104px; border:0; border-radius:12px; background:linear-gradient(125deg,#e4edff,#f7faff); padding:12px 10px; text-align:left; color:#294d86; }
+.ly-operating-grid>button+button { background:linear-gradient(125deg,#e0f2f3,#f7fcfc); color:#247680; }
+.ly-operating-grid small { display:inline-block; font-size:10px; border:1px solid #b7cdf2; border-radius:4px; padding:2px 5px; }
+.ly-operating-grid strong { display:block; font-size:13px; line-height:1.6; margin:6px 0; position:relative; z-index:1; }
+.ly-operating-grid span { display:block; font-size:10px; position:relative; z-index:1; }
+.ly-operating-grid>button>.van-icon { position:absolute; right:2px; top:5px; font-size:45px; opacity:.1; }
+.ly-support-card { display:grid; width:100%; gap:8px; padding:13px 14px; margin-bottom:9px; text-align:left; background:white; border:0; border-radius:12px; color:var(--ly-text); }
+.ly-support-card>strong { font-size:14px; }
+.ly-support-type { font-size:11px; color:var(--ly-muted); }
+.ly-support-card>small { display:flex; justify-content:space-between; font-size:11px; color:var(--ly-secondary); border-top:1px solid #f0f2f8; padding-top:9px; gap:8px; }
+.ly-support-card>small>span { color:var(--ly-brand); white-space:nowrap; }
+.ly-node-page { z-index:17; }
+.ly-platform-page { z-index:18; }
+.ly-requests-page { z-index:22; }
+.ly-node-nav { position:sticky; top:-12px; z-index:3; display:flex; gap:4px; background:#f3f5f9; padding:10px 0; margin-bottom:8px; }
+.ly-node-nav button { flex:1; text-align:center; border-radius:8px; background:white; padding:10px 1px; font-size:12px; color:var(--ly-brand); }
+.ly-node-service-group { padding:10px 0; border-bottom:1px solid #eef1f6; }
+.ly-node-service-group strong { font-size:13px; }
+.ly-node-service-group p { font-size:12px; line-height:1.7; margin-top:4px; color:var(--ly-secondary); }
+.ly-node-company+.ly-node-company { border-top:1px solid #eef1f6; }
+.ly-node-checklist { padding-left:18px; margin-top:12px; font-size:12px; line-height:1.9; color:var(--ly-secondary); }
+.ly-node-checklist li { margin-bottom:7px; }
+.ly-node-page .ly-tags { flex-wrap:wrap; }
+.ly-node-page .ly-tags span { white-space:normal; line-height:1.7; }
+.ly-request-boundary { font-size:11px; color:#7c8699; line-height:1.6; margin:0 0 12px; }
+.ly-request-warning { color:#ac6522; background:#fff4dd; padding:10px; border-radius:8px; font-size:12px; }
+.ly-requests-page .van-field { padding:12px 0 20px; }
+.ly-requests-page .van-field__label { width:58px; }
+.ly-requests-page .van-button--primary { text-align:center; height:44px; border-radius:10px; background:var(--ly-button-gradient); color:#fff; }
+.ly-requests-page .ly-request-row { display:grid; gap:8px; width:100%; text-align:left; background:white; padding:14px; }
+.ly-request-row strong { font-size:14px; }
+.ly-request-row small { color:var(--ly-muted); font-size:11px; }
+.ly-request-row .ly-detail-muted { margin:0; }
+.ly-request-preview { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; color:var(--ly-secondary); }
+.ly-request-text { white-space:pre-wrap; overflow-wrap:anywhere; }
+.ly-status-pill { flex-shrink:0; padding:3px 6px; border-radius:5px; color:#3a65ff!important; background:#eef3ff; font-size:11px; }
+.ly-inline-actions { display:flex; gap:8px; }
+.ly-inline-actions button { flex:1; border:1px solid #d4ddf5; color:var(--ly-brand); border-radius:9px; padding:10px; text-align:center; }
+.ly-inline-actions button.primary { background:var(--ly-button-gradient); color:white; }
+.ly-company-fit { padding:12px; background:#f3f7ff; border-radius:10px; margin:12px 0; }
+.ly-company-fit strong { font-size:12px; }
+.ly-company-fit p { font-size:12px; line-height:1.7; margin:4px 0 10px; }
+.ly-company-fit small { color:var(--ly-muted); font-size:11px; }

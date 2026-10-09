@@ -1,0 +1,85 @@
+/* 运输助手结果页采用既有品牌色与字体，样式限定在结果视图内。 */
+.lya-result-shell{background:#e6edfa!important;color:#333}
+.lya-result-shell .assistant-workbench-bar strong{text-align:center;font-size:16px}
+.lya-body.lya-results-layout{padding:0!important;position:relative;display:flex;flex-direction:column;overflow:hidden;gap:0}
+.lyar-demand{padding:8px 16px 10px;flex:none;background:#fff;border-bottom:1px solid #edf0f6}
+.lyar-demand>div{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.lyar-demand strong{font-size:14px;font-weight:600;line-height:1.5;min-width:0}
+.lyar-demand strong span{color:#91a2be;margin:0 6px}
+.lyar-demand p{margin:5px 0 0;font-size:12px;color:#667085;line-height:1.5}
+.lyar-map{position:relative;flex:1;min-height:0;background:#dce2e9;overflow:hidden}
+.lyar-basemap{position:absolute;inset:0;opacity:.55}
+.lyar-map>svg{position:absolute;width:100%;height:100%;inset:0}
+.lyar-map-caption{position:absolute;top:9px;left:12px;right:12px;z-index:1;display:flex;justify-content:space-between;gap:5px;font-size:9px;color:#53617c;pointer-events:none;line-height:1.4}
+.lyar-map-caption>span,.lyar-map-caption>div{padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.92)}
+.lyar-map-caption>div{display:flex;align-items:center;gap:7px}
+.lyar-map-caption i{display:inline-block;width:10px;height:3px;margin-right:3px;vertical-align:middle}
+.lyar-map-caption i.transfer{width:6px;height:6px;background:white;border:2px solid #3e4969;border-radius:50%}
+.lyar-map-hit{fill:none;stroke:transparent;stroke-width:23;cursor:pointer}
+.lyar-map-hit:focus-visible{stroke:#3a65ff;stroke-width:14;stroke-opacity:.3;outline:0}
+.lyar-map-leg text{fill:white;font:10px system-ui,sans-serif;text-anchor:middle}
+.lyar-map-node{font:11px system-ui,sans-serif;pointer-events:none}
+.lyar-map-credit{position:absolute;bottom:1px;right:3px;background:#ffffff99;color:#65738b;font-size:7px;line-height:12px}
+.lyar-sheet{position:relative;flex:none;border-radius:18px 18px 0 0;background:white;padding:6px 14px 12px;z-index:2}
+.lyar-sheet.expanded{position:absolute;top:82px;bottom:0;left:0;right:0;display:flex;flex-direction:column;box-shadow:0 -8px 22px #4f628c10}
+.lyar-handle{width:32px;height:3px;background:#d8deea;border-radius:3px;margin:0 auto 9px;flex:none}
+.lyar-advice{background:#f4f7ff;border-radius:10px;padding:10px;margin-bottom:10px;flex:none}
+.lyar-advice>div{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.lyar-advice strong{font-size:12px;color:#3a65ff;display:flex;align-items:center;gap:4px;line-height:1.4}
+.lyar-advice img{width:20px;height:20px}
+.lyar-advice button{font-size:11px;white-space:nowrap}
+.lyar-advice p{font-size:12px;line-height:1.6;color:#596782;margin:6px 0 0}
+.lyar-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 9px;flex:none}
+.lyar-heading h3,.lyar-fees h3{margin:0;font-size:14px;font-weight:600;line-height:1.5}
+.lyar-heading small{color:#71809a;font-size:11px;font-weight:400}
+.lyar-heading .lya-link{font-size:11px;color:#65738b}
+.lyar-plans{display:flex;gap:9px;overflow-x:auto;flex:none;scrollbar-width:thin;padding-bottom:1px}
+.lyar-plans>button{flex:0 0 calc((100% - 9px)/2);min-width:0;text-align:left;border:1px solid #e2e7f2;border-radius:10px;background:#f7f8fc;padding:10px;color:#333;font:inherit;cursor:pointer}
+.lyar-plans>button:only-child{flex-basis:100%}
+.lyar-plans>button.selected{background:#f3f6ff;border-color:#3a65ff}
+.lyar-plans>button>div{display:flex;align-items:center;gap:4px;justify-content:space-between;margin-bottom:10px}
+.lyar-plans strong{font-size:13px;font-weight:600;line-height:1.4}
+.lyar-plans .selected strong{color:#3a65ff}
+.lyar-recommended{font-size:9px;white-space:nowrap;background:#e6edff;color:#3a65ff;border-radius:3px;padding:2px 3px}
+.lyar-plans p{display:flex;gap:4px;align-items:baseline;margin:3px 0;font-size:11px;color:#677287;line-height:1.5}
+.lyar-plans p>span{flex:none;white-space:nowrap}
+.lyar-plans b{font-size:15px;font-weight:600;color:#333;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.lyar-plans p:has(+.lyar-price-basis) b{font-size:13px}
+.lyar-plans .lyar-price-basis{font-size:10px;margin-top:2px;color:#71809a}
+.lyar-plans>button>small{display:block;margin-top:9px;padding-top:7px;border-top:1px solid #e2e7f2;font-size:11px;color:#66738c;line-height:1.4}
+.lyar-sheet.expanded .lyar-plans{gap:7px;padding-bottom:5px}
+.lyar-sheet.expanded .lyar-plans>button{flex:0 0 auto;padding:8px 10px;border-radius:8px}
+.lyar-sheet.expanded .lyar-plans>button>div{margin:0;gap:6px}
+.lyar-sheet.expanded .lyar-plans>button>p,.lyar-sheet.expanded .lyar-plans>button>small{display:none}
+.lyar-selected-summary{background:#f4f7ff;border-radius:10px;padding:12px;margin-bottom:16px}
+.lyar-selected-summary>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lyar-selected-summary strong{font-size:15px;color:#3a65ff}
+.lyar-selected-summary button{font-size:11px;white-space:nowrap}
+.lyar-selected-summary p{font-size:13px;margin:7px 0;color:#44516c;line-height:1.6}
+.lyar-selected-summary p span{margin:0 4px;color:#94a0b7}
+.lyar-selected-summary small{font-size:12px;line-height:1.6;color:#66738c;display:block}
+.lyar-details{overflow:auto;min-height:0;flex:1;padding-top:15px;overscroll-behavior:contain}
+.lyar-segments{list-style:none;margin:0;padding:0}
+.lyar-segments li{margin:0 0 9px}
+.lyar-segments button{width:100%;text-align:left;border:1px solid #e3e8f2;border-radius:10px;padding:11px;background:#fff;font:inherit;color:#333}
+.lyar-mode{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;color:white;background:#3a65ff;margin-bottom:7px}
+.lyar-mode.road{background:#20b68d}.lyar-mode.rail{background:#6a869c}.lyar-mode.water{background:#538bea}
+.lyar-segments strong{display:block;font-size:13px;font-weight:600}
+.lyar-segments p{font-size:12px;color:#62708a;margin:5px 0}
+.lyar-segments p span{margin:0 5px}.lyar-segments .van-icon{float:right;color:#3a65ff}
+.lyar-map-link{float:right;display:flex;align-items:center;gap:3px;font-size:11px;color:#3a65ff;line-height:19px}
+.lyar-segments small{font-size:11px;color:#8490a6}
+.lyar-fees{border-radius:10px;padding:12px;background:#f7f8fc;margin:12px 0}
+.lyar-fees p{display:flex;gap:9px;margin:8px 0;font-size:12px;line-height:1.6;color:#556179}
+.lyar-fees p span{flex:none;color:#333}.lyar-fees>small{font-size:11px;color:#7b879d;line-height:1.6;display:block}
+.lya-footer.lyar-footer{display:block;padding:8px 14px 14px;flex:none;background:white;border-top:1px solid #eef1f6}
+.lyar-footer-summary{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#647089;margin:0 0 7px;line-height:1.5}
+.lyar-footer-summary b{color:#333;font-weight:600}.lyar-footer-summary small{font-size:10px}
+.lyar-footer-actions{display:flex;gap:9px}
+.lyar-footer-actions .lya-outline{flex:0 0 38%}.lyar-footer-actions .lya-primary{flex:1}
+.lyar-footer-actions button{min-height:42px;font-size:13px;padding:8px}
+.lyar-edit{padding:18px 16px 24px;max-height:85%;overflow-y:auto;background:#fff}
+.lyar-edit .lyar-heading{margin-bottom:12px}
+.lyar-edit-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;font-size:12px;color:#63718a}
+.lyar-edit-fields label{min-width:0;display:flex;flex-direction:column;gap:4px}
+.lyar-edit-fields input,.lyar-edit-fields select{width:100%;min-height:36px;min-width:0;border:1px solid #dce3f0;border-radius:6px;background:white;padding:7px;color:#333;font:inherit;box-sizing:border-box}

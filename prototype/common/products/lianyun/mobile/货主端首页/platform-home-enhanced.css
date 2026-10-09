@@ -1,0 +1,322 @@
+/**
+ * 至简联运首页视觉增强
+ * 基于至简智运货主端和司机端成功样式,从用户角色维度优化
+ *
+ * 设计思路:
+ * 1. 货主需要"专业、可信赖、信息清晰"的平台感
+ * 2. 复用智运的品牌蓝、渐变、卡片层次和视觉元素
+ * 3. 地图作为第一视觉焦点,传递"覆盖广、有网络"的印象
+ * 4. AI助手醒目前置,蓝色气泡传递智能感
+ * 5. 服务卡片精致化,信息层次更清晰
+ */
+
+/* ========== 1. 品牌顶栏增强 ========== */
+.ly-brand {
+  background: linear-gradient(180deg, #edf4ff 0%, #f8fbff 100%);
+  padding: 10px 16px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(69, 103, 255, 0.08);
+}
+
+.ly-brand h1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #2d4176;
+}
+
+.ly-location {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.ly-location select {
+  font-weight: 500;
+  color: #354c78;
+}
+
+/* ========== 2. 简洁banner：学习智运紧凑设计 ========== */
+.ly-hero-compact {
+  background: linear-gradient(135deg, #e8f1ff 0%, #f5f9ff 100%);
+  padding: 16px 16px 18px;
+  position: relative;
+  overflow: hidden;
+  min-height: 88px;
+}
+
+.ly-hero-compact .ly-hero-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e73;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 4px;
+}
+
+.ly-hero-compact .ly-hero-subtitle {
+  font-size: 13px;
+  color: #435b8d;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.ly-hero-decor {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px;
+  height: auto;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+/* ========== 4. AI洞察气泡：学习智运的半透明提示条 ========== */
+.ly-ai-tip {
+  position: relative;
+  margin: 12px 16px;
+  padding: 12px 14px;
+  background: linear-gradient(100deg, rgba(70, 103, 255, 0.12), rgba(145, 169, 255, 0.12));
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid rgba(70, 103, 255, 0.2);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.ly-ai-tip-body {
+  display: grid;
+  gap: 4px;
+}
+
+.ly-ai-tip-line {
+  font-size: 12px;
+  color: #354c78;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ly-ai-tip-line strong {
+  font-weight: 600;
+  color: #2d3f75;
+}
+
+.ly-ai-tip-action {
+  color: #4667ff;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+/* ========== 5. 运输助手面板优化 ========== */
+.ly-platform-shortcuts button {
+  background: white;
+  box-shadow: 0 1px 6px rgba(69, 103, 255, 0.06);
+  transition: all 0.2s ease;
+}
+
+.ly-platform-shortcuts button:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 8px rgba(69, 103, 255, 0.12);
+}
+
+/* ========== 7. 运营专题卡片增强 ========== */
+.ly-operating-grid > button {
+  box-shadow: 0 2px 10px rgba(69, 103, 255, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.ly-operating-grid > button:active {
+  transform: scale(0.98);
+}
+
+.ly-operating-grid > button:first-child {
+  background: linear-gradient(125deg, #e4edff 0%, #eef4ff 50%, #f7faff 100%);
+}
+
+.ly-operating-grid > button:nth-child(2) {
+  background: linear-gradient(125deg, #e0f2f3 0%, #ebf7f8 50%, #f7fcfc 100%);
+}
+
+.ly-operating-grid small {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  padding: 3px 7px;
+  font-weight: 500;
+}
+
+/* ========== 8. 业务提醒卡片 ========== */
+.ly-business-reminder {
+  background: linear-gradient(100deg, #f8fbff, #fff);
+  border: 1px solid #e2e8f5;
+  box-shadow: 0 2px 10px rgba(69, 103, 255, 0.08);
+  margin-top: 14px;
+}
+
+/* ========== 9. 服务卡片精致化 ========== */
+.ly-scroll .ly-offer-card {
+  background: linear-gradient(145deg, #fff 60%, #fafbff);
+  border: 1px solid #f0f4ff;
+  box-shadow: 0 2px 12px rgba(69, 103, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.ly-scroll .ly-offer-card:active {
+  transform: scale(0.99);
+  box-shadow: 0 4px 16px rgba(69, 103, 255, 0.12);
+}
+
+.ly-offer-reason {
+  background: linear-gradient(100deg, #eef4ff, #f5f8ff);
+  border: 1px solid #dce8ff;
+}
+
+/* ========== 10. 配套服务卡片 ========== */
+.ly-support-card {
+  background: linear-gradient(145deg, #fff 60%, #fafbff);
+  border: 1px solid #f0f4ff;
+  box-shadow: 0 2px 10px rgba(69, 103, 255, 0.08);
+}
+
+/* ========== 11. 企业卡片优化 ========== */
+.ly-provider-card {
+  background: linear-gradient(145deg, #fff 60%, #fafbff);
+  border: 1px solid #f0f4ff;
+  box-shadow: 0 2px 12px rgba(69, 103, 255, 0.08);
+}
+
+.ly-provider-avatar {
+  background: linear-gradient(135deg, #e8f1ff, #f5f9ff);
+  box-shadow: 0 2px 8px rgba(69, 103, 255, 0.12);
+}
+
+.ly-representative {
+  background: linear-gradient(100deg, rgba(70, 103, 255, 0.06), rgba(145, 169, 255, 0.06));
+  border: 1px solid rgba(70, 103, 255, 0.12);
+}
+
+/* ========== 12. 章节标题优化 ========== */
+.ly-section-heading h2 {
+  font-weight: 600;
+  color: #2c3e73;
+  position: relative;
+}
+
+.ly-section-heading h2::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(180deg, #4667ff, #91a9ff);
+  border-radius: 2px;
+}
+
+.ly-section-heading p {
+  color: #67758b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ========== 13. 按钮统一优化 ========== */
+.ly-scroll button[class*="action"],
+.ly-scroll button[class*="link"] {
+  transition: all 0.2s ease;
+}
+
+.ly-scroll button[class*="action"]:active,
+.ly-scroll button[class*="link"]:active {
+  transform: scale(0.98);
+}
+
+/* ========== 14. 空状态优化 ========== */
+.ly-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: #67758b;
+}
+
+.ly-empty .van-icon {
+  font-size: 48px;
+  color: #c4d0e8;
+  margin-bottom: 12px;
+}
+
+.ly-empty p {
+  font-size: 14px;
+  color: #526277;
+  margin: 8px 0;
+}
+
+/* ========== 15. 发货指南卡片 ========== */
+.ly-guide-list button {
+  transition: background 0.2s ease;
+}
+
+.ly-guide-list button:active {
+  background: #f8fbff;
+}
+
+/* ========== 16. 底部导航强化 ========== */
+.ly-bottom-nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(69, 103, 255, 0.08);
+  box-shadow: 0 -2px 12px rgba(69, 103, 255, 0.06);
+}
+
+.ly-tab.active {
+  color: #4667ff;
+}
+
+.ly-tab-ai {
+  position: relative;
+}
+
+.ly-tab-ai::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(70, 103, 255, 0.15), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ========== 17. 滚动优化 ========== */
+.ly-scroll {
+  scroll-behavior: smooth;
+}
+
+/* ========== 18. 响应式微调 ========== */
+@media (max-width: 360px) {
+  .ly-hero-title {
+    font-size: 23px;
+  }
+
+  .ly-map-card {
+    height: 160px;
+  }
+}
+
+/* ========== 19. 深色模式适配(未来扩展) ========== */
+@media (prefers-color-scheme: dark) {
+  /* 保留深色模式接口,暂不实施 */
+}

@@ -1,0 +1,71 @@
+/* 沿用智运 CargoDetailPage.vue 的 cd-card：白底、12px 圆角、16/14px 内距与10px 卡距。
+   司机 DriverCargoDetail 的路线/信息/发布方分卡结构；地图、评分、运输图标直接复用现有组件。 */
+.ly-offer-card,.ly-detail-card { background:#fff; border-radius:12px; padding:16px 14px; margin-bottom:10px; }
+.ly-offer-card button,.ly-service-page button { border:0; background:none; font:inherit; text-align:left; }
+.ly-offer-main { display:block; width:100%; padding:0; }
+.ly-offer-type { display:flex; align-items:center; gap:5px; color:var(--ly-secondary); font-size:12px; }
+.ly-offer-type svg { width:16px; height:16px; color:var(--ly-brand); }
+.ly-offer-type i,.ly-offer-route i { font-style:normal; color:#a4acb9; }
+.ly-offer-route { display:block; margin:10px 0 12px; font-size:16px; font-weight:600; line-height:1.5; color:#333; }
+.ly-offer-metrics { display:flex; justify-content:space-between; margin-bottom:10px; }
+.ly-offer-metrics>span { display:grid; gap:3px; }
+.ly-offer-metrics>span:last-child { text-align:right; }
+.ly-offer-metrics b { font-size:15px; font-weight:600; }
+.ly-offer-metrics small { color:var(--ly-muted); font-size:11px; }
+.ly-offer-price { color:#567bff; }
+.ly-offer-cargo { display:block; font-size:12px; color:var(--ly-secondary); }
+.ly-offer-company { display:flex; justify-content:space-between; gap:6px; margin-top:12px; padding-top:11px; border-top:1px solid var(--ly-border); }
+.ly-offer-company button { display:flex; align-items:center; gap:4px; font-size:12px; padding:0; }
+.ly-offer-company .ly-offer-link { color:var(--ly-brand); flex-shrink:0; }
+.ly-service-page { position:absolute; inset:44px 0 0; z-index:16; display:flex; flex-direction:column; background:#f3f5f9; }
+.ly-service-nav { display:flex; align-items:center; justify-content:space-between; min-height:48px; padding:0 14px; background:#e6edfa; }
+.ly-service-nav button,.ly-service-nav>span { width:30px; padding:0; }
+.ly-service-nav button { font-size:21px; }
+.ly-service-nav h1 { font-size:17px; font-weight:600; }
+.ly-service-content { flex:1; min-height:0; padding:12px 15px 16px; overflow-y:auto; scrollbar-width:none; }
+.ly-detail-title { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ly-secondary); margin-bottom:8px; }
+.ly-detail-title svg { width:18px; height:18px; color:var(--ly-brand); }
+.ly-detail-card h2 { font-size:16px; line-height:1.5; font-weight:600; }
+.ly-detail-card h3 { font-size:14px; margin:12px 0 6px; }
+.ly-detail-card .ly-detail-muted { font-size:12px; line-height:1.7; color:var(--ly-secondary); margin:7px 0 12px; }
+.ly-detail-card .lya-real-map { margin:12px -14px 0; border:0; border-radius:0; }
+.ly-detail-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:14px; }
+.ly-detail-metrics>div { display:grid; gap:5px; text-align:center; }
+.ly-detail-metrics>div+div { border-left:1px solid var(--ly-border); }
+.ly-detail-metrics b { font-size:14px; font-weight:600; }
+.ly-detail-metrics span,.ly-detail-card-heading>span { font-size:11px; color:var(--ly-muted); }
+.ly-detail-card-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.ly-detail-card-heading button { font-size:12px; color:var(--ly-brand); padding:0; }
+.ly-service-legs { list-style:none; padding:0; margin:12px 0 0; }
+.ly-service-legs button { display:flex; gap:10px; align-items:flex-start; width:100%; padding:10px 0; }
+.ly-service-legs i { flex-shrink:0; font-style:normal; width:20px; height:20px; line-height:20px; border-radius:50%; text-align:center; color:#fff; font-size:11px; }
+.ly-service-legs strong { display:block; font-size:13px; font-weight:500; }
+.ly-service-legs .active strong { color:var(--ly-brand); }
+.ly-service-legs small { display:block; margin-top:5px; color:var(--ly-muted); font-size:12px; }
+.ly-detail-card dl { display:grid; grid-template-columns:56px 1fr; gap:10px; font-size:12px; margin:12px 0 0; line-height:1.7; }
+.ly-detail-card dt { color:var(--ly-muted); }
+.ly-detail-card dd { margin:0; }
+.ly-service-actions { display:flex; flex-shrink:0; gap:10px; padding:12px 15px 25px; background:#fff; }
+.ly-service-actions button { flex:1; text-align:center; padding:11px 0; border:1px solid #dce3f1; border-radius:10px; color:var(--ly-brand); font-size:14px; }
+.ly-service-actions .primary { flex:1.5; background:var(--ly-button-gradient); border:0; color:#fff; }
+/* 方案和企业详情共用字段排版与操作栏，保持移动端详情风格一致。 */
+.ly-detail-page .ly-service-nav { background:#f3f5f9; }
+.ly-detail-page .ly-detail-card dl { grid-template-columns:84px minmax(0,1fr); gap:12px; font-size:14px; line-height:21px; }
+.ly-detail-page .ly-detail-card dd { text-align:right; overflow-wrap:anywhere; }
+.ly-detail-actions { gap:8px; padding:12px 15px 25px; border-top:1px solid #e2e2e2; }
+.ly-detail-actions>button { height:40px; border-radius:8px; padding:0; font-size:14px; }
+.ly-detail-actions>button.primary { background:#3a65ff; color:#fff; }
+.ly-detail-actions .ly-favorite-button { flex:0 0 44px; height:44px; border:0; font-size:10px; flex-direction:column; gap:2px; margin-top:-2px; color:#8a91a1; }
+.ly-detail-actions .ly-favorite-button.saved { color:#3a65ff; }
+.ly-company-identity { display:flex; align-items:center; gap:10px; margin:14px 0; }
+.ly-company-avatar { flex-shrink:0; display:grid; place-items:center; width:42px; height:42px; border-radius:10px; background:#edf2ff; color:#5478eb; font-size:23px; }
+.ly-company-identity>div { min-width:0; flex:1; }
+.ly-company-identity .ly-company-name { display:block; padding:0; font-size:15px; font-weight:600; line-height:1.5; color:#303747; }
+.ly-company-identity .ly-rating { margin-top:5px; flex-wrap:wrap; row-gap:3px; }
+.ly-detail-card .ly-company-facts { margin:0; gap:9px 12px; grid-template-columns:52px minmax(0,1fr); }
+.ly-company-modes { display:flex; flex-wrap:wrap; gap:6px; }
+.ly-company-modes>span { display:inline-flex; align-items:center; gap:4px; border-radius:4px; padding:1px 6px; background:#f4f6fb; color:#566275; }
+.ly-company-modes svg { width:14px; height:14px; color:var(--company-mode-color); }
+.ly-company-tags { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:13px; padding-top:11px; border-top:1px solid var(--ly-border); }
+.ly-company-tags span { display:inline-flex; align-items:center; gap:4px; color:#69788d; font-size:11px; }
+.ly-company-tags .van-icon { color:#7793c5; font-size:13px; }

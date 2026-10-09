@@ -1,0 +1,111 @@
+.la-page {
+  --la-blue: #3a65ff; --la-text: #24324b; --la-muted: #8a95a8;
+  --van-primary-color: #3a65ff; --van-sidebar-selected-border-color: #3a65ff;
+  position: absolute; inset: 44px 0 0; z-index: 1; overflow: hidden;
+  color: var(--la-text); background: #f3f6fb;
+  font-family: -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;
+  font-size: 14px; line-height: 1.5;
+}
+.la-page * { box-sizing: border-box; }
+.la-page h1,.la-page h2,.la-page h3,.la-page p { margin: 0; }
+.la-page button,.la-page input { font: inherit; }
+.la-page button { border: 0; cursor: pointer; }
+.la-page button:focus-visible,.la-page input:focus-visible,.la-page [tabindex]:focus-visible { outline: 2px solid var(--la-blue); outline-offset: -2px; }
+.la-page button:disabled { opacity: .3; cursor: default; }
+.la-page--overlay { z-index: 40; }
+.la-scroll { height: 100%; overflow-y: auto; overflow-x: hidden; padding: 0 16px 112px; scrollbar-width: none; background: linear-gradient(180deg,#eaf1ff,#f3f6fb 420px); }
+.la-scroll::-webkit-scrollbar { display: none; }
+.la-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 52px; }
+.la-brand { display: flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 700; }
+.la-brand img { width: 26px; height: 27px; object-fit: contain; }
+.la-header h1 { font-size: 20px; }
+.la-header > .la-icon { width: 26px; height: 26px; background: transparent; color: #24324b; box-shadow: none; border-radius: 0; }
+.la-header > .la-icon .van-icon { font-size: 24px; }
+.la-page .la-main-search { padding: 0; }
+.la-main-search .van-search__content { min-height: 44px; background: white; padding-left: 14px; }
+.la-main-search .van-field { align-items: center; padding: 10px 0; }
+.la-main-search .van-field__control { font-size: 14px; }
+.la-main-search .van-field__left-icon .van-icon { font-size: 20px; color: #8b97aa; }
+.la-portals { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 12px 0; }
+.la-portal { display: flex; align-items: center; justify-content: space-between; gap: 4px; min-height: 74px; padding: 12px; border-radius: 15px; background: linear-gradient(120deg,#e4ebff,#f3f6ff); text-align: left; }
+.la-portal > span:not(.la-icon) { display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 16px; font-weight: 650; }
+.la-portal > span:not(.la-icon) .van-icon { font-size: 12px; color: var(--la-blue); }
+.la-portal > .la-icon { width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 10px #747bdf20; }
+.la-portal--mall { background: linear-gradient(120deg,#e0f6f7,#eefaff); }
+.la-common { padding: 12px 10px 8px; border-radius: 16px; background: white; }
+.la-heading,.la-catalog-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.la-heading { padding: 0 4px; }
+.la-heading h2,.la-catalog-heading h2 { font-size: 17px; font-weight: 700; }
+.la-page .la-heading > button { min-height: 30px; padding: 0 3px; background: transparent; color: var(--la-blue); font-size: 13px; }
+.la-page .la-common-grid { flex-wrap: nowrap; overflow-x: auto; margin-top: 5px; padding-bottom: 4px; scrollbar-width: none; }
+.la-common-grid::-webkit-scrollbar { display: none; }
+.la-common-grid > .van-grid-item { flex: 0 0 25%; min-width: 0; }
+.la-page .la-common-grid .van-grid-item__content { padding: 6px 3px 2px; }
+.la-page .la-common-grid .van-grid-item__text { font-size: 12px; white-space: nowrap; color: #34435c; margin-top: 6px; line-height: 20px; }
+.la-icon { display: inline-grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 13px; color: white; background: linear-gradient(145deg,#62a1ff,#3976f6); box-shadow: 0 3px 8px #4380ee18; }
+.la-icon > .van-icon { font-size: 26px; }
+.la-icon > svg { width: 30px; height: 30px; }
+.la-common-grid .la-icon,.la-grid .la-icon,.la-search-grid .la-icon { width: 36px; height: 36px; border-radius: 10px; }
+.la-common-grid .la-icon > .van-icon,.la-grid .la-icon > .van-icon,.la-search-grid .la-icon > .van-icon { font-size: 22px; }
+.la-common-grid .la-icon > svg,.la-grid .la-icon > svg,.la-search-grid .la-icon > svg { width: 25px; height: 25px; }
+.la-icon--teal { background: linear-gradient(145deg,#49d1bd,#16b09c); box-shadow: 0 3px 8px #1bb49f18; }
+.la-icon--purple { background: linear-gradient(145deg,#a28afe,#7957ef); box-shadow: 0 3px 8px #8566ee18; }
+.la-page .la-add .la-icon { color: var(--la-blue); background: #f1f5ff; border: 1px dashed #a2b9f4; box-shadow: none; }
+.la-catalog { margin-top: 18px; }
+.la-catalog-heading { padding: 0 1px 8px; }
+.la-catalog-heading > span { font-size: 12px; color: var(--la-muted); }
+.la-page .la-domains { position: sticky; top: 0; z-index: 2; margin: 0 -16px; padding: 0 16px; background: #f3f6fb; }
+.la-domains .van-tabs__nav { padding: 0 0 12px; background: transparent; }
+.la-domains .van-tabs__wrap { height: 44px; }
+.la-domains .van-tab { padding: 0 4px; font-size: 14px; }
+.la-domains .van-tab--active { font-weight: 650; }
+.la-domains .van-tabs__line { bottom: 11px; border-radius: 3px; }
+.la-domains .van-tabs__content { display: none; }
+.la-directory { display: flex; min-height: 360px; overflow: hidden; border-radius: 15px; background: white; }
+/* 沿用 Vant Sidebar 基础选中态，通过官方主题变量调整密度。 */
+.la-page .la-groups {
+  --van-sidebar-width: 76px;
+  --van-sidebar-font-size: 13px;
+  --van-sidebar-line-height: 20px;
+  --van-sidebar-padding: 14px 12px;
+  --van-sidebar-text-color: #6b7890;
+  --van-sidebar-background: #f3f5f9;
+  --van-sidebar-selected-text-color: #3a65ff;
+  --van-sidebar-selected-font-weight: 600;
+  --van-sidebar-selected-background: #fff;
+  --van-sidebar-selected-border-width: 2px;
+  --van-sidebar-selected-border-height: 14px;
+  flex: 0 0 76px;
+  background: var(--van-sidebar-background);
+}
+.la-groups .van-sidebar-item__text { white-space: nowrap; }
+.la-panel { flex: 1; min-width: 0; max-height: 520px; overflow-y: auto; overscroll-behavior: contain; padding: 15px 5px 12px; scrollbar-width: none; }
+.la-panel::-webkit-scrollbar { display: none; }
+.la-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 0 8px; margin-bottom: 10px; }
+.la-panel-heading h3 { font-size: 15px; font-weight: 650; }
+.la-panel-heading small { font-size: 11px; color: var(--la-muted); white-space: nowrap; }
+.la-page .la-grid .van-grid-item__content { padding: 6px 3px 2px; }
+.la-page .la-grid .van-grid-item__text,.la-app-name { display: block; max-width: 100%; min-height: 36px; margin-top: 6px; color: #34435c; font-size: 13px; line-height: 18px; text-align: center; overflow-wrap: anywhere; }
+.la-page .la-search-grid { padding: 8px; border-radius: 15px; background: white; }
+.la-search-grid .van-grid-item__content { padding: 12px 4px; }
+.la-result-group { margin-top: 3px; color: var(--la-muted); font-size: 11px; }
+.la-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 300px; padding: 24px 12px; text-align: center; background: white; border-radius: 15px; }
+.la-empty > .van-icon { font-size: 38px; color: #b3c3dc; }
+.la-empty h3 { font-size: 15px; font-weight: 600; }
+.la-empty p { font-size: 12px; color: var(--la-muted); }
+.la-page .la-empty button { min-height: 36px; padding: 6px 14px; border-radius: 18px; background: #edf3ff; color: var(--la-blue); font-size: 12px; }
+.la-overlay{position:absolute;inset:0;z-index:10;display:flex;align-items:flex-end}.la-backdrop{position:absolute;inset:0;background:#18274766}.la-sheet{position:relative;display:flex;flex-direction:column;width:100%;max-height:92%;padding:18px 16px 22px;border-radius:22px 22px 0 0;background:#fff;outline:none}.la-sheet-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.la-sheet-heading h2{font-size:18px}.la-sheet-heading button{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#f3f6fb;color:#778397;font-size:20px}.la-sheet-hint{padding:6px 0 12px;font-size:12px;color:var(--la-muted)}.la-storage-note{padding:7px 9px;color:#92712d;font-size:11px;background:#fff8e5;border-radius:7px}.la-sheet-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}.la-edit-row{display:flex;align-items:center;gap:5px;padding:8px 0;border-bottom:1px solid #f1f4f8}.la-edit-row>.la-icon{width:30px;height:30px;border-radius:8px}.la-edit-row>.la-icon svg{width:21px;height:21px}.la-edit-row>span:not(.la-icon){flex:1;font-size:12px}.la-edit-row>button{display:grid;place-items:center;min-width:32px;min-height:36px;background:none;color:#6c83b5}.la-edit-row>button:last-child{color:#ed7583}.la-picker-search{margin:13px 0 5px;border-radius:12px;background:#f3f6fb}.la-picker>button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 2px;background:none;text-align:left}.la-picker>button>.la-icon{width:32px;height:32px;border-radius:9px}.la-picker>button>.la-icon svg{width:23px;height:23px}.la-picker>button>span:not(.la-icon){flex:1;font-size:13px}.la-picker small{display:block;color:var(--la-muted);font-size:10px}.la-picker>button>.van-icon{font-size:19px;color:#adb9cb}.la-picker>button[aria-pressed=true]>.van-icon{color:var(--la-blue)}.la-sheet-footer{display:flex;gap:10px;padding-top:14px}.la-sheet-footer button{flex:1;min-height:44px;border-radius:12px;background:#f1f4fa;font-size:14px}.la-sheet-footer button.la-primary{background:linear-gradient(95deg,#5c8bfe,#2857f8);color:white;font-weight:600}.la-preview-content{display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 16px;text-align:center}.la-preview-content>.la-icon{width:64px;height:64px;border-radius:18px}.la-preview-content>.la-icon svg{width:40px;height:40px}.la-preview-content h3{font-size:17px}.la-preview-content h3 small{margin-left:7px;font-size:12px;color:var(--la-muted);font-weight:400}.la-preview-content p{font-size:13px;color:#8491a5;line-height:22px}.la-preview-label{padding:3px 9px;border-radius:5px;background:#edf3ff;color:#6b83af;font-size:11px}.la-notice{position:absolute;left:50%;bottom:125px;z-index:50;transform:translateX(-50%);max-width:90%;padding:10px 16px;border-radius:9px;background:#24324be6;color:#fff;font-size:12px;white-space:nowrap}
+.la-page .la-picker-search { padding: 0; margin: 13px 0 5px; background: transparent; }
+.la-page .la-edit-row > button { color: #6c83b5; }
+.la-page .la-edit-row > button:last-child { color: #ed7583; }
+.la-page .la-sheet-footer button.la-primary { color: white; }
+.la-page .la-add .van-grid-item__text { color: var(--la-blue); }
+@media(max-width:360px) {
+  .la-page .la-groups { --van-sidebar-width: 72px; --van-sidebar-padding: 14px 10px; flex-basis: 72px; }
+  .la-panel { padding-inline: 3px; }
+  .la-portal { padding: 10px; }
+  .la-portal > span:not(.la-icon) { font-size: 14px; }
+  .la-header h1 { font-size: 18px; }
+  .la-brand { font-size: 16px; }
+  .la-page .la-grid .van-grid-item__text { font-size: 12px; }
+}
