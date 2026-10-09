@@ -18,28 +18,42 @@
 
         <label class="cargo-search">
           <span aria-hidden="true"></span>
-          <input v-model="searchText" type="search" placeholder="搜索货物、港口或航线" />
+          <input v-model="searchText" type="search" placeholder="搜索货品、装货地或卸货地" />
         </label>
       </header>
 
       <div class="filter-row" aria-label="货源筛选">
-        <button type="button">全部 <i></i></button>
-        <button type="button">时间排序 <i></i></button>
-        <button type="button">上架状态 <i></i></button>
+        <button
+          v-for="filter in filters"
+          :key="filter.key"
+          type="button"
+          :class="{ active: activeFilter === filter.key }"
+          @click="onFilterClick(filter.key)"
+        >
+          {{ filterLabel(filter) }} <i></i>
+        </button>
       </div>
 
-      <div class="cargo-list">
-        <article v-for="item in filteredCargoes" :key="item.id" class="cargo-card">
+      <div class="cargo-list annot-zhiyunShipperHome-rule-cargo-plan-list">
+        <article
+          v-for="item in filteredCargoes"
+          :key="item.id"
+          class="cargo-card"
+          role="button"
+          tabindex="0"
+          @click="$emit('open-cargo', item)"
+          @keydown.enter="$emit('open-cargo', item)"
+        >
           <span class="corner-fold" aria-hidden="true">▦</span>
 
           <div class="cargo-summary">
             <strong>{{ item.cargo }} <b>{{ item.weight }}</b></strong>
-            <span>{{ item.loadDate }}装货 → {{ item.unloadDate }}卸货</span>
+            <span>{{ loadDate(item) }}装货 → {{ unloadDate(item) }}卸货</span>
           </div>
 
           <div class="route-lines">
-            <p><i class="route-dot load-dot"></i>{{ item.loadAddress }}</p>
-            <p><i class="route-dot unload-dot"></i>{{ item.unloadAddress }}</p>
+            <p><i class="route-dot load-dot"></i>{{ item.loadCity }}·{{ item.loadDetail }}</p>
+            <p><i class="route-dot unload-dot"></i>{{ item.unloadCity }}·{{ item.unloadDetail }}</p>
           </div>
 
           <div class="cargo-detail-row">
@@ -66,12 +80,14 @@
               v-if="item.action"
               type="button"
               class="cargo-action"
-              @click="handleAction(item)"
+              @click.stop="handleAction(item)"
             >
               {{ item.action }}
             </button>
           </div>
         </article>
+
+        <p v-if="!filteredCargoes.length" class="cargo-empty">没有符合条件的货源</p>
       </div>
     </div>
 
@@ -83,52 +99,70 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { cargoList } from './mock-data.js'
 
-defineEmits(['publish'])
+const emit = defineEmits(['publish', 'open-cargo', 'resume-publish'])
 
 const searchText = ref('')
-const cargoes = ref([
-  {
-    id: 'g1', cargo: '煤炭', weight: '800斤', loadDate: '4月14日', unloadDate: '4月16日',
-    loadAddress: '福州 长乐区·马尾港', unloadAddress: '江苏 无锡市·舟山港',
-    tags: ['卸货量估算', '须封仓', '300元/斤'], price: '4,280',
-    state: '待接单', stateType: 'pending', stateDate: '2026年3月24日 发布', action: '取消货源',
-  },
-  {
-    id: 'g2', cargo: '煤炭', weight: '800斤', loadDate: '4月14日', unloadDate: '4月16日',
-    loadAddress: '福州 长乐区·马尾港', unloadAddress: '江苏 无锡市·舟山港',
-    tags: ['卸货量估算', '须封仓', '300元/斤'], price: '4,280',
-    state: '已接单', stateType: 'matched', progress: { done: 302, total: 700, percent: 43 }, action: '',
-  },
-  {
-    id: 'g3', cargo: '煤炭', weight: '800斤', loadDate: '4月14日', unloadDate: '4月16日',
-    loadAddress: '福州 长乐区·马尾港', unloadAddress: '江苏 无锡市·舟山港',
-    tags: ['卸货量估算', '须封仓', '300元/斤'], price: '4,280',
-    state: '已完成', stateType: 'completed', stateDate: '2026年3月24日 完成', action: '',
-  },
-  {
-    id: 'g4', cargo: '煤炭', weight: '800斤', loadDate: '4月14日', unloadDate: '4月16日',
-    loadAddress: '福州 长乐区·马尾港', unloadAddress: '江苏 无锡市·舟山港',
-    tags: ['卸货量估算', '须封仓', '300元/斤'], price: '4,280',
-    state: '已取消', stateType: 'cancelled', stateDate: '2026年3月24日 取消', action: '重新发布',
-  },
-  {
-    id: 'g5', cargo: '煤炭', weight: '800斤', loadDate: '4月14日', unloadDate: '4月16日',
-    loadAddress: '福州 长乐区·马尾港', unloadAddress: '江苏 无锡市·舟山港',
-    tags: ['卸货量估算', '须封仓', '300元/斤'], price: '4,280',
-    state: '待接单', stateType: 'pending', stateDate: '2026年3月25日 发布', action: '取消货源',
-  },
-])
+
+/* 排序与状态筛选：状态口径与详情页提示、底部操作保持一致 */
+const filters = [
+  { key: 'all', label: '全部' },
+  { key: 'time', label: '时间排序' },
+  { key: 'state', label: '上架状态' },
+]
+const activeFilter = ref('all')
+/* 「上架状态」逐次点按循环：全部 → 仅上架中 → 仅已结束，循环回到全部 */
+const stateScopes = ['', 'on', 'off']
+const stateScopeIndex = ref(0)
+
+const onFilterClick = (key) => {
+  if (key === 'state' && activeFilter.value === 'state') {
+    stateScopeIndex.value = (stateScopeIndex.value + 1) % stateScopes.length
+    return
+  }
+  activeFilter.value = key
+  if (key === 'state') stateScopeIndex.value = 0
+}
+
+const stateScope = computed(() => (activeFilter.value === 'state' ? stateScopes[stateScopeIndex.value] : ''))
+
+/* 「上架状态」按钮直接显示当前生效的范围，避免只有箭头看不出筛了什么 */
+const filterLabel = (filter) => {
+  if (filter.key !== 'state') return filter.label
+  if (activeFilter.value !== 'state') return filter.label
+  return { on: '上架中', off: '已结束' }[stateScopes[stateScopeIndex.value]] || filter.label
+}
 
 const filteredCargoes = computed(() => {
+  let list = [...cargoList]
+
+  if (stateScope.value === 'on') list = list.filter((item) => item.stateType === 'pending' || item.stateType === 'matched')
+  else if (stateScope.value === 'off') list = list.filter((item) => item.stateType === 'completed' || item.stateType === 'cancelled')
+
+  if (activeFilter.value === 'time') {
+    list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
+  }
+
   const keyword = searchText.value.trim().toLowerCase()
-  if (!keyword) return cargoes.value
-  return cargoes.value.filter((item) =>
-    [item.cargo, item.loadAddress, item.unloadAddress].some((value) => value.toLowerCase().includes(keyword)),
-  )
+  if (keyword) {
+    list = list.filter((item) => (
+      [item.cargo, item.cargoCategory, item.loadCity, item.loadDetail, item.unloadCity, item.unloadDetail]
+        .some((value) => String(value).toLowerCase().includes(keyword))
+    ))
+  }
+  return list
 })
 
+/* 列表只展示装卸日期，时间与详情页保持一致 */
+const loadDate = (item) => item.loadDate.split(' ')[0] || ''
+const unloadDate = (item) => item.unloadDate.split(' ')[0] || ''
+
 const handleAction = (item) => {
+  if (item.action === '继续发布') {
+    emit('resume-publish', item)
+    return
+  }
   if (item.action === '取消货源') {
     item.state = '已取消'
     item.stateType = 'cancelled'
@@ -138,7 +172,8 @@ const handleAction = (item) => {
   }
   item.state = '待接单'
   item.stateType = 'pending'
-  item.stateDate = '2026年3月24日 发布'
+  item.stateDate = '2026年4月15日 发布'
+  item.listedAt = '2026-04-15 08:00:00'
   item.action = '取消货源'
 }
 </script>
@@ -273,12 +308,13 @@ const handleAction = (item) => {
   font-size: 15px;
   font-weight: 600;
 }
+.filter-row button.active { color: #2f6df7; }
 .filter-row i {
   display: inline-block;
   margin-left: 3px;
   border: 4px solid transparent;
   border-bottom: 0;
-  border-top-color: #30333b;
+  border-top-color: currentColor;
   vertical-align: 3px;
 }
 
@@ -294,6 +330,7 @@ const handleAction = (item) => {
   overflow: hidden;
   border-radius: 11px;
   background: #fff;
+  cursor: pointer;
 }
 .corner-fold {
   position: absolute;
@@ -347,9 +384,11 @@ const handleAction = (item) => {
   margin: 0 0 4px;
   padding-left: 11px;
   color: #30333b;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 19px;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 .route-dot {
@@ -368,10 +407,12 @@ const handleAction = (item) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 .cargo-tags {
   display: flex;
   gap: 5px;
+  overflow: hidden;
 }
 .cargo-tags span {
   padding: 3px 8px;
@@ -380,6 +421,7 @@ const handleAction = (item) => {
   color: #6b7d9b;
   font-size: 10px;
   line-height: 13px;
+  white-space: nowrap;
 }
 .cargo-price {
   text-align: right;
@@ -435,6 +477,7 @@ const handleAction = (item) => {
 }
 .state-pending,
 .state-matched { color: #2f6df7; }
+.state-draft { color: #c47d09; }
 .state-completed,
 .state-cancelled { color: #999; }
 .progress-track {
@@ -461,6 +504,13 @@ const handleAction = (item) => {
   color: #333;
   font-size: 13px;
   font-weight: 600;
+}
+
+.cargo-empty {
+  margin: 60px 0 0;
+  text-align: center;
+  color: #9aa3b3;
+  font-size: 13px;
 }
 
 .floating-publish {

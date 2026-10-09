@@ -1,5 +1,5 @@
 <template>
-  <section class="invoice-page" aria-label="发票管理">
+  <section class="invoice-page" :data-annotation-content="planPicker || waybillSheet ? null : 'modal'" aria-label="发票管理">
     <!-- 顶部渐变背景：Pixso 导出 6:479 分组6（750x660 → 375x330） -->
     <img class="apply-bg" src="/zhiyun-mobile-assets/invoice/apply-hero-bg.png" alt="" />
 
@@ -81,35 +81,35 @@
             </div>
             <div class="cargo-freight">
               <small>实付运费</small>
-              <p>{{ amountVisible ? selectedPlan.paidAmount.toLocaleString() : '＊＊＊＊' }}<i>元</i></p>
+              <p>{{ amountVisible ? (selectedPlan.paid ? selectedPlan.paidAmount.toLocaleString() : '暂无') : '＊＊＊＊' }}<i v-if="selectedPlan.paid">元</i></p>
             </div>
           </div>
         </section>
         </main>
 
-        <!-- 白色面板：可开票结算单（多选） -->
-        <section class="panel">
-          <h2 class="panel-title" v-if="selectedPlan">可开票结算单({{ openableSettlements.length }})</h2>
-          <h2 class="panel-title" v-else>可开票结算单</h2>
+        <!-- 白色面板：可开票运单（可多选提交，逐运单生成申请） -->
+        <section class="panel" :class="{ 'annot-zhiyunShipperHome-rule-invoice-paid-waybill': !planPicker && !waybillSheet }">
+          <h2 class="panel-title" v-if="selectedPlan">可开票运单({{ openableWaybills.length }})</h2>
+          <h2 class="panel-title" v-else>可开票运单</h2>
 
           <div class="panel-scroll">
           <template v-if="selectedPlan">
-            <article v-for="item in openableSettlements" :key="item.id" class="settle-card" :class="{ checked: isSelected(item.id) }" @click="toggleSelect(item.id)">
+            <article v-for="item in openableWaybills" :key="item.id" class="settle-card" :class="{ checked: isSelected(item.id) }" @click="toggleSelect(item.id)">
               <span class="checkbox" :class="{ on: isSelected(item.id) }" aria-hidden="true">
                 <svg v-if="isSelected(item.id)" width="11" height="9" viewBox="0 0 17 14" fill="none"><path d="M1.5 7.5L6 12L15.5 1.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
               <div class="settle-main">
-                <p class="settle-period">{{ item.period }}</p>
+                <p class="settle-period">{{ item.platform }} · {{ item.paidTime }} 付款</p>
                 <div class="settle-row">
-                  <h3 class="settle-no">{{ item.id }}</h3>
-                  <span class="settle-amount">{{ amountVisible ? money(item.amount) : '* * *' }}</span>
+                  <h3 class="settle-no">{{ item.number }}</h3>
+                  <span class="settle-amount">{{ amountVisible ? money(waybillInvoiceAmount(item)) : '* * *' }}</span>
                 </div>
-                <button type="button" class="settle-waybills" @click.stop="openWaybills(item)">关联运单 {{ item.waybillCount }} 条 <svg width="6" height="10" viewBox="0 0 14 24" fill="none"><path d="M2.5 2.5L11.5 12L2.5 21.5" stroke="#3a65ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="settle-waybills" @click.stop="openWaybill(item)">查看运单 · {{ item.plate }} <svg width="6" height="10" viewBox="0 0 14 24" fill="none"><path d="M2.5 2.5L11.5 12L2.5 21.5" stroke="#3a65ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               </div>
             </article>
-            <div v-if="!openableSettlements.length" class="empty-state">
+            <div v-if="!openableWaybills.length" class="empty-state">
               <span>¥</span>
-              <p>{{ selectedPlan.blockedNote || '该货源暂无已付款的结算单' }}</p>
+              <p>该货源暂无可开票运单；未付款或已申请的运单不在此展示</p>
             </div>
           </template>
           <div v-else class="empty-illustration">
@@ -123,7 +123,7 @@
         <div v-if="selectedPlan" class="bottom-bar">
           <div class="bottom-amount">
             <p class="bottom-value">{{ amountVisible ? `¥${selectedTotal.toLocaleString()}` : '¥ * * * *' }}</p>
-            <small>结算金额</small>
+            <small>已选开票金额</small>
           </div>
           <button type="button" class="bottom-btn" @click="startApply">去开票</button>
         </div>
@@ -144,12 +144,11 @@
         <section class="card">
           <div class="summary-row"><span>归属货源</span><b>{{ activePlan.route }} · {{ activePlan.goods }}</b></div>
           <div class="summary-row"><span>承接平台</span><b>{{ applyPlatforms }}</b></div>
-          <div class="summary-row"><span>关联结算单</span><b>{{ applySettlements.length }} 张</b></div>
-          <div class="summary-row"><span>开票金额</span><b class="blue">{{ money(applyAmount) }}</b></div>
-          <div class="summary-row"><span>关联运单</span><b>{{ applyWaybillTotal }} 个</b></div>
+          <div class="summary-row"><span>关联运单</span><b>{{ applyWaybills.length }} 张</b></div>
+          <div class="summary-row"><span>开票金额合计</span><b class="blue">{{ money(applyAmount) }}</b></div>
         </section>
 
-        <section class="card form-card">
+        <section class="card form-card" :class="{ 'annot-zhiyunShipperHome-field-invoice-company-header': titleType === '企业' && !planPicker && !waybillSheet }">
           <h3 class="card-title">开票信息</h3>
 
           <!-- 已存抬头：点选即回填，避免每次重复填写；维护入口在开票记录页 -->
@@ -187,7 +186,7 @@
             <label class="field"><span>联系电话<i>*</i></span><input v-model="form.personPhone" type="text" placeholder="请输入" /></label>
             <label class="field"><span>收票邮箱<i>*</i></span><input v-model="form.email" type="text" placeholder="请输入" /></label>
           </template>
-          <p class="field-note strong">请确保开票信息准确无误，提交后由承接平台核对并按结算单逐张开具。</p>
+          <p class="field-note strong">请确保开票信息准确无误；提交后每张运单分别生成开票申请，由对应承接平台处理。</p>
         </section>
 
         <div class="apply-actions">
@@ -233,7 +232,7 @@
         </section>
 
         <!-- 白色面板：筛选栏 + 记录卡片 -->
-        <section class="record-panel">
+        <section class="record-panel" :class="{ 'annot-zhiyunShipperHome-rule-invoice-record-status': !planPicker && !waybillSheet }">
           <div class="filter-bar">
             <button v-for="f in filters" :key="f.key" type="button" class="filter-item" :class="{ active: sortKey === f.key }" @click="toggleSort(f.key)">
               {{ f.label }}
@@ -253,6 +252,7 @@
                 <h3 class="record-name">{{ item.title.name }}</h3>
                 <span class="record-amount"><i>￥</i>{{ money2(item.amount) }}</span>
               </div>
+              <p class="record-waybill">运单 {{ item.waybillNo }} · {{ item.platform }}</p>
               <div class="record-foot">
                 <span class="record-state" :class="stateClass(item.status)">
                   <i class="dot"></i>{{ item.status }}
@@ -269,41 +269,32 @@
     <div v-if="notice" class="notice" role="status">{{ notice }}<button type="button" @click="notice = ''">×</button></div>
 
     <!-- 货源计划选择弹层 -->
-    <div v-if="planPicker" class="overlay" @click.self="planPicker = false">
-      <section class="sheet">
+    <div v-if="planPicker" class="overlay" data-annotation-container="drawer" @click.self="planPicker = false">
+      <section class="sheet" data-annotation-content="drawer">
         <div class="sheet-head"><h2>选择货源计划</h2><button type="button" aria-label="关闭" @click="planPicker = false">×</button></div>
-        <button v-for="plan in plans" :key="plan.id" type="button" class="plan-option" :class="{ muted: !plan.paid }" @click="choosePlan(plan)">
+        <button v-for="plan in plans" :key="plan.id" type="button" class="plan-option" :class="{ muted: !hasOpenable(plan) }" @click="choosePlan(plan)">
           <div class="row-between">
             <strong>{{ plan.route }} · {{ plan.goods }}</strong>
-            <span v-if="plan.paid" class="plan-amount">{{ money(plan.paidAmount) }}</span>
-            <span v-else class="plan-locked">不可开票</span>
+            <span v-if="hasOpenable(plan)" class="plan-amount">{{ openableCount(plan) }} 张可开票</span>
+            <span v-else class="plan-locked">暂无可开票</span>
           </div>
-          <p class="secondary">{{ plan.loadDate }} · {{ plan.quantity }} · {{ plan.paid ? '已付款' : '结算单未付款' }}</p>
+          <p class="secondary">{{ plan.loadDate }} · {{ plan.quantity }} · {{ plan.paid ? '含已付款运单' : '运单未付款' }}</p>
         </button>
         <button type="button" class="sheet-close" @click="planPicker = false">取消</button>
       </section>
     </div>
 
-    <!-- 关联运单弹层 -->
-    <div v-if="waybillSheet" class="overlay" @click.self="waybillSheet = null">
-      <section class="sheet">
-        <div class="sheet-head"><h2>关联运单</h2><button type="button" aria-label="关闭" @click="waybillSheet = null">×</button></div>
-        <div class="summary-row"><span>结算单号</span><b>{{ waybillSheet.id }}</b></div>
-        <div class="summary-row"><span>结算周期</span><b>{{ waybillSheet.period }}</b></div>
-        <div class="summary-row"><span>结算金额</span><b class="blue">{{ money(waybillSheet.amount) }}</b></div>
-        <article v-for="wb in waybillSheet.waybills" :key="wb.id" class="waybill-card">
-          <div class="row-between">
-            <strong>{{ wb.plate }} · {{ wb.goods }}</strong>
-            <span class="cargo-price"><strong>{{ money(wb.amount) }}</strong></span>
-          </div>
-          <p class="secondary">{{ wb.driver }} · {{ wb.weight }} · 运费</p>
-          <p class="secondary">{{ wb.load }} → {{ wb.unload }}</p>
-          <div class="record-foot">
-            <span class="state-tag">{{ wb.payStatus }}</span>
-            <span class="record-time">{{ wb.time }}</span>
-          </div>
-        </article>
-        <p class="gap-note">运单已打款方可申请开票，运单金额为本次结算口径。</p>
+    <!-- 运单信息弹层 -->
+    <div v-if="waybillSheet" class="overlay" data-annotation-container="drawer" @click.self="waybillSheet = null">
+      <section class="sheet" data-annotation-content="drawer">
+        <div class="sheet-head"><h2>运单信息</h2><button type="button" aria-label="关闭" @click="waybillSheet = null">×</button></div>
+        <div class="summary-row"><span>运单号</span><b>{{ waybillSheet.number }}</b></div>
+        <div class="summary-row"><span>承接平台</span><b>{{ waybillSheet.platform }}</b></div>
+        <div class="summary-row"><span>车牌 / 司机</span><b>{{ waybillSheet.plate }} · {{ waybillSheet.driver }}</b></div>
+        <div class="summary-row"><span>装卸地点</span><b>{{ waybillSheet.loadCity }} → {{ waybillSheet.unloadCity }}</b></div>
+        <div class="summary-row"><span>付款时间</span><b>{{ waybillSheet.paidTime }}</b></div>
+        <div class="summary-row"><span>可开票金额</span><b class="blue">{{ money(waybillInvoiceAmount(waybillSheet)) }}</b></div>
+        <p class="gap-note">仅已付款运单可申请，开票金额取该运单的实际结算金额。</p>
         <button type="button" class="sheet-close" @click="waybillSheet = null">返回</button>
       </section>
     </div>
@@ -312,7 +303,8 @@
 
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { cargoPlans, defaultTitle, invoiceRecords, invoiceSummary, invoiceTitles, titleToForm, waybillsOf } from './invoice-data.js'
+import { canInvoiceWaybill, cargoPlans, defaultTitle, invoiceRecords, invoiceSummary, invoiceTitles, titleToForm, waybillInvoiceAmount } from './invoice-data.js'
+import { waybillList } from './mock-data.js'
 
 const props = defineProps({
   initialTab: { type: String, default: 'apply' },
@@ -322,7 +314,7 @@ const props = defineProps({
 const emit = defineEmits(['back', 'open-detail', 'manage-titles'])
 
 const plans = cargoPlans
-const records = ref(invoiceRecords)
+const records = invoiceRecords
 /* apply 视图内部再分：apply=申请开票、record=开票记录；表单叠在 apply 之上 */
 const view = ref(props.initialTab === 'record' ? 'record' : 'apply')
 watch(() => props.initialTab, (value) => {
@@ -330,13 +322,14 @@ watch(() => props.initialTab, (value) => {
 })
 watch(() => props.resetToken, () => {
   view.value = 'apply'
-  selectedPlan.value = null
+  selectedPlanId.value = null
   selectedIds.value = []
   activePlan.value = null
   titleType.value = '企业'
 })
 
-const selectedPlan = ref(null)
+const selectedPlanId = ref(null)
+const selectedPlan = computed(() => plans.value.find(plan => plan.id === selectedPlanId.value) || null)
 const selectedIds = ref([])
 const activePlan = ref(null)
 const planPicker = ref(false)
@@ -392,15 +385,16 @@ function refreshTitles() {
 }
 defineExpose({ refreshTitles })
 
-const summary = computed(() => invoiceSummary(records.value))
-const openableSettlements = computed(() => selectedPlan.value?.settlements || [])
-const openableTotal = computed(() => openableSettlements.value.reduce((sum, s) => sum + s.amount, 0))
-const selectedTotal = computed(() => openableSettlements.value.filter(s => selectedIds.value.includes(s.id)).reduce((sum, s) => sum + s.amount, 0))
+const summary = computed(() => invoiceSummary(records))
+const openableWaybills = computed(() => waybillList.filter(waybill => waybill.cargoId === selectedPlanId.value && canInvoiceWaybill(waybill, records)))
+const openableTotal = computed(() => openableWaybills.value.reduce((sum, waybill) => sum + waybillInvoiceAmount(waybill), 0))
+const selectedTotal = computed(() => openableWaybills.value.filter(waybill => selectedIds.value.includes(waybill.id)).reduce((sum, waybill) => sum + waybillInvoiceAmount(waybill), 0))
 
-const applySettlements = ref([])
-const applyAmount = computed(() => applySettlements.value.reduce((sum, s) => sum + s.amount, 0))
-const applyWaybillTotal = computed(() => applySettlements.value.reduce((sum, s) => sum + s.waybillCount, 0))
-const applyPlatforms = computed(() => [...new Set(applySettlements.value.map(s => s.platform))].join('、'))
+const applyWaybills = ref([])
+const applyAmount = computed(() => applyWaybills.value.reduce((sum, waybill) => sum + waybillInvoiceAmount(waybill), 0))
+const applyPlatforms = computed(() => [...new Set(applyWaybills.value.map(waybill => waybill.platform))].join('、'))
+const openableCount = plan => waybillList.filter(waybill => waybill.cargoId === plan.id && canInvoiceWaybill(waybill, records)).length
+const hasOpenable = plan => openableCount(plan) > 0
 
 function money(value) {
   return `¥${Number(value).toLocaleString()}`
@@ -424,7 +418,7 @@ function toggleSort(key) {
 const STATUS_ORDER = { '待开票': 0, '开票中': 1, '已开票': 2, '已驳回': 3 }
 
 const sortedRecords = computed(() => {
-  const list = [...records.value]
+  const list = [...records]
   const dir = sortDesc.value ? -1 : 1
   return list.sort((a, b) => {
     if (sortKey.value === 'status') {
@@ -475,12 +469,12 @@ function pickPlan() {
   planPicker.value = true
 }
 function choosePlan(plan) {
-  selectedPlan.value = plan
+  selectedPlanId.value = plan.id
   selectedIds.value = []
   planPicker.value = false
 }
-function openWaybills(item) {
-  waybillSheet.value = { ...item, waybills: waybillsOf(item.id) }
+function openWaybill(item) {
+  waybillSheet.value = item
 }
 function startApply() {
   if (!selectedPlan.value) {
@@ -488,10 +482,10 @@ function startApply() {
     return
   }
   if (!selectedIds.value.length) {
-    notice.value = '请先勾选要开票的结算单'
+    notice.value = '请先勾选要开票的运单'
     return
   }
-  applySettlements.value = openableSettlements.value.filter(s => selectedIds.value.includes(s.id))
+  applyWaybills.value = openableWaybills.value.filter(waybill => selectedIds.value.includes(waybill.id))
   activePlan.value = selectedPlan.value
 }
 function cancelApply() {
@@ -505,36 +499,38 @@ function submitApply() {
     notice.value = '请填写完整的必填开票信息'
     return
   }
-  /* 按结算单逐张生成申请记录：一次提交多张时逐张开具 */
-  const newRecords = applySettlements.value.map((settlement, index) => ({
+  if (!applyWaybills.value.length || applyWaybills.value.some(waybill => !canInvoiceWaybill(waybill, records))) {
+    notice.value = '运单开票资格已变化，请返回重新选择'
+    return
+  }
+  /* 一张运单一条申请、一张发票；多选只合并提交操作，不合并开票对象。 */
+  const newRecords = applyWaybills.value.map((waybill, index) => ({
     id: `FP${Date.now()}${index}`,
     applyNo: `2604231448${String(Date.now()).slice(-5)}${index}`,
-    platform: settlement.platform,
+    platform: waybill.platform,
+    cargoNo: waybill.cargoNo,
+    waybillId: waybill.id,
+    waybillNo: waybill.number,
+    plate: waybill.plate,
     route: activePlan.value.route,
-    goods: activePlan.value.goods,
-    amount: settlement.amount,
+    goods: waybill.cargo,
+    amount: waybillInvoiceAmount(waybill),
     titleType: titleType.value,
     status: '待开票',
-    applyTime: '2026-06-18 10:30',
+    applyTime: '2026-04-15 10:30',
     invoiceNo: '',
-    waybillCount: settlement.waybillCount,
     rejectReason: '',
     title: titleType.value === '企业'
       ? { name: form.company, taxNo: form.taxNo, email: form.email, address: form.address, phone: form.phone, bank: form.bank, account: form.account }
       : { name: form.personName, email: form.email, phone: form.personPhone },
-    timeline: [{ time: '06-18 10:30', title: '提交申请', source: '货主提交', detail: '已提交开票信息，等待平台受理。' }],
+    timeline: [{ time: '04-15 10:30', title: '提交申请', source: '货主提交', detail: '已提交开票信息，等待平台受理。' }],
   }))
-  records.value = [...newRecords, ...records.value]
-  /* 提交后这些结算单移出可开票列表，避免重复申请 */
-  const appliedIds = new Set(applySettlements.value.map(s => s.id))
-  selectedPlan.value = {
-    ...selectedPlan.value,
-    settlements: selectedPlan.value.settlements.filter(s => !appliedIds.has(s.id)),
-  }
+  records.unshift(...newRecords)
+  /* 开票资格直接由运单和申请记录推导，不维护第二份可开票列表。 */
   selectedIds.value = []
   activePlan.value = null
   view.value = 'record'
-  notice.value = `已提交 ${newRecords.length} 张开票申请，由承接平台核对后逐张开具`
+  notice.value = `已提交 ${newRecords.length} 张运单开票申请，由承接平台分别处理`
 }
 </script>
 
@@ -602,7 +598,7 @@ function submitApply() {
 .cargo-freight p{margin:2px 0 0;font-size:16px;font-weight:700;color:#252b3a}
 .cargo-freight i{margin-left:2px;font-size:11px;font-style:normal;font-weight:400;color:#5b6c8a}
 
-/* ===== 白色面板：可开票结算单 —— flex 自然跟随上方 ===== */
+/* ===== 白色面板：可开票运单 —— flex 自然跟随上方 ===== */
 .panel{position:relative;flex:1;min-height:0;margin-top:14px;z-index:2;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.8) 0%,#EEF0F5 100%);border-radius:12px 12px 0 0;padding:14px 12px 0;box-shadow:inset 0 2px 0 #fff}
 .panel-title{margin:0 0 8px;padding:0 13px;font-size:16px;line-height:22px;font-weight:600;color:#333;letter-spacing:.5px}
 .panel-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:0 4px 12px}
@@ -714,6 +710,7 @@ function submitApply() {
 .record-name{margin:0;font-size:16px;line-height:16px;font-weight:700;color:#2A2F3B}
 .record-amount{flex-shrink:0;font-family:'Douyin Sans','PingFang SC',sans-serif;font-size:16px;line-height:17px;font-weight:700;color:#333;white-space:nowrap}
 .record-amount i{font-size:14px;font-style:normal;font-weight:700}
+.record-waybill{margin:8px 0 0;font-size:11px;color:#8a91a1}
 .record-foot{display:flex;align-items:center;gap:8px;margin-top:16px}
 .record-state{display:inline-flex;align-items:center;gap:4px;font-size:12px;line-height:12px;font-weight:700}
 .record-state .dot{width:4px;height:4px;border-radius:50%;background:currentColor}

@@ -15,7 +15,7 @@
       <section class="wallet-balance-card" aria-label="账户资金概览">
         <div class="wallet-balance-main">
           <div><small>可提现余额</small><strong><em>¥</em>{{ account.balance }}</strong></div>
-          <button type="button" @click="notify('提现页将在后续二级页完善')">提现</button>
+          <button type="button" @click="emit('open-cash')">提现</button>
         </div>
         <div class="wallet-balance-meta">
           <span>本月入账<b>¥{{ account.monthIncome }}</b></span>
@@ -23,6 +23,17 @@
           <span>提现中<b>¥{{ account.withdrawing }}</b></span>
         </div>
       </section>
+
+      <!-- 银行卡独立成行：它是账户配置，不是资金数字，不放进余额卡；
+           多卡用「张数 + 默认卡」表达，不逐个列卡号（明细在管理页） -->
+      <button type="button" class="wallet-bank-entry" @click="emit('open-cash-cards')">
+        <span class="wallet-bank-icon"><van-icon name="bank-o" /></span>
+        <span class="wallet-bank-content">
+          <strong>银行卡</strong>
+          <small>{{ cardSummary }}</small>
+        </span>
+        <van-icon name="arrow" />
+      </button>
 
       <nav class="wallet-tabs" aria-label="资金明细类型">
         <button type="button" :class="{ active: activeTab === 'flow' }" @click="activeTab = 'flow'">资金流水</button>
@@ -69,24 +80,35 @@
 import { computed, ref } from 'vue'
 import { showToast } from 'vant'
 import { driverAccount, pendingPaymentWaybills, walletTransactionGroups } from './mock-data.js'
-import { driverFlowStore } from './driver-flow-store.js'
+import { driverBankCards, driverFlowStore, withdrawableBalance } from './driver-flow-store.js'
 import './driver-wallet.css'
 
-const emit = defineEmits(['back', 'open-waybill'])
+const emit = defineEmits(['back', 'open-waybill', 'open-cash', 'open-cash-cards'])
 const activeTab = ref('flow')
 const notify = (message) => showToast(message)
 
-// 静态基准数据 + 闭环增量：本次会话接单并走到结算的运单实时反映到账户与流水。
+// 银行卡摘要：条数 + 默认卡尾号。多卡时不逐张列卡号——钱包页只需说明
+// 「有几张、提现打到哪张」，卡片明细在银行卡管理页看。
+const cardSummary = computed(() => {
+  if (driverBankCards.length === 0) return '未绑定 · 点击绑定后即可提现'
+  const defaultCard = driverBankCards.find((item) => item.isDefault)
+  const countText = `${driverBankCards.length}张`
+  return defaultCard ? `${countText} · 默认尾号${defaultCard.cardTail}` : countText
+})
+
+// 静态基准数据 + 闭环增量：本次会话接单并走到结算的运单实时反映到账户与流水；
+// 提现链路的余额扣减与「提现中」增量一并计入，保证钱包页与「我的」账户口径一致。
 const account = computed(() => {
   const income = driverFlowStore.sessionIncome
   const pendingAmount = driverFlowStore.waybills
     .filter((wb) => wb.status === 'pending')
     .reduce((sum, wb) => sum + (Number(wb.freightAmount) || 0), 0)
   return {
-    balance: (Number(driverAccount.balance.replace(/,/g, '')) + income).toLocaleString('zh-CN', { minimumFractionDigits: 2 }),
+    // 余额取 store 的统一口径：基准 + 入账 - 已提现
+    balance: withdrawableBalance().toLocaleString('zh-CN', { minimumFractionDigits: 2 }),
     monthIncome: (Number(driverAccount.monthIncome.replace(/,/g, '')) + income).toLocaleString('zh-CN'),
     monthWithdrawal: driverAccount.monthWithdrawal,
-    withdrawing: driverAccount.withdrawing,
+    withdrawing: (Number(driverAccount.withdrawing.replace(/,/g, '')) + (driverFlowStore.sessionWithdrawing || 0)).toLocaleString('zh-CN'),
     pendingEntry: (Number(driverAccount.pendingEntry.replace(/,/g, '')) + pendingAmount).toLocaleString('zh-CN'),
   }
 })

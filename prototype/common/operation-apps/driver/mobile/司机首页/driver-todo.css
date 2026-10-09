@@ -1,0 +1,51 @@
+.driver-todo-page,
+.driver-todo-page * { box-sizing: border-box; }
+
+.driver-todo-page {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eef0f5;
+  color: #30394a;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.driver-todo-page .todo-status { z-index: 20; background: rgba(238, 240, 245, .96); backdrop-filter: blur(8px); }
+.todo-scroll { position: absolute; inset: 38px 0 0; overflow-x: hidden; overflow-y: auto; padding-bottom: 28px; scrollbar-width: none; }
+.todo-scroll::-webkit-scrollbar { display: none; }
+
+.todo-header { display: grid; height: 48px; padding: 0 15px; background: #eef0f5; align-items: center; grid-template-columns: 32px 1fr 32px; }
+.driver-todo-page .todo-header button { display: grid; width: 30px; height: 30px; padding: 0; border: 0; background: transparent; color: #333; font-size: 18px; place-items: center; }
+.todo-header h1 { margin: 0; color: #333; font-size: 17px; line-height: 24px; text-align: center; }
+
+.todo-intro { margin: 8px 15px 0; color: #6d7482; font-size: 11px; font-weight: 500; line-height: 17px; }
+
+.todo-group { margin: 12px 15px 0; padding: 14px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(34, 44, 79, .05); }
+.todo-group-heading { display: flex; margin-bottom: 4px; align-items: baseline; justify-content: space-between; }
+.todo-group-heading h2 { margin: 0; color: #30343b; font-size: 15px; font-weight: 700; line-height: 21px; }
+.todo-group-heading small { color: #8a91a1; font-size: 10px; }
+
+/* 待办行：整行可点，右侧给出动作文案，司机不必猜点了会发生什么 */
+.driver-todo-page .todo-row { display: flex; width: 100%; min-height: 62px; padding: 12px 0; border: 0; border-top: 1px solid #f1f4f8; background: transparent; color: #30394a; align-items: center; text-align: left; }
+.todo-row .todo-icon { display: grid; width: 32px; height: 32px; margin-right: 10px; border-radius: 8px; font-size: 17px; font-style: normal; flex: 0 0 auto; place-items: center; }
+.todo-icon.tone-warning { background: #fff3e8; color: #ef7f35; }
+.todo-icon.tone-danger { background: #ffeeeb; color: #d94f3d; }
+.todo-icon.tone-info { background: #edf2ff; color: #3a65ff; }
+.todo-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
+.todo-content strong { color: #30394a; font-size: 14px; line-height: 20px; }
+.todo-content small { color: #8a91a1; font-size: 11px; line-height: 16px; }
+.todo-action { display: flex; margin-left: 8px; color: #3a65ff; font-size: 11px; font-style: normal; font-weight: 500; align-items: center; gap: 2px; white-space: nowrap; }
+.todo-action .van-icon { font-size: 10px; }
+
+/* 空态：说明状态而不是只留一片空白 */
+.todo-empty { margin: 60px 15px 0; text-align: center; }
+.todo-empty > .van-icon { color: #c3d0e6; font-size: 40px; }
+.todo-empty p { margin: 14px 0 0; color: #59677e; font-size: 14px; font-weight: 500; }
+.todo-empty small { display: block; margin-top: 7px; color: #9aa3b1; font-size: 11px; line-height: 17px; }
+
+/* 已处理归档：弱化展示，仅证明事项已完成 */
+.todo-done { margin: 12px 15px 0; padding: 14px; border: 1px solid #edf0f4; border-radius: 8px; background: #f7f9fd; }
+.todo-done .todo-group-heading h2 { color: #59677e; }
+.todo-done-row { display: flex; min-height: 40px; border-top: 1px solid #eef0f4; color: #8a91a1; font-size: 12px; align-items: center; gap: 7px; }
+.todo-done-row .van-icon { color: #17ae7c; font-size: 14px; }

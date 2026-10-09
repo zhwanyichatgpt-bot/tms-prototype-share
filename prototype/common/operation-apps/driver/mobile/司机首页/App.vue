@@ -176,7 +176,14 @@
           <!-- 任务指派：调度派给本司机的运输任务。只展示待接收，
                接单即知晓确认并回写调度，随后离开本列表进入跑货装卸货链路 -->
           <template v-else>
-            <AssignedTaskList :tasks="pendingTasks" @open="openTaskDetail" @accept="openTaskAcceptOrder" />
+            <AssignedTaskList
+              :tasks="visibleTasks"
+              :active-type="taskTypeTab"
+              @open="openTaskDetail"
+              @accept="openTaskAcceptOrder"
+              @expired="notifyTaskExpired"
+              @change-type="taskTypeTab = $event"
+            />
           </template>
         </section>
       </main>
@@ -260,12 +267,41 @@
         v-else-if="currentPage === 'wallet'"
         @back="returnToMinePage"
         @open-waybill="openWaybillDetail"
+        @open-cash="currentPage = 'cash'"
+        @open-cash-cards="openCashCards"
+      />
+
+      <DriverCashPage
+        v-else-if="currentPage === 'cash'"
+        :initial-view="cashInitialView"
+        @back="returnToMinePage"
+      />
+
+      <DriverProfilePage
+        v-else-if="currentPage === 'profile'"
+        :focus-key="profileFocusKey"
+        @back="returnToMinePage"
+      />
+
+      <DriverTodoPage
+        v-else-if="currentPage === 'todo'"
+        @back="returnToMinePage"
+        @open-profile="openProfileFromTodo"
+      />
+
+      <DriverOrderSettingPage
+        v-else-if="currentPage === 'orderSetting'"
+        @back="returnToMinePage"
       />
 
       <DriverMinePage
         v-else-if="currentPage === 'mine'"
         @navigate="navigateDriverPage"
         @open-wallet="currentPage = 'wallet'"
+        @open-profile="openProfile"
+        @open-cash="openCashWithdraw"
+        @open-todo="currentPage = 'todo'"
+        @open-order-setting="currentPage = 'orderSetting'"
       />
 
       <DriverWorkPage
@@ -306,6 +342,8 @@ import {
   acceptCargo,
   acceptTask,
   assignedTasks,
+  assignedTasksByType,
+  isTaskOpen,
   submitLoading,
   submitUnloading,
   confirmReceipt,
@@ -317,6 +355,10 @@ import DriverWorkPage from './DriverWorkPage.vue'
 import DriverWaybillDetail from './DriverWaybillDetail.vue'
 import DriverMinePage from './DriverMinePage.vue'
 import DriverWalletPage from './DriverWalletPage.vue'
+import DriverCashPage from './DriverCashPage.vue'
+import DriverProfilePage from './DriverProfilePage.vue'
+import DriverTodoPage from './DriverTodoPage.vue'
+import DriverOrderSettingPage from './DriverOrderSettingPage.vue'
 import DriverCargoDetail from './DriverCargoDetail.vue'
 import DriverAcceptOrder from './DriverAcceptOrder.vue'
 import DriverTaskAcceptOrder from './DriverTaskAcceptOrder.vue'
@@ -388,6 +430,8 @@ const selectedCargoDetail = ref(null)
 const selectedTask = ref(null)
 const selectedWaybill = ref(null)
 const detailReturnPage = ref('order')
+const cashInitialView = ref('withdraw')
+const profileFocusKey = ref('')
 const pullDistance = ref(0)
 const isPulling = ref(false)
 let pullPointerId = null
@@ -402,8 +446,9 @@ const pullDragSlop = 8
 const cargoSources = computed(() => activeCargos())
 
 // 指派任务列表同样由 store 派生：接单后任务 status 变化即自动离开列表，
-// 页面不缓存一份自己的任务数组
-const pendingTasks = computed(() => assignedTasks())
+// 页面不缓存一份自己的任务数组。按类型页签分组，页签内待接单在前、已过期在后。
+const taskTypeTab = ref('single')
+const visibleTasks = computed(() => assignedTasksByType(taskTypeTab.value))
 
 // 列表页相对时间由单一数据源 listedAt 派生，不再与详情页各写一份——
 // 否则「X分钟前发布」（相对）与「上架时间 07:52:05」（绝对）两套文案会同义不同值。
@@ -516,6 +561,29 @@ function returnToMinePage() {
   activeBottomTab.value = 'mine'
 }
 
+// 银行卡管理直接进入「银行卡管理」视图；提现按钮进入「提现」视图，
+// 两者共用 DriverCashPage，入口不同只会影响默认初始视图。
+function openCashCards() {
+  cashInitialView.value = 'cards'
+  currentPage.value = 'cash'
+}
+
+function openCashWithdraw() {
+  cashInitialView.value = 'withdraw'
+  currentPage.value = 'cash'
+}
+
+// 资料页入口：从「我的」进入不带聚焦项，从待办进入时聚焦到对应证件
+function openProfile() {
+  profileFocusKey.value = ''
+  currentPage.value = 'profile'
+}
+
+function openProfileFromTodo(focusKey) {
+  profileFocusKey.value = focusKey || ''
+  currentPage.value = 'profile'
+}
+
 // ============ 运输闭环：货源 → 接单 → 装货 → 运输 → 卸货 → 核算 → 打款 ============
 function openCargoDetail(cargo) {
   selectedCargoDetail.value = cargo
@@ -543,6 +611,11 @@ function confirmAcceptOrder(payload) {
 function openTaskDetail(task) {
   selectedTask.value = task
   currentPage.value = 'taskDetail'
+}
+// 已过期任务不再提供接单入口：点到时明确告知原因，司机据此反馈调度重新指派。
+// 直接静默移除会让司机到场后「连单子都没有了」，不知道自己漏了哪条。
+function notifyTaskExpired(task) {
+  notify(`${task.taskNo} 已过装货时间，无法接单，请联系调度重新指派`)
 }
 function returnFromTaskDetail() {
   currentPage.value = 'home'

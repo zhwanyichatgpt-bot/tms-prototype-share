@@ -1,5 +1,5 @@
 <template>
-  <section class="shipper-account-page" aria-label="我的账户">
+  <section class="shipper-account-page" :data-annotation-container="sheet ? null : 'modal'" :data-annotation-content="sheet ? null : 'modal'" aria-label="我的账户">
     <div class="account-status-bar">
       <span>9:41</span>
       <span class="account-status-icons">
@@ -19,7 +19,7 @@
     </header>
 
     <main v-if="view === 'home'" ref="scrollEl" class="account-scroll">
-      <section class="asset-card">
+      <section class="asset-card" :class="{ 'annot-zhiyunShipperHome-rule-account-two-levels': !sheet }">
         <div class="balance-row">
           <div>
             <small>可用余额（元）</small>
@@ -127,8 +127,8 @@
       <p class="manage-note">更换提现账户或修改支付密码时，需要先完成账户身份验证。</p>
     </main>
 
-    <div v-if="sheet" class="sheet-mask" @click.self="closeSheet">
-      <section class="account-sheet">
+    <div v-if="sheet" class="sheet-mask" data-annotation-container="drawer" @click.self="closeSheet">
+      <section class="account-sheet" data-annotation-content="drawer">
         <header>
           <h2>{{ sheetTitle }}</h2>
           <button type="button" aria-label="关闭" @click="closeSheet">×</button>
@@ -155,7 +155,7 @@
             <strong>¥{{ account.frozen }}</strong>
             <span>付款处理中</span>
           </div>
-          <div class="sheet-summary"><span>关联结算单</span><b>JS20260917002</b></div>
+          <div class="sheet-summary"><span>关联运单</span><b>YD20260917002</b></div>
           <div class="sheet-summary"><span>冻结时间</span><b>09-17 16:20</b></div>
           <div class="sheet-summary"><span>当前说明</span><b>等待付款结果更新</b></div>
           <button class="sheet-secondary" type="button" @click="closeSheet">我知道了</button>
@@ -185,7 +185,7 @@
             <span>{{ activeTransaction.status }}</span>
           </div>
           <template v-if="activeTransaction.platform">
-            <section class="payment-chain">
+            <section class="payment-chain annot-zhiyunShipperHome-rule-account-single-waybill-flow">
               <div class="chain-row">
                 <span class="chain-icon"><van-icon name="cluster-o" /></span>
                 <div><small>承接平台</small><strong>{{ activeTransaction.platform }}</strong></div>
@@ -198,7 +198,7 @@
               <div class="chain-line"></div>
               <div class="chain-row">
                 <span class="chain-icon"><van-icon name="description" /></span>
-                <div><small>关联结算单</small><strong>{{ activeTransaction.reference }}</strong><p>{{ activeTransaction.waybillCount }}笔运单合并结算</p></div>
+                <div><small>关联运单</small><strong>{{ activeTransaction.reference }}</strong><p>共 {{ activeTransaction.waybillCount }} 笔</p></div>
               </div>
               <div class="chain-line"></div>
               <div class="chain-row">
@@ -287,30 +287,25 @@ const flows = [
     payee: '福建某运输公司',
     route: '福州 → 天津 · 煤炭',
     cargoNo: '货源 HY20260901001',
-    waybillCount: 6,
+    waybillCount: 1,
     waybills: [
       { id: 'YD20260901001', driver: '李师傅', plate: '闽A·12345', amount: '¥620.00' },
-      { id: 'YD20260901002', driver: '王师傅', plate: '闽A·53821', amount: '¥580.00' },
-      { id: 'YD20260901003', driver: '张师傅', plate: '闽C·80632', amount: '¥610.00' },
-      { id: 'YD20260901004', driver: '陈师傅', plate: '闽A·76309', amount: '¥590.00' },
-      { id: 'YD20260901005', driver: '周师傅', plate: '闽D·22186', amount: '¥600.00' },
-      { id: 'YD20260901006', driver: '林师傅', plate: '闽A·90217', amount: '¥600.00' },
     ],
     summary: '福建某运输公司',
-    amount: '-¥3,600.00',
+    amount: '-¥620.00',
     status: '支付成功',
     time: '09-18 14:32',
-    reference: '结算单 JS20260918001',
+    reference: '运单 YD20260901001',
     invoice: {
       status: '已开票',
       type: '增值税电子普通发票',
-      amount: '¥3,600.00',
+      amount: '¥620.00',
       no: '24372000000918003600',
       title: '福建飞航娱乐有限公司',
       time: '09-18 16:08',
     },
   },
-  { id: 'f2', category: 'freeze', type: 'freeze', icon: 'lock', title: '资金冻结', summary: '结算单付款处理中', amount: '-¥5,000.00', status: '冻结中', time: '09-17 16:20', reference: 'JS20260917002' },
+  { id: 'f2', category: 'freeze', type: 'freeze', icon: 'lock', title: '资金冻结', summary: '运单付款处理中', amount: '-¥5,000.00', status: '冻结中', time: '09-17 16:20', reference: 'YD20260917002' },
   { id: 'f3', category: 'income', type: 'income', icon: 'plus', title: '账户充值', summary: '企业网银充值', amount: '+¥10,000.00', status: '充值成功', time: '09-16 10:08', reference: 'CZ20260916001' },
   { id: 'f4', category: 'income', type: 'refund', icon: 'replay', title: '运费退款', summary: '付款关闭后退回账户', amount: '+¥680.00', status: '已退回', time: '09-15 18:46', reference: 'TK20260915001' },
   { id: 'f5', category: 'freeze', type: 'unfreeze', icon: 'unlock', title: '资金解冻', summary: '付款申请关闭', amount: '+¥2,000.00', status: '已解冻', time: '09-14 09:25', reference: 'JD20260914001' },

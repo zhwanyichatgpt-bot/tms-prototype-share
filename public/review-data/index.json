@@ -2,6 +2,21 @@
   "schemaVersion": 1,
   "versions": [
     {
+      "id": "TMS-COMMON-202609-01",
+      "name": "至简智运移动端研发评审版",
+      "scope": "common",
+      "projectId": null,
+      "baseVersionId": null,
+      "targetReleaseDate": "2026-10-30",
+      "status": "in_progress",
+      "revision": "R5",
+      "publishedAt": "2026-09-23T03:21:13.162Z",
+      "lastPublishedAt": "2026-09-23T03:21:13.162Z",
+      "completedAt": null,
+      "createdAt": "2026-09-23T03:21:13.148Z",
+      "updatedAt": "2026-10-09T05:59:23.935Z"
+    },
+    {
       "id": "TMS-COMMON-202609-02",
       "name": "融合TMS1.0.1.16版本",
       "scope": "common",
@@ -15,21 +30,6 @@
       "completedAt": null,
       "createdAt": "2026-09-24T01:48:11.002Z",
       "updatedAt": "2026-09-29T08:53:30.876Z"
-    },
-    {
-      "id": "TMS-COMMON-202609-01",
-      "name": "至简智运移动端研发评审版",
-      "scope": "common",
-      "projectId": null,
-      "baseVersionId": null,
-      "targetReleaseDate": "2026-10-30",
-      "status": "in_progress",
-      "revision": "R1",
-      "publishedAt": "2026-09-23T03:21:13.162Z",
-      "lastPublishedAt": "2026-09-23T03:21:13.162Z",
-      "completedAt": null,
-      "createdAt": "2026-09-23T03:21:13.148Z",
-      "updatedAt": "2026-09-23T03:37:54.912Z"
     },
     {
       "id": "TMS-BEIGANG-202608-02",
@@ -77,5 +77,5 @@
       "updatedAt": "2026-08-22T09:09:20.278Z"
     }
   ],
-  "updatedAt": "2026-09-29T08:53:30.876Z"
+  "updatedAt": "2026-10-09T05:59:23.935Z"
 }

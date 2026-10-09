@@ -1,5 +1,5 @@
 <template>
-  <section class="title-page" aria-label="开票抬头管理">
+  <section class="title-page" data-annotation-container="modal" data-annotation-content="modal" aria-label="开票抬头管理">
     <div class="status-bar">
       <span class="status-time">9:41</span>
       <span class="status-icons">

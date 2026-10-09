@@ -68,21 +68,9 @@
   line-height: 24px;
 }
 
-.driver-mine-capsule {
+/* 资料卡整卡可点，进入「我的资料」；按钮需要显式清掉浏览器默认内边距与字体 */
+.driver-mine-page .driver-profile-card {
   display: block;
-  width: 78px;
-  height: 28.5px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-.driver-mine-capsule img {
-  display: block;
-  width: 78px;
-  height: 28.5px;
-}
-
-.driver-profile-card {
   position: absolute;
   z-index: 2;
   top: 91px;
@@ -90,10 +78,15 @@
   width: 343px;
   height: 103px;
   overflow: hidden;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, .92);
   border-radius: 14px;
   background: linear-gradient(132deg, rgba(247, 249, 255, .97), rgba(255, 255, 255, .92));
   box-shadow: 0 4px 14px rgba(104, 125, 164, .14);
+  color: #30343b;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .driver-profile-watermark {
@@ -159,9 +152,7 @@
 
 .driver-section-title { display: flex; align-items: center; justify-content: space-between; }
 .driver-mine-page .driver-section-title h2,
-.driver-mine-page .driver-management-card h2,
-.driver-mine-page .driver-operating-service-card h2,
-.driver-mine-page .driver-support-card h2 {
+.driver-mine-page .driver-operating-service-card h2 {
   margin: 0;
   color: #30343b;
   font-size: var(--mine-section-title-size);
@@ -185,61 +176,46 @@
   position: relative;
   overflow: hidden;
   min-height: 126px;
-  padding: 14px 14px 12px;
-  background: linear-gradient(135deg, #edf4ff 0%, #fff 72%) !important;
+  padding: 15px 14px 13px;
+  /* 设计稿为蓝色实心渐变卡，与下方白卡形成主次对比 */
+  background: linear-gradient(126deg, #4a76f5 0%, #5b86ff 46%, #6f9bff 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 18px rgba(74, 118, 245, .28) !important;
 }
 .driver-account-card::after {
   content: "¥";
   position: absolute;
-  top: 6px;
-  right: 20px;
-  color: rgba(69, 113, 241, .055);
-  font-size: 98px;
+  top: 2px;
+  right: 18px;
+  color: rgba(255, 255, 255, .13);
+  font-size: 104px;
   font-weight: 800;
   line-height: 1;
 }
 .driver-account-card > * { position: relative; z-index: 1; }
-.driver-account-main { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 11px; }
-.driver-account-main > div { display: flex; flex-direction: column; gap: 2px; }
-.driver-account-main small { color: #59677e; font-size: var(--mine-label-size); font-weight: 500; }
-.driver-account-main strong { color: #2e63ea; font-size: 27px; font-weight: 700; line-height: 32px; }
-.driver-account-main em { margin-right: 3px; font-size: 14px; font-style: normal; }
-.driver-mine-page .withdraw-button {
-  min-width: 66px;
-  height: 30px;
-  padding: 0 17px;
+.driver-account-head { display: flex; align-items: center; justify-content: space-between; }
+.driver-account-head > small { color: rgba(255, 255, 255, .82); font-size: var(--mine-label-size); font-weight: 500; }
+.driver-mine-page .driver-account-head .withdraw-button {
+  min-width: 62px;
+  height: 28px;
+  padding: 0 15px;
   border: 0;
-  border-radius: 15px;
-  background: #4f72f4;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .22);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
   line-height: 17px;
-  box-shadow: 0 4px 10px rgba(79, 114, 244, .22);
+  box-shadow: none;
 }
-.driver-account-meta { display: grid; grid-template-columns: 1.08fr 1fr .92fr; align-items: center; margin-top: 10px; padding-top: 9px; border-top: 1px solid #e8eef8; color: #647086; font-size: var(--mine-caption-size); font-weight: 500; }
-.driver-account-meta span { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
-.driver-account-meta span + span { padding-left: 12px; border-left: 1px solid #e2e8f3; }
-.driver-account-meta b { color: #344157; font-size: 12px; font-weight: 700; white-space: nowrap; }
-.driver-mine-page .driver-account-pending {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  width: 100%;
-  margin-top: 9px;
-  padding: 8px 0 0;
-  border: 0;
-  border-top: 1px solid #e8eef8;
-  background: transparent;
-  color: #526078;
-  align-items: center;
-  text-align: left;
-  gap: 7px;
-}
-.driver-account-pending > span { display: flex; align-items: center; color: #4f5d73; font-size: 10px; font-weight: 500; gap: 4px; }
-.driver-account-pending > span .van-icon { color: #f08a35; font-size: 12px; }
-.driver-account-pending > span b { color: #f07828; font-size: 12px; }
-.driver-account-pending > small { overflow: hidden; color: #7b8698; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-.driver-account-pending > .van-icon { color: #7e899b; font-size: 11px; }
+.driver-account-balance { display: block; margin-top: 7px; color: #fff; font-size: 29px; font-weight: 700; line-height: 35px; }
+.driver-account-balance em { margin-right: 3px; font-size: 15px; font-style: normal; }
+/* 四项指标等宽平铺；分隔线用半透明白，避免在白卡上的灰色边框穿透渐变底 */
+.driver-account-meta { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; margin-top: 13px; padding-top: 11px; border-top: 1px solid rgba(255, 255, 255, .22); }
+.driver-account-meta span { display: flex; min-width: 0; padding-left: 10px; border-left: 1px solid rgba(255, 255, 255, .22); flex-direction: column; gap: 4px; }
+.driver-account-meta span:first-child { padding-left: 0; border-left: 0; }
+.driver-account-meta small { color: rgba(255, 255, 255, .75); font-size: var(--mine-caption-size); font-weight: 500; }
+.driver-account-meta b { color: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; }
 
 .driver-business-card { padding: 14px; }
 .driver-business-main { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 10px; }
@@ -247,41 +223,21 @@
 .driver-business-main small { color: #59677e; font-size: var(--mine-label-size); font-weight: 500; line-height: 15px; }
 .driver-business-main strong { color: #2e63ea; font-size: 24px; line-height: 29px; }
 .driver-business-main strong em { margin-right: 3px; font-size: 13px; font-style: normal; }
-.driver-business-badges { display: flex; margin-bottom: 2px; align-items: flex-end; flex-direction: column; gap: 5px; }
-.driver-business-badges > span { padding: 4px 8px; border-radius: 10px; background: #edf3ff; color: #3e6de8; font-size: 10px; font-weight: 500; }
-.driver-business-badges small { color: #69758a; font-size: 10px; font-weight: 500; }
-.driver-business-badges small b { margin-left: 3px; color: #128f68; font-size: 10px; }
+.driver-business-compare { margin-top: 3px; color: #69758a; font-size: 10px; font-weight: 500; }
+.driver-business-compare b { margin-left: 2px; color: #128f68; font-weight: 700; }
+/* 收入走势：固定 120x44 的 viewBox 按容器宽度拉伸，只表达趋势不标刻度 */
+.driver-business-trend { width: 116px; height: 44px; margin-bottom: 2px; flex: 0 0 auto; }
 .driver-business-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 11px; padding-top: 10px; border-top: 1px solid #edf0f5; }
 .driver-business-stats > div { display: flex; min-width: 0; padding: 0 7px; border-left: 1px solid #edf0f5; flex-direction: column; }
 .driver-business-stats > div:first-child { padding-left: 0; border-left: 0; }
 .driver-business-stats small { overflow: hidden; color: #657187; font-size: 10px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .driver-business-stats strong { margin-top: 4px; color: #2c3441; font-size: 14px; line-height: 18px; white-space: nowrap; }
 .driver-business-stats em { margin-left: 2px; color: #596579; font-size: 9px; font-style: normal; font-weight: 500; }
-.driver-mine-page .driver-ai-insight {
-  display: flex;
-  width: 100%;
-  margin-top: 11px;
-  padding: 10px;
-  border: 1px solid #dce9ff;
-  border-radius: 10px;
-  background: linear-gradient(115deg, #f0f6ff, #f5fbff);
-  color: #2c3441;
-  align-items: center;
-  text-align: left;
-}
-.driver-ai-insight-icon { display: grid; width: 29px; height: 29px; margin-right: 8px; border-radius: 9px; background: linear-gradient(145deg, #4776f5, #64a6ff); color: #fff; font-size: 16px; flex: 0 0 auto; place-items: center; }
-.driver-ai-insight-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
-.driver-ai-insight-content > span { display: flex; min-width: 0; align-items: center; gap: 6px; }
-.driver-ai-insight-content b { font-size: 11px; line-height: 15px; }
-.driver-ai-insight-content em { padding: 2px 5px; border-radius: 7px; background: #e3f8f1; color: #117f60; font-size: 9px; font-style: normal; font-weight: 500; white-space: nowrap; }
-.driver-ai-insight-content strong { overflow: hidden; color: #526078; font-size: 10px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
-.driver-ai-insight > .van-icon { margin-left: 6px; color: #687895; font-size: 12px; }
-.driver-mine-page .driver-frequent-route { display: flex; width: 100%; min-height: 35px; margin-top: 10px; padding: 9px 0 0; border: 0; border-top: 1px solid #edf0f5; background: transparent; color: #647086; align-items: center; text-align: left; }
-.driver-frequent-route span { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; }
-.driver-frequent-route span .van-icon { color: #4776f5; font-size: 12px; }
-.driver-frequent-route strong { margin-left: 9px; color: #303a4b; font-size: 12px; }
-.driver-frequent-route small { margin-left: auto; color: #657187; font-size: 10px; font-weight: 500; }
-.driver-frequent-route > .van-icon:last-child { margin-left: 6px; color: #9ca5b2; font-size: 10px; }
+
+/* 一句话经营洞察：点击进入小简AI查看完整测算 */
+.driver-mine-page .driver-business-insight { display: flex; width: 100%; margin-top: 11px; padding: 10px; border: 1px solid #dce9ff; border-radius: 10px; background: linear-gradient(115deg, #f0f6ff, #f5fbff); color: #4a5568; align-items: center; text-align: left; gap: 7px; }
+.driver-mine-page .driver-business-insight > .van-icon { color: #4776f5; font-size: 15px; flex: 0 0 auto; }
+.driver-business-insight > span { display: -webkit-box; overflow: hidden; color: #526078; font-size: 11px; line-height: 16px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 
 .driver-ai-overlay { position: absolute; z-index: 80; inset: 0; display: flex; background: rgba(18, 29, 50, .38); align-items: flex-end; }
 .driver-ai-panel { width: 100%; max-height: 79%; overflow-y: auto; padding: 8px 15px 17px; border-radius: 20px 20px 0 0; background: #f6f8fc; box-shadow: 0 -8px 28px rgba(26, 50, 92, .18); }
@@ -325,61 +281,19 @@
 .driver-mine-page .driver-ai-panel-footer button { height: 38px; border: 0; border-radius: 19px; background: #e9edf4; color: #4f5d73; font-size: 12px; font-weight: 600; }
 .driver-mine-page .driver-ai-panel-footer button:last-child { background: #4776f5; color: #fff; box-shadow: 0 5px 12px rgba(71, 118, 245, .24); }
 
-.driver-todo-card { padding: 0 14px; background: linear-gradient(100deg, #fff8ef, #fff) !important; }
-.driver-mine-page .driver-todo-summary { display: flex; width: 100%; min-height: 58px; padding: 0; border: 0; background: transparent; color: #3d485b; align-items: center; text-align: left; }
-.driver-todo-summary-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px; }
-.driver-todo-summary-content strong { color: #343d4d; font-size: 13px; line-height: 18px; }
-.driver-todo-summary-content small { overflow: hidden; color: #68758a; font-size: 10px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
-.driver-todo-summary > .van-icon:last-child { margin-left: 8px; color: #8e98a8; font-size: 12px; }
-.driver-mine-page .driver-todo-row {
-  display: flex;
-  width: 100%;
-  min-height: 43px;
-  padding: 0;
-  border: 0;
-  border-top: 1px solid #eff1f5;
-  background: transparent;
-  color: #465166;
-  align-items: center;
-  text-align: left;
-  font-size: var(--mine-body-size);
-  font-weight: 400;
-  line-height: 18px;
-}
-.driver-todo-row:first-of-type { margin-top: 9px; }
-.todo-icon { display: grid; width: 25px; height: 25px; margin-right: 9px; border-radius: 7px; place-items: center; }
-.todo-icon.warning { background: #fff1e7; color: #ff7b35; }
-.todo-icon.info { background: #ebf1ff; color: #4776f5; }
-.driver-todo-row > i { width: 6px; height: 6px; margin-left: auto; border-radius: 50%; }
-.driver-todo-row > i.warning { background: #ff7b35; }
-.driver-todo-row > i.info { background: #4776f5; }
-.driver-todo-row > .van-icon:last-child { margin-left: 8px; color: #9ca5b2; font-size: 12px; }
+.driver-operating-service-card { padding: 14px; }
 
-.driver-management-card,
-.driver-operating-service-card,
-.driver-support-card { padding: 14px; }
-.driver-management-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
-.driver-mine-page .driver-management-grid button {
-  display: flex;
-  min-width: 0;
-  min-height: 67px;
-  padding: 10px;
-  border: 0;
-  border-radius: 10px;
-  background: #f7f9fd;
-  color: #303a4b;
-  align-items: center;
-  text-align: left;
-}
-.driver-management-grid button > i { display: grid; width: 32px; height: 32px; margin-right: 9px; border-radius: 9px; font-size: 18px; font-style: normal; flex: 0 0 auto; place-items: center; }
-.driver-management-grid i.blue { background: #edf2ff; color: #4776f5; }
-.driver-management-grid i.green { background: #eaf9f4; color: #17ae7c; }
-.driver-management-grid i.orange { background: #fff2e8; color: #ff853b; }
-.driver-management-grid i.purple { background: #f1efff; color: #7468e9; }
-.driver-management-grid button > span { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
-.driver-management-grid button strong { font-size: 13px; line-height: 18px; }
-.driver-management-grid button small { overflow: hidden; color: #657187; font-size: 10px; font-weight: 500; line-height: 14px; text-overflow: ellipsis; white-space: nowrap; }
-.driver-management-grid button > .van-icon { color: #a0a9b7; font-size: 10px; }
+/* 快捷入口行：四个图标横向平铺，卡片与下方模块同宽 */
+.driver-quick-row { display: grid; padding: 14px 6px; grid-template-columns: repeat(4, 1fr); }
+.driver-mine-page .driver-quick-row button { display: flex; min-width: 0; padding: 0; border: 0; background: transparent; color: #303a4b; align-items: center; flex-direction: column; gap: 7px; }
+.driver-quick-icon { position: relative; display: grid; width: 42px; height: 42px; border-radius: 13px; font-size: 21px; place-items: center; }
+.driver-quick-icon.blue { background: #edf2ff; color: #4776f5; }
+.driver-quick-icon.purple { background: #f1efff; color: #7468e9; }
+.driver-quick-icon.orange { background: #fff2e8; color: #ff853b; }
+.driver-quick-icon.green { background: #eaf9f4; color: #17ae7c; }
+.driver-quick-row small { overflow: hidden; max-width: 100%; color: #4a5568; font-size: 11px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+/* 待办数量角标：待办有时效，不露出数量容易被漏掉 */
+.driver-quick-badge { position: absolute; top: -4px; right: -5px; display: grid; min-width: 17px; height: 17px; padding: 0 5px; border: 1.5px solid #fff; border-radius: 9px; background: #f5222d; color: #fff; font-size: 10px; font-style: normal; font-weight: 600; line-height: 1; place-items: center; }
 
 .driver-operating-service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .driver-mine-page .driver-operating-service-grid button {
@@ -405,35 +319,10 @@
 .driver-operating-service-grid button > b { margin-top: 2px; color: #2e63ea; font-size: 19px; line-height: 23px; }
 .driver-operating-service-grid button > em { margin-top: 5px; overflow: hidden; color: #526078; font-size: 10px; font-style: normal; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 
-.driver-support-card {
-  padding: 5px 15px 9px !important;
-  border: 1px solid rgba(255, 255, 255, .9) !important;
-  border-radius: 14px !important;
-  background: rgba(255, 255, 255, .96) !important;
-  box-shadow: 0 4px 14px rgba(104, 125, 164, .08) !important;
-}
-.driver-mine-page .driver-support-card > button {
-  display: flex;
-  width: 100%;
-  min-height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #222c4f;
-  align-items: center;
-  justify-content: space-between;
-  font-size: var(--mine-body-size);
-  font-weight: 400;
-  line-height: 18px;
-}
-.driver-mine-page .driver-support-card > button span { display: flex; align-items: center; gap: 12px; }
-.driver-mine-page .driver-support-card > button span i {
-  display: grid;
-  width: 17px;
-  height: 17px;
-  color: #465574;
-  font-style: normal;
-  place-items: center;
-}
-.driver-mine-page .driver-support-card > button span i .van-icon { font-size: 16px; }
-.driver-mine-page .driver-support-card > button > .van-icon { color: #465574; font-size: 11px; }
+/* 其他：设计稿为横排图标，无箭头，不逐项做列表行 */
+.driver-support-card { padding: 14px 8px 16px !important; border: 1px solid rgba(255, 255, 255, .9) !important; border-radius: 14px !important; background: rgba(255, 255, 255, .96) !important; box-shadow: 0 4px 14px rgba(104, 125, 164, .08) !important; }
+.driver-support-card > h2 { margin: 0 0 4px 6px; color: #30343b; font-size: var(--mine-section-title-size); font-weight: 700; line-height: 21px; }
+.driver-support-grid { display: grid; margin-top: 10px; grid-template-columns: repeat(5, 1fr); }
+.driver-mine-page .driver-support-grid button { display: flex; min-width: 0; padding: 0; border: 0; background: transparent; color: #465574; align-items: center; flex-direction: column; gap: 7px; }
+.driver-support-grid i { display: grid; width: 30px; height: 30px; color: #465574; font-size: 21px; font-style: normal; place-items: center; }
+.driver-support-grid small { overflow: hidden; max-width: 100%; color: #4a5568; font-size: 10px; font-weight: 500; text-align: center; text-overflow: ellipsis; white-space: nowrap; }

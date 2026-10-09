@@ -30,6 +30,16 @@
 .wallet-balance-meta span:first-child { padding-left: 0; border-left: 0; }
 .wallet-balance-meta b { color: #333; font-size: 13px; }
 
+/* 银行卡入口独立成行：与余额卡、页签并列，不塞进余额卡内部。
+   button 即使 display:flex 也按内容收缩，必须显式给宽度才能撑满整行。
+   上下留 12px，与钱包页卡片的既有节奏一致（余额卡 margin-bottom 同为 12px） */
+.driver-wallet-page .wallet-bank-entry { display: flex; width: calc(100% - 30px); min-height: 58px; margin: 12px 15px; padding: 10px 13px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; color: #30394a; align-items: center; box-shadow: 0 2px 8px rgba(34, 44, 79, .04); text-align: left; }
+.wallet-bank-icon { display: grid; width: 32px; height: 32px; margin-right: 10px; border-radius: 8px; background: #edf2ff; color: #4776f5; font-size: 17px; flex: 0 0 auto; place-items: center; }
+.wallet-bank-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
+.wallet-bank-content strong { color: #30394a; font-size: 13px; line-height: 18px; }
+.wallet-bank-content small { overflow: hidden; color: #8a91a1; font-size: 11px; line-height: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.wallet-bank-entry > .van-icon { color: #a0a9b7; font-size: 11px; }
+
 .wallet-tabs { display: grid; margin: 0 15px; border-radius: 8px; background: #fff; grid-template-columns: repeat(2, 1fr); box-shadow: 0 2px 8px rgba(34, 44, 79, .04); }
 .driver-wallet-page .wallet-tabs button { position: relative; height: 40px; border: 0; background: transparent; color: #6d7482; font-size: 12px; font-weight: 500; }
 .driver-wallet-page .wallet-tabs button.active { color: #3a65ff; font-weight: 700; }

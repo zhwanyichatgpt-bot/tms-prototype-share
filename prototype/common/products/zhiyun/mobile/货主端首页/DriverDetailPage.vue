@@ -1,5 +1,5 @@
 <template>
-  <div class="driver-detail" aria-label="司机详情">
+  <div class="driver-detail" aria-label="司机详情" data-annotation-container="modal" data-annotation-content="modal">
     <div class="driver-status">
       <span class="driver-status-time">9:41</span>
       <span class="driver-status-icons">
@@ -19,26 +19,26 @@
 
     <div class="driver-scroll">
       <main class="driver-body">
-        <!-- ① 是谁的车：头像 + 姓名 + 核验来源 + 唯一推荐百分比 -->
+        <!-- ① 司机身份、来源与车辆示意 -->
         <section class="driver-hero">
           <div class="driver-hero-main">
-            <img class="driver-avatar" :src="driver.photo" alt="" />
+            <div class="driver-avatar" aria-hidden="true">🚚</div>
             <div class="driver-hero-text">
               <h2 class="driver-hero-name">{{ driver.name }}</h2>
               <p class="driver-verified">运力来源 · {{ profile.platform }}</p>
             </div>
           </div>
           <div class="driver-hero-foot">
-            <p class="driver-match"><strong>{{ driver.rate }}</strong><span>推荐</span></p>
-            <p class="driver-match-note">{{ profile.matchNote }}</p>
+            <p v-if="matchScore !== null" class="driver-match"><strong>{{ matchScore }}%</strong><span>推荐</span></p>
+            <p class="driver-match-note">{{ matchScore !== null ? '根据线路承运、合作与近期记录计算' : '查看车辆与实际承运记录' }}</p>
           </div>
         </section>
 
         <!-- ② 能干什么活：每项都是「数据 + 结论」，口径对齐发布货源时要填的字段 -->
-        <section class="driver-card">
+        <section class="driver-card annot-zhiyunShipperHome-field-driver-ability">
           <div class="driver-card-head">
             <h3>能干什么活</h3>
-            <span>{{ driver.vehicle }} · {{ driver.load }}</span>
+            <span>车辆与承运经历</span>
           </div>
 
           <ul class="ability">
@@ -46,27 +46,27 @@
               <p class="ability-label">常跑线路</p>
               <p class="ability-value">
                 <span class="ability-route">{{ routeEnds[0] }}<i aria-hidden="true">→</i>{{ routeEnds[1] }}</span>
-                <b>{{ driver.trips }} 趟</b>
+                <b>{{ displayedRoute.trips }} 趟</b>
               </p>
-              <p class="ability-note">{{ profile.routeNote }}</p>
+              <p class="ability-note">近180天该方向的已完成运输</p>
             </li>
             <li>
-              <p class="ability-label">车型与载重</p>
-              <p class="ability-value"><span>{{ driver.vehicle }} · {{ driver.load }}</span></p>
-              <p class="ability-note">{{ profile.vehicleNote }}</p>
+              <p class="ability-label">可用车型与载重</p>
+              <p v-for="(vehicle, index) in driver.vehicles" :key="`${vehicle.type}-${index}`" class="ability-value"><span>{{ vehicle.type }} · {{ vehicle.load }}</span></p>
+              <p class="ability-note">实际执行车辆在司机接单时确认</p>
             </li>
             <li>
               <p class="ability-label">实际承运过</p>
               <p class="ability-value ability-goods">
                 <span v-for="goods in goodsList" :key="goods">{{ goods }}</span>
               </p>
-              <p class="ability-note">{{ profile.goodsNote }}</p>
+              <p class="ability-note">来源平台提供的历史承运记录</p>
             </li>
           </ul>
         </section>
 
         <!-- ③ 跑得怎么样：与车队详情同一组指标，口径一致 -->
-        <section class="driver-card">
+        <section class="driver-card annot-zhiyunShipperHome-rule-driver-records">
           <div class="driver-card-head">
             <h3>跑得怎么样</h3>
             <span>平台记录</span>
@@ -87,20 +87,20 @@
         </section>
 
         <!-- ④ 你和 TA：本平台独有，来源平台不知道货主与司机的重复合作 -->
-        <section class="driver-card">
+        <section v-if="!isNewShipper && driver.coopCount" class="driver-card">
           <div class="driver-card-head">
             <h3>你和 TA</h3>
             <span>本平台记录</span>
           </div>
-          <p v-if="driver.coop" class="driver-coop">
-            <i aria-hidden="true">✓</i>你与 TA {{ driver.coop }}
+          <p class="driver-coop">
+            <i aria-hidden="true">✓</i>与你合作 {{ driver.coopCount }} 次
           </p>
           <p class="driver-last">最近一次合作 {{ profile.lastCoop }}</p>
         </section>
       </main>
     </div>
 
-    <div class="driver-actions">
+    <div class="driver-actions annot-zhiyunShipperHome-action-target-publish">
       <button type="button" class="driver-follow" :aria-pressed="followed" @click="toggleFollow">
         <span aria-hidden="true">{{ followed ? '★' : '☆' }}</span>{{ followed ? '已加入' : '加为常用' }}
       </button>
@@ -115,7 +115,12 @@ import { driverProfiles } from './mock-data.js'
 
 // 以下「核验结果 / 承运记录 / 履约指标」均为原型 Mock：正式接入后由运力来源平台提供。
 // 「你和 TA 的合作」为本平台独有数据。
-const props = defineProps({ driver: { type: Object, required: true } })
+const props = defineProps({
+  driver: { type: Object, required: true },
+  routeName: { type: String, default: '' },
+  matchScore: { type: Number, default: null },
+  isNewShipper: { type: Boolean, default: false },
+})
 const emit = defineEmits(['back', 'target-publish'])
 
 const profile = computed(() => driverProfiles[props.driver.id] || {})
@@ -135,7 +140,9 @@ const toggleFollow = () => {
   } catch { /* 本地存储不可用时保持当前页面状态 */ }
 }
 
-const routeEnds = computed(() => props.driver.route.split('→').map((part) => part.trim()))
+const displayedRoute = computed(() => props.driver.routes.find(route => route.name === props.routeName)
+  || [...props.driver.routes].sort((a, b) => b.trips - a.trips)[0])
+const routeEnds = computed(() => displayedRoute.value.name.split('→').map((part) => part.trim()))
 const goodsList = computed(() => props.driver.goods.split('、'))
 </script>
 
@@ -157,7 +164,7 @@ const goodsList = computed(() => props.driver.goods.split('、'))
 /* 身份区：与车队详情同一套品牌蓝通栏，司机用头像替代企业名 */
 .driver-hero{margin:0 0 10px;padding:16px 20px 20px;background:linear-gradient(158deg,#1c63ff 0%,#0f3fc4 100%);border-radius:0 0 22px 22px;color:#fff}
 .driver-hero-main{display:flex;align-items:center;gap:13px}
-.driver-avatar{width:56px;height:56px;flex:none;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.5)}
+.driver-avatar{width:56px;height:56px;flex:none;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.5);font-size:30px}
 .driver-hero-text{min-width:0}
 .driver-hero-name{margin:0;font-size:22px;line-height:29px;font-weight:700;letter-spacing:.2px}
 .driver-verified{margin:5px 0 0;font-size:11px;color:rgba(255,255,255,.72)}

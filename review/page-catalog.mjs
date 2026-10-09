@@ -169,13 +169,13 @@ export const pageCatalog = Object.freeze([
   },
   {
     key: 'zhiyunShipperHome', productId: 'zhiyun', operationAppId: null, platform: 'mobile', scope: 'common', projectId: null,
-    requirement: '至简智运移动端原型验证；经营方案研发版本 pending', remark: '用于验证智运货主端移动首页、小简AI及单页经营分析；经营模块复用 Pixso 蓝色背景、白卡、浅色分区及对比柱样式，呈现货源进度差额、当前异常及处理进展、自身前后期实际结算线路成本和结算付款待办；汇总与明细由独立 Mock 场景数据计算，不接报价或生产算法。',
-    sourcePaths: ['prototype/common/products/zhiyun/mobile/货主端首页/'],
+    requirement: '至简智运移动端研发评审版 TMS-COMMON-202609-01；本轮货主端集中更新', remark: '用于验证智运货主端移动首页、小简AI及单页经营分析；经营模块复用 Pixso 蓝色背景、白卡、浅色分区及对比柱样式，呈现货源进度差额、当前异常及处理进展、自身前后期实际结算线路成本和结算付款待办；汇总与明细由独立 Mock 场景数据计算，不接报价或生产算法。',
+    sourcePaths: ['prototype/common/products/zhiyun/mobile/货主端首页/', 'prototype/common/products/zhiyun/mobile/shared/PlatformSelectRow.vue'],
     evidencePaths: ['design/zhiyun/mobile/baseline/货主端首页_基准图.png'],
   },
   {
     key: 'driverHome', productId: null, operationAppId: 'driver', servesProducts: ['zhiyun'], platform: 'mobile', scope: 'common', projectId: null,
-    requirement: '至简智运司机端原型验证；研发版本 pending', remark: '单入口承载司机端多个界面：首页（附近货源地图与货源列表）、地图找货、任务指派（承接普货既有派单，只展示待接收任务，接单即知晓确认并回写调度，接单后离开列表进入跑货链路）、跑货（运输跟踪）、运单（运输/结算两种模式）、运单详情、我的、流水明细；跑货与运单沿用船东移动端视觉结构，已替换为公路司机的运输状态、装卸货地址、车辆、时效和运费 Mock 数据；“我的”为独立主 Tab，账户仅表达已入账、提现与已核算待打款，不承载运单结算操作；底部统一使用司机端五栏导航（首页/跑货/小简AI/运单/我的）。已实现界面内的二级操作（提现、经营明细、油气电、ETC、接单设置、资质信用等）仍为 toast 占位。',
+    requirement: '至简智运移动端研发评审版 TMS-COMMON-202609-01；本轮共用司机端集中更新', remark: '单入口承载司机端多个界面：首页（附近货源地图与货源列表）、地图找货、任务指派（承接普货既有派单，只展示待接收任务，接单即知晓确认并回写调度，接单后离开列表进入跑货链路）、跑货（运输跟踪）、运单（运输/结算两种模式）、运单详情、我的、流水明细；跑货与运单沿用船东移动端视觉结构，已替换为公路司机的运输状态、装卸货地址、车辆、时效和运费 Mock 数据；“我的”为独立主 Tab，账户仅表达已入账、提现与已核算待打款，不承载运单结算操作；底部统一使用司机端五栏导航（首页/跑货/小简AI/运单/我的）。已接入我的资料（身份、司机证件、车辆、紧急联系人）、全部待办、接单设置（常跑出发地、目的地与货品）、提现与银行卡管理；钱包展示余额及流水。上述操作使用本机 Mock，不接真实支付、短信、认证或审核；经营明细、油气电、ETC和信用评价等仍为占位。',
     sourcePaths: [
       'prototype/common/operation-apps/driver/mobile/司机首页/',
       'public/driver-mobile-assets/',

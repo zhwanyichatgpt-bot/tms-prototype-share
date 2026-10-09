@@ -1,0 +1,44 @@
+.driver-setting-page,
+.driver-setting-page * { box-sizing: border-box; }
+
+.driver-setting-page {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eef0f5;
+  color: #30394a;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.driver-setting-page .setting-status { z-index: 20; background: rgba(238, 240, 245, .96); backdrop-filter: blur(8px); }
+.setting-scroll { position: absolute; inset: 38px 0 0; overflow-x: hidden; overflow-y: auto; padding-bottom: 28px; scrollbar-width: none; }
+.setting-scroll::-webkit-scrollbar { display: none; }
+
+.setting-header { display: grid; height: 48px; padding: 0 15px; background: #eef0f5; align-items: center; grid-template-columns: 32px 1fr 32px; }
+.driver-setting-page .setting-header button { display: grid; width: 30px; height: 30px; padding: 0; border: 0; background: transparent; color: #333; font-size: 18px; place-items: center; }
+.setting-header h1 { margin: 0; color: #333; font-size: 17px; line-height: 24px; text-align: center; }
+
+.setting-intro { margin: 8px 15px 0; color: #6d7482; font-size: 11px; font-weight: 500; line-height: 17px; }
+
+.setting-subheading { display: flex; margin: 16px 0 8px; align-items: baseline; justify-content: space-between; }
+.setting-subheading:first-of-type { margin-top: 0; }
+.setting-subheading span { color: #30343b; font-size: 13px; font-weight: 600; }
+.setting-subheading small { color: #8a91a1; font-size: 10px; }
+
+/* 目的地城市角标是该城市当前可接货源数，帮助司机判断值不值得跑 */
+.driver-setting-page .setting-chip em { margin-left: 5px; color: #9aa3b1; font-size: 9px; font-style: normal; }
+.driver-setting-page .setting-chip.active em { color: #3a65ff; }
+
+.setting-card { margin: 12px 15px 0; padding: 14px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(34, 44, 79, .05); }
+.setting-card-heading { display: flex; margin-bottom: 12px; align-items: baseline; justify-content: space-between; }
+.setting-card-heading h2 { margin: 0; color: #30343b; font-size: 15px; font-weight: 700; line-height: 21px; }
+.setting-card-heading small { color: #8a91a1; font-size: 10px; }
+
+.setting-chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.driver-setting-page .setting-chip { min-width: 64px; height: 30px; padding: 0 12px; border: 1px solid #e6ebf3; border-radius: 15px; background: #f9fbfe; color: #5f6c82; font-size: 12px; }
+.driver-setting-page .setting-chip.active { border-color: #3a65ff; background: #edf2ff; color: #3a65ff; font-weight: 600; }
+
+.setting-note { margin: 10px 0 0; color: #9aa3b1; font-size: 10px; line-height: 16px; }
+
+.setting-footnote { margin: 14px 15px 0; color: #9aa3b1; font-size: 10px; line-height: 16px; }

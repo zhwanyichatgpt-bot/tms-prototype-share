@@ -1,5 +1,5 @@
 <template>
-  <section class="invoice-detail" :class="heroClass" aria-label="开票详情">
+  <section class="invoice-detail" :class="heroClass" data-annotation-container="modal" data-annotation-content="modal" aria-label="开票详情">
     <!-- 蓝色渐变 Hero：状态栏 + 胶囊 + 导航 + 大标题 -->
     <div class="hero">
       <div class="status-bar">
@@ -25,13 +25,14 @@
       </div>
     </div>
 
-    <main class="detail-content">
+    <main class="detail-content annot-zhiyunShipperHome-rule-invoice-detail-result">
       <!-- 申请信息 -->
       <section class="card">
         <div class="row"><span>开票金额</span><b class="amount">{{ money(record.amount) }}</b></div>
         <div class="row"><span>抬头类型</span><b>{{ record.titleType }}</b></div>
         <div class="row"><span>申请编号</span><b>{{ record.applyNo }}</b></div>
         <div class="row"><span>申请时间</span><b>{{ record.applyTime }}</b></div>
+        <div v-if="record.invoiceNo" class="row"><span>发票号码</span><b>{{ record.invoiceNo }}</b></div>
       </section>
 
       <!-- 抬头信息：默认3行，展开看全部 -->
@@ -59,13 +60,12 @@
         </button>
       </section>
 
-      <!-- 关联运单：整行进二级页 -->
-      <section class="card waybill-entry" @click="notice = '原型演示：关联运单列表页未接入'">
-        <span class="waybill-label">关联运单</span>
-        <span class="waybill-right">
-          <span class="waybill-count">{{ record.waybillCount }} 个</span>
-          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1.5 1.5L6.5 7l-5 5.5" stroke="#a7adb8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
+      <!-- 每条开票申请只关联一张已付款运单 -->
+      <section class="card">
+        <div class="row"><span>关联运单</span><b>{{ record.waybillNo }}</b></div>
+        <div class="row"><span>归属货源</span><b>{{ record.cargoNo }}</b></div>
+        <div class="row"><span>承接平台</span><b>{{ record.platform }}</b></div>
+        <div class="row"><span>车辆</span><b>{{ record.plate }}</b></div>
       </section>
 
       <!-- 处理记录 -->
@@ -185,12 +185,6 @@ const timelineAsc = computed(() => {
 .expand-toggle{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin-top:12px;padding:8px 0 0;border:0;border-top:1px solid #f2f3f7;background:none;color:#8a91a1;font-size:13px}
 .expand-icon{transition:transform .2s}
 .expand-icon.open{transform:rotate(180deg)}
-
-/* 关联运单整行 */
-.waybill-entry{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer}
-.waybill-label{font-size:14px;font-weight:600;color:#252b3a}
-.waybill-right{display:flex;align-items:center;gap:8px}
-.waybill-count{padding:3px 10px;border-radius:12px;background:#f3f4f8;color:#5c6472;font-size:12px;line-height:16px}
 
 /* ===== 时间轴 ===== */
 .timeline-card{padding:18px 16px 14px}

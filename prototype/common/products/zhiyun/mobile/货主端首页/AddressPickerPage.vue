@@ -1,5 +1,5 @@
 <template>
-  <div class="ap-page">
+  <div class="ap-page" data-annotation-container="modal" data-annotation-content="modal">
     <!-- 状态栏（与首页一致） -->
     <div class="status-bar">
       <span class="status-time">9:41</span>
@@ -39,7 +39,10 @@
     </div>
 
     <!-- 地址列表卡片 -->
-    <div class="ap-list-card">
+    <div class="ap-list-card annot-zhiyunShipperHome-action-address-confirm">
+      <button v-if="keyword.trim() && !filteredList.some((item) => item.name === keyword.trim())" type="button" class="ap-item ap-custom-item" @click="selected = { name: keyword.trim(), detail: '' }">
+        <span class="ap-item-main"><span class="ap-item-name">使用“{{ keyword.trim() }}”作为地址</span><span class="ap-item-detail">确认后补充详细地址和联系人</span></span>
+      </button>
       <button
         v-for="item in filteredList"
         :key="item.name"
@@ -87,7 +90,7 @@ const keyword = ref('')
 const selected = ref(null)
 
 // 附近地址（Pixso 重复网格 322 内容）+ 常用装货点置顶
-const nearbyList = [
+const loadNearbyList = [
   { name: '福州市·江上图首府叁号', detail: '常用装货点 · 榕城江上图', preset: true },
   { name: '福建医科大学附属口腔医院', detail: '杨桥中路246号(陆庄地铁站B口步行290米)' },
   { name: '光明港公园', detail: '远洋路153号' },
@@ -105,17 +108,24 @@ const nearbyList = [
   { name: '闽江口工业区', detail: '马尾区琅岐镇' },
   { name: '中亭街五金机电市场', detail: '台江区中亭街' },
 ]
+const unloadNearbyList = [
+  { name: '厦门市·江上图首府叁号', detail: '厦门市海沧区江上图首府叁号' },
+  { name: '厦门海沧港区', detail: '厦门市海沧区港南路' },
+  { name: '厦门象屿保税区', detail: '厦门市湖里区象屿路' },
+  { name: '厦门集美物流园', detail: '厦门市集美区锦园西路' },
+]
+const nearbyList = computed(() => props.mode === 'unload' ? unloadNearbyList : loadNearbyList)
 
 const filteredList = computed(() => {
   const kw = keyword.value.trim()
-  if (!kw) return nearbyList
-  return nearbyList.filter(
+  if (!kw) return nearbyList.value
+  return nearbyList.value.filter(
     (i) => i.name.includes(kw) || i.detail.includes(kw)
   )
 })
 
 const selectCurrent = () => {
-  selected.value = nearbyList[0]
+  selected.value = nearbyList.value[0]
 }
 
 const selectFromMap = () => {
@@ -324,6 +334,7 @@ const confirm = () => {
 .ap-item:active {
   background: #f5f7fb;
 }
+.ap-custom-item { border-bottom: 1px solid #eef2f6; }
 .ap-item-active {
   background: #f0f5ff;
 }

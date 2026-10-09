@@ -21,14 +21,10 @@
           <img class="header-cat" src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="" />
         </div>
 
-        <label class="waybill-search" :class="{ 'with-entry': currentMode === 'settlement' }">
+        <label class="waybill-search">
           <span aria-hidden="true"></span>
-          <input v-model="searchText" type="search" placeholder="请输入运单号" />
+          <input v-model="searchText" type="search" :placeholder="currentMode === 'settlement' ? '请输入运单号' : '请输入运单号或货源号'" />
         </label>
-        <button v-if="currentMode === 'settlement'" type="button" class="settle-entry">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1" width="11" height="12" rx="2" stroke="#333" stroke-width="1.3"/><path d="M4.2 4.5h5.6M4.2 7h5.6M4.2 9.5h3" stroke="#333" stroke-width="1.3" stroke-linecap="round"/></svg>
-          结算单
-        </button>
       </header>
 
       <nav v-if="currentMode === 'settlement'" class="settle-tabs" aria-label="结算状态筛选">
@@ -41,11 +37,6 @@
         >
           {{ item.label }}
         </button>
-        <span class="settle-tools">
-          <button type="button" class="filter-trigger">筛选<i></i></button>
-          <em class="tool-divider"></em>
-          <button type="button" class="batch-trigger"><i></i>批量</button>
-        </span>
       </nav>
       <nav v-else class="status-tabs" aria-label="运单状态筛选">
         <button
@@ -57,26 +48,33 @@
         >
           {{ item.label }}
         </button>
-        <button type="button" class="filter-trigger">筛选<i></i></button>
       </nav>
 
-      <div v-if="currentMode === 'transport'" class="waybill-list">
-        <article v-for="item in filteredWaybills" :key="item.id" class="waybill-card">
+      <div v-if="currentMode === 'transport'" class="waybill-list annot-zhiyunShipperHome-rule-waybill-transport-finance">
+        <article
+          v-for="item in filteredWaybills"
+          :key="item.id"
+          class="waybill-card"
+          role="button"
+          tabindex="0"
+          @click="emit('open-waybill', item)"
+          @keydown.enter="emit('open-waybill', item)"
+        >
           <div class="card-heading">
             <span class="waybill-state" :class="`state-${item.statusType}`">{{ item.status }}</span>
             <strong>{{ item.number }}</strong>
-            <button type="button" class="copy-button" aria-label="复制运单号">
+            <button type="button" class="copy-button" aria-label="复制运单号" @click.stop="copyWaybill(item)">
               <i></i><i></i>
             </button>
-            <b class="waybill-price">{{ item.price }}</b>
+            <b class="waybill-price">¥{{ item.freight }}</b>
           </div>
 
           <div class="card-content">
-            <h2>{{ item.cargo }} <small>{{ item.weight }}</small></h2>
-            <p>{{ item.loadPort }}<i></i>{{ item.unloadPort }}</p>
+            <h2>{{ item.cargo }} <small>{{ item.tons }} 吨</small></h2>
+            <p>{{ item.loadCity }}<i></i>{{ item.unloadCity }}</p>
             <div class="arrival-time">
-              <span>{{ item.timeLabel }}</span>
-              <strong>{{ item.time }}</strong>
+              <span>{{ wbTimeLabel(item) }}</span>
+              <strong>{{ wbTimeValue(item) }}</strong>
             </div>
           </div>
 
@@ -86,9 +84,11 @@
               <img src="/zhiyun-mobile-assets/waybill/pixso/avatar-face.svg" alt="" />
               <img src="/zhiyun-mobile-assets/waybill/pixso/avatar-detail.svg" alt="" />
             </span>
-            <span class="owner-role">船东</span>
-            <strong>{{ item.owner }}</strong>
-            <button v-if="item.action" type="button" class="voucher-button">{{ item.action }}</button>
+            <span class="owner-role">司机</span>
+            <strong>{{ item.driver }} · {{ item.plate }}</strong>
+            <button v-if="item.settleType !== 'settled'" type="button" class="voucher-button" @click.stop="emit('open-waybill', item)">
+              {{ item.statusType === 'done' ? '去结算' : '查看凭证' }}
+            </button>
           </footer>
         </article>
 
@@ -98,29 +98,31 @@
         </div>
       </div>
 
-      <div v-else class="waybill-list">
+      <div v-else class="waybill-list annot-zhiyunShipperHome-rule-waybill-settlement-states">
         <article v-for="item in filteredSettlements" :key="item.id" class="settle-card">
           <div class="card-heading">
-            <span class="waybill-state settle-state" :class="`sstate-${item.statusType}`">{{ item.status }}</span>
+            <span class="waybill-state settle-state" :class="`sstate-${item.settleType}`">{{ settleLabel(item) }}</span>
             <strong>{{ item.number }}</strong>
-            <button type="button" class="copy-button" aria-label="复制运单号">
+            <button type="button" class="copy-button" aria-label="复制运单号" @click.stop="copyWaybill(item)">
               <i></i><i></i>
             </button>
-            <b class="waybill-price">{{ item.price }}</b>
+            <b class="waybill-price">¥{{ money(settleAmount(item)) }}</b>
           </div>
+
+          <p class="settle-route">{{ item.loadCity }}<i></i>{{ item.unloadCity }}</p>
 
           <div class="settle-content">
             <div class="settle-field">
-              <h2>{{ item.machine }}</h2>
-              <p>运输机型</p>
+              <h2>{{ item.cargo }}<small class="unit"> · {{ item.tons }}吨</small></h2>
+              <p>货品 · 计费吨位</p>
             </div>
             <div class="settle-field">
-              <h2><small>{{ item.cargo }}</small> <em>{{ item.weightNum }}</em><small class="unit">{{ item.weightUnit }}</small></h2>
-              <p>吊运重量</p>
+              <h2 class="settle-platform">{{ item.platform }}</h2>
+              <p>承接平台</p>
             </div>
             <div class="settle-time">
-              <span>{{ item.time }}</span>
-              <strong>{{ item.date }}</strong>
+              <strong>{{ item.unloadTime || item.loadTime }}</strong>
+              <span>卸货时间</span>
             </div>
           </div>
 
@@ -130,20 +132,19 @@
               <img src="/zhiyun-mobile-assets/waybill/pixso/avatar-face.svg" alt="" />
               <img src="/zhiyun-mobile-assets/waybill/pixso/avatar-detail.svg" alt="" />
             </span>
-            <strong class="settle-owner">{{ item.owner }}</strong>
+            <strong class="settle-owner">{{ item.vehicleType }} · {{ item.driver }}</strong>
             <span class="settle-actions">
-              <template v-for="act in item.actions" :key="act">
-                <button type="button" class="settle-btn" :class="{ primary: isPrimaryAction(item.statusType, act) }" @click="onSettleAction(act, item)">
-                  {{ act }}
-                </button>
-              </template>
+              <button v-if="item.settleType === 'pending' && !voucherReady(item)" type="button" class="settle-btn" @click.stop="emit('open-settle', item)">补凭证</button>
+              <button v-else-if="item.settleType === 'pending'" type="button" class="settle-btn primary" @click.stop="emit('open-settle', item)">去结算</button>
+              <button v-else-if="item.settleType === 'unpaid'" type="button" class="settle-btn primary" @click.stop="emit('open-settle', item)">付款</button>
+              <button v-else type="button" class="settle-btn" @click.stop="emit('open-settle', item)">查看</button>
             </span>
           </footer>
         </article>
 
         <div v-if="filteredSettlements.length === 0" class="empty-state">
           <span aria-hidden="true">¥</span>
-          <p>暂无符合条件的结算单</p>
+          <p>暂无符合条件的运单</p>
         </div>
       </div>
     </div>
@@ -152,6 +153,13 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { money, waybillList } from './mock-data.js'
+
+const props = defineProps({
+  initialMode: { type: String, default: 'transport' },
+  initialStatus: { type: String, default: 'all' },
+  initialSettleStatus: { type: String, default: 'all' },
+})
 
 const modes = [
   { key: 'transport', label: '运输' },
@@ -160,109 +168,82 @@ const modes = [
 
 const statusFilters = [
   { key: 'all', label: '全部' },
-  { key: 'open', label: '已开航' },
-  { key: 'arrived', label: '已到港' },
-  { key: 'cancelled', label: '已取消' },
+  { key: 'loaded', label: '已装货' },
+  { key: 'moving', label: '在途' },
+  { key: 'done', label: '已送达' },
+  { key: 'abnormal', label: '有异常' },
 ]
 
-const currentMode = ref('transport')
-const currentStatus = ref('all')
-const currentSettleStatus = ref('all')
+const currentMode = ref(props.initialMode)
+const currentStatus = ref(props.initialStatus)
+const currentSettleStatus = ref(props.initialSettleStatus)
 const searchText = ref('')
 
-const waybills = [
-  {
-    id: 'w1', status: '已开航', statusType: 'open', number: 'C9715157747486741', price: '￥500.00',
-    cargo: '玉米', weight: '10.23kg', loadPort: '福州市·马尾港', unloadPort: '无锡市·舟山港',
-    timeLabel: '预计到港', time: '今天 12:00', owner: '测试船主', action: '补录凭证',
-  },
-  {
-    id: 'w2', status: '已开航', statusType: 'open', number: 'C9715157747486741', price: '￥500.00',
-    cargo: '玉米', weight: '10.23kg', loadPort: '福州市·马尾港', unloadPort: '无锡市·舟山港',
-    timeLabel: '预计到港', time: '今天 12:00', owner: '测试船主', action: '补录凭证',
-  },
-  {
-    id: 'w3', status: '已取消', statusType: 'cancelled', number: 'C9715157747486741', price: '￥500.00',
-    cargo: '玉米', weight: '10.23kg', loadPort: '福州市·马尾港', unloadPort: '无锡市·舟山港',
-    timeLabel: '取消时间', time: '前天 12:00', owner: '测试船主', action: '',
-  },
-  {
-    id: 'w4', status: '已取消', statusType: 'cancelled', number: 'C9715157747486741', price: '￥500.00',
-    cargo: '玉米', weight: '10.23kg', loadPort: '福州市·马尾港', unloadPort: '无锡市·舟山港',
-    timeLabel: '取消时间', time: '07/01 12:00', owner: '测试船主', action: '',
-  },
-]
+const emit = defineEmits(['open-waybill', 'open-settle'])
 
-// 结算态：复核 → 核算 → 申请打款 → 打款，按钮随状态流转（Pixso 运单（结算）画板）
+const waybills = waybillList
+
+// 结算模式下按结算状态分页签：待结算 → 待付款 → 已结算（运单级，逐单结算）
 const settleFilters = [
   { key: 'all', label: '全部' },
-  { key: 'reviewed', label: '已复核' },
-  { key: 'checked', label: '已核算' },
-  { key: 'applied', label: '已申请' },
-  { key: 'paid', label: '已打款' },
-  { key: 'cancelled', label: '已取消' },
+  { key: 'pending', label: '待结算' },
+  { key: 'unpaid', label: '待付款' },
+  { key: 'settled', label: '已结算' },
 ]
 
-const settlements = [
-  {
-    id: 's1', status: '已复核', statusType: 'reviewed', number: 'C9715157747486741', price: '￥500.00',
-    machine: 'P200', cargo: '蜜柚', weightNum: '35', weightUnit: 'kg',
-    time: '17:00', date: '2026/07/14', owner: '漳州市小飞侠无人机…',
-    actions: ['作废', '核算'],
-  },
-  {
-    id: 's2', status: '已核算', statusType: 'checked', number: 'C9715157747486741', price: '￥500.00',
-    machine: 'P200', cargo: '蜜柚', weightNum: '35', weightUnit: 'kg',
-    time: '17:00', date: '2026/07/14', owner: '漳州市小飞侠无人机…',
-    actions: ['作废', '申请打款'],
-  },
-  {
-    id: 's3', status: '已申请', statusType: 'applied', number: 'C9715157747486741', price: '￥500.00',
-    machine: 'P200', cargo: '蜜柚', weightNum: '35', weightUnit: 'kg',
-    time: '17:00', date: '2026/07/14', owner: '漳州市小飞侠无人机…',
-    actions: ['作废', '打款'],
-  },
-  {
-    id: 's4', status: '已打款', statusType: 'paid', number: 'C9715157747486741', price: '￥500.00',
-    machine: 'P200', cargo: '蜜柚', weightNum: '35', weightUnit: 'kg',
-    time: '17:00', date: '2026/07/14', owner: '漳州市小飞侠无人机…',
-    actions: ['评价'],
-  },
-  {
-    id: 's5', status: '已取消', statusType: 'cancelled', number: 'C9715157747486741', price: '￥500.00',
-    machine: 'P200', cargo: '蜜柚', weightNum: '35', weightUnit: 'kg',
-    time: '17:00', date: '2026/07/14', owner: '漳州市小飞侠无人机',
-    actions: [],
-  },
-]
+const SETTLE_LABELS = { pending: '待结算', unpaid: '待付款', settled: '已结算' }
 
-const isPrimaryAction = (statusType, act) => statusType !== 'paid' && act !== '作废'
+// 装卸货凭证齐全才能结算；齐了走「去结算」，不齐走「补凭证」
+const voucherReady = (item) => Boolean(item.vouchers?.load && item.vouchers?.unload)
 
-const onSettleAction = (act, item) => {
-  // 原型验证：动作仅作展示反馈
-  if (typeof window !== 'undefined' && window.sharedStorage && window.sharedStorage.toast) {
-    window.sharedStorage.toast(`${act}：${item.number}`)
+// 应付金额 = 运费 + 金额调整。调整是货主核对时的核增核减，不是平台抽佣。
+const settleAmount = (item) => Number(String(item.freight).replace(/[,\s]/g, '')) + (item.adjustAmount || 0)
+
+const settleLabel = (item) => SETTLE_LABELS[item.settleType] || '待结算'
+
+/* 运单卡右下角时间：在途看预计到达，已送达看卸货时间 */
+const wbTimeLabel = (item) => {
+  if (item.statusType === 'done') return '卸货时间'
+  if (item.statusType === 'moving') return '预计到达'
+  return '装货时间'
+}
+const wbTimeValue = (item) => {
+  if (item.statusType === 'done') return item.unloadTime || '--'
+  if (item.statusType === 'moving') return item.arriveText?.replace('预计 ', '').replace(' 到达', '') || '运输中'
+  return item.loadTime || '--'
+}
+
+const copyWaybill = (item) => {
+  try {
+    window.navigator?.clipboard?.writeText(item.number)
+  } catch { /* 剪贴板不可用时仍给出提示 */ }
+  if (typeof window !== 'undefined' && window.sharedStorage?.toast) {
+    window.sharedStorage.toast('运单号已复制')
   }
 }
 
 const filteredWaybills = computed(() => {
   const keyword = searchText.value.trim().toLowerCase()
   return waybills.filter((item) => {
-    const matchesStatus = currentStatus.value === 'all' || item.statusType === currentStatus.value
+    const matchesStatus = currentStatus.value === 'all'
+      || (currentStatus.value === 'abnormal' ? Boolean(item.exception) : item.statusType === currentStatus.value)
     const matchesKeyword = !keyword || [item.number, item.cargo, item.loadPort, item.unloadPort]
       .some((value) => value.toLowerCase().includes(keyword))
     return matchesStatus && matchesKeyword
   })
 })
 
+/* 结算列表只收作业已完成、可进入结算的运单：已装货/在途还没卸货，谈不上结算 */
 const filteredSettlements = computed(() => {
   const keyword = searchText.value.trim().toLowerCase()
-  return settlements.filter((item) => {
-    const matchesStatus = currentSettleStatus.value === 'all' || item.statusType === currentSettleStatus.value
-    const matchesKeyword = !keyword || [item.number, item.cargo, item.machine, item.owner]
-      .some((value) => value.toLowerCase().includes(keyword))
-    return matchesStatus && matchesKeyword
-  })
+  return waybills
+    .filter((item) => item.statusType === 'done')
+    .filter((item) => currentSettleStatus.value === 'all' || item.settleType === currentSettleStatus.value)
+    .filter((item) => {
+      if (!keyword) return true
+      return [item.number, item.cargo, item.loadCity, item.unloadCity, item.platform, item.driver]
+        .some((value) => String(value).toLowerCase().includes(keyword))
+    })
 })
 </script>
 
@@ -293,7 +274,8 @@ const filteredSettlements = computed(() => {
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: 100px;
+  /* 底部留给 Tab 栏（约 130px）并再垫一段，避免最后一张卡的按钮压在导航上 */
+  padding-bottom: 168px;
   box-sizing: border-box;
   scrollbar-width: none;
 }
@@ -415,26 +397,6 @@ const filteredSettlements = computed(() => {
   font-size: 13px;
 }
 .waybill-search input::placeholder { color: #a3a8b1; }
-.waybill-search.with-entry { right: 92px; }
-.settle-entry {
-  position: absolute;
-  right: 16px;
-  top: 78.5px;
-  z-index: 4;
-  height: 32px;
-  padding: 0 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border: 0;
-  border-radius: 16px;
-  background: rgba(255,255,255,.9);
-  box-shadow: 0 2px 9px rgba(74,95,126,.08);
-  color: #333;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 .status-tabs {
   position: sticky;
@@ -461,8 +423,6 @@ const filteredSettlements = computed(() => {
 }
 .status-tabs button.active { color: #3a65ff; font-weight: 600; }
 .status-tabs button + button { margin-left: 8px; }
-.status-tabs .filter-trigger { flex: 0 0 49px; margin-left: auto; background: transparent; color: #333; font-size: 12px; font-weight: 600; text-align: right; }
-.filter-trigger i { display: inline-block; margin-left: 5px; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #777e88; vertical-align: 2px; }
 
 .waybill-list { position: relative; z-index: 1; padding: 0 16px 4px; }
 .waybill-card {
@@ -521,7 +481,7 @@ const filteredSettlements = computed(() => {
 }
 .settle-tabs button {
   position: relative;
-  flex: 0 0 60px;
+  flex: 0 0 52px;
   height: 21px;
   margin-top: 8px;
   border: 0;
@@ -532,64 +492,64 @@ const filteredSettlements = computed(() => {
   font-weight: 600;
 }
 .settle-tabs button.active { color: #4063ff; font-weight: 600; }
-.settle-tabs button + button { margin-left: 8px; }
-.settle-tools { margin-left: auto; display: flex; align-items: center; margin-top: 8px; }
-.settle-tools .filter-trigger { flex: 0 0 auto; }
-.tool-divider { width: 1px; height: 12px; margin: 0 8px; background: #d5d9e0; }
-.batch-trigger { border: 0; background: transparent; color: #333; font-size: 12px; font-weight: 600; }
-.batch-trigger i {
-  display: inline-block;
-  width: 12px; height: 12px;
-  margin-right: 4px;
-  vertical-align: -2px;
-  background: url('/zhiyun-mobile-assets/waybill/pixso/copy.svg') center / 12px 12px no-repeat;
-  opacity: .75;
-}
+.settle-tabs button + button { margin-left: 6px; }
 
-/* 结算卡片：686×249 → 343×124.5 */
+/* 结算卡片：686×249 → 343×124.5。
+   改用正常流布局：原来按固定坐标定位内容区，换成较长字段后相互压字，用 flex 让内容自己撑开。 */
 .settle-card {
-  position: relative;
-  min-height: 124.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px 14px;
   margin-bottom: 7.5px;
   box-sizing: border-box;
   border-radius: 15px;
   background: #fff;
 }
-.settle-card .card-heading { position: absolute; left: 14px; right: 14px; top: 12px; }
+.settle-card .card-heading { position: static; }
 .settle-state { color: #4063ff; }
-.settle-state.sstate-cancelled { color: #999; }
-.settle-state.sstate-paid { color: #333; }
+.settle-state.sstate-pending { color: #4063ff; }
+.settle-state.sstate-unpaid { color: #f0a020; }
+.settle-state.sstate-settled { color: #28aa83; }
 .settle-card .waybill-price { color: #567bff; }
 
-/* 内容区：P200（运输机型）| 蜜柚 35kg（吊运重量）| 右侧时间 */
+/* 结算卡片的路线行：货主认路线不认运单号 */
+.settle-route {
+  margin: 8px 0 0;
+  color: #4a5364;
+  font-size: 13px;
+}
+.settle-route i { display: inline-block; width: 4px; height: 1px; margin: 0 6px; background: #8a91a1; vertical-align: 4px; }
+.settle-field h2 .unit { margin-left: 1px; font-size: 14px; font-weight: 400; }
+
+/* 内容区：结算货量 | 承接平台 | 日期与运单数 */
 .settle-content {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  top: 40.5px;
-  height: 52px;
   display: flex;
+  align-items: flex-end;
 }
 .settle-field { min-width: 0; }
-.settle-field + .settle-field { margin-left: 40px; }
-.settle-field h2 { margin: 0; color: #333; font-size: 17px; line-height: 24px; font-weight: 700; }
-.settle-field h2 em { font-style: normal; font-size: 18px; font-weight: 700; }
-.settle-field h2 small { font-size: 18px; font-weight: 700; }
-.settle-field h2 .unit { margin-left: 1px; }
-.settle-field p { margin: 1px 0 0; color: #8a91a1; font-size: 12px; line-height: 17px; }
+.settle-field + .settle-field { margin-left: 32px; }
+.settle-field h2 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.settle-field h2 .unit { margin-left: 1px; font-size: 15px; font-weight: 700; }
+.settle-field h2.settle-platform { font-size: 15px; }
+.settle-field p { margin: 2px 0 0; color: #8a91a1; font-size: 12px; line-height: 17px; }
 .settle-time { margin-left: auto; text-align: right; }
-.settle-time span { display: block; color: #8a91a1; font-size: 12px; line-height: 17px; }
-.settle-time strong { display: block; margin-top: 4px; color: #8a91a1; font-size: 12px; line-height: 17px; font-weight: 400; }
+.settle-time strong { display: block; color: #8a91a1; font-size: 12px; line-height: 17px; font-weight: 400; }
+.settle-time span { display: block; margin-top: 2px; color: #8a91a1; font-size: 12px; line-height: 17px; }
 
-/* 底部：头像 + 承运方 + 动作按钮组 */
+/* 底部：头像 + 关联货源号 + 动作按钮组 */
 .settle-footer {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  top: 90.5px;
-  height: 28px;
   display: flex;
   align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #f0f2f7;
 }
 .settle-owner { margin-left: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333; font-size: 13px; font-weight: 400; }
 .settle-actions { margin-left: auto; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }

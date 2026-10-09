@@ -16,15 +16,61 @@
           @set-alias="addressPicker.mode = null"
         />
         <CargoSourcePage
-          v-if="!showQuickPublish && currentTab === 'goods'"
+          v-if="!showQuickPublish && currentTab === 'goods' && !selectedCargo"
           @publish="openQuickPublish"
+          @open-cargo="selectedCargo = $event"
+          @resume-publish="resumePublish"
         />
-        <WaybillPage v-if="!showQuickPublish && currentTab === 'order'" />
+        <CargoDetailPage
+          v-if="!showQuickPublish && currentTab === 'goods' && selectedCargo"
+          :cargo="selectedCargo"
+          @back="selectedCargo = null"
+          @open-waybill="onOpenWaybill"
+          @resume-publish="resumePublish"
+        />
+        <WaybillPage
+          :key="waybillEntry.token"
+          v-show="!showQuickPublish && currentTab === 'order' && !selectedWaybill && !settleWaybill"
+          :initial-mode="waybillEntry.mode"
+          :initial-status="waybillEntry.status"
+          :initial-settle-status="waybillEntry.settleStatus"
+          @open-waybill="selectedWaybill = $event"
+          @open-settle="settleWaybill = $event"
+        />
+        <WaybillDetailPage
+          v-if="!showQuickPublish && currentTab === 'order' && selectedWaybill"
+          :waybill="selectedWaybill"
+          @back="selectedWaybill = null"
+          @open-cargo="openCargoFromWaybill"
+          @to-settle="onWaybillSettle"
+        />
+        <WaybillSettlePage
+          v-if="!showQuickPublish && currentTab === 'order' && settleWaybill"
+          :record="settleWaybill"
+          @back="settleWaybill = null"
+          @settled="onSettled"
+          @paid="onPaid"
+        />
+        <BusinessPage
+          v-show="!showQuickPublish && currentTab === 'business'"
+          @overlay-change="businessOverlayOpen = $event"
+        />
         <MinePage
           v-if="!showQuickPublish && currentTab === 'mine'"
+          :profile="personalProfile"
+          :enterprise="enterpriseProfile"
+          @open-profile="openProfile"
           @open-invoice="openInvoice"
           @open-account="openAccount"
           @open-payment="openPaymentFromMine"
+          @open-waybills="openWaybillsFromMine"
+        />
+        <ProfilePage
+          v-if="!showQuickPublish && currentTab === 'mine' && profileView"
+          :profile="personalProfile"
+          :enterprise="enterpriseProfile"
+          @back="profileView = ''"
+          @save="saveProfile"
         />
         <AccountPage
           v-if="!showQuickPublish && currentTab === 'mine' && accountOpen"
@@ -34,6 +80,7 @@
         />
         <InvoicePage
           v-show="!showQuickPublish && currentTab === 'mine' && invoiceOpen && !invoiceDetail && !invoiceTitlesOpen"
+          :data-annotation-container="!showQuickPublish && currentTab === 'mine' && invoiceOpen && !invoiceDetail && !invoiceTitlesOpen ? 'modal' : null"
           ref="invoicePageRef"
           :initial-tab="invoiceTab"
           :reset-token="invoiceResetToken"
@@ -150,36 +197,26 @@
         </div>
 
         <!-- 6. 发货表单卡片 -->
-        <div class="ship-card">
+        <div class="ship-card annot-zhiyunShipperHome-action-quick-publish-address">
           <div class="row-load" @click="openAddressPicker('load')">
             <span class="dot dot-blue"></span>
             <div class="row-main">
-              <p class="row-line">将在 <b>{{ shipForm.loadPoint }}</b> 装货</p>
-              <p class="row-sub">{{ shipForm.loadHint }}</p>
+              <p v-if="selectedHomeAddresses.load" class="row-line">将在 <b>{{ selectedHomeAddresses.load.name }}</b> 装货</p>
+              <p v-else class="row-line">您要在哪里装货</p>
+              <p class="row-sub">{{ selectedHomeAddresses.load?.detail || '点击选择装货地址，也可在发布页补充' }}</p>
             </div>
             <svg class="row-chev" width="3.6" height="6.75" viewBox="0 0 10 17" fill="none"><path d="M7.18 0L0 6.75L7.18 13.51" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-1,0,0,-1,8.43,14.76)"/></svg>
           </div>
           <div class="row-unload" @click="openAddressPicker('unload')">
             <span class="dot dot-green"></span>
-            <span class="unload-text">{{ unloadText }}</span>
+            <span class="unload-text">{{ selectedHomeAddresses.unload?.name || shipForm.unloadPlaceholder }}</span>
             <svg class="row-chev" width="3.6" height="6.75" viewBox="0 0 10 17" fill="none"><path d="M7.18 0L0 6.75L7.18 13.51" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-1,0,0,-1,8.43,14.76)"/></svg>
-          </div>
-          <div class="quick-row">
-            <span class="quick-routes-label">{{ shipForm.quickRoutesLabel }}</span>
-            <button
-              v-for="r in shipForm.quickRoutes"
-              :key="r.id"
-              type="button"
-              class="quick-route-chip"
-              @click="applyRoute(r)"
-            >{{ r.label }}</button>
-            <span class="quick-setting">{{ shipForm.settingText }}</span>
           </div>
           <button class="submit-btn" @click="openQuickPublish">{{ shipForm.submitText }}</button>
         </div>
 
         <!-- 7. 进行中运输：一张卡汇总全部执行中货源 -->
-        <section class="transit-summary" aria-label="进行中运输概况">
+        <section class="transit-summary annot-zhiyunShipperHome-rule-transit-summary" aria-label="进行中运输概况">
           <div class="transit-summary-head">
             <div>
               <span class="transit-summary-icon" aria-hidden="true">↗</span>
@@ -219,77 +256,41 @@
 
         <!-- 8. 推荐运力 -->
         <div class="rec-section">
-          <div class="rec-head">
+          <div class="rec-head annot-zhiyunShipperHome-filter-recommend-source">
             <div class="rec-head-main">
-              <h2 class="rec-title">推荐<em>运力</em></h2>
+              <h2 class="rec-title">{{ isNewShipper ? '发现' : '推荐' }}<em>运力</em></h2>
             </div>
-            <span class="rec-more">
-              {{ recommendSection.moreText }}
-              <svg width="10" height="10" viewBox="0 0 11 19" fill="none"><path d="M1.25 18.99C1.06 18.99 0.87 18.92 0.72 18.77C0.43 18.47 0.43 18 0.72 17.7L8.68 9.75L0.72 1.79C0.43 1.49 0.43 1.02 0.72 0.72C1.02 0.43 1.49 0.43 1.79 0.72L10.28 9.21C10.57 9.51 10.57 9.98 10.28 10.28L1.79 18.77C1.64 18.92 1.45 18.99 1.25 18.99Z" fill="#999"/></svg>
-            </span>
           </div>
-          <!-- 筛选条：智能排序样式，三项各自切换 -->
-          <div class="carrier-filter">
-            <button type="button" class="filter-item" :class="{ active: carrierFilter === 'rate' }" @click="carrierFilter = 'rate'">
-              综合推荐<i class="filter-caret" :class="{ on: carrierFilter === 'rate' }"></i>
-            </button>
-            <button type="button" class="filter-item" :class="{ active: carrierFilter === 'distance' }" @click="carrierFilter = 'distance'">
-              距离最近<i class="filter-caret" :class="{ on: carrierFilter === 'distance' }"></i>
-            </button>
-            <button type="button" class="filter-item" :class="{ active: carrierFilter === 'vehicle' }" @click="toggleVehicleFilter">
-              {{ carrierFilter === 'vehicle' && vehicleFilter ? vehicleFilter : '车型' }}<i class="filter-caret" :class="{ on: carrierFilter === 'vehicle' }"></i>
-            </button>
-          </div>
-          <div v-if="carrierFilter === 'vehicle'" class="vehicle-chips">
-            <button
-              v-for="vt in vehicleTypes"
-              :key="vt"
-              type="button"
-              class="vehicle-chip"
-              :class="{ active: vehicleFilter === vt }"
-              @click="vehicleFilter = vehicleFilter === vt ? '' : vt"
-            >{{ vt }}</button>
-          </div>
-          <div
-            v-for="c in filteredCarriers"
-            :key="c.id"
-            class="carrier-card"
-            :class="{ 'carrier-card-company': c.kind === 'company' }"
-            @click="openCarrier(c)"
-          >
-            <div class="carrier-side">
-              <img class="carrier-photo" :src="c.photo" alt="" />
-              <span v-if="c.coop" class="carrier-coop">{{ c.coop }}</span>
-            </div>
-            <div class="carrier-info">
-              <div class="carrier-topline">
-                <p class="carrier-name">{{ c.name }}</p>
-                <span class="carrier-rate"><b>{{ c.rate }}</b>推荐</span>
+          <div class="annot-zhiyunShipperHome-field-recommend-card">
+            <p v-if="!filteredCarriers.length" class="carrier-empty">暂无推荐司机</p>
+            <div
+              v-for="c in filteredCarriers"
+              :key="c.id"
+              class="carrier-card"
+              @click="openCarrier(c)"
+            >
+              <div class="carrier-side">
+                <img class="carrier-photo" :src="c.photo" alt="车辆示意" />
+                <span v-if="!isNewShipper && c.coopCount" class="carrier-coop">合作过 {{ c.coopCount }} 次</span>
               </div>
-              <div class="carrier-rows">
-                <p v-if="c.kind === 'company'" class="carrier-row">
-                  <span class="carrier-row-label">运力</span>{{ c.fleet }}
-                </p>
-                <p v-else class="carrier-row">
-                  <span class="carrier-row-label">常跑</span>{{ c.route }} · {{ c.trips }} 趟
-                </p>
-                <p v-if="carrierFilter === 'distance'" class="carrier-row carrier-row-hl">
-                  <span class="carrier-row-label">距装货点</span>{{ c.distance }}km · 预计{{ c.distance <= 15 ? 40 : 70 }}分钟到场
-                </p>
-                <p v-else-if="carrierFilter === 'vehicle'" class="carrier-row carrier-row-hl">
-                  <span class="carrier-row-label">车型</span>{{ c.vehicleType }} · {{ c.kind === 'company' ? '车队匹配' : '整车运输' }}
-                </p>
-                <p class="carrier-row">
-                  <span class="carrier-row-label">车型</span>{{ c.vehicle }}<template v-if="c.kind === 'driver'"> · {{ c.load }}</template>
-                </p>
-                <p v-if="c.kind === 'driver'" class="carrier-row">
-                  <span class="carrier-row-label">承运</span>{{ c.goods }}
-                </p>
-              </div>
-              <div class="carrier-tags">
-                <span class="carrier-tag carrier-tag-gold">{{ c.trustTags[0] }}</span>
-                <span v-if="c.trustTags[1]" class="carrier-tag carrier-tag-purple">{{ c.trustTags[1] }}</span>
-                <span class="carrier-tag carrier-tag-blue">{{ c.platform }}</span>
+              <div class="carrier-info">
+                <div class="carrier-topline">
+                  <p class="carrier-name">{{ c.name }}</p>
+                  <span v-if="!isNewShipper" class="carrier-rate"><b>{{ matchScore(c) }}%</b>推荐</span>
+                </div>
+                <div class="carrier-rows">
+                  <p class="carrier-row carrier-row-vehicle">
+                    <span class="carrier-row-label">车辆</span>{{ vehicleSummary(c) }}
+                  </p>
+                  <p class="carrier-row">
+                    <span class="carrier-row-label">{{ isNewShipper ? '跑过' : '线路' }}</span>{{ routeSummary(c) }}
+                  </p>
+                </div>
+                <div class="carrier-tags">
+                  <span class="carrier-tag carrier-tag-gold">{{ c.trustTags[0] }}</span>
+                  <span class="carrier-tag carrier-tag-purple">准时率 {{ c.onTimeRate }}</span>
+                  <span class="carrier-tag carrier-tag-blue">{{ c.platform }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -298,7 +299,7 @@
         <!-- /可滚动内容区 -->
 
         <!-- 9. 底部 Tab 栏（设计 组合585：渐变背景带 + 中央缺口玻璃带 + 4 Tab + 小简AI白猫） -->
-        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen" class="tab-bar">
+        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen && !profileView && !settleWaybill && !businessOverlayOpen" class="tab-bar" :class="{ 'tab-bar-business': currentTab === 'business' }">
           <img class="tab-bg-top" src="/zhiyun-mobile-assets/icons/tab-band-top.svg" alt="" />
           <img class="tab-bg-bottom" src="/zhiyun-mobile-assets/icons/tab-band-bottom.svg" alt="" />
           <img class="tab-glass" src="/zhiyun-mobile-assets/icons/tab-glass-band.svg" alt="" />
@@ -318,15 +319,14 @@
             <span class="tab-label">{{ aiTab.label }}</span>
           </button>
         </div>
-        <FleetDetailPage v-if="selectedFleet" :carrier="selectedFleet" @back="selectedFleet = null" @target-publish="openTargetedPublish" />
-        <DriverDetailPage v-if="selectedDriver" :driver="selectedDriver" @back="selectedDriver = null" @target-publish="openTargetedPublish" />
+        <DriverDetailPage v-if="selectedDriver" :driver="selectedDriver" :route-name="activeRoute" :match-score="isNewShipper ? null : matchScore(selectedDriver)" :is-new-shipper="isNewShipper" @back="selectedDriver = null" @target-publish="openTargetedPublish" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import AiHomePage from './AiHomePage.vue'
 import AiPublishAdjustPage from './AiPublishAdjustPage.vue'
 import AiCargoRiskPage from './AiCargoRiskPage.vue'
@@ -334,11 +334,15 @@ import AiSettlementPage from './AiSettlementPage.vue'
 import AiMarketInsightPage from './AiMarketInsightPage.vue'
 import AiConversationPage from './AiConversationPage.vue'
 import QuickPublishFlow from './QuickPublishFlow.vue'
-import FleetDetailPage from './FleetDetailPage.vue'
 import DriverDetailPage from './DriverDetailPage.vue'
 import CargoSourcePage from './CargoSourcePage.vue'
+import CargoDetailPage from './CargoDetailPage.vue'
 import WaybillPage from './WaybillPage.vue'
+import WaybillDetailPage from './WaybillDetailPage.vue'
+import WaybillSettlePage from './WaybillSettlePage.vue'
+import BusinessPage from './BusinessPage.vue'
 import MinePage from './MinePage.vue'
+import ProfilePage from './ProfilePage.vue'
 import AccountPage from './AccountPage.vue'
 import InvoicePage from './InvoicePage.vue'
 import InvoiceTitlePage from './InvoiceTitlePage.vue'
@@ -353,46 +357,118 @@ import {
   transitSummary,
   recommendSection,
   carriers,
-  vehicleTypes,
   tabBar,
   aiTab,
+  cargoList,
 } from './mock-data.js'
 
 const emit = defineEmits(['pick-load', 'pick-unload', 'quick-publish', 'open-ai', 'open-transit', 'open-carrier'])
-/* 推荐运力筛选：rate=综合推荐 / distance=距离最近 / vehicle=车型过滤 */
-const carrierFilter = ref('rate')
-const vehicleFilter = ref('')
-/* 综合推荐/车型：物流企业整体优先，同类内按推荐分降序（大宗批量找车先看企业运力） */
-const sortByRateThenKind = (a, b) => {
-  if (a.kind !== b.kind) return a.kind === 'company' ? -1 : 1
-  return Number.parseInt(b.rate, 10) - Number.parseInt(a.rate, 10)
+/* 新用户预览只切换推荐区；页面其余 Mock 模块仍沿用原场景。 */
+const isNewShipper = new URLSearchParams(window.location.search).get('demoUser') === 'new'
+const activeRoute = computed(() => isNewShipper ? '' : recommendSection.route)
+const sampleDay = new Date().toLocaleDateString('sv-SE')
+const sampleOrder = (id) => {
+  let score = [...`${sampleDay}:${id}`].reduce((value, char) => ((value * 33) ^ char.charCodeAt(0)) >>> 0, 5381)
+  score = Math.imul(score ^ (score >>> 16), 0x7feb352d)
+  score = Math.imul(score ^ (score >>> 15), 0x846ca68b)
+  return (score ^ (score >>> 16)) >>> 0
 }
 const filteredCarriers = computed(() => {
   let list = [...carriers]
-  if (carrierFilter.value === 'distance') list.sort((a, b) => a.distance - b.distance)
-  else if (carrierFilter.value === 'vehicle') {
-    if (vehicleFilter.value) list = list.filter(c => c.vehicleType === vehicleFilter.value)
-    list.sort(sortByRateThenKind)
-  } else list.sort(sortByRateThenKind)
-  return list
-})
-function toggleVehicleFilter() {
-  if (carrierFilter.value === 'vehicle') {
-    carrierFilter.value = 'rate'
-    vehicleFilter.value = ''
-  } else {
-    carrierFilter.value = 'vehicle'
+  if (activeRoute.value) list = list.filter(c => c.routes.some(route => route.name === activeRoute.value))
+  if (isNewShipper && !activeRoute.value) {
+    list.sort((a, b) => sampleOrder(a.id) - sampleOrder(b.id))
+    return list.slice(0, 5)
   }
+  return list.sort((a, b) => (matchScore(b) - matchScore(a)) || (b.coopCount - a.coopCount) || (routeTrips(b, activeRoute.value) - routeTrips(a, activeRoute.value))).slice(0, 5)
+})
+function routeTrips(carrier, routeName) {
+  return carrier.routes.find(route => route.name === routeName)?.trips || 0
+}
+/* 讨论中的线路匹配分 Mock：线路趟数 60 分、合作次数 20 分、线路近期承运 20 分。 */
+function matchScore(carrier) {
+  const route = carrier.routes.find(item => item.name === activeRoute.value)
+  if (!route) return 0
+  const recency = route.lastCompletedDays <= 30 ? 20 : route.lastCompletedDays <= 90 ? 12 : 5
+  return Math.min(route.trips, 6) * 10 + Math.min(carrier.coopCount, 4) * 5 + recency
+}
+function routeSummary(carrier) {
+  const route = carrier.routes.find(item => item.name === activeRoute.value)
+    || [...carrier.routes].sort((a, b) => b.trips - a.trips)[0]
+  return route ? `${route.name} · ${route.trips} 趟` : '暂无承运线路'
+}
+function vehicleSummary(carrier) {
+  const list = [...carrier.vehicles]
+  return `${list.slice(0, 2).map(vehicle => `${vehicle.type} ${vehicle.load}`).join(' / ')}${list.length > 2 ? ` 等${list.length}辆` : ''}`
 }
 const showQuickPublish = ref(false)
-const selectedFleet = ref(null)
 const selectedDriver = ref(null)
-const openCarrier = (carrier) => {
-  if (carrier.kind === 'company') selectedFleet.value = carrier
-  else selectedDriver.value = carrier
-}
+const openCarrier = (carrier) => { selectedDriver.value = carrier }
 const publishPrefill = ref(null)
 const currentTab = ref('home')
+const businessOverlayOpen = ref(false)
+const waybillEntry = ref({ token: 0, mode: 'transport', status: 'all', settleStatus: 'all' })
+/* 货源详情：选中列表中的一条记录，详情内操作直接改这条数据，列表与首页口径随之同步 */
+const selectedCargo = ref(null)
+/* 运单详情：来自运单列表，或从货源详情的关联运单弹窗下钻 */
+const selectedWaybill = ref(null)
+const openWaybillsFromMine = ({ mode = 'transport', status = 'all', settleStatus = 'all' }) => {
+  selectedWaybill.value = null
+  settleWaybill.value = null
+  waybillEntry.value = {
+    token: waybillEntry.value.token + 1,
+    mode,
+    status,
+    settleStatus,
+  }
+  currentTab.value = 'order'
+}
+/* 从运单反查所属货源：货源与运单通过 cargoId 关联，切到货源 Tab 并打开对应详情 */
+const openCargoFromWaybill = (waybill) => {
+  const cargo = cargoList.find((item) => item.id === waybill.cargoId)
+  if (!cargo) return
+  selectedWaybill.value = null
+  currentTab.value = 'goods'
+  selectedCargo.value = cargo
+}
+/* 运单结算：逐单结算，结算页与运单 Tab 同层 */
+const settleWaybill = ref(null)
+/* 从运单详情「去结算」进入该运单的结算页 */
+const onWaybillSettle = (waybill) => {
+  selectedWaybill.value = null
+  currentTab.value = 'order'
+  settleWaybill.value = waybill
+}
+/* 结算确认后停留在结算页等付款；付款完成后回到运单列表 */
+const onSettled = (record) => {
+  toast(`${record.number} 已确认结算，请付款`)
+}
+const onPaid = (record) => {
+  toast(`${record.number} 付款完成`)
+  settleWaybill.value = null
+}
+const formatNow = () => {
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+}
+/* 从货源详情的关联运单下钻：运单详情挂在运单 Tab 下，这里同步切换 Tab */
+const onOpenWaybill = (waybill) => {
+  selectedCargo.value = null
+  currentTab.value = 'order'
+  selectedWaybill.value = waybill
+}
+/* 待上架/已取消的货源回到唯一的发布流程继续核对，不在详情页就地发布（R01） */
+const resumePublish = (cargo) => {
+  selectedCargo.value = null
+  publishPrefill.value = {
+    resumeDraft: { cargoNo: cargo.cargoNo, state: cargo.state },
+    goods: cargo.cargo,
+    quantity: cargo.weightNum,
+    price: Number(cargo.unitPrice.replace(/[^\d.]/g, '')),
+  }
+  showQuickPublish.value = true
+}
 const aiEntry = ref('')
 const aiConversation = ref({ open: false, context: 'overview', from: '' })
 /* 二级页：'' | 'adjust' | 'risk' | 'settlement' | 'market'；用 v-show 保持页面内输入与选择状态 */
@@ -436,13 +512,18 @@ const openConversation = (payload = {}) => {
   aiConversation.value = { open: true, context, from: '', detail: payload.detail || '' }
 }
 const closeConversation = () => {
+  if (aiConversation.value.from === 'business') {
+    aiConversation.value = { ...aiConversation.value, open: false, from: '' }
+    currentTab.value = 'business'
+    return
+  }
   aiConversation.value = { ...aiConversation.value, open: false }
 }
 const closeSubPage = () => {
   subPage.value = { key: '', state: {} }
   aiHomeState.value = { ...aiHomeState.value, evidenceOpen: false }
 }
-const unloadText = ref(shipForm.unloadPlaceholder)
+const selectedHomeAddresses = ref({ load: null, unload: null })
 const addressPicker = ref({ mode: null }) // null | 'load' | 'unload'
 
 /* 发票管理：从“我的-我的发票”进入；详情页叠在列表页之上，返回回到列表 */
@@ -456,6 +537,41 @@ const invoicePageRef = ref(null)
 /* 我的账户：统一承接余额、冻结、充值提现、流水与账户管理 */
 const accountOpen = ref(false)
 const accountInitialView = ref('overview')
+/* 企业货主资料仅在当前页面会话内演示，不保存真实证照到本地存储。 */
+const profileView = ref('')
+const personalProfile = ref({
+  name: '张明', avatar: '/zhiyun-mobile-assets/mine/avatar.png',
+  phone: '13800138000', role: '法定代表人 · 企业管理员',
+  idNumber: '', idFrontUrl: '', idFrontName: '', idBackUrl: '', idBackName: '',
+})
+const enterpriseProfile = ref({
+  fullName: '福建飞航娱乐有限公司', shortName: '福建飞航',
+  creditCode: '', legalRepresentative: '张明', registeredAddress: '',
+  contactAddress: '', contactName: '', contactPhone: '',
+  certificationStatus: '已认证', licenseUrl: '', licenseName: '',
+})
+const openProfile = () => {
+  resetInvoice()
+  closeAccount()
+  profileView.value = 'all'
+}
+const revokeLocalImage = (url) => {
+  if (url?.startsWith('blob:')) URL.revokeObjectURL(url)
+}
+const saveProfile = ({ personal, enterprise }) => {
+  for (const key of ['avatar', 'idFrontUrl', 'idBackUrl']) {
+    if (personalProfile.value[key] !== personal[key]) revokeLocalImage(personalProfile.value[key])
+  }
+  if (enterpriseProfile.value.licenseUrl !== enterprise.licenseUrl) revokeLocalImage(enterpriseProfile.value.licenseUrl)
+  personalProfile.value = { ...personalProfile.value, ...personal }
+  enterpriseProfile.value = { ...enterpriseProfile.value, ...enterprise, legalRepresentative: personal.name }
+}
+onBeforeUnmount(() => {
+  revokeLocalImage(personalProfile.value.avatar)
+  revokeLocalImage(personalProfile.value.idFrontUrl)
+  revokeLocalImage(personalProfile.value.idBackUrl)
+  revokeLocalImage(enterpriseProfile.value.licenseUrl)
+})
 const toast = (message) => {
   if (typeof window !== 'undefined' && window.sharedStorage && window.sharedStorage.toast) {
     window.sharedStorage.toast(message)
@@ -539,10 +655,7 @@ const resetInvoice = () => {
 const resetMineSubPages = () => {
   resetInvoice()
   closeAccount()
-}
-
-const applyRoute = (route) => {
-  unloadText.value = route.unload
+  profileView.value = ''
 }
 
 const openAddressPicker = (mode) => {
@@ -551,10 +664,11 @@ const openAddressPicker = (mode) => {
 }
 
 const onAddressConfirm = (addr) => {
-  if (addr.mode === 'load') {
-    shipForm.loadPoint = addr.name
-  } else {
-    unloadText.value = addr.name
+  selectedHomeAddresses.value[addr.mode] = {
+    name: addr.name,
+    detail: addr.detail || '',
+    contactName: addr.contactName || '',
+    contactPhone: addr.contactPhone || '',
   }
   addressPicker.value = { mode: null }
 }
@@ -568,7 +682,7 @@ const openInsight = () => {
 }
 
 const openQuickPublish = () => {
-  publishPrefill.value = null
+  publishPrefill.value = { addresses: { ...selectedHomeAddresses.value } }
   showQuickPublish.value = true
   emit('quick-publish')
 }
@@ -576,7 +690,6 @@ const openTargetedPublish = (target) => {
   publishPrefill.value = {
     targetFleet: { id: target.id, name: target.name, platform: target.platform, kind: target.kind },
   }
-  selectedFleet.value = null
   selectedDriver.value = null
   showQuickPublish.value = true
 }
@@ -593,7 +706,7 @@ const openTransitSummary = (filter = 'all') => {
 }
 
 const selectTab = (key) => {
-  if (key === 'home' || key === 'goods' || key === 'order' || key === 'mine') {
+  if (key === 'home' || key === 'goods' || key === 'business' || key === 'order' || key === 'mine') {
     if (key !== 'mine') resetMineSubPages()
     currentTab.value = key
   }
@@ -919,7 +1032,7 @@ const selectTab = (key) => {
   top: 287px;
   left: 16px;
   right: 16px;
-  height: 230px;
+  height: 200px;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 20px rgba(120, 140, 180, 0.12);
@@ -990,39 +1103,6 @@ const selectTab = (key) => {
   font-weight: 700;
   color: #333;
 }
-.quick-row {
-  margin: 6px 16.5px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.quick-routes-label {
-  font-size: 11px;
-  color: #666;
-}
-.quick-route-chip {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
-  padding: 0 10px;
-  border-radius: 12px;
-  border: 1px solid #c7d6f2;
-  background: #f0f5ff;
-  color: #1e4df6;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-}
-.quick-route-chip:active {
-  background: #dde8ff;
-}
-.quick-setting {
-  margin-left: auto;
-  font-size: 11px;
-  color: #999;
-}
 .submit-btn {
   margin: 8.5px 26px 0;
   width: auto;
@@ -1041,7 +1121,7 @@ const selectTab = (key) => {
 /* ===== 7. 进行中运输汇总 ===== */
 .transit-summary {
   position: absolute;
-  top: 526px;
+  top: 496px;
   left: 16px;
   right: 16px;
   height: 144px;
@@ -1221,7 +1301,7 @@ const selectTab = (key) => {
 /* ===== 8. 推荐运力 ===== */
 .rec-section {
   position: absolute;
-  top: 686px;
+  top: 656px;
   left: 16px;
   right: 16px;
   z-index: 3;
@@ -1232,6 +1312,7 @@ const selectTab = (key) => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 8px;
 }
 .rec-head-main {
   flex: 1;
@@ -1248,87 +1329,16 @@ const selectTab = (key) => {
   font-style: normal;
   color: #3a65ff;
 }
-.rec-subtitle {
-  margin: 4px 0 0 3.65px;
-  font-size: 11px;
-  line-height: 15px;
-  color: #8a96ad;
-}
-.rec-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #999;
-  margin-top: 2px;
-}
-/* 筛选条：智能排序样式（三项等分 + 实心小三角），active 时变蓝 */
-.carrier-filter {
-  display: flex;
-  align-items: center;
-  margin-top: 7px;
-  padding: 0 4px;
-}
-.filter-item {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border: 0;
-  background: none;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-}
-.filter-item.active {
-  color: #3a65ff;
-}
-.filter-caret {
-  width: 0;
-  height: 0;
-  border-left: 4.5px solid transparent;
-  border-right: 4.5px solid transparent;
-  border-bottom: 6px solid currentColor;
-  transition: transform 0.2s;
-}
-.filter-caret.on {
-  transform: rotate(180deg);
-}
-.vehicle-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 6px;
-  padding: 0 4px;
-}
-.vehicle-chip {
-  padding: 4px 12px;
-  border: 1px solid #d9dde6;
-  border-radius: 14px;
+.carrier-empty {
+  margin: 12px 0;
+  padding: 16px;
+  border-radius: 10px;
   background: #fff;
+  color: #79859a;
   font-size: 12px;
-  color: #333;
+  text-align: center;
 }
-.vehicle-chip.active {
-  border-color: #3a65ff;
-  background: #eaf2ff;
-  color: #3a65ff;
-  font-weight: 600;
-}
-.carrier-filter-result {
-  margin: 8px 0 0 4px;
-  font-size: 10px;
-  color: #8a96ad;
-}
-/* 维度高亮行：当前筛选依据用主题蓝加重 */
-.carrier-row-hl,
-.carrier-row-hl .carrier-row-label {
-  color: #3a65ff;
-}
-/* 首页推荐运力卡：规格取自设计稿 组81869（686×279@2x → 343×118@1x）
-   照片 76×102 圆角6、卡片圆角10 内边距8、标题16px、数据行12px、标签9px */
+/* 沿用原推荐卡片的车辆图、合作胶囊和信息区结构。 */
 .carrier-card {
   margin-top: 8px;
   background: #fff;
@@ -1424,14 +1434,20 @@ const selectTab = (key) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.carrier-row-vehicle {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 .carrier-row-label {
   display: inline-block;
   width: 34px;
   color: #999;
-  font-weight: 700;
+  font-weight: 500;
 }
 .carrier-tags {
-  margin-top: 9px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1468,6 +1484,13 @@ const selectTab = (key) => {
   height: 130.5px; /* 261@750 → @375 */
   z-index: 20;
   pointer-events: none; /* 悬浮层不拦截内容点击，只让导航项可点 */
+}
+.tab-bar-business::before {
+  content: '';
+  position: absolute;
+  inset: 54px 0 0;
+  border-radius: 16px 16px 0 0;
+  background: rgba(250, 252, 255, 0.94);
 }
 .tab-bg-top,
 .tab-bg-bottom,
@@ -1514,7 +1537,7 @@ const selectTab = (key) => {
 /* 图标中心 x@750：首页81 / 货源216 / 运单534 / 我的669 → @375 */
 .tab-home { left: 40.5px; }
 .tab-goods { left: 108px; }
-.tab-order { left: 267px; }
+.tab-business { left: 267px; }
 .tab-mine { left: 334.5px; }
 .tab-icon {
   width: 22px;

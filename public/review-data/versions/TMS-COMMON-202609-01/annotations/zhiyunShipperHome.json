@@ -1,7 +1,600 @@
 {
   "versionId": "TMS-COMMON-202609-01",
   "page": "zhiyunShipperHome",
-  "title": "zhiyunShipperHome",
-  "updatedAt": "2026-09-23",
-  "annotations": []
+  "title": "智运货主端首页",
+  "updatedAt": "2026-10-04",
+  "annotations": [
+    {
+      "id": "annot-zhiyunShipperHome-action-quick-publish-address",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-action-quick-publish-address",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "快速发布与装卸地址带入",
+      "content": "首页只有一个快速发布入口。装货、卸货地址分别由货主选择；已选地址带入同一发布流程供核对、更换，未选地址在发布页补充。点击快速发布只进入填写，不创建已发布货源。地图示意和历史线路不等于本次已确认地址；修改本次地址不联动刷新推荐司机。",
+      "category": "action",
+      "source": "首页PRD 2.1、R01、5.1；2026-09-30用户确认首页已选地址带入发布页；App.vue、QuickPublishFlow.vue",
+      "container": "page",
+      "group": "home",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-transit-summary",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-transit-summary",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "执行中货源汇总与分类",
+      "content": "一张卡汇总当前货主全部执行中货源。货源票数与涉及车辆数分别统计；异常待关注、今日待装、今日预计送达是分类观察，不能相加当总量。查看全部与分类入口应将对应条件传给货源列表并按条件过滤；异常提示须关联真实事件，不因首页提示直接结案。",
+      "category": "rule",
+      "source": "首页PRD R04、5.2、H09-H10；App.vue 当前分类入口",
+      "container": "page",
+      "group": "home",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-filter-recommend-source",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-filter-recommend-source",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "默认线路如何匹配并推荐司机",
+      "content": "**确定默认线路（智运业务数据）**\n读取当前货主近180天已完成货源，同一货源ID只计1票，按装货市→卸货市的有向城市对汇总；至少3票的线路进入常发线路集合。首页只取完成票数最多的一条作为默认线路；票数相同时取最近一票完成时间更近的线路。本期首页不提供线路、车型切换，也不展示常发线路副标题和司机数量。\n\n**匹配候选（来源平台数据）**\n来源平台提供平台ID、稳定司机ID、司机姓名、关联车辆和已完成运输记录（记录ID、装卸城市、完成时间）。按平台ID＋司机ID归一司机、按运输记录ID去重；近180天与默认线路同方向至少完成1笔运输的司机才进入候选，反方向不算。不加入“可承接状态／服务区域／允许邀请”这类未定义门槛。首页快速发布填写的地址不影响本次推荐。\n\n**排序与无线路结果**\n候选司机按卡片推荐百分比降序展示；百分比口径见司机卡片标注。没有达标常发线路时，从可展示司机池随机发现，不显示推荐百分比；没有符合条件的司机时显示空状态，不补入不符条件者。同分排序、随机刷新周期、跨平台同一司机识别仍待确认。",
+      "category": "filter",
+      "source": "首页PRD R02-R03、5.3、H02-H04；2026-09-30用户确认180天/3票/1笔、默认线路及线路与司机候选联动；D03讨论；App.vue 推荐区",
+      "container": "page",
+      "group": "home",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-recommend-card",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-recommend-card",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "司机卡片展示字段与数据来源",
+      "content": "一名司机一张卡；平台ID＋司机ID是列表与详情的关联键，多辆车不拆成多张卡。\n\n| 展示位置／字段 | 取值来源与口径 |\n| --- | --- |\n| 左图：车辆图片 | 来源平台的司机关联车辆照片，不用司机头像；无照片用车辆占位图，不能拿其他司机照片充数。 |\n| 图片角标：合作过N次 | 智运当前货主与该司机的已完成运单，按运单ID去重；0次不显示角标。 |\n| 首行：司机姓名、N%推荐 | 姓名取来源平台司机档案；有默认常发线路时显示下述计算结果，无达标线路时隐藏百分比。 |\n| 车辆行：车型、载重 | 来源平台关联车辆档案；卡片最多列两组车型／载重，多车详情展开；不展示登记车辆总数，也不保证哪辆车实际执行。 |\n| 线路行：方向城市对、N趟 | 来源平台司机近180天同方向已完成运输记录，按记录ID去重；有默认线路时显示该线路，否则显示司机有事实的代表线路。代表线路并列取舍待确认。 |\n| 底部：履约N单、整体准时率N%、来源平台名 | 履约与整体准时率取该来源平台提供的司机整体指标，不按当前线路小样本重算；平台名取平台档案。平台未提供指标时不展示对应标签。 |\n\n**推荐百分比＝线路分＋合作分＋近期分（上限100%）**\n- 线路分：min(司机近180天该方向已完成运输笔数, 6)×10，最多60分；取来源平台承运记录。\n- 合作分：min(本货主与该司机已完成运单数, 4)×5，最多20分；取智运运单，按运单ID去重，不用平台整体履约单数。\n- 近期分：该方向最近一笔完成时间距今≤30天20分、31～90天12分、91～180天5分；取同一平台承运记录。三项之和不是准时率或接单概率。车辆图片接口字段、准时率分子分母及统计周期、跨平台同一司机去重仍待接入方案收口。",
+      "category": "field",
+      "source": "首页PRD R03、R05-R06、5.4、H05-H08；D03 4.4-4.5；2026-09-29用户确认卡片字段；App.vue",
+      "container": "page",
+      "group": "home",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-action-address-confirm",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-action-address-confirm",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "装卸地址分别确认",
+      "content": "装货地、卸货地各自选择和确认，只回填当前一端，不覆盖另一端。选中地址只是填写发布上下文，不代表货源已发布；进入发布页仍可更换地址、补充详细地址和选填联系人。地址选择不触发推荐司机重算。",
+      "category": "action",
+      "source": "首页PRD 2.1、5.1；2026-09-30用户确认；AddressPickerPage.vue、App.vue",
+      "container": "modal",
+      "group": "addressPicker",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-driver-ability",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-driver-ability",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "司机车辆能力与历史承运",
+      "content": "详情与列表使用同一司机身份和来源平台。司机可关联多辆车，展示车型与载重；实际执行车辆在司机接单时确定。线路及趟数统计近180天同方向的已完成承运，货品是实际承运过的品类，都不表示司机此刻可出车。多条承运线路的代表线路选择规则仍待确认。",
+      "category": "field",
+      "source": "首页PRD R03、R06、5.5、H05、H08；D03 4.4；DriverDetailPage.vue",
+      "container": "modal",
+      "group": "driverDetail",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-driver-records",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-driver-records",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "平台履约与本货主合作分源",
+      "content": "履约单数和整体准时率来自来源平台，回答司机总体跑得怎样；‘你和TA’的合作次数、最近合作来自当前货主在智运的关联业务记录，不能与平台整体单量混算。没有合作记录就不显示合作次数；来源平台未返回履约指标时不展示该指标。准时率样本、责任归属、统计周期与更新频率仍待确认。",
+      "category": "rule",
+      "source": "首页PRD R05、5.5、H07；D03 4.4-4.5；DriverDetailPage.vue",
+      "container": "modal",
+      "group": "driverDetail",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-action-target-publish",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-action-target-publish",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "定向发布只是邀请司机承接",
+      "content": "从司机详情发起时，将稳定司机标识和来源平台带入同一货源发布流程；货主仍需核对货源内容与最终定向范围。点击定向发布不等于派车、预占货量或司机已接单；货源发布后由指定司机自主承接。发布结果须回显定向范围，司机端须按该范围展示货源并校验承接资格。",
+      "category": "action",
+      "source": "首页PRD R07、5.5、H11；D03 2.1；App.vue、DriverDetailPage.vue、QuickPublishFlow.vue",
+      "container": "modal",
+      "group": "driverDetail",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-publish-address-review",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-publish-address-review",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "发布首步核对首页已选地址",
+      "content": "普通快速发布带入首页已经确认的装货、卸货地址；未选的一端保持待填写。发布页两端都可更换、补详细地址并填写选填的联系人、电话。地图路线仅作示意，不从历史线路自动写入本次地址、货品、日期或价格。",
+      "category": "field",
+      "source": "首页PRD 2.1、5.1、6；2026-09-30用户确认；App.vue、QuickPublishFlow.vue",
+      "container": "modal",
+      "group": "publishInfo",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-target-driver",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-target-driver",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "发布流程保留定向司机身份",
+      "content": "定向发布首步沿用司机详情传入的司机标识和来源平台，页面横幅展示已选司机。横幅不代表货源已定向发布成功；发布前需最终确认指定司机及来源平台，成功结果须展示定向范围，并由司机端按范围控制可见与自主承接。",
+      "category": "rule",
+      "source": "首页PRD 5.5、H11；D03 2.1；App.vue、QuickPublishFlow.vue",
+      "container": "modal",
+      "group": "publishInfo",
+      "createdAt": "2026-09-30"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-publish-transport-conditions",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-publish-transport-conditions",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "日期、路耗与开票条件",
+      "content": "**日期与路耗**\n- 装卸日期只选到日，不附带固定时刻。\n- 允许少／允许多分别以−／＋填写且均选填；未填写不表示零容忍。\n\n**开票选择**\n需要／无需开票只表达本单发布条件，不产生发票申请，也不跳过先款后票。",
+      "category": "field",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R01、R02、R11、7.1",
+      "container": "modal",
+      "group": "publishInfo",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-cargo-plan-list",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-cargo-plan-list",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "一票货源对应同一运输计划",
+      "content": "一张卡对应一票货源计划，可关联多个发布平台及多张运单。多平台不复制总货量；接单、运输完成和付款完成分别表达，不能互相代替。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md 3.1、5.1",
+      "container": "page",
+      "group": "cargoList",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-cargo-shared-quantity",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-cargo-shared-quantity",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "多个平台共同承接同一计划",
+      "content": "**货量关系**\n- 司机接单占用计划货量，装货时处理差额；各平台共同承接同一剩余量。\n- 各平台承接量是原计划的分布，不是新增货量；已接量不能当作送达量。\n\n**扩大发布边界**\n扩大发布只新增原计划的平台发布记录，已接任务保持不变。剩余量为0时不再扩大范围。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R07、R09、3.3",
+      "container": "page",
+      "group": "cargoDetail",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-cargo-related-waybills",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-cargo-related-waybills",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "关联运单追踪具体运输",
+      "content": "每张运单关联原货源、承接平台及实际司机。这里追踪具体运输，不为每个平台重新生成一份货源总计划；装卸、送达事实与接单量分开。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md 3.1、5.1、7.2",
+      "container": "drawer",
+      "group": "cargoWaybills",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-publish-address-edit",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-publish-address-edit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "两端联系信息分别选填",
+      "content": "仅修改当前装货或卸货一端，联系人和电话分别保存、均选填，留空不阻断发布。可更换地址并补充详细地址；修改地址不触发推荐司机重算。",
+      "category": "field",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R01；首页PRD 5.1",
+      "container": "drawer",
+      "group": "publishAddressEdit",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-publish-template-local",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-publish-template-local",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "核算模板只带入本次货源",
+      "content": "模板带入单价、补贴、扣减与抹零条件，货主可继续修改本单各项；本单修改不回写原模板。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R02、C02",
+      "container": "drawer",
+      "group": "publishRuleTemplate",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-publish-price-estimate",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-publish-price-estimate",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "唯一发布单价与预估总额",
+      "content": "货主填写的运输单价是本次发布价，各平台不分别报价。\n\n`预估总额＝货量×发布单价`\n\n第二步只展示一个预估总额；行情价仅作参考，带入后仍需货主核对。预估不替代实际运单结算。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R03、5.3",
+      "container": "modal",
+      "group": "publishMode",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-publish-platform-quota",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-publish-platform-quota",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "平台可用额度与提交复核",
+      "content": "**两层金额额度**\n已划拨货主分额度时，可用额度取货主分额度余额与平台共享池余额的较小值；未划拨则使用共享池，两层不得相加。单位为含税运费金额。\n\n**不可用平台**\n额度不足时保留平台行并整行不可选，不自动拆量承接；平台池余额不展示给货主，以“接单已满”等结果说明。货主自身分额度按运营配置展示，自身划拨额度用尽才采用额度口径。\n\n**提交与冲销**\n确认提交时再次校验并明确提示变化平台。发布预占、实际开票多退少补，相应取消／未承接／推送失败部分释放；适用两层同步调整，跨月结转。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-货源-PRD-v1.md R04—R06、5.3、C03",
+      "container": "modal",
+      "group": "publishMode",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-object-boundary",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-object-boundary",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "经营复用货源和运单事实",
+      "content": "固定经营入口承载货源、运单、在途及财务视角，不以AI问答为前置条件。经营汇总复用原业务对象，不新建第二套运输状态或批次结算单；具体办理回到所属业务模块。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R01、R02、5.1",
+      "container": "page",
+      "group": "business",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-market-reference",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-market-reference",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运价参考不等于实际收益",
+      "content": "行情比较需说明线路、货品、车型、样本周期及来源。情景差额不能称为已节省，不默认低价一定能接单，也不能据参考差额自动修改原运单价格。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R05、5.4",
+      "container": "page",
+      "group": "business",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-financial-states",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-financial-states",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "待结算与已确认应付分别展示",
+      "content": "尚未形成最终结算金额时不填0元，也不合入已确认应付款。待付款表示该运单已确认结算、尚未付款；已结算表示付款完成，不代表已开票。经营汇总不合并支付，仍按运单独立交易。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R02、R03、3.2、5.5",
+      "container": "page",
+      "group": "business",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-cargo-detail",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-cargo-detail",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "经营明细沿用原货源关系",
+      "content": "货源经营明细追溯原计划及其关联运单；查看明细不改变货源状态、不生成新计划。货量、货源数与运单数分别表达，接单事实不能代替送达事实。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R02、3.1；货源PRD 3.1、5.1",
+      "container": "drawer",
+      "group": "businessCargoDetail",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-event-evidence",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-event-evidence",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "风险核查与处理进度分开",
+      "content": "**风险与处理**\n疑似、已经确认是风险结论，与当前处理进度分别表达，材料及核查来源可追溯。\n\n**角色与证据**\n平台负责核查，货主查看与联系。车辆恢复定位或继续行驶不证明货品安全，经营查看不自动改变事件状态。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R04、3.2、5.3",
+      "container": "drawer",
+      "group": "businessEventDetail",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-business-bill-detail",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-business-bill-detail",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "费用明细仍按单运单结算",
+      "content": "明细关联原运单与货源，不生成批次结算单或合并付款。待结算尚无最终应付，待付款已确认金额但未付款，已结算表示付款完成；运输、结算及开票状态分别保留。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-经营-PRD-v1.md R02、R03、3.2",
+      "container": "drawer",
+      "group": "businessBillDetail",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-action-mine-profile-entry",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-action-mine-profile-entry",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "企业资料只保留统一入口",
+      "content": "本端服务企业货主，当前账号为企业管理员兼法定代表人。资料卡进入唯一“我的资料”，分管理员与法人、企业资料与认证两块，不另设重复认证和企业资料菜单。",
+      "category": "action",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R01、2.1",
+      "container": "page",
+      "group": "mine",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-profile-person-fields",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-profile-person-fields",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "管理员姓名与法人姓名保持一致",
+      "content": "当前账号为企业管理员兼法人；修改管理员姓名时法人姓名保持一致，不在企业块另行编辑法人姓名。登录手机号只读；身份证号查看态脱敏，人像面与国徽面并排且可选择、预览。",
+      "category": "field",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R01、R02、7.1",
+      "container": "modal",
+      "group": "profile",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-profile-enterprise-certification",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-profile-enterprise-certification",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "企业资料保存与认证结果分开",
+      "content": "企业联系方式并入企业资料，营业执照可维护和预览；认证状态只读。资料保存不表示认证通过，不由上传或本地保存动作推导正式审核结果。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R02、2.1、3.4、5.2",
+      "container": "modal",
+      "group": "profile",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-waybill-transport-finance",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-waybill-transport-finance",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运单运输与财务状态分开",
+      "content": "运单关联原货源及承接平台，运输执行、结算付款和开票分别表达。装卸凭证齐全不等于已付款，运输完成不自动产生已结算或已开票结果。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md 3.1、3.2、5.3",
+      "container": "page",
+      "group": "waybillTransport",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-waybill-settlement-states",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-waybill-settlement-states",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "结算三态与逐单办理条件",
+      "content": "| 状态 | 货主办理 | 结果 |\n| --- | --- | --- |\n| 待结算 | 装卸凭证缺失时只补凭证；齐全后核对并确认本运单结算 | 进入待付款 |\n| 待付款 | 核对运费全额及实际收款方，逐单付款 | 付款完成进入已结算 |\n| 已结算 | 查询本运单付款结果，衔接申请发票 | 不代表已开票 |\n\n不增加货主端处理中、结算驳回或批次结算单；平台内部核算复核不进入上述三态。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R03、R04、3.2",
+      "container": "page",
+      "group": "waybillSettlement",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-settle-vouchers",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-settle-vouchers",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "装卸凭证齐全才允许结算",
+      "content": "仅办理当前运单；装货或卸货凭证缺失时只提供补凭证，齐全后由货主主动确认结算，进入待付款。不追加独立必传核算凭证附件，不生成批次结算单。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R03、R04、2.2、3.2",
+      "container": "page",
+      "group": "waybillSettle",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-settle-payee",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-settle-payee",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运费全额付给承接平台",
+      "content": "待付款运单核对运费全额及承接平台结算主体全称，不能只展示平台品牌名。智运不经手运费，货主端不展示抽佣、平台侧技术服务费，也不附加货主信息服务费。付款完成后本运单进入已结算并关联一条付款流水。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R03、R06、3.2",
+      "container": "page",
+      "group": "waybillPayment",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-account-two-levels",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-account-two-levels",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "钱包与银行账户分别承担用途",
+      "content": "货主可理解的账户层级为钱包余额与绑定银行账户。钱包承载独立充值、余额付款及提现方向；银行账户用于充值来源与提现去向。不展示银行待分配账户等内部概念。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R06、3.1、5.4",
+      "container": "modal",
+      "group": "account",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-invoice-paid-waybill",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-invoice-paid-waybill",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "先款后票，一张运单一张发票",
+      "content": "未付款运单不能申请；开票对象为已付款运单，货源仅用于查找关联运单。当前只开电子发票，不做部分开票；发布时选“需要开票”不产生申请。一张运单对应一张发票，多张运单不能合成一张发票。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R07、2.3、5.5",
+      "container": "modal",
+      "group": "invoiceSelect",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-field-invoice-company-header",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-field-invoice-company-header",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "企业普票抬头必填基线",
+      "content": "企业普票抬头的企业名称、纳税人识别号、收票邮箱必填。",
+      "category": "field",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R09、7.3、M09",
+      "container": "modal",
+      "group": "invoiceApply",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-invoice-record-status",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-invoice-record-status",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "平台开票采用统一四态",
+      "content": "申请由货主发起、平台审核开具，货主查看平台结果；业务视图统一待开票、开票中、已开票、已驳回。平台审核与票据校验不另拆两套状态，额度不足不新增发票状态。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R08、3.3",
+      "container": "modal",
+      "group": "invoiceRecords",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-invoice-detail-result",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-invoice-detail-result",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "驳回重申请与已开票结果",
+      "content": "记录及详情追溯当前运单、承接平台与电子发票。已驳回时查看原因后可重新申请；已开票时可查看和获取电子票。一张运单仍只对应一张发票，不合并多张运单开票或生成第二张同运单发票。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R07、R08、3.3、5.5",
+      "container": "modal",
+      "group": "invoiceDetail",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "id": "annot-zhiyunShipperHome-rule-account-single-waybill-flow",
+      "type": "selector",
+      "selector": ".annot-zhiyunShipperHome-rule-account-single-waybill-flow",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "付款流水逐运单关联发票",
+      "content": "一张运单对应一次付款和一条资金流水；详情关联本运单、承接平台结算主体及该运单的电子发票。\n\n已付款且已开票时展示关联发票；不把多张运单合成一条付款流水或一张合计发票，付款成功不等于已开票。",
+      "category": "rule",
+      "source": "prd/common/products/zhiyun/mobile/至简智运货主端-我的-PRD-v1.md R03、R06—R08、3.1；2026-09-26结算粒度记录第5节；2026-10-03用户重申逐运单展示流水",
+      "container": "drawer",
+      "group": "accountTransaction",
+      "createdAt": "2026-10-04"
+    }
+  ]
 }

@@ -1,0 +1,3 @@
+<template>
+  <div class="ios-bar"><span>9:41</span><svg aria-hidden="true" width="67" height="14" viewBox="0 0 67 14" fill="#151515"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" width="3" height="14" rx="1"/><path d="M31 3c3 0 6 1 8 3l2-2C35-1 27-1 21 4l2 2c2-2 5-3 8-3zm0 5c2 0 3 1 4 2l2-2c-3-3-9-3-12 0l2 2c1-1 2-2 4-2zm-2 3 2 3 2-3c-1-1-3-1-4-2z"/><rect x="47" y="2" width="18" height="10" rx="2" fill="none" stroke="#151515"/><rect x="49" y="4" width="14" height="6" rx="1"/><path d="M66 5h1v4h-1z"/></svg></div>
+</template>

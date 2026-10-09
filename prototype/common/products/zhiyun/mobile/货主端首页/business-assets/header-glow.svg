@@ -1,0 +1,51 @@
+<svg viewBox="0 0 792 728" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="792.000000" height="728.000000" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_208">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="60" />
+		</g>
+		<filter id="filter_208" width="640.000000" height="640.000000" x="22.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_208)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="20" result="effect_layerBlur_1" />
+		</filter>
+		<radialGradient id="paint_radial_0" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-260,0,0,-260,342,320)">
+			<stop stop-color="rgb(133,149,206)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(74,127,255)" offset="1" stop-opacity="0" />
+		</radialGradient>
+		<g id="pixso_custom_effect_209">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="50" />
+		</g>
+		<filter id="filter_209" width="500.000000" height="500.000000" x="292.000000" y="228.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_209)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="16.666666" result="effect_layerBlur_1" />
+		</filter>
+		<radialGradient id="paint_radial_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-200,0,0,-200,542,478)">
+			<stop stop-color="rgb(197,217,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(197,217,255)" offset="1" stop-opacity="0" />
+		</radialGradient>
+		<g id="pixso_custom_effect_210">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="55" />
+		</g>
+		<filter id="filter_210" width="470.000000" height="470.000000" x="0.000000" y="243.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_210)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="18.333334" result="effect_layerBlur_1" />
+		</filter>
+		<radialGradient id="paint_radial_2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-180,0,0,-180,235,478)">
+			<stop stop-color="rgb(94,111,151)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(47,95,204)" offset="1" stop-opacity="0" />
+		</radialGradient>
+	</defs>
+	<g id="组合 708">
+		<g opacity="0.280000001" filter="url(#filter_208)">
+			<rect id="光晕-蓝主" width="520.000000" height="520.000000" x="82.000000" y="60.000000" rx="260.000000" fill="url(#paint_radial_0)" />
+		</g>
+		<g opacity="0.5" filter="url(#filter_209)">
+			<rect id="光晕-天蓝中" width="400.000000" height="400.000000" x="342.000000" y="278.000000" rx="200.000000" fill="url(#paint_radial_1)" />
+		</g>
+		<g opacity="0.150000006" filter="url(#filter_210)">
+			<rect id="光晕-深蓝左下" width="360.000000" height="360.000000" x="55.000000" y="298.000000" rx="180.000000" fill="url(#paint_radial_2)" />
+		</g>
+	</g>
+</svg>

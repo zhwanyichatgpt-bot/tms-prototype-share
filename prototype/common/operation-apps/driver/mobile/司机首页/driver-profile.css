@@ -1,0 +1,152 @@
+.driver-profile-page,
+.driver-profile-page * { box-sizing: border-box; }
+
+.driver-profile-page {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eef0f5;
+  color: #30394a;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.driver-profile-page .profile-status { z-index: 20; background: rgba(238, 240, 245, .96); backdrop-filter: blur(8px); }
+.profile-scroll { position: absolute; inset: 38px 0 0; overflow-x: hidden; overflow-y: auto; padding-bottom: 28px; scrollbar-width: none; }
+.profile-scroll::-webkit-scrollbar { display: none; }
+
+.profile-header { display: grid; height: 48px; padding: 0 15px; background: #eef0f5; align-items: center; grid-template-columns: 32px 1fr 32px; }
+.driver-profile-page .profile-header button { display: grid; width: 30px; height: 30px; padding: 0; border: 0; background: transparent; color: #333; font-size: 18px; place-items: center; }
+.profile-header h1 { margin: 0; color: #333; font-size: 17px; line-height: 24px; text-align: center; }
+
+/* 待处理提醒：只在证件异常时出现，正常时整块不渲染 */
+.profile-alert-card { display: flex; margin: 10px 15px 0; padding: 12px 13px; border: 1px solid #ffe2cc; border-radius: 8px; background: #fff8f2; }
+.profile-alert-card > i { display: grid; width: 26px; height: 26px; margin-right: 9px; border-radius: 7px; background: #ffeddd; color: #ef7f35; font-size: 15px; font-style: normal; flex: 0 0 auto; place-items: center; }
+.profile-alert-card > div { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 5px; }
+.profile-alert-card strong { color: #30394a; font-size: 13px; line-height: 18px; }
+.profile-alert-card p { margin: 0; padding-left: 8px; border-left: 2px solid #ffd0ab; color: #6d7482; font-size: 11px; line-height: 16px; }
+.profile-alert-card p.expired,
+.profile-alert-card p.rejected { border-left-color: #ffb9b0; color: #d94f3d; }
+
+.profile-card { margin: 12px 15px 0; padding: 14px; border: 1px solid #edf0f4; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(34, 44, 79, .05); }
+.profile-card h2 { margin: 0; color: #30343b; font-size: 15px; font-weight: 700; line-height: 21px; }
+.profile-card-heading { display: flex; align-items: baseline; justify-content: space-between; }
+.profile-card-heading small { color: #8a91a1; font-size: 10px; }
+
+/* 身份信息：头像行是唯一带操作色的行，其余字段行保持中性 */
+.profile-avatar-row { display: flex; width: 100%; margin-top: 12px; padding: 0 0 12px; border: 0; border-bottom: 1px solid #f1f4f8; background: transparent; color: inherit; align-items: center; text-align: left; }
+.profile-avatar-row img { width: 52px; height: 52px; margin-right: 11px; border-radius: 50%; flex: 0 0 auto; object-fit: cover; }
+.profile-avatar-row > span { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 5px; }
+.profile-avatar-row strong { color: #30394a; font-size: 16px; line-height: 22px; }
+.profile-avatar-row small { color: #8a91a1; font-size: 11px; }
+.profile-avatar-row em { color: #3a65ff; font-size: 11px; font-style: normal; font-weight: 500; }
+
+.profile-field-row { display: flex; width: 100%; min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid #f1f4f8; background: transparent; color: #30394a; align-items: center; text-align: left; }
+.driver-profile-page .profile-field-row:last-of-type { border-bottom: 0; }
+.profile-field-row > span { min-width: 62px; color: #30394a; font-size: 13px; }
+.profile-field-row > strong { margin-left: auto; color: #6d7482; font-size: 13px; font-weight: 500; }
+.profile-field-row > strong.verified { display: flex; color: #17ae7c; align-items: center; gap: 3px; }
+.profile-field-row > .van-icon { margin-left: 5px; color: #a0a9b7; font-size: 10px; }
+.profile-field-row.readonly { border-bottom: 0; }
+.profile-field-note { margin: 8px 0 0; color: #9aa3b1; font-size: 10px; line-height: 16px; }
+
+/* 司机证件：本页核心信息，状态标签与剩余天数成对出现 */
+.profile-cert-row { display: flex; padding: 12px 0; border-top: 1px solid #f1f4f8; align-items: flex-start; }
+.profile-cert-row:first-of-type { margin-top: 12px; }
+/* 从待办进入时高亮目标证件/车辆，让司机一眼看到要处理哪一项 */
+.profile-cert-row.focused,
+.profile-vehicle-row.focused { margin: 0 -8px; padding-right: 8px; padding-left: 8px; border-radius: 8px; background: #f5f8ff; }
+.profile-cert-row > .cert-icon { display: grid; width: 32px; height: 32px; margin-right: 10px; border-radius: 8px; background: #edf2ff; color: #4776f5; font-size: 17px; font-style: normal; flex: 0 0 auto; place-items: center; }
+.cert-content { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
+.cert-title { display: flex; align-items: center; gap: 7px; }
+.cert-title strong { color: #30394a; font-size: 14px; line-height: 20px; }
+.cert-title em { padding: 2px 7px; border-radius: 8px; font-size: 10px; font-style: normal; font-weight: 600; }
+
+/* 证件登记项：字段名与值左右分列，长值（发证机关）换行不挤压 */
+.cert-fields { display: flex; margin: 2px 0 0; flex-direction: column; gap: 3px; }
+.cert-fields > div { display: flex; align-items: baseline; gap: 8px; }
+.cert-fields dt { min-width: 52px; color: #9aa3b1; font-size: 11px; flex: 0 0 auto; }
+.cert-fields dd { margin: 0; color: #6d7482; font-size: 11px; font-weight: 500; line-height: 16px; word-break: break-all; }
+
+.cert-content small { color: #8a91a1; font-size: 11px; line-height: 16px; }
+.cert-content .cert-reviewing { color: #3a65ff; }
+.cert-content .cert-rejected { color: #d94f3d; }
+.driver-profile-page .cert-action { min-width: 52px; height: 26px; margin-left: 8px; padding: 0 10px; border: 1px solid #dde5f5; border-radius: 13px; background: #fff; color: #3a65ff; font-size: 11px; font-weight: 500; flex: 0 0 auto; }
+
+/* 状态色：生效中用绿、到期风险用橙、失效与驳回用红、审核中用蓝 */
+.tone-valid { background: #eaf9f4; color: #17ae7c; }
+.tone-expiring { background: #fff3e8; color: #ef7f35; }
+.tone-expired { background: #ffeeeb; color: #d94f3d; }
+.tone-reviewing { background: #edf2ff; color: #3a65ff; }
+.tone-rejected { background: #ffeeeb; color: #d94f3d; }
+
+/* 原型模拟审核入口：真实业务中由平台后台触发，此处仅用于验证两条审核路径 */
+.profile-review-bar { display: flex; margin-top: 12px; padding: 10px; border: 1px dashed #d8e2fb; border-radius: 8px; background: #f7faff; align-items: center; flex-wrap: wrap; gap: 6px; }
+.profile-review-bar > span { color: #8a91a1; font-size: 10px; }
+.driver-profile-page .profile-review-bar button { height: 24px; padding: 0 9px; border: 1px solid #cfdcff; border-radius: 12px; background: #fff; color: #3a65ff; font-size: 10px; }
+.driver-profile-page .profile-review-bar button.reject { border-color: #ffd3cb; color: #d94f3d; }
+
+/* 我的车辆：多车列表，车牌与证照状态是扫读重点 */
+.profile-vehicle-row { display: flex; padding: 12px 0; border-top: 1px solid #f1f4f8; align-items: center; }
+.profile-vehicle-row:first-of-type { margin-top: 12px; }
+/* 车辆行本身也是 flex 容器，聚焦态沿用证件行的浅蓝底 */
+.profile-vehicle-row.focused { border-top-color: transparent; }
+.driver-profile-page .vehicle-main { display: flex; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; flex: 1; flex-direction: column; gap: 5px; text-align: left; }
+.vehicle-plate { display: flex; color: #30394a; font-size: 15px; font-weight: 700; line-height: 21px; align-items: center; gap: 7px; }
+.vehicle-plate em { padding: 2px 7px; border-radius: 8px; background: #edf2ff; color: #3a65ff; font-size: 10px; font-style: normal; font-weight: 600; }
+.vehicle-main small { color: #8a91a1; font-size: 11px; line-height: 16px; }
+.vehicle-main small.tone-valid,
+.vehicle-main small.tone-expiring,
+.vehicle-main small.tone-expired { display: inline-block; padding: 2px 0; font-weight: 500; background: transparent; }
+.vehicle-main small.tone-valid { color: #17ae7c; }
+.vehicle-main small.tone-expiring { color: #ef7f35; }
+.vehicle-main small.tone-expired { color: #d94f3d; }
+.driver-profile-page .vehicle-set-default { min-width: 62px; height: 26px; margin-left: 8px; padding: 0 10px; border: 1px solid #dde5f5; border-radius: 13px; background: #fff; color: #3a65ff; font-size: 11px; font-weight: 500; flex: 0 0 auto; }
+
+.driver-profile-page .profile-add-button { display: flex; width: 100%; height: 38px; margin-top: 12px; border: 1px dashed #d8e2fb; border-radius: 8px; background: #f7faff; color: #3a65ff; font-size: 13px; font-weight: 500; align-items: center; justify-content: center; gap: 5px; }
+
+.profile-note { margin: 14px 15px 0; color: #9aa3b1; font-size: 10px; line-height: 16px; }
+
+/* 底部弹层：沿用钱包与常跑路线页的浮层写法 */
+.profile-overlay { position: absolute; z-index: 60; inset: 0; display: flex; background: rgba(17, 24, 39, .38); align-items: flex-end; }
+.profile-sheet { width: 100%; max-height: 78%; overflow-y: auto; padding: 8px 18px 18px; border-radius: 16px 16px 0 0; background: #fff; scrollbar-width: none; }
+.profile-sheet::-webkit-scrollbar { display: none; }
+.profile-sheet-handle { width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: #e3e8f0; }
+.profile-sheet h2 { margin: 0; color: #30343b; font-size: 16px; font-weight: 700; line-height: 22px; }
+.profile-sheet-note { margin: 7px 0 14px; color: #8a91a1; font-size: 11px; line-height: 17px; }
+.driver-profile-page .profile-sheet-option { display: block; width: 100%; height: 46px; margin-bottom: 8px; border: 1px solid #edf0f4; border-radius: 8px; background: #f9fbfe; color: #30394a; font-size: 14px; }
+.driver-profile-page .profile-sheet-cancel { display: block; width: 100%; height: 44px; margin-top: 4px; border: 0; border-radius: 8px; background: #f2f4f8; color: #6d7482; font-size: 14px; }
+
+.profile-sheet-field { display: flex; min-height: 46px; padding: 0 12px; border: 1px solid #edf0f4; border-radius: 8px; background: #f9fbfe; align-items: center; margin-bottom: 9px; gap: 8px; }
+.profile-sheet-field > span { min-width: 62px; color: #6d7482; font-size: 12px; }
+.profile-sheet-field input { min-width: 0; height: 44px; padding: 0; border: 0; background: transparent; color: #30394a; font-size: 13px; flex: 1; outline: none; }
+.profile-sheet-field input::placeholder { color: #b4bcc9; }
+.driver-profile-page .profile-sheet-field button { height: 28px; padding: 0 10px; border: 1px solid #cfdcff; border-radius: 14px; background: #fff; color: #3a65ff; font-size: 11px; white-space: nowrap; }
+
+.profile-sheet-current { display: flex; margin-bottom: 12px; padding: 11px 12px; border-radius: 8px; background: #f7f9fd; flex-direction: column; gap: 4px; }
+.profile-sheet-current > span { color: #8a91a1; font-size: 10px; }
+.profile-sheet-current > strong { color: #30394a; font-size: 13px; }
+.profile-sheet-current > small { color: #8a91a1; font-size: 10px; }
+
+.driver-profile-page .profile-sheet-upload { display: flex; width: 100%; height: 42px; margin-bottom: 10px; border: 1px dashed #d8e2fb; border-radius: 8px; background: #f7faff; color: #3a65ff; font-size: 12px; align-items: center; justify-content: center; gap: 5px; }
+.driver-profile-page .profile-sheet-confirm { display: block; width: 100%; height: 44px; margin-top: 4px; border: 0; border-radius: 8px; background: linear-gradient(90deg, #3a65ff, #5d87ff); color: #fff; font-size: 14px; font-weight: 600; }
+
+.profile-sheet-cert { display: flex; padding: 11px 0; border-top: 1px solid #f1f4f8; align-items: flex-start; }
+.profile-sheet-cert > div { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
+.profile-sheet-cert strong { color: #30394a; font-size: 13px; }
+.profile-sheet-cert em { align-self: flex-start; padding: 2px 7px; border-radius: 8px; font-size: 10px; font-style: normal; font-weight: 600; }
+.profile-sheet-cert small { color: #8a91a1; font-size: 10px; line-height: 15px; }
+.profile-sheet-cert small.cert-reviewing { color: #3a65ff; }
+.profile-sheet-cert small.cert-rejected { color: #d94f3d; }
+.driver-profile-page .profile-sheet-cert button { min-width: 52px; height: 26px; margin-left: 8px; padding: 0 10px; border: 1px solid #dde5f5; border-radius: 13px; background: #fff; color: #3a65ff; font-size: 11px; flex: 0 0 auto; }
+
+/* 添加车辆：两份证件各自成组，必填状态直接标在组标题上 */
+.profile-sheet-vehicle-cert { margin-top: 4px; padding-top: 12px; border-top: 1px solid #f1f4f8; }
+.vehicle-cert-heading { display: flex; margin-bottom: 9px; align-items: center; gap: 7px; }
+.vehicle-cert-heading strong { color: #30394a; font-size: 13px; }
+.vehicle-cert-heading em { padding: 2px 7px; border-radius: 8px; background: #fff3e8; color: #ef7f35; font-size: 10px; font-style: normal; font-weight: 600; }
+.vehicle-cert-heading em.filled { background: #eaf9f4; color: #17ae7c; }
+
+/* 沿用值提示：代替重复输入框，说明该证件号从哪里来 */
+.driver-profile-page .profile-sheet-inherit { display: flex; min-height: 38px; margin: 0 0 9px; padding: 0 12px; border-radius: 8px; background: #f2f6ff; color: #5a6b8c; font-size: 11px; align-items: center; gap: 5px; }
+.driver-profile-page .profile-sheet-inherit .van-icon { color: #3a65ff; font-size: 13px; }

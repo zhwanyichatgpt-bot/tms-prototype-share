@@ -24,10 +24,10 @@
           <h1>个人中心</h1>
         </div>
 
-        <div class="profile-card">
+        <div class="profile-card annot-zhiyunShipperHome-action-mine-profile-entry" role="button" tabindex="0" aria-label="打开我的资料" @click="emit('open-profile')" @keydown.enter="emit('open-profile')" @keydown.space.prevent="emit('open-profile')">
           <img
             class="profile-avatar"
-            src="/zhiyun-mobile-assets/mine/avatar.png"
+            :src="profile.avatar"
             alt=""
           />
           <div class="profile-copy">
@@ -39,13 +39,39 @@
                 alt="已认证"
               />
             </div>
-            <p>{{ profile.company }}</p>
+            <p>{{ enterprise.fullName }}</p>
           </div>
           <van-icon name="arrow" class="profile-arrow" />
         </div>
       </section>
 
       <main class="mine-content">
+        <section class="panel transport-panel">
+          <div class="panel-heading transport-heading" @click="openWaybills(allWaybillsEntry)">
+            <div>
+              <span class="eyebrow">运输进度与待办</span>
+              <h2>我的运输</h2>
+            </div>
+            <button class="text-button" type="button" @click.stop="openWaybills(allWaybillsEntry)">
+              全部运单
+              <van-icon name="arrow" />
+            </button>
+          </div>
+
+          <div class="transport-grid">
+            <button
+              v-for="item in transportItems"
+              :key="item.key"
+              class="transport-item"
+              type="button"
+              @click="openWaybills(item)"
+            >
+              <strong :class="{ attention: item.attention && item.count }">{{ item.count }}</strong>
+              <span>{{ item.label }}</span>
+            </button>
+          </div>
+        </section>
+
         <section class="panel account-panel">
           <div class="panel-heading account-heading" @click="openAccount('overview')">
             <div>
@@ -58,20 +84,15 @@
             </button>
           </div>
 
-          <div class="account-grid">
-            <button
-              v-for="item in accountItems"
-              :key="item.key"
-              class="account-item"
-              type="button"
-              @click="onAccountItem(item)"
-            >
-              <strong>
-                <span class="currency">¥</span>{{ item.value }}
-              </strong>
-              <span>{{ item.label }}</span>
-            </button>
-          </div>
+          <button class="balance-main" type="button" @click="openAccount('overview')">
+            <span>可用余额</span>
+            <strong><small>¥</small>{{ accountSummary.balance }}</strong>
+          </button>
+          <button class="pending-payment-row" type="button" @click="emit('open-payment')">
+            <span>待付款金额</span>
+            <strong><small>¥</small>{{ accountSummary.pending }}</strong>
+            <van-icon name="arrow" />
+          </button>
         </section>
 
         <section class="panel invoice-panel">
@@ -97,7 +118,7 @@
           <div class="invoice-status">
             <button type="button" @click="openInvoice">
               <strong>{{ invoiceSummary.pendingCount }}</strong>
-              <span>待开票结算单</span>
+              <span>可开票运单</span>
             </button>
             <i></i>
             <button type="button" @click="openInvoice">
@@ -151,26 +172,41 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { settlementPage } from './ai-home-data.js'
+import { waybillList } from './mock-data.js'
+import { canInvoiceWaybill, invoiceRecords, waybillInvoiceAmount } from './invoice-data.js'
 
-const emit = defineEmits(['open-invoice', 'open-account', 'open-payment'])
+defineProps({
+  profile: { type: Object, required: true },
+  enterprise: { type: Object, required: true },
+})
+const emit = defineEmits(['open-invoice', 'open-account', 'open-payment', 'open-waybills', 'open-profile'])
 
-const profile = {
-  name: '张明',
-  company: '福建飞航娱乐有限公司',
+const accountSummary = {
+  balance: '20,680.00',
+  pending: settlementPage.paymentSummary.total.toLocaleString('zh-CN', { minimumFractionDigits: 2 }),
 }
 
-const accountItems = [
-  { key: 'balance', label: '可用余额', value: '20,680.00' },
-  { key: 'frozen', label: '冻结金额', value: '5,000.00' },
-  { key: 'pending', label: '待支付', value: settlementPage.paymentSummary.total.toLocaleString('zh-CN', { minimumFractionDigits: 2 }) },
-]
+const invoiceSummary = computed(() => {
+  const openable = waybillList.filter(waybill => canInvoiceWaybill(waybill, invoiceRecords))
+  return {
+    amount: openable.reduce((sum, waybill) => sum + waybillInvoiceAmount(waybill), 0).toLocaleString('zh-CN', { minimumFractionDigits: 2 }),
+    pendingCount: openable.length,
+    processingCount: invoiceRecords.filter(record => ['待开票', '开票中'].includes(record.status)).length,
+  }
+})
 
-const invoiceSummary = {
-  amount: '4,254.23',
-  pendingCount: 10,
-  processingCount: 1,
-}
+const allWaybillsEntry = { mode: 'transport', status: 'all' }
+
+const transportItems = computed(() => [
+  { key: 'loaded', label: '已装货', count: waybillList.filter((item) => item.statusType === 'loaded').length, mode: 'transport', status: 'loaded' },
+  { key: 'moving', label: '在途', count: waybillList.filter((item) => item.statusType === 'moving').length, mode: 'transport', status: 'moving' },
+  { key: 'done', label: '已送达', count: waybillList.filter((item) => item.statusType === 'done').length, mode: 'transport', status: 'done' },
+  { key: 'pending', label: '待结算', count: waybillList.filter((item) => item.statusType === 'done' && item.settleType === 'pending').length, mode: 'settlement', settleStatus: 'pending', attention: true },
+  { key: 'unpaid', label: '待付款', count: waybillList.filter((item) => item.statusType === 'done' && item.settleType === 'unpaid').length, mode: 'settlement', settleStatus: 'unpaid', attention: true },
+  { key: 'abnormal', label: '有异常', count: waybillList.filter((item) => item.exception).length, mode: 'transport', status: 'abnormal', attention: true },
+])
 
 const commonApps = [
   {
@@ -206,8 +242,6 @@ const commonApps = [
 ]
 
 const basicMenus = [
-  { key: 'cert', label: '认证信息', icon: 'idcard', status: '已认证' },
-  { key: 'enterprise', label: '企业资料', icon: 'shop-o' },
   { key: 'rules', label: '平台规则', icon: 'records-o' },
   { key: 'service', label: '联系客服', icon: 'service-o' },
   { key: 'feedback', label: '意见反馈', icon: 'edit' },
@@ -228,12 +262,12 @@ const openAccount = (view = 'overview') => {
   emit('open-account', view)
 }
 
-const onAccountItem = (item) => {
-  if (item.key === 'pending') {
-    emit('open-payment')
-    return
-  }
-  openAccount(item.key === 'frozen' ? 'frozen' : 'overview')
+const openWaybills = (item) => {
+  emit('open-waybills', {
+    mode: item.mode,
+    status: item.status || 'all',
+    settleStatus: item.settleStatus || 'all',
+  })
 }
 
 const onApp = (item) => {
@@ -484,55 +518,66 @@ button {
   background: #fff;
 }
 
-.account-heading {
+.transport-panel {
+  background: #fff;
+}
+
+.transport-heading {
   cursor: pointer;
 }
 
-.account-grid {
-  padding: 4px 6px 15px;
+.transport-grid {
+  padding: 2px 8px 12px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
 
-.account-item {
+.transport-item {
   position: relative;
-  min-width: 0;
-  padding: 6px 4px;
+  min-height: 58px;
+  padding: 7px 4px;
   background: transparent;
   text-align: center;
 }
 
-.account-item + .account-item::before {
+.transport-item:nth-child(n + 4) {
+  border-top: 1px solid #edf1f7;
+}
+
+.transport-item:not(:nth-child(3n + 1))::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 9px;
+  top: 12px;
   width: 1px;
   height: 34px;
   background: #edf1f7;
 }
 
-.account-item strong {
+.transport-item strong {
   display: block;
   color: #18213a;
-  font-size: 17px;
-  line-height: 23px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 720;
 }
 
-.account-item .currency {
-  margin-right: 2px;
-  font-size: 11px;
-  font-weight: 600;
+.transport-item strong.attention {
+  color: #ef6b4d;
 }
 
-.account-item > span {
+.transport-item span {
   display: block;
-  margin-top: 5px;
+  margin-top: 4px;
   color: #7c879b;
   font-size: 11px;
 }
+
+.account-heading {
+  cursor: pointer;
+}
+
+.balance-main{width:calc(100% - 28px);margin:0 14px 10px;padding:12px;display:block;border-radius:11px;background:#f1f6ff;text-align:left}.balance-main>span{display:block;margin-bottom:3px;color:#6d7b94;font-size:11px}.balance-main strong{display:block;color:#244eae;font-size:25px;line-height:30px;font-weight:750;letter-spacing:-.4px;overflow-wrap:anywhere}.balance-main small{margin-right:3px;font-size:13px}.pending-payment-row{width:calc(100% - 28px);min-height:42px;margin:0 14px 12px;padding:0 2px;display:flex;align-items:center;border-top:1px solid #edf1f7;background:transparent;text-align:left}.pending-payment-row>span{color:#6d7b94;font-size:12px}.pending-payment-row strong{margin-left:auto;color:#18213a;font-size:15px;font-weight:650}.pending-payment-row small{margin-right:2px;font-size:11px}.pending-payment-row .van-icon{margin-left:6px;color:#9ba8bd;font-size:13px}
 
 .invoice-panel {
   background: #fff;

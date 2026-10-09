@@ -1,0 +1,141 @@
+<svg viewBox="0 0 190 225" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190.000000" height="225.000000" fill="none" customFrame="#000000">
+	<mask id="mask_14" width="51.000000" height="72.000000" x="135.000000" y="100.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_alpha)">
+			<rect id="矩形 42355" width="51.000000" height="72.000000" x="135.000000" y="100.000000" rx="6.000000" fill="url(#paint_linear_900)" />
+		</g>
+	</mask>
+	<defs>
+		<linearGradient id="paint_linear_899" x1="139.875671" x2="152.548325" y1="219.201584" y2="156.464752" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(59,101,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(168,185,246)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_900" x1="139.875671" x2="168.123962" y1="169.244965" y2="77.9572372" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(59,101,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(168,185,246)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<filter id="pixso_custom_mask_type_alpha">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+		<g id="pixso_custom_effect_207">
+			<effect x="0.000000" y="4.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.0700000003" effectType="dropShadow" stdDeviation="9" radius="0" />
+			<effect x="0.000000" y="0.000000" visibility="visible" fill="rgb(255,255,255)" fill-opacity="0.289999992" effectType="innerShadow" stdDeviation="4" radius="2" />
+		</g>
+		<filter id="filter_207" width="57.000000" height="57.000000" x="133.000000" y="147.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_207)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="4.000000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="3" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+			<feOffset dx="-0.000000" dy="4.000000" in="SourceAlpha" />
+			<feMorphology radius="2" operator="erode" />
+			<feOffset dx="0.000000" dy="-4.000000" />
+			<feGaussianBlur stdDeviation="1.33333337" />
+			<feComposite k2="-1" k3="1" in2="SourceAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.29 0 " />
+			<feBlend result="effect_innerShadow_2" in2="shape" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_901" x1="151.34375" x2="172.46875" y1="157.6875" y2="186.9375" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(236,237,254)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(231,237,255)" offset="0.27285111" stop-opacity="1" />
+			<stop stop-color="rgb(249,250,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+	</defs>
+	<g id="运力">
+		<g id="标签-运力状态">
+			<path id="路径" d="M5 95L79 95C81.2091 95 83 96.7909 83 99L83 115C83 117.209 81.2091 119 79 119L5 119C2.79086 119 1 117.209 1 115L1 99C1 96.7909 2.79086 95 5 95Z" fill="rgb(220,250,239)" fill-rule="evenodd" />
+
+		</g>
+		<g id="运力占比">
+			<rect id="矩形 42235" width="58.000000" height="129.000000" x="131.000000" y="96.000000" rx="6.000000" opacity="0.409999996" fill="rgb(255,255,255)" />
+			<rect id="矩形 42236" width="51.000000" height="47.000000" x="135.000000" y="174.000000" rx="6.000000" fill="url(#paint_linear_899)" />
+			<g id="蒙版" opacity="0.519999981" mask="url(#mask_14)">
+				<g id="组合 529">
+					<path id="矢量 98" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,138.175,51)" />
+					<path id="矢量 99" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,139.589,52.4141)" />
+					<path id="矢量 100" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,141.003,53.8281)" />
+					<path id="矢量 101" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,142.418,55.2422)" />
+					<path id="矢量 102" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,143.832,56.6572)" />
+					<path id="矢量 103" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,145.246,58.0713)" />
+					<path id="矢量 104" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,146.66,59.4854)" />
+					<path id="矢量 105" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,148.074,60.8994)" />
+					<path id="矢量 106" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,149.489,62.3135)" />
+					<path id="矢量 107" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,150.903,63.7275)" />
+					<path id="矢量 108" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,152.317,65.1426)" />
+					<path id="矢量 109" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,153.731,66.5566)" />
+					<path id="矢量 110" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,155.146,67.9707)" />
+					<path id="矢量 111" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,156.56,69.3848)" />
+					<path id="矢量 112" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,157.974,70.7988)" />
+					<path id="矢量 113" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,159.388,72.2129)" />
+					<path id="矢量 114" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,160.802,73.627)" />
+					<path id="矢量 115" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,162.217,75.042)" />
+					<path id="矢量 116" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,163.631,76.4561)" />
+					<path id="矢量 117" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,165.045,77.8701)" />
+					<path id="矢量 118" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,166.459,79.2842)" />
+					<path id="矢量 119" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,167.874,80.6982)" />
+					<path id="矢量 120" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,169.288,82.1123)" />
+					<path id="矢量 121" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,170.702,83.5273)" />
+					<path id="矢量 122" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,172.116,84.9414)" />
+					<path id="矢量 123" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,173.53,86.3555)" />
+					<path id="矢量 124" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,174.945,87.7695)" />
+					<path id="矢量 125" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,176.359,89.1836)" />
+					<path id="矢量 126" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,177.773,90.5977)" />
+					<path id="矢量 127" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,179.187,92.0117)" />
+					<path id="矢量 128" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,180.602,93.4268)" />
+					<path id="矢量 129" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,182.016,94.8408)" />
+					<path id="矢量 98" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,183.43,96.2549)" />
+					<path id="矢量 99" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,184.844,97.6689)" />
+					<path id="矢量 100" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,186.258,99.083)" />
+					<path id="矢量 101" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,187.672,100.497)" />
+					<path id="矢量 102" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,189.087,101.912)" />
+					<path id="矢量 103" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,190.501,103.326)" />
+					<path id="矢量 104" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,191.915,104.74)" />
+					<path id="矢量 105" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,193.329,106.154)" />
+					<path id="矢量 106" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,194.744,107.568)" />
+					<path id="矢量 107" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,196.158,108.982)" />
+					<path id="矢量 108" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,197.572,110.396)" />
+					<path id="矢量 109" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,198.986,111.812)" />
+					<path id="矢量 110" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,200.4,113.226)" />
+					<path id="矢量 111" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,201.815,114.64)" />
+					<path id="矢量 112" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,203.229,116.054)" />
+					<path id="矢量 113" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,204.643,117.468)" />
+					<path id="矢量 114" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,206.057,118.882)" />
+					<path id="矢量 115" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,207.471,120.297)" />
+					<path id="矢量 116" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,208.886,121.711)" />
+					<path id="矢量 117" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,210.3,123.125)" />
+					<path id="矢量 118" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,211.714,124.539)" />
+					<path id="矢量 119" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,213.128,125.953)" />
+					<path id="矢量 120" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,214.542,127.367)" />
+					<path id="矢量 121" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,215.957,128.781)" />
+					<path id="矢量 122" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,217.371,130.196)" />
+					<path id="矢量 123" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,218.785,131.61)" />
+					<path id="矢量 124" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,220.199,133.024)" />
+					<path id="矢量 125" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,221.614,134.438)" />
+					<path id="矢量 126" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,223.028,135.853)" />
+					<path id="矢量 127" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,224.442,137.267)" />
+					<path id="矢量 128" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,225.856,138.682)" />
+					<path id="矢量 129" d="M0 0L0 95" stroke="rgb(165,171,191)" stroke-width="1.000000" transform="matrix(0.707107,0.707107,-0.707107,0.707107,227.271,140.096)" />
+				</g>
+			</g>
+			<g id="组合 529">
+				<g filter="url(#filter_207)">
+					<circle id="椭圆 4882" cx="161.5" cy="171.5" r="19.5" fill="url(#paint_linear_901)" />
+				</g>
+				<circle id="椭圆 4882" cx="161.5" cy="171.5" r="19" stroke="rgb(255,255,255)" stroke-width="1.000000" />
+
+			</g>
+		</g>
+		<g id="组合 531">
+
+			<g id="组合 530">
+
+
+
+
+			</g>
+
+		</g>
+
+
+	</g>
+</svg>

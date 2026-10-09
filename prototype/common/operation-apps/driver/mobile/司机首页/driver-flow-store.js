@@ -22,6 +22,9 @@
  *   - 关注记录独立于货源目录，只存 cargoId + 关注时间 + 字段快照
  */
 import { reactive } from 'vue'
+// mock-data.js 不依赖本文件，导入账户基准不会形成循环依赖；
+// 提现校验需要与页面展示同一份余额口径，不能各自写一个数字。
+import { driverAccount } from './mock-data.js'
 
 // 货源发布方：自营货源与第三方平台货源在司机端统一展示，
 // 但第三方货源需回传运单、凭证与结算状态（真实落地的外部依赖，原型内先按同构处理）。
@@ -801,6 +804,58 @@ export function cargoDistanceTier(cargo) {
   return 'long'
 }
 
+// ============ 常跑路线：司机自行维护的出发地与目的地 ============
+// 出发地与目的地都由司机自己选，不由平台预设：常跑哪儿是司机的经营判断，
+// 平台只提供货源里实际出现过的城市供选择，避免出现选了却没有货的城市。
+// 出发地单选、目的地多选（一条常跑线路是一个起点对多个终点）。
+export const ROUTE_CITY_OPTIONS = [
+  '福州', '福清', '闽侯', '厦门', '泉州', '漳州', '莆田', '三明', '南平', '宁德',
+]
+
+// 预置一条线路仅用于验证「已设置常跑路线」这条路径，默认取 mock-data 声明的
+// 本月高频线路「福州 → 厦门」，保持两处口径一致。真实业务中由司机自行维护。
+export const frequentRouteStore = reactive({
+  origin: '福州',
+  destinations: ['厦门'],
+})
+
+export function setRouteOrigin(city) {
+  frequentRouteStore.origin = city
+}
+
+export function toggleRouteDestination(city) {
+  const index = frequentRouteStore.destinations.indexOf(city)
+  if (index >= 0) frequentRouteStore.destinations.splice(index, 1)
+  else frequentRouteStore.destinations.push(city)
+}
+
+/** 装货城市取 loadShort 前两位（「福清江阴」→「福清」） */
+export function cargoLoadCity(cargo) {
+  return String(cargo?.loadShort || '').slice(0, 2)
+}
+
+/** 卸货城市取 unloadShort 前两位（「厦门海沧」→「厦门」） */
+export function cargoUnloadCity(cargo) {
+  return String(cargo?.unloadShort || '').slice(0, 2)
+}
+
+/** 常跑路线匹配：装货城市等于出发地，且卸货城市在已选目的地中 */
+export function inFrequentRoute(cargo) {
+  if (!cargo) return false
+  return cargoLoadCity(cargo) === frequentRouteStore.origin
+    && frequentRouteStore.destinations.includes(cargoUnloadCity(cargo))
+}
+
+/** 有回程：只读取货主已标注的「有回城」标签，不推断返程配货能力 */
+export function hasReturnTrip(cargo) {
+  return Boolean(cargo?.tags?.includes('有回城'))
+}
+
+/** 城市当前的可接货源数，用于维护页展示选择该城市的实际收益 */
+export function cityCargoCount(city) {
+  return activeCargos().filter((cargo) => cargoUnloadCity(cargo) === city).length
+}
+
 /**
  * 关注货源筛选：装货时间 / 距离 两个维度按「与」组合。
  * 已失效是独立的布尔维度，不作为装货时间的一个选项——「已接满 / 已取消 / 已下架」
@@ -1104,6 +1159,34 @@ export const assignedTaskCatalog = reactive([
     unitPrice: 62,
     dispatchRemark: '散装按方计费，以卸货地实测方量为准。',
   },
+  {
+    // 已过首个停靠点计划时间、但仍在 24 小时保留窗口内的样本：
+    // 用于验证「司机错过 → 卡片保留并标记已过期 → 点击提示无法接单」这条分支
+    id: 'task-5',
+    taskNo: 'ZYP202609220008',
+    status: 'pending',
+    assignOffsetMinutes: -420,
+    dispatcher: '至简智运调度中心',
+    dispatcherPhone: '0591-8888 1234',
+    routeDistance: '168公里',
+    vehicleShort: '9.6米厢式',
+    vehicleRequirement: '9.6 米厢式，需带尾板；到场前联系仓管确认卸货月台。',
+    stops: [
+      { id: 'task-5-s1', type: 'load', name: '福州马尾·罗星工业园', detail: '罗星工业园 2 号厂房', distance: '4.8km', planOffsetMinutes: -300, contact: '刘主管', phone: '137****6620' },
+      { id: 'task-5-s2', type: 'unload', name: '莆田涵江·国欢物流园', detail: '国欢物流园 A 区 3 号口', distance: '168km', planOffsetMinutes: -60, contact: '郑经理', phone: '135****3318' },
+    ],
+    cargoName: '包装食品',
+    cargoCategory: '普货',
+    cargoUnit: '吨',
+    cargoAmount: 12,
+    isContainer: false,
+    containers: [],
+    containerNote: '',
+    pricingRule: '按吨',
+    priceUnit: '元/吨',
+    unitPrice: 155,
+    dispatchRemark: '司机未在计划时间前确认接单，如已错过请联系调度重新指派。',
+  },
 ])
 
 // 司机在详情页调整后的执行顺序：只存任务 id 与停靠点顺序，不改动任务记录本身
@@ -1215,8 +1298,78 @@ export function taskFreight(task, amount) {
   return Math.round((Number(amount) || 0) * (Number(task.unitPrice) || 0))
 }
 
-/** 指派任务列表：只保留待接收，按装货时间正序（快到期先看）。
- *  集装箱任务的首个停靠点是提箱，排序与卡片展示同取第一个停靠点，避免两者不一致。 */
+/** 任务类型：一装一卸（至简 TMS2.0 体系）与多装多卸/集装箱（3.0 升级）。
+ *  两套数据结构无法合并，因此在司机端按停靠点数量分为两个类型页签，
+ *  字段与状态规则完全一致，只在展示层区分，不引入第二套数据模型。 */
+export const taskTypeOptions = [
+  { key: 'single', label: '一装一卸' },
+  { key: 'multi', label: '多装多卸' },
+]
+
+/** 一装一卸 = 恰好 1 装 1 卸（2 个停靠点且无提箱/还箱）；其余为多装多卸 */
+export function taskType(task) {
+  const stops = task.stops || []
+  const loads = stops.filter((stop) => stop.type === 'load').length
+  const unloads = stops.filter((stop) => stop.type === 'unload').length
+  const extras = stops.filter((stop) => stop.type === 'pickup' || stop.type === 'return').length
+  return loads === 1 && unloads === 1 && extras === 0 ? 'single' : 'multi'
+}
+
+/** 接单截止时间即首个停靠点的计划时间：超过即不可接单。
+ *  与货源共用同一条口径（接单截止时间即装货时间），集装箱任务以提箱时刻为准。 */
+export function isTaskClosed(task) {
+  return Date.now() >= taskStartAt(task).getTime()
+}
+
+/** 有效 = 任务未撤回/未接单 + 未过首个停靠点计划时间 */
+export function isTaskOpen(task) {
+  if (!task || task.status !== 'pending') return false
+  return !isTaskClosed(task)
+}
+
+/** 过期任务保留窗口：24 小时后自动清除，避免列表越积越多，
+ *  同时给司机留出「错过 → 反馈调度重派」的时间。 */
+export const TASK_EXPIRE_KEEP_HOURS = 24
+
+function taskExpiredAt(task) {
+  return new Date(taskStartAt(task).getTime() + TASK_EXPIRE_KEEP_HOURS * 3600000)
+}
+
+/** 已过期且仍在保留窗口内的任务 */
+export function isTaskExpiredVisible(task) {
+  return task.status === 'pending' && isTaskClosed(task) && Date.now() < taskExpiredAt(task).getTime()
+}
+
+/** 任务过期状态位：待接单不显示状态位（列表里恒真、无信息量），
+ *  只有已过期才用状态位告知司机「这条你已经赶不上了」。 */
+export function taskStatusFlag(task) {
+  if (isTaskOpen(task)) return null
+  if (task.status === 'pending' && isTaskClosed(task)) {
+    return { text: '已过装货时间', tone: 'expired' }
+  }
+  return null
+}
+
+/** 指派任务列表：按类型分组的两个页签，各自「待接单在前、已过期在后」。
+ *  待接单按首个停靠点计划时间正序（快到期先看）；
+ *  已过期按过期时刻倒序（最近错过的先看）。
+ *  已过期任务保留 24 小时，用于让司机看到自己漏了哪条并反馈调度重派。 */
+export function assignedTasksByType(type) {
+  const visible = assignedTaskCatalog.filter((task) => (
+    (task.status === 'pending' && isTaskOpen(task)) || isTaskExpiredVisible(task)
+  ) && taskType(task) === type)
+  const open = visible.filter(isTaskOpen).sort((a, b) => taskStartAt(a) - taskStartAt(b))
+  const expired = visible.filter((task) => !isTaskOpen(task)).sort((a, b) => taskStartAt(b) - taskStartAt(a))
+  return [...open, ...expired]
+}
+
+/** 类型页签计数：只统计待接单，已过期不计入——
+ *  计数用于提示「还有点活可接」，把过期数混进来会让计数失去意义 */
+export function taskTypeCount(type) {
+  return assignedTaskCatalog.filter((task) => isTaskOpen(task) && taskType(task) === type).length
+}
+
+/** 兼容旧调用：全部待接单任务（不含已过期），用于运单链路等不需要分类型的场景 */
 export function assignedTasks() {
   return assignedTaskCatalog
     .filter((task) => task.status === 'pending')
@@ -1305,3 +1458,481 @@ export function seedFollows() {
 }
 
 seedFollows()
+
+// ============ 我的资料：身份、证件与多车档案 ============
+//
+// 资料修改规则（已确认）：
+// 1. 证件类（身份证、驾驶证、从业资格证、行驶证、道路运输证）修改后走审核，
+//    审核期间按旧值继续生效，不影响接单；头像与紧急联系人即时生效，手机号走短信验证。
+// 2. 车辆的车牌、车型、载重由行驶证登记结果决定，不作为独立可编辑字段：
+//    要改这些信息只能更换行驶证并提交审核，审核通过后车辆信息随之更新。
+// 3. 审核在原型内没有真实后台，因此提供「原型模拟审核」入口验证通过/驳回两条路径。
+//
+// 证件状态由到期时间推导，不写死在文案里，避免与「待办」的到期提醒口径不一致。
+
+export const DRIVER_CERT_STATUS = {
+  valid: { text: '生效中', tone: 'valid' },
+  expiring: { text: '即将到期', tone: 'expiring' },
+  expired: { text: '已过期', tone: 'expired' },
+  reviewing: { text: '审核中', tone: 'reviewing' },
+  rejected: { text: '已驳回', tone: 'rejected' },
+}
+
+// 到期阈值：90 天内提示即将到期，与首页「待办」的驾驶证提醒保持同一口径
+export const CERT_EXPIRING_DAYS = 90
+
+function dateOnly(value) {
+  if (!value) return null
+  const m = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!m) return null
+  return new Date(+m[1], +m[2] - 1, +m[3])
+}
+
+/** 距到期天数：负数表示已过期。无到期日的证件（身份证）返回 null */
+export function certRemainDays(expireDate) {
+  const target = dateOnly(expireDate)
+  if (!target) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return Math.round((target - today) / 86400000)
+}
+
+/** 由到期时间推导证件状态；在审/驳回优先，其次按剩余天数分档 */
+export function certStatus(cert) {
+  if (cert.reviewState === 'reviewing') return DRIVER_CERT_STATUS.reviewing
+  if (cert.reviewState === 'rejected') return DRIVER_CERT_STATUS.rejected
+  const remain = certRemainDays(cert.expireDate)
+  if (remain === null) return DRIVER_CERT_STATUS.valid
+  if (remain < 0) return DRIVER_CERT_STATUS.expired
+  if (remain <= CERT_EXPIRING_DAYS) return DRIVER_CERT_STATUS.expiring
+  return DRIVER_CERT_STATUS.valid
+}
+
+// 司机身份信息。手机号脱敏展示，真实号码只用于编辑态回填。
+export const driverIdentity = reactive({
+  avatar: '/zhiyun-mobile-assets/mine/avatar.png',
+  name: '张建国',
+  phone: '138****6628',
+  phoneFull: '13859366628',
+  realNameVerified: true,
+  realNameTime: '2024-03-18',
+})
+
+// 司机证件。expireDate 为空表示长期有效，不显示剩余天数。
+// 驾驶证按证件实际登记内容展开：证号、准驾车型、初次领证日期、发证机关、有效期。
+export const driverCertificates = reactive([
+  {
+    key: 'idcard', label: '身份证', icon: 'idcard', no: '3501**********0037',
+    owner: '张建国', expireDate: '', issueOrg: '福州市公安局鼓楼分局',
+    reviewState: 'none', reviewingNo: '', rejectReason: '',
+  },
+  {
+    key: 'driving', label: '驾驶证', icon: 'idcard', no: '3501**********0037',
+    owner: '张建国', driveClass: 'A2', firstIssueDate: '2011-06-20',
+    issueDate: '2020-12-29', expireDate: '2026-12-28',
+    issueOrg: '福建省福州市公安局交通警察支队',
+    reviewState: 'none', reviewingNo: '', rejectReason: '',
+  },
+  {
+    key: 'qualification', label: '从业资格证', icon: 'certificate', no: '闽交运从字 2021******18',
+    owner: '张建国', applyIdentity: '经营性道路货物运输驾驶员',
+    qualificationType: '道路货物运输驾驶员', issueDate: '2021-05-17',
+    expireDate: '2027-05-16', issueOrg: '福州市道路运输管理处',
+    reviewState: 'none', reviewingNo: '', rejectReason: '',
+  },
+])
+
+// 车辆档案：一辆车一份证件组。车牌/车型/载重来自行驶证登记结果，只读。
+// 每辆车的证件固定为行驶证与道路运输证两项，添加车辆时必须一并上传。
+// 证件到期时间刻意拉开档位，用于验证「生效中 / 即将到期 / 已过期」三种标签。
+export const VEHICLE_CERT_KEYS = [
+  { key: 'drivingLicense', label: '行驶证', icon: 'idcard' },
+  { key: 'transportPermit', label: '道路运输证', icon: 'certificate' },
+]
+
+export const driverVehicleArchives = reactive([
+  {
+    id: 'v-1',
+    plateNo: '闽A·8K62Q',
+    vehicleType: '13米高栏',
+    loadCapacity: '35吨',
+    energyType: '柴油',
+    isDefault: true,
+    certs: [
+      { key: 'drivingLicense', label: '行驶证', no: '闽A·8K62Q', expireDate: '2028-04-12', issueOrg: '福建省福州市公安局交通警察支队', reviewState: 'none' },
+      { key: 'transportPermit', label: '道路运输证', no: '闽交运管榕字 3501******21', expireDate: '2026-11-30', issueOrg: '福州市道路运输管理处', reviewState: 'none' },
+    ],
+  },
+  {
+    id: 'v-2',
+    plateNo: '闽A·3M51P',
+    vehicleType: '9.6米厢式',
+    loadCapacity: '18吨',
+    energyType: '柴油',
+    isDefault: false,
+    certs: [
+      { key: 'drivingLicense', label: '行驶证', no: '闽A·3M51P', expireDate: '2029-01-08', issueOrg: '福建省福州市公安局交通警察支队', reviewState: 'none' },
+      { key: 'transportPermit', label: '道路运输证', no: '闽交运管榕字 3501******34', expireDate: '2027-09-22', issueOrg: '福州市道路运输管理处', reviewState: 'none' },
+    ],
+  },
+  {
+    id: 'v-3',
+    plateNo: '闽A·6V27N',
+    vehicleType: '17米平板',
+    loadCapacity: '40吨',
+    energyType: '柴油',
+    isDefault: false,
+    certs: [
+      { key: 'drivingLicense', label: '行驶证', no: '闽A·6V27N', expireDate: '2025-12-31', issueOrg: '福建省福州市公安局交通警察支队', reviewState: 'none' },
+      { key: 'transportPermit', label: '道路运输证', no: '闽交运管榕字 3501******57', expireDate: '2027-03-15', issueOrg: '福州市道路运输管理处', reviewState: 'none' },
+    ],
+  },
+])
+
+export const driverEmergencyContact = reactive({
+  name: '李秀兰',
+  relation: '配偶',
+  phone: '139****3315',
+  phoneFull: '13958713315',
+  // 紧急联系人非证件类，修改即时生效
+})
+
+/** 当前车辆：优先取档案里标记为默认的那辆 */
+export function currentVehicleArchive() {
+  return driverVehicleArchives.find((item) => item.isDefault) || driverVehicleArchives[0]
+}
+
+/** 资料页顶部提示：只汇总真正需要司机处理的证件异常，正常时不出现 */
+export function profileAlerts() {
+  const alerts = []
+  driverCertificates.forEach((cert) => {
+    const status = certStatus(cert)
+    if (status.tone === 'expiring') {
+      alerts.push({ key: cert.key, tone: 'expiring', text: `${cert.label}${certRemainDays(cert.expireDate)}天后到期，请及时换证` })
+    } else if (status.tone === 'expired') {
+      alerts.push({ key: cert.key, tone: 'expired', text: `${cert.label}已过期，换证审核通过前将影响接单` })
+    } else if (status.tone === 'rejected') {
+      alerts.push({ key: cert.key, tone: 'rejected', text: `${cert.label}审核未通过：${cert.rejectReason}` })
+    }
+  })
+  driverVehicleArchives.forEach((vehicle) => {
+    vehicle.certs.forEach((cert) => {
+      const status = certStatus(cert)
+      if (status.tone === 'expiring') {
+        alerts.push({ key: `${vehicle.id}-${cert.key}`, tone: 'expiring', text: `${vehicle.plateNo} ${cert.label}${certRemainDays(cert.expireDate)}天后到期` })
+      } else if (status.tone === 'expired') {
+        alerts.push({ key: `${vehicle.id}-${cert.key}`, tone: 'expired', text: `${vehicle.plateNo} ${cert.label}已过期，该车不满足接单条件` })
+      } else if (status.tone === 'rejected') {
+        alerts.push({ key: `${vehicle.id}-${cert.key}`, tone: 'rejected', text: `${vehicle.plateNo} ${cert.label}审核未通过：${cert.rejectReason}` })
+      }
+    })
+  })
+  return alerts
+}
+
+/** 提交证件更新：进入审核中，旧值继续生效 */
+export function submitCertReview(cert, { newNo, expireDate }) {
+  cert.reviewState = 'reviewing'
+  cert.reviewingNo = newNo || cert.no
+  if (expireDate) cert.reviewingExpireDate = expireDate
+  cert.rejectReason = ''
+}
+
+/** 原型模拟审核结果：通过则新值覆盖旧值并回到生效中，驳回则保留原因 */
+export function resolveCertReview(cert, approved) {
+  if (approved) {
+    if (cert.reviewingNo) cert.no = cert.reviewingNo
+    if (cert.reviewingExpireDate) cert.expireDate = cert.reviewingExpireDate
+    cert.reviewingNo = ''
+    cert.reviewingExpireDate = ''
+    cert.rejectReason = ''
+  } else {
+    cert.rejectReason = '证件照片模糊，编号无法识别，请重新拍摄上传'
+  }
+  cert.reviewState = approved ? 'none' : 'rejected'
+}
+
+/**
+ * 审核中的提示文案。
+ * no 为空表示该证件从未生效过（新增车辆首次提交），此时不能声称原证仍在生效，
+ * 否则司机会以为自己已有可用的证照。
+ */
+export function certReviewText(cert) {
+  return cert.no
+    ? '已提交新证件，审核中，当前仍按原证件接单'
+    : '已提交证件，审核中，审核通过后才可用于接单'
+}
+
+/** 设为当前车辆：与接单页默认车辆的取值口径保持一致 */
+export function setDefaultVehicle(vehicleId) {
+  driverVehicleArchives.forEach((item) => { item.isDefault = item.id === vehicleId })
+  driverVehicles.forEach((item) => { item.isDefault = item.id === vehicleId })
+}
+
+/**
+ * 添加车辆：新增车辆档案。
+ * 行驶证与道路运输证在添加时一并填写，提交后进入审核；
+ * 缺任一证件则该车证照不齐，不可承运。
+ * 新车证件没有「原值」，提交后只写入 reviewing 字段，
+ * no 保持为空表示尚无可生效证件，避免审核中就被当作已生效。
+ */
+export function addVehicleArchive({ plateNo, vehicleType, loadCapacity, energyType, certs }) {
+  const id = `v-${Date.now()}`
+  const archiveCerts = VEHICLE_CERT_KEYS.map((meta) => {
+    const input = (certs || []).find((item) => item.key === meta.key) || {}
+    return {
+      key: meta.key,
+      label: meta.label,
+      no: '',
+      expireDate: '',
+      issueOrg: '',
+      reviewState: input.no ? 'reviewing' : 'none',
+      reviewingNo: input.no || '',
+      reviewingExpireDate: input.expireDate || '',
+    }
+  })
+  driverVehicleArchives.push({
+    id, plateNo, vehicleType, loadCapacity, energyType,
+    isDefault: false, certs: archiveCerts,
+  })
+  // 接单页的车辆选项同源，新增车辆需同时进入可承运车辆列表
+  driverVehicles.push({ id, plateNo, vehicleType, loadCapacity, isDefault: false, certText: '证照审核中' })
+  return id
+}
+
+// ============ 银行卡与提现 ============
+//
+// 银行卡规则（已确认）：
+// 1. 绑定走四要素验证：姓名、身份证号、银行卡号、银行卡预留手机号收验证码。
+//    持卡人必须与司机实名一致（司机姓名在 driverIdentity，与身份证归属同一人）。
+// 2. 提现无门槛：余额几分钱也能提，不做单笔下限拦截。
+// 3. 到账时效在原型内不以「预计明天到账」这类具体时间承诺，只说明提现已受理。
+//
+// 提现链路：提现申请 → 提交（余额减少、进入提现中）→（模拟）完成。
+// 提交后余额、待提现中的金额与钱包流水同步更新，保证「我的」与钱包页口径一致。
+
+export const driverBankCards = reactive([
+  {
+    id: 'card-1',
+    bankName: '中国建设银行',
+    cardTail: '6228',
+    cardType: '储蓄卡',
+    holderName: '张建国',
+    isDefault: true,
+  },
+])
+
+export const driverCashStore = reactive({
+  // 提现中（处理中/已完成）记录，按新到前排序
+  withdrawals: [],
+})
+
+let withdrawSeq = 21
+function nextWithdrawNo() {
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  withdrawSeq += 1
+  return `TX${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${String(withdrawSeq).padStart(4, '0')}`
+}
+
+/**
+ * 可提现余额：基准余额 + 本次会话入账 - 本次会话已提现。
+ * 「我的」页、钱包页与提现页共用同一口径，避免三处各算一份导致数字对不上。
+ */
+export function withdrawableBalance() {
+  const base = Number(driverAccount.balance.replace(/,/g, '')) || 0
+  const income = driverFlowStore.sessionIncome || 0
+  const withdrawn = driverFlowStore.sessionWithdrawn || 0
+  return Math.max(0, base + income - withdrawn)
+}
+
+/**
+ * 提现：可提现余额必须足够，提交后余额减少、进入提现中。
+ * 到账时效不做具体承诺，结果态只展示流水号与受理时间。
+ * 返回新提现记录；余额不足返回 null。
+ */
+export function submitWithdrawal(amount) {
+  const balance = withdrawableBalance()
+  const value = Number(amount)
+  if (!(value > 0) || value > balance) return null
+  const record = {
+    id: `wd-${Date.now()}`,
+    reference: nextWithdrawNo(),
+    amount: value.toLocaleString('zh-CN', { minimumFractionDigits: 2 }),
+    cardBank: driverBankCards.find((card) => card.isDefault)?.bankName || '银行卡',
+    cardTail: driverBankCards.find((card) => card.isDefault)?.cardTail || '',
+    status: 'processing',
+    applyTime: nowStamp(),
+  }
+  driverCashStore.withdrawals.unshift(record)
+  // 提现中金额增加：与「我的」账户卡、钱包页的本月提现/提现中联动；
+  // 同时累计已提现金额，供余额扣减使用（余额 = 基准 + 入账 - 提现累计）
+  driverFlowStore.sessionWithdrawing = (driverFlowStore.sessionWithdrawing || 0) + value
+  driverFlowStore.sessionWithdrawn = (driverFlowStore.sessionWithdrawn || 0) + value
+  driverFlowStore.sessionFlows.unshift({
+    id: `flow-withdraw-${record.id}`,
+    type: 'withdrawing',
+    title: '提现',
+    summary: `${record.cardBank}尾号${record.cardTail}`,
+    reference: record.reference,
+    time: record.applyTime.slice(-5),
+    amount: `-${record.amount}`,
+    status: '处理中',
+    date: todayLabel(),
+  })
+  return record
+}
+
+/** 原型模拟到账：提现完成，从提现中移入已完成的流水记录 */
+export function completeWithdrawal(id) {
+  const record = driverCashStore.withdrawals.find((item) => item.id === id)
+  if (!record) return null
+  record.status = 'completed'
+  // 流水里的对应记录转「已完成」，本月提现总额在 statics 中体现
+  const flow = driverFlowStore.sessionFlows.find((item) => item.reference === record.reference)
+  if (flow) flow.status = '已完成'
+  driverFlowStore.sessionWithdrawing = Math.max(0, (driverFlowStore.sessionWithdrawing || 0) - Number(String(record.amount).replace(/,/g, '')))
+  return record
+}
+
+/** 添加银行卡：四要素验证通过后写入，默认卡不变 */
+export function addBankCard({ bankName, cardTail, cardType, holderName }) {
+  const id = `card-${Date.now()}`
+  driverBankCards.push({ id, bankName, cardTail, cardType, holderName, isDefault: false })
+  return id
+}
+
+/** 设为默认卡：提现默认到账卡随之切换 */
+export function setDefaultCard(cardId) {
+  driverBankCards.forEach((card) => { card.isDefault = card.id === cardId })
+}
+
+/** 解绑银行卡：默认卡不可解绑（需先切换默认），解绑后该卡不再作为到账选项 */
+export function removeBankCard(cardId) {
+  const card = driverBankCards.find((item) => item.id === cardId)
+  if (!card || card.isDefault) return false
+  const index = driverBankCards.indexOf(card)
+  driverBankCards.splice(index, 1)
+  return true
+}
+
+// ============ 待办 ============
+//
+// 待办只收「需要司机做动作」的事项；纯告知类（申诉有新进展、运费已到账等）
+// 属于消息通知，不进入本列表，避免待办退化成消息堆。
+//
+// 证件类待办由证件状态派生，不做手工勾选：司机在「我的资料」换证并通过审核后，
+// 该项自动消失。待办与证件状态只有一个事实来源，不会出现「证已换、待办还在」。
+
+const TODO_TONE_BY_STATUS = {
+  expiring: { tone: 'warning', actionLabel: '去换证' },
+  expired: { tone: 'danger', actionLabel: '去换证' },
+  rejected: { tone: 'danger', actionLabel: '重新提交' },
+}
+
+/** 由单个证件的状态派生待办；无需处理时返回 null */
+function certTodo(cert, owner) {
+  const status = certStatus(cert)
+  const config = TODO_TONE_BY_STATUS[status.tone]
+  if (!config) return null
+  // 车辆证件带上车牌，否则多辆车的同类证件在列表里无法区分
+  const label = owner ? `${owner.plateNo} ${cert.label}` : cert.label
+  const remain = certRemainDays(cert.expireDate)
+  let title = `${label}${status.text}`
+  let desc = '到期后将影响接单，请提前换证'
+  if (status.tone === 'expiring') title = `${label}${remain}天后到期`
+  if (status.tone === 'expired') desc = '已不满足接单条件，请尽快换证'
+  if (status.tone === 'rejected') desc = cert.rejectReason || '证件未通过审核，请重新提交'
+  return {
+    key: `cert-${owner ? owner.id : 'self'}-${cert.key}`,
+    groupKey: 'cert',
+    groupLabel: '证件',
+    title,
+    desc,
+    icon: 'idcard',
+    tone: config.tone,
+    actionLabel: config.actionLabel,
+    // 动作落到「我的资料」对应证件，待办页只做入口不做处理
+    action: 'profile',
+    focusKey: owner ? `${owner.id}-${cert.key}` : cert.key,
+  }
+}
+
+// 非证件类待办：需要动作但不由证件状态推导，完成与否由 done 标记
+export const driverActionTodos = reactive([
+  {
+    key: 'appeal-supplement', groupKey: 'business', groupLabel: '运单与结算',
+    title: '1条申诉需补充材料', desc: '待补充装卸凭证，超期将按原判处理',
+    icon: 'chat-o', tone: 'info', actionLabel: '去处理', action: 'placeholder', done: false,
+  },
+  {
+    key: 'receipt-missing', groupKey: 'business', groupLabel: '运单与结算',
+    title: '1笔运单回单缺失', desc: '缺少签收单，补齐后方可进入结算',
+    icon: 'orders-o', tone: 'warning', actionLabel: '去补传', action: 'placeholder', done: false,
+  },
+])
+
+/** 当前全部待办，顺序为证件在前、运单与结算在后 */
+export function driverTodos() {
+  const list = []
+  driverCertificates.forEach((cert) => {
+    const todo = certTodo(cert, null)
+    if (todo) list.push(todo)
+  })
+  driverVehicleArchives.forEach((vehicle) => {
+    vehicle.certs.forEach((cert) => {
+      const todo = certTodo(cert, vehicle)
+      if (todo) list.push(todo)
+    })
+  })
+  driverActionTodos.forEach((todo) => {
+    if (!todo.done) list.push(todo)
+  })
+  return list
+}
+
+/** 按分组聚合供页面渲染，空分组不出现 */
+export function driverTodoGroups() {
+  return ['cert', 'business']
+    .map((key) => {
+      const items = driverTodos().filter((todo) => todo.groupKey === key)
+      return { key, label: items[0]?.groupLabel || '', items }
+    })
+    .filter((group) => group.items.length)
+}
+
+/** 标记非证件类待办已完成：原型内用于验证「完成后离开列表」 */
+export function completeActionTodo(key) {
+  const todo = driverActionTodos.find((item) => item.key === key)
+  if (todo) todo.done = true
+}
+
+// ============ 接单设置 ============
+//
+// 只保留两项长期偏好：常跑路线（frequentRouteStore）与可运输货品。
+// 参考货源推送完全由这两项推导，不再另设「智能推荐」开关——多一个开关
+// 只会让司机困惑「关了推荐是不是连常跑路线的货也收不到」。
+//
+// 不做听单状态与接单时段：大宗运输一趟数天，司机在途，不存在按小时听单；
+// 「能否接单」应由在途运单状态派生，不是手工开关。
+// 不做运价偏好：低价货源对空驶司机仍有价值，硬性过滤会让司机丢掉货源。
+// 不做「参与接单的车辆」：接单时本来就能选车，预先勾选是重复劳动。
+//
+// 生效范围：首页货源列表与地图找货同源读取本设置。
+
+// 可运输货品取自货源目录实际出现的类别，不凭空新增业务上没有的货类
+export const CARGO_CATEGORY_OPTIONS = [
+  '普货', '建材', '钢材', '煤炭及制品', '矿建材料',
+  '木材', '农副产品', '化工原料', '轻工产品',
+]
+
+export const orderSettingStore = reactive({
+  // 可运输货品（空数组表示不限）
+  categories: [],
+})
+
+export function toggleOrderCategory(category) {
+  const index = orderSettingStore.categories.indexOf(category)
+  if (index >= 0) orderSettingStore.categories.splice(index, 1)
+  else orderSettingStore.categories.push(category)
+}
