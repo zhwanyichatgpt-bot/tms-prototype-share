@@ -1,6 +1,7 @@
 // 本页均为本地演示数据，不代表实际覆盖、报价、运输状态或企业资质。
 import { intermodalProviders, intermodalServices } from './intermodal-service-scenarios.js'
 import { platformProviders, platformServices } from './platform-data.js'
+import { homeProviders, homeServices } from './home-supply-scenes.js'
 export const tabs = [
   { key: 'home', label: '首页', icon: 'wap-home-o' },
   { key: 'analysis', label: '分析', icon: 'chart-trending-o' },
@@ -49,7 +50,7 @@ export const providers = [
   { id: 'rail-co', name: '中部铁路运输服务商', mode: 'rail', area: '武汉 → 成都', specialty: '铁路集装箱 · 40GP', capabilities: ['站到站运输', '接驳另询'], description: '承接指定铁路节点之间的集装箱运输，不默认包含两端公路接驳。' },
   { id: 'air-co', name: '光谷低空配送服务商', mode: 'air', area: '光谷配送服务点 → 未来科技城配送服务点', specialty: '小件配送 · 指定服务点', capabilities: ['指定起降点交接', '货物条件确认'], description: '仅支持指定服务点之间的小件配送；重量、尺寸和服务范围均需确认，不表示全国可飞。' },
   { id: 'multi-co', name: '江海联运服务商', mode: 'multi', area: '武汉 → 广州', specialty: '公水联运 · 集装箱', capabilities: ['两端接驳', '全程运输'], description: '提供公路接驳、水路干线及目的地配送的组合服务。' },
-].concat(intermodalProviders, platformProviders).map(provider => ({ ...provider, transportModes: provider.mode === 'multi' ? ['road', 'water'] : [provider.mode], ...provider, ...providerFacts[provider.id] }))
+].concat(intermodalProviders, platformProviders, homeProviders).map(provider => ({ ...provider, transportModes: provider.mode === 'multi' ? ['road', 'water'] : [provider.mode], ...provider, ...providerFacts[provider.id] }))
 const serviceFacts = {
   'road-wh-cs': { originLabel: '武汉·东西湖', destinationLabel: '长沙·长沙县', cargo: '托盘普货', feeBoundary: '装卸另行约定', duration: '约1–2天', durationBasis: '从约定装货完成时间起算', inquiryLabel: '按货物、车型与装卸要求询价' },
   'water-wh-sh': { originLabel: '武汉指定港区', destinationLabel: '上海指定港区', feeBoundary: '两端短驳、装卸另询', inquiryLabel: '按箱型、箱量及港区询价' },
@@ -63,7 +64,7 @@ export const services = [
   { id: 'rail-wh-cd', mode: 'rail', fromId: 'wuhan', toId: 'chengdu', from: '武汉', to: '成都', cargo: '铁路集装箱', condition: '40GP', coverage: '站到站', tags: ['站到站', '接驳另询'], price: '面议', providerId: 'rail-co', segments: ['武汉指定铁路场站', '铁路干线运输', '成都指定铁路场站'], scope: '仅覆盖指定场站间运输，具体场站及两端接驳需由服务方确认。' },
   { id: 'air-a-b', mode: 'air', fromId: 'park-a', toId: 'park-b', from: '光谷配送服务点', to: '未来科技城配送服务点', cargo: '小件配送', condition: '重量与尺寸需确认', coverage: '指定起降点交接', tags: ['指定起降点交接'], price: '询价', providerId: 'air-co', segments: ['园区A指定点交货', '低空配送', '园区B指定点交付'], scope: '仅支持指定服务范围，不能外推为城市间长距离或任意地址配送。' },
   { id: 'multi-wh-gz', mode: 'multi', fromId: 'wuhan', toId: 'guangzhou', from: '武汉', to: '广州', cargo: '集装箱', condition: '公路接驳 + 水路干线', coverage: '门到门', tags: ['门到门', '两端接驳'], price: '面议', providerId: 'multi-co', segments: ['武汉工厂提货', '起运港接驳', '水路干线运输', '广州收货点配送'], scope: '展示两端公路接驳与水路干线组成的门到门服务，费用范围需询价确认。' },
-].concat(intermodalServices, platformServices).map(service => ({ ...service, ...serviceFacts[service.id] }))
+].concat(intermodalServices, platformServices, homeServices).map(service => ({ ...service, ...serviceFacts[service.id] }))
 export const networkNodes = [
   { id: 'wuhan', label: '武汉', x: 167, y: 99 },
   { id: 'changsha', label: '长沙', x: 158, y: 158 },
