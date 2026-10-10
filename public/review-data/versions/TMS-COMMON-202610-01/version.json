@@ -1,0 +1,49 @@
+{
+  "id": "TMS-COMMON-202610-01",
+  "name": "联运 Web 1.0.1.13版本",
+  "scope": "common",
+  "projectId": null,
+  "baseVersionId": null,
+  "targetReleaseDate": null,
+  "pages": [
+    {
+      "pageKey": "waybillManage",
+      "order": 1
+    },
+    {
+      "pageKey": "waybillQuote",
+      "order": 2
+    },
+    {
+      "pageKey": "inquiryHall",
+      "order": 3
+    },
+    {
+      "pageKey": "multimodalCreate",
+      "order": 4
+    },
+    {
+      "pageKey": "multimodalManage",
+      "order": 5
+    },
+    {
+      "pageKey": "shipperSettlement",
+      "order": 6
+    },
+    {
+      "pageKey": "containerPlan",
+      "order": 7
+    },
+    {
+      "pageKey": "transportChannel",
+      "order": 8
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-10-10T10:09:43.100Z",
+  "lastPublishedAt": "2026-10-10T10:09:43.100Z",
+  "completedAt": null,
+  "createdAt": "2026-10-10T10:09:43.100Z",
+  "updatedAt": "2026-10-10T10:09:43.100Z"
+}

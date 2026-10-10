@@ -1,0 +1,28 @@
+{
+  "versionId": "TMS-COMMON-202610-01",
+  "revisions": [
+    {
+      "revision": "R0",
+      "date": "2026-10-10T10:09:43.100Z",
+      "reason": "补录联运 Web 1.0.1.13 历史评审入口",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "waybillManage",
+            "waybillQuote",
+            "inquiryHall",
+            "multimodalCreate",
+            "multimodalManage",
+            "shipperSettlement",
+            "containerPlan",
+            "transportChannel"
+          ],
+          "before": "该历史评审版本未登记到版本化研发入口，旧工作台地址已无法直接查看。",
+          "after": "按版本化改造前的通用 Web 目录补录八个页面，生成固定研发入口。",
+          "devImpact": "用户确认业务版本为1.0.1.13，约于2026年8月评审。本次仅补录入口，使用现有共享页面源码和已有公共标注；尚未核准当时评审的源码提交及完整页面范围，不代表8月原样快照。原计划上线日期无法确认，保留为空；本条时间为实际补录时间，不是历史评审或线上部署时间。"
+        }
+      ]
+    }
+  ]
+}
