@@ -11,6 +11,17 @@
       </button>
       <span class="route-demo-label">路线示意 · 实际里程以所选地址为准</span>
 
+      <!-- 智运运营条：压在路线示意条下方，替换地图图内烘焙的「至小简」提示。
+           第二步只保留这一条运营表达，面板内不再重复 -->
+      <div v-if="step === 2" class="map-ops">
+        <div class="ops-line">
+          <span class="ops-badge">智运运营</span>
+          <span class="ops-body">
+            <span class="ops-main">{{ opsMain }}</span>
+            <span class="ops-sub">{{ networkLine }}</span>
+          </span>
+        </div>
+      </div>
     </div>
 
     <section v-if="step === 1" v-show="!addressPickerMode && !editingAddress && !ruleSheetOpen && !pickerTarget" class="publish-sheet form-sheet annot-zhiyunShipperHome-field-publish-transport-conditions" aria-label="填写货源计划">
@@ -118,9 +129,10 @@
       <div class="mode-scroll">
         <header class="mode-head">
           <h2>选择发布方式</h2>
-          <p>当前线路可用运力共238辆，覆盖3个平台，最快8分钟响应</p>
         </header>
 
+        <!-- 发布方式：货主只决定是自己挑平台、还是邀请常用运力。
+             运营表达统一由地图上的「智运运营」条承载，面板内不再重复 -->
         <div class="publish-modes" role="group" aria-label="发布方式">
           <button
             v-for="mode in publishModes"
@@ -130,41 +142,120 @@
             @click="publishMode = mode.key"
           >
             {{ mode.label }}
-            <span v-if="publishMode === mode.key" class="mode-check">✓</span>
           </button>
         </div>
 
-        <div class="platform-list annot-zhiyunShipperHome-rule-publish-platform-quota">
-          <PlatformSelectRow
-            v-for="platform in platformRows"
-            :key="platform.id"
-            :logo="platform.logo"
-            :logo-color="platform.color"
-            :name="platform.name"
-            :feature="platform.feature"
-            :state="platform.stateText"
-            :state-label="platform.stateLabel"
-            :state-value="platform.stateValue"
-            state-unit=""
-            :muted="platform.quotaBlocked"
-            :meta="platform.metaText"
-            :checked="selectedPlatforms.includes(platform.id)"
-            :selectable="!platform.quotaBlocked"
-            @select="togglePlatform(platform.id)"
-          />
+        <!-- 邀请我的运力：车队与个体司机合并为一份名单，勾选后发出邀请、对方自主接单 -->
+        <div v-if="publishMode === 'fleet'" class="capacity-block">
+          <div class="capacity-head">
+            <strong>我的运力</strong>
+            <span>已选 {{ selectedCapacity.length }} / {{ myCapacity.length }}</span>
+          </div>
+          <button
+            v-for="item in myCapacity"
+            :key="item.id"
+            type="button"
+            class="capacity-row"
+            :class="{ on: selectedCapacity.includes(item.id) }"
+            @click="toggleCapacity(item.id)"
+          >
+            <span class="capacity-avatar" aria-hidden="true">{{ item.name.slice(0, 1) }}</span>
+            <span class="capacity-main">
+              <span class="capacity-name-row"><strong>{{ item.name }}</strong><em>{{ item.plate }}</em></span>
+              <small>{{ item.vehicle }} · {{ item.coopText }}</small>
+              <small class="capacity-src">运力来源 · {{ item.platform }}｜准时率 {{ item.onTime }}</small>
+            </span>
+            <span class="capacity-check" :class="{ checked: selectedCapacity.includes(item.id) }">{{ selectedCapacity.includes(item.id) ? '✓' : '' }}</span>
+          </button>
+          <p class="capacity-note">邀请后由对方自主决定是否接单，不预先分配运力</p>
         </div>
-        <p class="filter-note">平台承接情况实时变化，以提交时为准</p>
+
+        <!-- 公开发布：货主在公共平台池中自选。
+             左竖排按运输方式筛选，右侧顶部横排决策口径 -->
+        <div v-else>
+          <div class="mode-body">
+            <div class="mode-rail" role="tablist" aria-label="按运输方式筛选">
+              <button
+                v-for="tag in tagFilters"
+                :key="tag.key"
+                type="button"
+                role="tab"
+                :aria-selected="activeTag === tag.key"
+                :class="{ active: activeTag === tag.key }"
+                @click="selectTag(tag.key)"
+              >
+                <span class="rail-label">{{ tag.label }}</span>
+                <span class="rail-count">{{ tag.count }}</span>
+              </button>
+            </div>
+
+            <div class="mode-pane">
+              <!-- 决策口径：切换后按口径重新排序并给出推荐理由，不是静态高亮 -->
+              <div class="sort-tabs" role="group" aria-label="排序口径">
+                <button
+                  v-for="tab in sortTabs"
+                  :key="tab.key"
+                  type="button"
+                  :class="{ active: sortKey === tab.key }"
+                  @click="sortKey = tab.key"
+                >
+                  {{ tab.label }}
+                </button>
+              </div>
+
+              <div class="platform-list" :class="{ 'annot-zhiyunShipperHome-rule-publish-platform-quota': step === 2 }">
+                <PlatformSelectRow
+                  v-for="platform in platformRows"
+                  :key="platform.id"
+                  :logo="platform.logo"
+                  :logo-color="platform.color"
+                  :name="platform.name"
+                  :feature="platform.feature"
+                  :tags="platform.biz"
+                  :state="platform.stateText"
+                  :state-label="platform.stateLabel"
+                  :state-value="platform.stateValue"
+                  state-unit=""
+                  :muted="platform.quotaBlocked"
+                  :meta="platform.metaText"
+                  :note="platform.promise"
+                  :reason="platform.reason"
+                  :checked="selectedPlatforms.includes(platform.id)"
+                  :selectable="!platform.quotaBlocked"
+                  @select="togglePlatform(platform.id)"
+                />
+              </div>
+
+              <!-- 默认只看智运推荐，展开后看该标签下的全部平台 -->
+              <button v-if="hiddenCount > 0" type="button" class="expand-row" @click="expanded = true">
+                查看全部 {{ filteredPlatforms.length }} 个平台 ∨
+              </button>
+              <button v-else-if="expanded && filteredPlatforms.length > 3" type="button" class="expand-row" @click="expanded = false">
+                收起，只看智运推荐 ∧
+              </button>
+
+              <div class="select-bar">
+                <button type="button" class="select-all" :class="{ on: allVisibleSelected }" @click="toggleSelectAll">
+                  {{ allVisibleSelected ? '取消全选' : '全选推荐' }}
+                </button>
+                <span class="select-hint">已选 {{ selectedPlatforms.length }} 个平台</span>
+              </div>
+
+              <p class="filter-note">平台承接情况实时变化，以提交时为准</p>
+              <p v-if="!selectedPlatforms.length" class="form-error mode-error" role="alert">请至少选择一个发布平台</p>
+            </div>
+          </div>
+        </div>
         <p v-if="submissionError" class="form-error mode-error" role="alert">{{ submissionError }}</p>
-        <p v-if="!selectedPlatforms.length" class="form-error mode-error" role="alert">请至少选择一个发布平台</p>
       </div>
 
-      <div class="confirm-bar annot-zhiyunShipperHome-rule-publish-price-estimate">
+      <div class="confirm-bar" :class="{ 'annot-zhiyunShipperHome-rule-publish-price-estimate': step === 2 }">
         <div class="estimate-total">
           <span v-if="estimateTotal">预估 <b>{{ estimateTotal }}</b> 元</span>
           <span v-else>预估 —</span>
-          <small>已选{{ selectedPlatforms.length }}个平台</small>
+          <small>{{ confirmHint }}</small>
         </div>
-        <button type="button" class="confirm-action" :disabled="!selectedPlatforms.length" @click="goSuccess">确认发布</button>
+        <button type="button" class="confirm-action" :disabled="!canPublish" @click="goSuccess">{{ confirmLabel }}</button>
       </div>
     </section>
 
@@ -348,19 +439,83 @@ const durationText = computed(() => {
   return elapsed >= 0 ? `共${Math.round(elapsed / 86400000) + 1}天` : '待核对'
 })
 
-const publishMode = ref('platform')
+const publishMode = ref('open')
+/* 货主的两种投递方式：公开发布走平台公域，邀请我的运力走货主私域。
+   运营指定范围本轮不做，平台范围即公共平台池 */
 const publishModes = [
-  { key: 'platform', label: '指定平台' },
-  { key: 'carrier', label: '指定承运商' },
-  { key: 'public', label: '全部公开' },
+  { key: 'open', label: '公开发布' },
+  { key: 'fleet', label: '邀请我的运力' },
 ]
-/* 与行情页同一批平台；承运价以货主填写的运输单价为准，平台不再各自报价。
-   quotaBlocked 模拟平台侧承接能力已满：行保留展示但不可勾选，文案不出现额度概念 */
+
+/* 我的运力名单：车队与个体司机合并为一份，货主只维护一份，发布时在同一处选择。
+   复用首页推荐运力与司机档案的既有数据，避免另行编造 */
+const myCapacity = [
+  { id: 'c1', kind: 'driver', name: '李师傅', plate: '闽A·6K32', vehicle: '13米高栏 · 31吨', coopText: '合作过 6 次', onTime: '98%', platform: '象奔奔' },
+  { id: 'c2', kind: 'driver', name: '王师傅', plate: '闽A·2P85', vehicle: '13米高栏 · 31吨', coopText: '合作过 3 次', onTime: '96%', platform: '金石智运' },
+  { id: 'c3', kind: 'driver', name: '张师傅', plate: '闽A·8P17', vehicle: '17米平板 · 32吨', coopText: '合作过 2 次', onTime: '95%', platform: '象奔奔' },
+]
+const selectedCapacity = ref(['c1', 'c2'])
+const toggleCapacity = (id) => {
+  selectedCapacity.value = selectedCapacity.value.includes(id)
+    ? selectedCapacity.value.filter((item) => item !== id)
+    : [...selectedCapacity.value, id]
+}
+
+/* 平台池：聚合接入的运力平台。id 前三个与行情页 ai-home-data 保持一致，
+   确保从行情测算带入的勾选能对上。
+   biz 为该平台承接的业务形态，供竖排筛选与平台行标签；业务形态是货主选平台时
+   最先要问的一刀，与顶部排序口径正交。
+   recommended 为智运默认收敛的推荐平台，其余折叠待展开；
+   quotaBlocked 表示平台侧承接已满：行保留展示但不可勾选，不出现额度概念 */
 const platforms = [
-  { id: 'zhiyun', logo: '象', name: '象奔奔', feature: '多式联运 适配大宗', capacity: 240, cover: '12省', response: 15, color: '#246df7' },
-  { id: 'jinshi', logo: '金', name: '金石智运', feature: '网络货运 覆盖广', capacity: 32, cover: '8省', response: 15, color: '#52b8ea' },
-  { id: 'haoyun', logo: '好运', name: '超好运', feature: '平台运力 响应快', capacity: 120, cover: '6省', response: 8, color: '#2389ee', quotaBlocked: true },
+  { id: 'zhiyun', logo: '象', name: '象奔奔', feature: '适配大宗散货', biz: ['整车', '专线'], promise: '全程可视化 · 超时赔付', capacity: 240, cover: '12省', response: 15, reason: '运力足，适合大宗长途', color: '#246df7', recommended: true },
+  { id: 'jinshi', logo: '金', name: '金石智运', feature: '干线网络覆盖广', biz: ['整车', '专线'], promise: '电子回单 · 在线对账', capacity: 32, cover: '8省', response: 15, reason: '回单结算省心，适合常规干线', color: '#52b8ea', recommended: true },
+  { id: 'haoyun', logo: '好运', name: '超好运', feature: '运力调度灵活', biz: ['整车'], promise: '车费护航 · 响应优先', capacity: 120, cover: '6省', response: 8, reason: '接单快，适合临时急发', color: '#2389ee', recommended: true, quotaBlocked: true },
+  { id: 'zhongchu', logo: '中', name: '中储智运', feature: '跨省直连网络', biz: ['整车', '专线'], promise: '运价透明 · 在线结算', capacity: 180, cover: '15省', response: 12, reason: '覆盖最广，适合跨省长线', color: '#3d6fe0' },
+  { id: 'chuanhua', logo: '传', name: '传化智联', feature: '全国公路港布局', biz: ['整车', '零担', '城配'], promise: '仓配一体 · 中转便利', capacity: 210, cover: '14省', response: 18, reason: '枢纽中转，适合多段运输', color: '#0f8f6b' },
+  { id: 'luge', logo: '路', name: '路歌', feature: '直采车队为主', biz: ['整车'], promise: '无中间加价 · 车源真实', capacity: 95, cover: '10省', response: 20, reason: '直采运力，适合控成本', color: '#e08b2c' },
+  { id: 'fuyou', logo: '福', name: '福佑卡车', feature: '整车干线直达', biz: ['整车', '专线'], promise: '全程可视 · 时效保障', capacity: 160, cover: '11省', response: 10, reason: '时效稳定，适合赶工期', color: '#d0503a' },
+  { id: 'g7', logo: 'G7', name: 'G7汇通', feature: '车联网数据驱动', biz: ['整车'], promise: '实时轨迹 · 在途可视', capacity: 88, cover: '9省', response: 22, reason: '在途可视，适合高货值', color: '#7a5cf0' },
+  { id: 'rrs', logo: '日', name: '日日顺', feature: '大件物流专长', biz: ['整车', '城配'], promise: '送装一体 · 上门服务', capacity: 76, cover: '7省', response: 25, reason: '大件专长，适合家电家具', color: '#2c8fd8' },
+  { id: 'zhongjiao', logo: '交', name: '中交兴路', feature: '北斗定位调度', biz: ['整车', '零担'], promise: '智能调度 · 配载优化', capacity: 130, cover: '13省', response: 16, reason: '调度精准，适合配载复杂', color: '#5b7f4a' },
+  { id: 'anneng', logo: '安', name: '安能物流', feature: '零担网点密集', biz: ['零担', '城配'], promise: '小批量友好 · 快运时效', capacity: 55, cover: '6省', response: 30, reason: '零担友好，适合小批量', color: '#c2452f' },
+  { id: 'puluo', logo: '普', name: '普洛斯', feature: '枢纽中转 长距省成本', biz: ['专线'], promise: '枢纽联运 · 长距优化', capacity: 40, cover: '5省', response: 28, reason: '长距省成本，适合枢纽直发', color: '#4a6ba8' },
 ]
+
+/* 网络规模：由平台池汇总。压成一行文案，不占版面、不抢平台列表的视觉重心 */
+const networkLine = computed(() => (
+  `${platforms.length} 个平台 · ${platforms.reduce((sum, p) => sum + p.capacity, 0).toLocaleString()} 辆运力 · 最快 ${Math.min(...platforms.map((p) => p.response))} 分钟响应`
+))
+
+/* 智运运营条：页面里智运自己的发声，讲清智运替货主做了什么 */
+const opsMain = computed(() => (
+  publishMode.value === 'fleet'
+    ? '按你的选择向常用运力发出邀请，对方自主接单'
+    : '已按本单线路为你收敛可用平台'
+))
+
+/* 竖排筛选：按业务形态收敛，决定右侧看到哪一批平台。
+   业务形态是公路货运的通用分法，不随平台增减变化；全部为默认 */
+const bizFilters = ['全部', '整车', '零担', '专线', '城配']
+const tagFilters = computed(() => bizFilters.map((label) => ({
+  key: label,
+  label,
+  count: label === '全部'
+    ? platforms.length
+    : platforms.filter((p) => p.biz.includes(label)).length,
+})))
+const activeTag = ref('全部')
+/* 展开后查看全部平台；默认只看智运收敛的推荐平台 */
+const expanded = ref(false)
+
+/* 决策口径：切换后平台按该口径重新排序，智能推荐为默认。
+   排序依据为原型示例，不代表已上线的运营策略。 */
+const sortTabs = [
+  { key: 'recommend', label: '智能推荐' },
+  { key: 'response', label: '响应最快' },
+  { key: 'capacity', label: '运力最足' },
+]
+const sortKey = ref('recommend')
 /* 默认沿用行情页勾选的平台；未从行情页进入时给一个可用的初始选择 */
 const selectedPlatforms = ref(props.prefill?.platformIds?.length ? [...props.prefill.platformIds] : ['zhiyun', 'jinshi'])
 
@@ -401,20 +556,77 @@ const publishError = computed(() => {
 })
 const canGoStep2 = computed(() => !publishError.value)
 
+/* 底部条随投递方式联动：邀请模式下勾的是人、不是平台，校验与文案都要跟着变 */
+const canPublish = computed(() => (
+  publishMode.value === 'fleet' ? selectedCapacity.value.length > 0 : selectedPlatforms.value.length > 0
+))
+const confirmLabel = computed(() => (publishMode.value === 'fleet' ? '发出邀请' : '确认发布'))
+const confirmHint = computed(() => {
+  if (publishMode.value === 'fleet') return `将向 ${selectedCapacity.value.length} 位常用运力发出邀请，对方自主接单`
+  return `已选 ${selectedPlatforms.value.length} 个平台`
+})
+
 /* 预估总价 = 货量 × 货主填写的运输单价，所有平台一致；不再按平台分别报价 */
 const priceNum = computed(() => Number(price.value))
-const platformRows = computed(() =>
-  platforms.map((p) => ({
-    ...p,
-    /* 可选平台右侧给接单时效；已满平台只给一句状态说明 */
-    stateLabel: p.quotaBlocked ? '' : '预计司机接单',
-    stateValue: p.quotaBlocked ? '' : `${p.response}分钟`,
-    stateText: p.quotaBlocked ? '接单已满' : '',
-    metaText: p.quotaBlocked
-      ? '今日承接已满，建议选择其他平台'
-      : `平台运力${p.capacity}辆｜覆盖${p.cover}`,
-  })),
-)
+/* 各口径下的排序依据；推荐理由与平台绑定（见 platforms.reason），
+   切换口径只改变排序，不再改理由，避免各行同话或一换口径就跳变 */
+const sortRules = {
+  recommend: (p) => p.capacity / 240 + (60 - p.response) / 60,
+  response: (p) => -p.response,
+  capacity: (p) => p.capacity,
+}
+
+/* 平台行构造：按标签筛选 → 按口径排序 → 已满平台排末位 */
+const mapPlatformRow = (p) => ({
+  ...p,
+  stateLabel: p.quotaBlocked ? '' : '预计司机接单',
+  stateValue: p.quotaBlocked ? '' : `${p.response}分钟`,
+  stateText: p.quotaBlocked ? '接单已满' : '',
+  metaText: p.quotaBlocked
+    ? `今日承接已满 · 可改用${platforms.find((item) => !item.quotaBlocked)?.name || '其他平台'}`
+    : `运力${p.capacity}辆｜覆盖${p.cover}`,
+  reason: p.quotaBlocked ? '' : p.reason,
+})
+/* 竖排筛选：在平台池中按业务形态收敛 */
+const filteredPlatforms = computed(() => (
+  activeTag.value === '全部'
+    ? platforms
+    : platforms.filter((p) => p.biz.includes(activeTag.value))
+))
+/* 默认只展示智运收敛的推荐平台，展开后展示该标签下的全部平台 */
+const visiblePlatforms = computed(() => (
+  expanded.value ? filteredPlatforms.value : filteredPlatforms.value.filter((p) => p.recommended)
+))
+const hiddenCount = computed(() => filteredPlatforms.value.length - visiblePlatforms.value.length)
+
+const platformRows = computed(() => {
+  const score = sortRules[sortKey.value] || sortRules.recommend
+  /* 不可选平台固定排末位，不参与口径排序 */
+  return [...visiblePlatforms.value]
+    .sort((a, b) => {
+      if (a.quotaBlocked !== b.quotaBlocked) return a.quotaBlocked ? 1 : -1
+      return score(b) - score(a)
+    })
+    .map(mapPlatformRow)
+})
+
+/* 批量操作：仅按当前标签下的推荐平台生效，避免一键选中未展开的平台 */
+const selectableVisible = computed(() => visiblePlatforms.value.filter((p) => !p.quotaBlocked))
+const allVisibleSelected = computed(() => (
+  selectableVisible.value.length > 0
+  && selectableVisible.value.every((p) => selectedPlatforms.value.includes(p.id))
+))
+const toggleSelectAll = () => {
+  const ids = selectableVisible.value.map((p) => p.id)
+  selectedPlatforms.value = allVisibleSelected.value
+    ? selectedPlatforms.value.filter((id) => !ids.includes(id))
+    : Array.from(new Set([...selectedPlatforms.value, ...ids]))
+}
+/* 切换标签时收起展开态，回到「智运推荐」的默认视图 */
+const selectTag = (key) => {
+  activeTag.value = key
+  expanded.value = false
+}
 const estimateTotal = computed(() => {
   if (weightNum.value <= 0 || !Number.isFinite(priceNum.value) || priceNum.value <= 0) return ''
   return (weightNum.value * priceNum.value).toLocaleString()
@@ -422,6 +634,9 @@ const estimateTotal = computed(() => {
 
 /* 成功页展示实际发布信息：货主填写的单价即发布单价 */
 const publishedInfo = computed(() => ({
+  publishMode: publishMode.value,
+  platformNames: platforms.filter((item) => selectedPlatforms.value.includes(item.id)).map((item) => item.name),
+  invitedNames: myCapacity.filter((item) => selectedCapacity.value.includes(item.id)).map((item) => item.name),
   goods: goodsText.value,
   quantity: weightNum.value > 0 ? weightNum.value : '',
   price: priceNum.value > 0 ? priceNum.value : '',
@@ -463,17 +678,19 @@ const handleBack = () => {
   emit('back')
 }
 
-// 发布时重新检查所选平台，状态变化时先提示并要求重新核对。
+// 两种投递方式分别校验，公开发布保留已上线的平台可用性复核。
 const submissionError = ref('')
 const goSuccess = () => {
   submissionError.value = ''
-  if (publishError.value || !selectedPlatforms.value.length) return
-  const changedPlatforms = selectedPlatforms.value.filter((id) => !platforms.some((p) => p.id === id && !p.quotaBlocked))
-  if (changedPlatforms.length) {
-    const names = changedPlatforms.map((id) => platforms.find((p) => p.id === id)?.name || id)
-    selectedPlatforms.value = selectedPlatforms.value.filter((id) => !changedPlatforms.includes(id))
-    submissionError.value = `${names.join('、')}当前不可承接，请重新核对发布平台`
-    return
+  if (publishError.value || !canPublish.value) return
+  if (publishMode.value === 'open') {
+    const changedPlatforms = selectedPlatforms.value.filter((id) => !platforms.some((p) => p.id === id && !p.quotaBlocked))
+    if (changedPlatforms.length) {
+      const names = changedPlatforms.map((id) => platforms.find((p) => p.id === id)?.name || id)
+      selectedPlatforms.value = selectedPlatforms.value.filter((id) => !changedPlatforms.includes(id))
+      submissionError.value = `${names.join('、')}当前不可承接，请重新核对发布平台`
+      return
+    }
   }
   step.value = 3
 }
@@ -558,6 +775,20 @@ const backToHome = () => {
 
 /* 地图底部的智运运营条：地图底图是整页截图，底部烘焙着旧版「至小简」提示；
    用一条实底横带覆盖该区域，第二步只保留这一条运营表达 */
+.map-ops {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 6px 12px 8px;
+  background: #f0f5ff;
+}
+.map-ops .ops-line {
+  margin-bottom: 0;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(20, 40, 90, 0.08);
+}
 
 .publish-sheet {
   position: absolute;
@@ -761,47 +992,6 @@ const backToHome = () => {
 }
 
 /* 面板本身不分栏：内容区滚动、确认栏固定在下沿，两者互不遮挡 */
-
-/* 智运运营条：一行讲清智运替货主做了什么，规模作副行辅助。
-   压扁成窄条，把版面留给平台列表 */
-
-/* 发布方式：两个投递方式并列，独立横排，不进标签竖排 */
-
-/* 我的运力：车队与个体司机合并为一份名单，勾选后发出邀请 */
-
-/* 决策口径：横排次级，切换后重新排序，不是静态高亮 */
-
-/* 左竖排按运输方式筛选，右侧内容区顶部横排口径 */
-
-/* 展开全部平台 / 收起 */
-
-/* 批量选择：规模下勾选平台不宜逐个点 */
-
-/* 固定在面板下沿，与滚动内容分离 */
-
-/* 装卸货时间弹层：与二级页底部弹层同一套 */
-.fp-overlay { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-end; background: rgba(0, 0, 0, 0.4); }
-.fp-sheet { width: 100%; background: #fff; border-radius: 12px 12px 0 0; padding: 16px 16px 20px; box-sizing: border-box; }
-.fp-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.fp-sheet-head h2 { margin: 0; color: #252b3a; font-size: 16px; font-weight: 700; }
-.fp-sheet-head button { border: 0; background: none; color: #747c8c; font-size: 20px; line-height: 1; cursor: pointer; }
-.date-option-list { max-height: 340px; overflow-y: auto; }
-.fp-option { width: 100%; height: 52px; padding: 0; border: 0; border-top: 1px solid #eef2f6; display: flex; align-items: center; justify-content: space-between; background: transparent; cursor: pointer; }
-.fp-option-main { color: #252b3a; font-size: 15px; font-weight: 600; }
-.fp-option-sub { color: #747c8c; font-size: 12px; }
-.detail-sheet, .rule-sheet { padding-bottom: 28px; }
-.detail-change { width: 100%; margin: 8px 0; padding: 12px 0; border: 0; border-bottom: 1px solid #eef2f6; background: transparent; text-align: left; color: #252b3a; font-size: 14px; font-weight: 600; }
-.detail-change span { float: right; color: #3866ff; font-size: 12px; font-weight: 400; }
-.detail-field { min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #eef2f6; color: #333; font-size: 13px; white-space: nowrap; }
-.detail-field input { min-width: 0; width: 60%; padding: 8px 0; border: 0; outline: 0; text-align: right; font: inherit; }
-.detail-save { width: 100%; height: 46px; margin-top: 16px; border: 0; border-radius: 6px; background: #3866ff; color: #fff; font-size: 15px; font-weight: 600; }
-.detail-save:disabled { background: #b9c4d9; }
-.sheet-hint { margin: 6px 0 10px; color: #8a91a1; font-size: 11px; line-height: 16px; }
-.rule-template-list { display: flex; gap: 8px; }
-.rule-template-list button { flex: 1; min-height: 38px; border: 1px solid #e1e6ef; border-radius: 5px; background: #fff; color: #3d4555; font-size: 12px; }
-.rule-template-list button.active { border-color: #3866ff; background: #edf2ff; color: #3866ff; }
-.rounding-row { display: flex; align-items: center; justify-content: space-between; height: 46px; border-bottom: 1px solid #eef2f6; color: #333; font-size: 13px; }
-.rounding-row select { max-width: 60%; border: 0; background: #fff; color: #333; font: inherit; text-align: right; }
 .mode-sheet {
   display: flex;
   flex-direction: column;
@@ -829,43 +1019,286 @@ const backToHome = () => {
   font-weight: 500;
 }
 
+/* 智运运营条：一行讲清智运替货主做了什么，规模作副行辅助。
+   压扁成窄条，把版面留给平台列表 */
+.ops-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f0f5ff;
+}
+.ops-badge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #3866ff;
+  color: #fff;
+  font-size: 9px;
+  line-height: 14px;
+  font-weight: 700;
+}
+.ops-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ops-main {
+  color: #2b3a5c;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 600;
+}
+.ops-sub {
+  color: #6b7896;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 500;
+}
+
+/* 发布方式：两个投递方式并列，独立横排，不进标签竖排 */
 .publish-modes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+  margin-bottom: 10px;
 }
 .publish-modes button {
-  position: relative;
-  height: 42px;
-  padding: 0;
+  height: 40px;
+  padding: 0 4px;
   border: 1px solid transparent;
-  border-radius: 5px;
-  background: #f5f5f5;
+  border-radius: 7px;
+  background: #f2f4f8;
   color: #3d4555;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .publish-modes button.active {
   border-color: #3866ff;
   background: #eef3ff;
   color: #3866ff;
 }
-.mode-check {
-  position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 15px;
-  height: 15px;
-  border-radius: 5px 0 4px 0;
-  background: #3866ff;
-  color: #fff;
+
+/* 我的运力：车队与个体司机合并为一份名单，勾选后发出邀请 */
+.capacity-block {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.capacity-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.capacity-head strong {
+  color: #252b3a;
+  font-size: 13px;
+  font-weight: 700;
+}
+.capacity-head span {
+  color: #747c8c;
+  font-size: 11px;
+}
+.capacity-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border: 1px solid #e8ecf3;
+  border-radius: 9px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.capacity-row.on {
+  border-color: #3866ff;
+  background: #f7faff;
+}
+.capacity-avatar {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e8eefb;
+  color: #3866ff;
+  font-size: 13px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.capacity-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.capacity-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.capacity-name-row strong {
+  color: #252b3a;
+  font-size: 14px;
+  font-weight: 700;
+}
+.capacity-name-row em {
+  color: #8a91a1;
   font-size: 10px;
-  line-height: 15px;
+  font-style: normal;
+}
+.capacity-main small {
+  color: #747c8c;
+  font-size: 10px;
+  line-height: 14px;
+}
+.capacity-main .capacity-src {
+  color: #9aa3b5;
+}
+.capacity-check {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #d9dde6;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+}
+.capacity-check.checked {
+  border-color: #3866ff;
+  background: #3866ff;
+}
+.capacity-note {
+  margin: 1px 0 0;
+  color: #8a91a1;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+/* 决策口径：横排次级，切换后重新排序，不是静态高亮 */
+.sort-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sort-tabs::-webkit-scrollbar { display: none; }
+.sort-tabs button {
+  flex-shrink: 0;
+  height: 27px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 14px;
+  background: #f2f4f8;
+  color: #596171;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sort-tabs button.active {
+  background: #eef3ff;
+  color: #3866ff;
+}
+
+/* 左竖排按运输方式筛选，右侧内容区顶部横排口径 */
+.mode-body {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.mode-rail {
+  flex: 0 0 66px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  background: #f5f7fb;
+  overflow: hidden;
+}
+.mode-rail button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 9px 4px;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: transparent;
+  color: #596171;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rail-count {
+  color: #9aa3b5;
+  font-size: 9px;
+  line-height: 12px;
+  font-weight: 500;
+}
+.mode-rail button.active {
+  border-left-color: #3866ff;
+  background: #fff;
+  color: #3866ff;
+}
+.mode-rail button.active .rail-count { color: #3866ff; }
+.mode-pane {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 展开全部平台 / 收起 */
+.expand-row {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 7px;
+  background: #f5f7fb;
+  color: #3866ff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 批量选择：规模下勾选平台不宜逐个点 */
+.select-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 9px;
+}
+.select-all {
+  height: 27px;
+  padding: 0 12px;
+  border: 1px solid #d6e2fb;
+  border-radius: 14px;
+  background: #fff;
+  color: #3866ff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.select-all.on {
+  border-color: #3866ff;
+  background: #eef3ff;
+}
+.select-hint {
+  color: #747c8c;
+  font-size: 10px;
 }
 
 .platform-list { margin-top: 7px; }
 .mode-error { margin: 4px 0 0; }
 .filter-note { margin: 5px 0 0; color: #8a91a1; font-size: 10px; line-height: 14px; }
+
+/* 固定在面板下沿，与滚动内容分离 */
 .confirm-bar {
   flex: 0 0 49px;
   margin-top: 8px;
@@ -902,4 +1335,28 @@ const backToHome = () => {
   cursor: pointer;
 }
 .confirm-action:disabled { background: #b9c4d9; cursor: not-allowed; }
+
+/* 装卸货时间弹层：与二级页底部弹层同一套 */
+.fp-overlay { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-end; background: rgba(0, 0, 0, 0.4); }
+.fp-sheet { width: 100%; background: #fff; border-radius: 12px 12px 0 0; padding: 16px 16px 20px; box-sizing: border-box; }
+.fp-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.fp-sheet-head h2 { margin: 0; color: #252b3a; font-size: 16px; font-weight: 700; }
+.fp-sheet-head button { border: 0; background: none; color: #747c8c; font-size: 20px; line-height: 1; cursor: pointer; }
+.date-option-list { max-height: 340px; overflow-y: auto; }
+.fp-option { width: 100%; height: 52px; padding: 0; border: 0; border-top: 1px solid #eef2f6; display: flex; align-items: center; justify-content: space-between; background: transparent; cursor: pointer; }
+.fp-option-main { color: #252b3a; font-size: 15px; font-weight: 600; }
+.fp-option-sub { color: #747c8c; font-size: 12px; }
+.detail-sheet, .rule-sheet { padding-bottom: 28px; }
+.detail-change { width: 100%; margin: 8px 0; padding: 12px 0; border: 0; border-bottom: 1px solid #eef2f6; background: transparent; text-align: left; color: #252b3a; font-size: 14px; font-weight: 600; }
+.detail-change span { float: right; color: #3866ff; font-size: 12px; font-weight: 400; }
+.detail-field { min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #eef2f6; color: #333; font-size: 13px; white-space: nowrap; }
+.detail-field input { min-width: 0; width: 60%; padding: 8px 0; border: 0; outline: 0; text-align: right; font: inherit; }
+.detail-save { width: 100%; height: 46px; margin-top: 16px; border: 0; border-radius: 6px; background: #3866ff; color: #fff; font-size: 15px; font-weight: 600; }
+.detail-save:disabled { background: #b9c4d9; }
+.sheet-hint { margin: 6px 0 10px; color: #8a91a1; font-size: 11px; line-height: 16px; }
+.rule-template-list { display: flex; gap: 8px; }
+.rule-template-list button { flex: 1; min-height: 38px; border: 1px solid #e1e6ef; border-radius: 5px; background: #fff; color: #3d4555; font-size: 12px; }
+.rule-template-list button.active { border-color: #3866ff; background: #edf2ff; color: #3866ff; }
+.rounding-row { display: flex; align-items: center; justify-content: space-between; height: 46px; border-bottom: 1px solid #eef2f6; color: #333; font-size: 13px; }
+.rounding-row select { max-width: 60%; border: 0; background: #fff; color: #333; font: inherit; text-align: right; }
 </style>

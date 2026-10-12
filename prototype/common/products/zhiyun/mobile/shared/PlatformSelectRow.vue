@@ -3,9 +3,13 @@
     <div class="row-body">
       <span class="platform-logo" :style="{ background: logoColor }">{{ logo }}</span>
       <span class="platform-main">
-        <strong>{{ name }}</strong>
+        <span class="platform-name-row">
+          <strong>{{ name }}</strong>
+          <span v-if="tags.length" class="platform-tags"><i v-for="tag in tags" :key="tag">{{ tag }}</i></span>
+        </span>
         <small v-if="feature">{{ feature }}</small>
-        <span v-if="tags.length" class="platform-tags"><i v-for="tag in tags" :key="tag">{{ tag }}</i></span>
+        <!-- 服务承诺：说明选本平台能得到什么，与能力数字分开 -->
+        <small v-if="note" class="platform-note">{{ note }}</small>
       </span>
       <span v-if="estimateValue" class="platform-estimate">
         <small>{{ estimateLabel }}</small>
@@ -22,6 +26,8 @@
     </div>
     <!-- 说明行：右侧已有内容时才下移，避免与右侧槽位重复 -->
     <em v-if="meta && (estimateValue || state || stateValue)" class="platform-meta">{{ meta }}</em>
+    <!-- 推荐理由：当前排序口径下的结论，与数字分列 -->
+    <em v-if="reason" class="platform-reason">{{ reason }}</em>
   </button>
 </template>
 
@@ -40,6 +46,8 @@ defineProps({
   stateUnit: { type: String, default: '' },
   muted: { type: Boolean, default: false },
   meta: { type: String, default: '' },
+  note: { type: String, default: '' },
+  reason: { type: String, default: '' },
   tags: { type: Array, default: () => [] },
   checked: { type: Boolean, default: false },
   selectable: { type: Boolean, default: true },
@@ -54,9 +62,11 @@ defineEmits(['select'])
 .row-body{display:flex;align-items:center}
 .platform-logo{width:32px;height:32px;flex:0 0 32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700}
 .platform-main{flex:1;min-width:0;margin-left:10px}
-.platform-main strong{display:block;color:#252b3a;font-size:15px;line-height:20px;font-weight:700}
+.platform-name-row{display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.platform-main strong{display:block;color:#252b3a;font-size:15px;line-height:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .platform-main small{display:block;color:#747c8c;font-size:10px;line-height:15px;font-weight:500}
-.platform-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.platform-main .platform-note{color:#3d6fe0;font-weight:600}
+.platform-tags{display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0}
 .platform-tags i{padding:1px 5px;border-radius:4px;background:#edf2fa;color:#6b7d9b;font-size:9px;line-height:14px;font-style:normal}
 .platform-estimate{margin-left:auto;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap}
 .platform-estimate > small{color:#747c8c;font-size:10px;font-weight:500;line-height:14px}
@@ -68,4 +78,5 @@ defineEmits(['select'])
 .platform-check{width:17px;height:17px;margin-left:10px;flex:0 0 17px;box-sizing:border-box;border:1px solid #d9dde6;border-radius:5px;color:#fff;font-size:10px;line-height:15px;text-align:center}
 .platform-check.checked{border-color:#3866ff;background:#3866ff}
 .platform-meta{display:block;margin:4px 0 0 42px;color:#8a91a1;font-size:10px;line-height:14px;font-weight:500;font-style:normal}
+.platform-reason{display:block;margin:3px 0 0 42px;color:#1cae7d;font-size:10px;line-height:14px;font-weight:700;font-style:normal}
 </style>

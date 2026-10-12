@@ -21,8 +21,8 @@
       <!-- 发布成功 icon（Pixso 7:872 140×120 @303,139 → 70×60 居中） -->
       <img class="ps-success-icon" src="/zhiyun-mobile-assets/publish-success-icon.png" alt="" />
 
-      <h1 class="ps-success-title">发布成功！</h1>
-      <p class="ps-success-sub">为你找到 23 家匹配的运力</p>
+      <h1 class="ps-success-title">{{ isInvitation ? '邀请已发出！' : '发布成功！' }}</h1>
+      <p class="ps-success-sub">{{ resultSummary }}</p>
 
       <!-- 货源订单卡（Pixso 7:886 686×276 @32,418 → 343×138） -->
       <div class="ps-order-card">
@@ -53,7 +53,7 @@
       </div>
 
       <!-- 推荐运力（Pixso 分组1 @32,739：4 张运力卡） -->
-      <div class="ps-rec">
+      <div v-if="!isInvitation" class="ps-rec">
         <div class="ps-rec-head">
           <h2 class="ps-rec-title">推荐<em>运力</em></h2>
           <span class="ps-rec-count">根据线路与货品匹配</span>
@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 
 const props = defineProps({
   /* 实际发布的信息：由发布流程带过来，避免与上一步口径不一致 */
@@ -97,6 +97,13 @@ const props = defineProps({
 })
 
 defineEmits(['back', 'open-carrier'])
+
+const isInvitation = computed(() => props.published?.publishMode === 'fleet')
+const resultSummary = computed(() => {
+  if (isInvitation.value) return `已邀请${(props.published.invitedNames || []).join('、')}，等待对方自主接单`
+  const names = props.published?.platformNames || []
+  return names.length ? `已发布至${names.join('、')}，等待司机接单` : '等待司机接单'
+})
 
 // 与发布流程第二步保持一致；未从流程进入时使用默认示例
 const order = reactive({
