@@ -27,7 +27,7 @@
         <div class="panel-toolbar">
           <div class="filter-group">
             <el-input v-model="keyword" clearable placeholder="搜索版本名称或编号" aria-label="搜索版本名称或编号" class="search-input" />
-            <el-select v-model="statusFilter" aria-label="版本状态" class="status-select">
+            <el-select v-model="statusFilter" placeholder="全部状态" aria-label="版本状态" class="status-select">
               <el-option label="全部状态" value="" />
               <el-option v-for="(label, value) in STATUS_LABELS" :key="value" :label="label" :value="value" />
             </el-select>
