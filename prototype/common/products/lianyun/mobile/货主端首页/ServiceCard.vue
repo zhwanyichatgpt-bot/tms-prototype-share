@@ -3,20 +3,20 @@
     <template v-if="compact">
       <header class="lh-plan-top">
         <span class="lh-plan-mode"><TransportIcon :mode="service.mode"/>{{ mode.label }}</span>
-        <strong class="lh-plan-price"><template v-if="numericPrice"><span>{{ numericPrice[1] }}</span><small>{{ numericPrice[2] }}</small></template><template v-else>{{ inquiryOnly ? '询价' : service.price }}</template></strong>
+        <strong class="lh-plan-price" aria-label="参考运价"><small class="lh-plan-price-label">参考</small><template v-if="numericPrice"><span>{{ numericPrice[1] }}</span><small>{{ numericPrice[2] }}</small></template><template v-else>{{ inquiryOnly ? '面议' : channel.price }}</template></strong>
       </header>
       <button class="lh-plan-main" :aria-label="service.originLabel+'至'+service.destinationLabel+'，查看运输方案'" @click="$emit('open',service)">
         <span class="lh-plan-route-block">
           <span class="lh-plan-address"><strong>{{ origin.primary }}</strong><small v-if="origin.secondary">{{ origin.secondary }}</small></span>
           <span class="lh-plan-connection">
-            <span class="lh-plan-time" :title="service.durationBasis || '预计时效，以询价确认为准'">{{ duration }}</span>
+            <span class="lh-plan-time" :title="service.durationBasis || '参考时效，以询价确认为准'">{{ duration }}</span>
             <svg class="lh-plan-route-arrow" viewBox="0 0 84 12" fill="none" aria-hidden="true"><path d="M1 8H81L74 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span class="lh-plan-address"><strong>{{ destination.primary }}</strong><small v-if="destination.secondary">{{ destination.secondary }}</small></span>
         </span>
         <span class="lh-plan-tags"><span v-for="tag in featureTags" :key="tag">{{ tag }}</span></span>
         <span v-if="introduction" class="lh-plan-introduction">{{ introduction }}</span>
-        <span v-if="service.recentOrders > 0" class="lh-plan-activity">近30天成交 <b>{{ service.recentOrders }}</b> 单</span>
+        <span class="lh-plan-activity">{{ channel.paths.length }}条路线 · {{ channel.schemes.length }}个经营方案</span>
       </button>
       <footer class="lh-plan-footer">
         <button v-if="!hideProvider" class="lh-plan-company" @click="$emit('provider',provider)"><van-icon name="hotel-o"/><span class="lh-plan-company-name">{{ provider.name }}</span></button>
@@ -26,10 +26,10 @@
     </template>
     <template v-else>
     <button class="ly-offer-main" @click="$emit('open',service)">
-      <span class="ly-offer-type"><TransportIcon :mode="service.mode"/>{{ mode.label }}<i>·</i>{{ service.coverage }}</span>
+      <span class="ly-offer-type"><TransportIcon :mode="service.mode"/>{{ mode.label }}<i>·</i>{{ channel.schemes.length }}个经营方案</span>
       <strong class="ly-offer-route">{{ service.originLabel }} <i>→</i> {{ service.destinationLabel }}</strong>
-      <span class="ly-offer-metrics"><span><b>{{ service.duration || '时效待确认' }}</b><small>预计时效</small></span><span><b class="ly-offer-price">{{ service.price === '面议' ? '询价' : service.price }}</b><small>按货物条件报价</small></span></span>
-      <span class="ly-offer-cargo">{{ service.cargo }} · {{ service.condition }}</span>
+      <span class="ly-offer-metrics"><span><b>{{ duration }}</b><small>参考时效</small></span><span><b class="ly-offer-price">{{ channel.price }}</b><small>参考运价</small></span></span>
+      <span class="ly-offer-cargo">{{ featureTags.join(' · ') }}</span>
       <span v-if="service.recommendation" class="ly-offer-reason"><van-icon name="passed"/>{{ service.recommendation }}</span>
     </button>
     <div class="ly-offer-company"><button @click="$emit('provider',provider)"><van-icon name="hotel-o"/>{{ provider.name }}</button><button class="ly-offer-link" @click="$emit('open',service)">查看方案<van-icon name="arrow"/></button></div>
@@ -39,16 +39,17 @@
 </template>
 <script setup>
 import { computed } from 'vue'
-import { serviceRoute } from './service-routes.js'
+import { transportChannel,channelCapabilityLabels } from './transport-channels.js'
 import TransportIcon from './TransportIcon.vue'
 import ProviderRating from './ProviderRating.vue'
 const props=defineProps({service:Object,provider:Object,mode:Object,compact:Boolean,hideProvider:Boolean})
 defineEmits(['open','provider','reviews'])
 const accent=computed(()=>({road:'#3a65ff',water:'#179eaa',rail:'#8262cf',multi:'#3a65ff',air:'#329fc8'}[props.service.mode]))
-const inquiryOnly=computed(()=>!props.service.price || /面议|询价|确认/.test(props.service.price))
-const numericPrice=computed(()=>inquiryOnly.value ? null : String(props.service.price).match(/^(\d[\d,.]*)(.*)$/))
-const introduction=computed(()=>props.service.summary || props.service.scope?.split('。')[0] || '')
-const duration=computed(()=>/询价|确认/.test(props.service.duration||'')?'时效待确认':props.service.duration||'时效待确认')
+const channel=computed(()=>transportChannel(props.service))
+const inquiryOnly=computed(()=>channel.value.price==='面议')
+const numericPrice=computed(()=>inquiryOnly.value ? null : String(channel.value.price).match(/^(\d[\d,.]*)(.*)$/))
+const introduction=computed(()=>channel.value.description.split('。')[0])
+const duration=computed(()=>channel.value.duration==='待确认'?'时效待确认':channel.value.duration)
 // 用城市和区县／节点两级呈现已有地址，完整名称不截断。
 function endpoint(label, city){
   const parts=(label||'').split('·')
@@ -58,24 +59,11 @@ function endpoint(label, city){
 }
 const origin=computed(()=>endpoint(props.service.originLabel,props.service.from))
 const destination=computed(()=>endpoint(props.service.destinationLabel,props.service.to))
-// 联运标签取自已有分段；公路接驳在起终两端出现时只计一次。
-const intermodalLabel=computed(()=>{
-  if(props.service.mode!=='multi')return ''
-  const stages=(serviceRoute(props.service).segments||[]).map(segment=>segment.mode)
-  const modeNames={road:'公',rail:'铁',water:'水',air:'空'}
-  const modes=[...new Set(stages)]
-  if(modes.length===1 && modes[0]==='water' && stages.length>1)return '水水联运'
-  return modes.length>1 ? modes.map(mode=>modeNames[mode]).join('')+'联运' : props.service.condition
-})
-const featureTags=computed(()=>{
-  const service=props.service
-  const boxTypes=service.mode==='multi' ? [...new Set(service.condition?.match(/(?:20|40|45)(?:GP|HQ|HC)/g)||[])].join(' / ') : ''
-  return [...new Set([intermodalLabel.value||service.condition,boxTypes,service.cargo,service.coverage,service.minimumShipment,...(service.tags||[])].filter(Boolean))]
-})
+const featureTags=computed(()=>[...channel.value.cargoTypes,...channelCapabilityLabels(channel.value.capabilities)].slice(0,4))
 </script>
 
 <style scoped>
-.lh-home .lh-transport.ly-offer-card{padding:11px 12px 0;border:1px solid #edf0f5;border-radius:10px;background:#fff}
+.lh-transport.ly-offer-card{padding:11px 12px 0;border:1px solid #edf0f5;border-radius:10px;background:#fff}
 .lh-transport .lh-plan-top{display:flex;gap:8px;min-height:20px;align-items:center}
 .lh-transport .lh-plan-mode{display:flex;gap:4px;align-items:center;color:#333;font-size:13px;font-weight:600;white-space:nowrap}
 .lh-transport .lh-plan-mode svg{width:16px;height:16px;color:var(--plan-accent);flex:none}
@@ -83,7 +71,7 @@ const featureTags=computed(()=>{
 .lh-transport .lh-plan-price>span{font-size:21px;line-height:22px;font-variant-numeric:tabular-nums}
 .lh-transport .lh-plan-price>small{font-size:12px;font-weight:500}
 .lh-transport .lh-plan-time{font-size:12px;line-height:18px;font-weight:400;color:#647090;white-space:nowrap}
-.lh-home .lh-transport .lh-plan-main{display:flex;flex-direction:column;gap:7px;width:100%;padding:9px 0 8px;text-align:left}
+.lh-transport .lh-plan-main{display:flex;flex-direction:column;gap:7px;width:100%;padding:9px 0 8px;text-align:left}
 .lh-transport .lh-plan-route-block{display:grid;grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr);align-items:center;gap:12px;width:100%;min-height:44px}
 .lh-transport .lh-plan-address{display:flex;flex-direction:column;gap:2px;min-width:0}
 .lh-transport .lh-plan-address:last-child{text-align:right}

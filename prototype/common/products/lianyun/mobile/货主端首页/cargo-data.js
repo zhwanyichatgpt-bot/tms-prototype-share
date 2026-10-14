@@ -5,7 +5,7 @@ import { homeCargoScenarios, homeFreightEstimates } from './home-supply-scenes.j
 export const cargoModes = [{ key: 'all', label: '全部' }, { key: 'road', label: '公路' }, { key: 'water', label: '水路' }, { key: 'rail', label: '铁路' }, { key: 'multi', label: '联运' }]
 const baseCargos = [
   {
-    id: 'cargo-steel', number: 'HY202610090001', mode: 'road', category: '钢材', goods: '钢材', quantity: '32吨',
+    id: 'cargo-steel', businessType: '散杂货', number: 'HY202610090001', mode: 'road', category: '钢材', goods: '钢材', quantity: '32吨',
     origin: { city: '苏州', district: '相城区', name: '钢材仓储园', address: '黄埭镇钢材仓储园', xy: [120.55, 31.45] },
     destination: { city: '杭州', district: '萧山区', name: '收货仓', address: '经济技术开发区收货仓', xy: [120.28, 30.24] },
     loadDate: '2026-10-12', unloadDate: '2026-10-13', loadWindow: '08:00—12:00', unloadWindow: '18:00前',
@@ -17,7 +17,7 @@ const baseCargos = [
     publishedAt: '2026-10-09 09:00', publishLabel: '10分钟前发布', routeId: 'road-sz-hz'
   },
   {
-    id: 'cargo-container', number: 'HY202610090002', mode: 'multi', category: '集装箱普货', goods: '集装箱普货', quantity: '4×40GP',
+    id: 'cargo-container', businessType: '集装箱', number: 'HY202610090002', mode: 'multi', category: '集装箱普货', goods: '集装箱普货', quantity: '4×40GP',
     origin: { city: '重庆', district: '江北区', name: '制造园', address: '江北区制造园提箱交接点', xy: [106.55, 29.6] },
     destination: { city: '广州', district: '黄埔区', name: '交付仓', address: '黄埔区交付仓', xy: [113.48, 23.1] },
     loadDate: '2026-10-12', unloadDate: '2026-10-14', loadWindow: '预约交接', unloadWindow: '预约卸货',
@@ -29,7 +29,7 @@ const baseCargos = [
     publishedAt: '2026-10-09 08:40', publishLabel: '30分钟前发布'
   },
   {
-    id: 'cargo-grain', number: 'HY202610090003', mode: 'water', category: '粮食', goods: '粮食', quantity: '1000吨',
+    id: 'cargo-grain', businessType: '散杂货', number: 'HY202610090003', mode: 'water', category: '粮食', goods: '粮食', quantity: '1000吨',
     origin: { city: '武汉', district: '阳逻港', name: '', address: '武汉阳逻港约定装船点', xy: [114.59, 30.66] },
     destination: { city: '上海', district: '罗泾港', name: '', address: '上海罗泾港约定卸船点', xy: [121.49, 31.49] },
     loadDate: '2026-10-15', unloadDate: '2026-10-19', loadWindow: '预约装船', unloadWindow: '预约卸船',
@@ -39,10 +39,25 @@ const baseCargos = [
     deadline: '2026-10-13 18:00', fees: '请注明运输、装卸及港口费用范围', payment: '报价时协商确认',
     publisher: { name: '江汉粮贸有限公司', short: '江汉粮贸', verified: true, score: 4.7, contact: '王经理', phone: '137****1096', area: '长江沿线', business: '粮食贸易与运输委托' },
     publishedAt: '2026-10-09 08:10', publishLabel: '1小时前发布', routeId: 'water-wh-sh'
+  },
+  {
+    id:'cargo-board',businessType:'散杂货',number:'HY202610100008',mode:'multi',category:'板材',goods:'板材',quantity:'100吨',
+    origin:{city:'苏州',district:'工业园区',name:'园区仓库',address:'苏州园区仓库',xy:[120.68,31.3]},
+    destination:{city:'广州',district:'白云区',name:'白云仓',address:'广州白云仓',xy:[113.26,23.25]},
+    loadDate:'2026-10-12',unloadDate:'2026-10-16',loadWindow:'预约装货',unloadWindow:'预约卸货',
+    price:{amount:null,unit:'元/票',label:'运费'},coverage:'门到门',tags:['板材·100吨','多式联运'],
+    summary:'运输全程需防潮，接受公路、铁路、水路及多式联运报价。',
+    requirements:[['运输方式','多式联运'],['货物包装','散装']],deadline:'2026-10-11 18:00',fees:'',payment:'月结',
+    publisher:{name:'广林木业有限公司',short:'广林木业',verified:true,score:4.8,contact:'张经理',phone:'139****1111'},
+    publishedAt:'2026-10-10 09:00',publishLabel:'今天发布',matchScore:84,
+    // 对齐 Web 报价演示托运单，作为本轮设计稿的独立验证场景，不替换原货源。
+    quoteSource:{id:'cargo-board',isContainer:false,preferredMode:'多式联运',availableModes:['公路','铁路','水路','多式联运'],dimension:'按重量',
+      nodes:[{id:'board-load',type:'装货',city:'苏州',name:'苏州园区仓库',address:'苏州园区仓库',common:false},{id:'board-unload',type:'卸货',city:'广州',name:'广州白云仓',address:'广州白云仓',common:false}],
+      flows:[{id:'board-flow',from:'board-load',to:'board-unload',cargoName:'板材',packaging:'散装',quantity:100,unit:'吨',dimension:'按重量'}],boxes:[]}
   }
 ]
 export const cargos = [...baseCargos, ...homeCargoScenarios.map(scene => ({
-  ...baseCargos[0], id:scene.id, number:scene.number, mode:scene.mode, category:scene.cargo, goods:scene.cargo, quantity:scene.quantity,
+  ...baseCargos[0], id:scene.id, businessType:scene.businessType, number:scene.number, mode:scene.mode, category:scene.cargo, goods:scene.cargo, quantity:scene.quantity,
   origin:{city:'苏州',district:scene.mode==='water'?'太仓港':scene.mode==='rail'?'指定铁路场站':scene.key==='nj'?'工业园区':'吴中区',name:'',address:scene.originLabel,xy:scene.path[0]},
   destination:{city:scene.to,district:scene.district,name:'',address:scene.destinationLabel,xy:scene.xy},
   loadDate:scene.loadDate,unloadDate:scene.unloadDate,loadWindow:'预约交接',unloadWindow:'预约交接',
@@ -62,4 +77,16 @@ export function cargoRoute(cargo) {
   if (!cargo.routeId) return { id: cargo.id, name: `${cargo.origin.city} → ${cargo.destination.city}`, segments: [] }
   const route = serviceRoute({ id: cargo.routeId, originLabel: cargo.origin.city, destinationLabel: cargo.destination.city })
   return { ...route, segments: route.segments.map((leg, index, list) => ({ ...leg, from: index === 0 ? `${cargo.origin.city}·${cargo.origin.district}` : leg.from, to: index === list.length - 1 ? `${cargo.destination.city}·${cargo.destination.district}` : leg.to, path: leg.path.map((xy, n) => index === 0 && n === 0 ? cargo.origin.xy : index === list.length - 1 && n === leg.path.length - 1 ? cargo.destination.xy : xy) })) }
+}
+
+// 货源展示仅取公开托运单已有字段；不从方案服务标签推定承运要求。
+export function cargoPublishedRequirements(cargo) {
+  const rows = [['运输方式', cargoModes.find(item => item.key === cargo.mode)?.label || '未提供']]
+  const packaging = cargo.requirements?.find(row => row[0] === '货物包装')?.[1]
+  if (packaging) rows.push(['货品包装', packaging])
+  if (/\d+×(?:20|40|45)(?:GP|HQ|HC)/.test(cargo.quantity)) rows.push(['箱型箱量', cargo.quantity])
+  return rows
+}
+export function cargoDisplayTags(cargo) {
+  return [`${cargo.goods}·${cargo.quantity}`, ...cargoPublishedRequirements(cargo).filter(row => row[0] !== '箱型箱量').map(row => row[1])]
 }

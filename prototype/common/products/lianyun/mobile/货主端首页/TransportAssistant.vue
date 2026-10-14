@@ -54,7 +54,7 @@
             <button v-for="(scheme,index) in orderedSchemes" :id="'plan-tab-'+scheme.id" :key="scheme.id" role="tab" :aria-selected="selectedId === scheme.id" aria-controls="result-details" :tabindex="selectedId === scheme.id ? 0 : -1" :class="{selected:selectedId === scheme.id}" @click="selectScheme(scheme.id)" @keydown="onPlanTabKey($event,index)">
               <div><strong>{{ scheme.name }}</strong><span v-if="analysis.recommendedId === scheme.id" class="lyar-recommended">小简推荐</span></div>
               <p><span>时效</span><b>{{ scheme.duration }}</b></p>
-              <p><span>{{ scheme.priceAssumed ? '参考价' : '参考总额' }}</span><b>{{ resultPrice(scheme) }}</b></p>
+              <p class="lyar-plan-price"><span>{{ scheme.priceAssumed ? '参考价' : '参考总额' }}</span><b>{{ resultPrice(scheme) }}</b></p>
               <p v-if="scheme.priceKnown && scheme.priceAssumed" class="lyar-price-basis">按{{ scheme.demand.equipment }}普货／箱</p>
               <small>{{ scheme.transfers ? scheme.transfers+'次转换' : '无需转换' }} · {{ scheme.label }}</small>
             </button>

@@ -1,21 +1,23 @@
 <template>
   <section class="ly-service-page ly-requests-page" aria-label="我的服务需求">
-    <header class="ly-service-nav"><button aria-label="返回" @click="back"><van-icon name="arrow-left"/></button><h1>{{ editing ? '填写服务需求' : selected ? '需求详情' : '我的服务需求' }}</h1><span/></header>
+    <header class="ly-service-nav"><button aria-label="返回" @click="back"><van-icon name="arrow-left"/></button><h1>{{ editing ? editingTarget?.kind==='transport' ? '核对运输方案' : '填写服务需求' : selected ? '需求详情' : '我的服务需求' }}</h1><span/></header>
     <main class="ly-service-content">
       <p class="ly-request-boundary">本机体验记录 · 未向企业发送，不会产生真实订单</p>
       <p v-if="requestStore.storageError" class="ly-request-warning" role="alert">本机存储不可用，请勿关闭页面；需求暂保留在当前会话。</p>
       <section v-if="editing" class="ly-detail-card">
         <h2>{{ editingTarget.title }}</h2><p class="ly-detail-muted">{{ editingTarget.providerName }} · {{ editingTarget.context }}</p>
-        <van-form @submit="save"><van-field v-model="text" label="需求说明" type="textarea" rows="5" maxlength="500" show-word-limit placeholder="说明货物、数量、服务地点和期望时间" :rules="[{validator:value=>Boolean(value.trim()),message:'请填写需求说明'}]"/><van-button block type="primary" native-type="submit">保存并核对</van-button></van-form>
+        <dl v-if="editingTarget.schemeId" class="ly-request-scheme"><dt>运输通道</dt><dd>{{ editingTarget.channelName }}</dd><dt>经营方案</dt><dd>{{ editingTarget.schemeName }}</dd><dt>运输路线</dt><dd>{{ editingTarget.pathName }}</dd><dt>参考运价</dt><dd>{{ editingTarget.schemeSnapshot.price }}</dd><dt>参考时效</dt><dd>{{ editingTarget.schemeSnapshot.duration }}</dd></dl>
+        <van-button v-if="editingTarget.kind==='transport'" block type="primary" @click="save">保存所选方案</van-button>
+        <van-form v-else @submit="save"><van-field v-model="text" label="需求说明" type="textarea" rows="5" maxlength="500" show-word-limit placeholder="说明货物、数量、服务地点和期望时间" :rules="[{validator:value=>Boolean(value.trim()),message:'请填写需求说明'}]"/><van-button block type="primary" native-type="submit">保存并核对</van-button></van-form>
       </section>
       <template v-else-if="selected">
-        <section class="ly-detail-card"><div class="ly-detail-card-heading"><h2>{{ selected.title }}</h2><span class="ly-status-pill">{{ requestStatus[selected.status] }}</span></div><p class="ly-detail-muted">{{ selected.context }}</p><dl><dt>服务企业</dt><dd>{{ selected.providerName }}</dd><dt>需求内容</dt><dd class="ly-request-text">{{ selected.text }}</dd><dt>更新时间</dt><dd>{{ formatTime(selected.updatedAt) }}</dd></dl></section>
+        <section class="ly-detail-card"><div class="ly-detail-card-heading"><h2>{{ selected.title }}</h2><span class="ly-status-pill">{{ requestStatus[selected.status] }}</span></div><p class="ly-detail-muted">{{ selected.context }}</p><dl><dt>服务企业</dt><dd>{{ selected.providerName }}</dd><template v-if="selected.schemeId"><dt>运输通道</dt><dd>{{ selected.channelName }}</dd><dt>经营方案</dt><dd>{{ selected.schemeName }}</dd><dt>运输路线</dt><dd>{{ selected.pathName }}</dd></template><template v-if="selected.kind!=='transport'"><dt>需求内容</dt><dd class="ly-request-text">{{ selected.text }}</dd></template><dt>更新时间</dt><dd>{{ formatTime(selected.updatedAt) }}</dd></dl></section>
         <section class="ly-detail-card"><h2>办理进展</h2><ol class="ly-guide-steps"><li v-for="(event,index) in selected.history" :key="index"><h3>{{ event.title }}</h3><p>{{ formatTime(event.time) }}</p></li></ol><p class="ly-detail-muted">{{ selected.status==='submitted' ? '尚无企业回复。收到报价后应核对服务范围、计价单位与费用包含项。' : selected.status==='withdrawn' ? '该需求已撤回，可修改后重新确认。' : '请核对服务范围和需求内容，再确认提交。' }}</p></section>
         <section v-if="confirming" class="ly-detail-card ly-confirm-box" role="region" aria-label="确认服务需求"><h2>{{ confirming==='submitted'?'确认这份需求？':'撤回这份需求？' }}</h2><p class="ly-detail-muted">{{ confirming==='submitted'?'确认后将在本机记录为待回复；此体验环境不对外发送。':'撤回后保留记录，不再列为待回复。' }}</p><div class="ly-inline-actions"><button @click="confirming=''">暂不操作</button><button class="primary" @click="changeRequestStatus(selected,confirming);confirming=''">确认{{ confirming==='submitted'?'提交':'撤回' }}</button></div></section>
       </template>
       <template v-else>
         <div class="ly-filters" aria-label="需求状态"><button v-for="tab in filters" :key="tab.id" :class="{active:filter===tab.id}" @click="filter=tab.id">{{ tab.name }} {{ count(tab.id) }}</button></div>
-        <button v-for="item in visibleItems" :key="item.id" class="ly-detail-card ly-request-row" @click="selectedId=item.id"><span class="ly-detail-card-heading"><strong>{{ item.title }}</strong><small class="ly-status-pill">{{ requestStatus[item.status] }}</small></span><span class="ly-detail-muted">{{ item.providerName }}</span><span class="ly-request-preview">{{ item.text }}</span><small>{{ formatTime(item.updatedAt) }} · 查看进展 ›</small></button>
+        <button v-for="item in visibleItems" :key="item.id" class="ly-detail-card ly-request-row" @click="selectedId=item.id"><span class="ly-detail-card-heading"><strong>{{ item.title }}</strong><small class="ly-status-pill">{{ requestStatus[item.status] }}</small></span><span class="ly-detail-muted">{{ item.providerName }}</span><span class="ly-request-preview">{{ item.kind==='transport' ? [item.schemeName,item.pathName].filter(Boolean).join(' · ') : item.text }}</span><small>{{ formatTime(item.updatedAt) }} · 查看进展 ›</small></button>
         <div v-if="!visibleItems.length" class="ly-empty"><van-icon name="orders-o"/><p>{{ filter==='all'?'还没有服务需求':'暂无此状态的需求' }}</p><small>找到合适的运输或配套服务后，可在详情中发起需求。</small><button class="ly-text-button" @click="$emit('browse')">去找服务</button></div>
       </template>
     </main>
@@ -34,7 +36,7 @@ const filters=[{id:'all',name:'全部'},{id:'draft',name:'待确认'},{id:'submi
 const visibleItems=computed(()=>requestStore.items.filter(item=>filter.value==='all'||item.status===filter.value))
 const count=id=>requestStore.items.filter(item=>id==='all'||item.status===id).length
 const formatTime=value=>new Date(value).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false})
-function save(){const record=saveServiceRequest(editingTarget.value,text.value,selected.value?.id);selectedId.value=record.id;editing.value=false}
+function save(){const record=saveServiceRequest(editingTarget.value,editingTarget.value.kind==='transport'?'':text.value,selected.value?.id);selectedId.value=record.id;editing.value=false}
 function edit(){text.value=selected.value.text;editing.value=true}
 function back(){if(confirming.value)confirming.value='';else if(editing.value&&selected.value)editing.value=false;else if(editing.value)emit('back');else if(selected.value)selectedId.value='';else emit('back')}
 </script>

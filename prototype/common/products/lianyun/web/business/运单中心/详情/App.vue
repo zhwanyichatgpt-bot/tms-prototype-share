@@ -10,6 +10,7 @@ import DetailHeader from './components/DetailHeader.vue'
 import DetailLeftPanel from './components/DetailLeftPanel.vue'
 import DetailMap from './components/DetailMap.vue'
 import DetailFees from './components/DetailFees.vue'
+import { getWaybillDetail } from './mock-data'
 import './waybill-detail.css'
 
 const route = useRoute()
@@ -19,6 +20,7 @@ const router = useRouter()
 const waybillKey = computed(() => route.query.key || 'wb-0')
 /* 页签参数（route/task） */
 const initialTab = computed(() => route.query.tab || '')
+const detail = computed(() => getWaybillDetail(waybillKey.value))
 
 function handleBack() {
   router.push('/waybillCenter')
@@ -33,7 +35,7 @@ function handleBack() {
       <DetailLeftPanel :waybill-key="waybillKey" :initial-tab="initialTab" />
       <div class="wd-right">
         <DetailMap :waybill-key="waybillKey" />
-        <DetailFees :waybill-key="waybillKey" />
+        <DetailFees v-if="!detail.containerManifest" :waybill-key="waybillKey" />
       </div>
     </div>
   </div>

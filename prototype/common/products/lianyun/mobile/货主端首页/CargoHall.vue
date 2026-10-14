@@ -4,9 +4,10 @@
     <main class="lc-content">
       <section class="lc-filters" aria-label="货源筛选">
         <div class="lc-location-filters"><label>装货地<select v-model="origin"><option value="">不限</option><option v-for="city in origins" :key="city">{{ city }}</option></select></label><button aria-label="交换装卸城市" @click="swapPlaces"><van-icon name="exchange"/></button><label>卸货地<select v-model="destination"><option value="">不限</option><option v-for="city in destinations" :key="city">{{ city }}</option></select></label></div>
+        <nav class="lc-mode-filters" aria-label="货源业务类型"><button v-for="item in businessTypes" :key="item.key" :aria-pressed="businessType===item.key" @click="businessType=item.key">{{ item.label }}</button></nav>
         <nav class="lc-mode-filters" aria-label="运输方式"><button v-for="item in cargoModes" :key="item.key" :aria-pressed="mode===item.key" @click="mode=item.key">{{ item.label }}</button></nav>
         <div class="lc-secondary"><label><span class="lc-sr-only">货物类型</span><select v-model="category"><option value="">货物类型</option><option v-for="item in categories" :key="item">{{ item }}</option></select></label><label class="lc-date-filter"><span>装货时间</span><input v-model="loadDate" type="date" aria-label="装货日期"/></label></div>
-        <details class="lc-more"><summary>更多筛选<van-icon name="arrow-down"/></summary><label>交付方式<select v-model="coverage"><option value="">不限</option><option>门到门</option><option>港到港</option></select></label><button @click="reset">重置筛选</button></details>
+        <div class="lc-more"><button @click="reset">重置筛选</button></div>
       </section>
       <div class="lc-list-heading"><h2>可报价货源</h2><label><span class="lc-sr-only">排序方式</span><select v-model="sort"><option value="latest">最新发布</option><option value="load">装货时间</option></select></label></div>
       <CargoCard v-for="cargo in filtered" :key="cargo.id" :cargo="cargo" @open="$emit('open',$event)"/>
@@ -19,10 +20,12 @@ import { computed, ref } from 'vue'
 import CargoCard from './CargoCard.vue'
 import { cargos, cargoModes } from './cargo-data.js'
 defineEmits(['back','open'])
-const origin=ref(''),destination=ref(''),mode=ref('all'),category=ref(''),loadDate=ref(''),coverage=ref(''),sort=ref('latest')
+const businessTypes=[{key:'all',label:'全部'},{key:'散杂货',label:'散杂货'},{key:'集装箱',label:'集装箱'}]
+const businessType=ref('all')
+const origin=ref(''),destination=ref(''),mode=ref('all'),category=ref(''),loadDate=ref(''),sort=ref('latest')
 const origins=[...new Set(cargos.flatMap(item=>[item.origin.city,item.destination.city]))],destinations=origins,categories=[...new Set(cargos.map(item=>item.category))]
-const filtered=computed(()=>cargos.filter(item=>(!origin.value||item.origin.city===origin.value)&&(!destination.value||item.destination.city===destination.value)&&(mode.value==='all'||item.mode===mode.value)&&(!category.value||item.category===category.value)&&(!loadDate.value||item.loadDate===loadDate.value)&&(!coverage.value||item.coverage===coverage.value)).sort((a,b)=>sort.value==='load'?a.loadDate.localeCompare(b.loadDate):b.publishedAt.localeCompare(a.publishedAt)))
-function reset(){origin.value='';destination.value='';mode.value='all';category.value='';loadDate.value='';coverage.value='';sort.value='latest'}
+const filtered=computed(()=>cargos.filter(item=>(businessType.value==='all'||item.businessType===businessType.value)&&(!origin.value||item.origin.city===origin.value)&&(!destination.value||item.destination.city===destination.value)&&(mode.value==='all'||item.mode===mode.value)&&(!category.value||item.category===category.value)&&(!loadDate.value||item.loadDate===loadDate.value)).sort((a,b)=>sort.value==='load'?a.loadDate.localeCompare(b.loadDate):b.publishedAt.localeCompare(a.publishedAt)))
+function reset(){businessType.value='all';origin.value='';destination.value='';mode.value='all';category.value='';loadDate.value='';sort.value='latest'}
 function swapPlaces(){const value=origin.value;origin.value=destination.value;destination.value=value}
 </script>
 <style src="./cargo-ui.css"></style>

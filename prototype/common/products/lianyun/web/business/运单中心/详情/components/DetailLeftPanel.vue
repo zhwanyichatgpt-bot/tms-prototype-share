@@ -38,8 +38,8 @@ function closePreview() {
       <div class="wd-vehicle-row">
         <span class="wd-vehicle-icon" aria-hidden="true" />
         <span class="wd-vehicle-text">
-          <span class="wd-vehicle-plate">{{ data.vehicle.plate }}</span>
-          <span class="wd-vehicle-driver">主驾 {{ data.vehicle.driver }} {{ data.vehicle.phone }}</span>
+          <span class="wd-vehicle-plate">{{ data.resource?.name || data.vehicle.plate }}</span>
+          <span class="wd-vehicle-driver">{{ data.resource?.subline || `主驾 ${data.vehicle.driver} ${data.vehicle.phone}` }}</span>
         </span>
       </div>
     </div>
@@ -60,9 +60,10 @@ function closePreview() {
         </div>
         <div class="wd-node-body">
           <div class="wd-node-address">{{ node.address }}</div>
-          <div class="wd-node-line">联系人：{{ node.contact }}（{{ node.phone }}）</div>
-          <div class="wd-node-line">计划{{ node.key === 'load' ? '装货' : '卸货' }}：{{ node.planTime }}</div>
+          <div v-if="node.contact" class="wd-node-line">联系人：{{ node.contact }}（{{ node.phone }}）</div>
+          <div class="wd-node-line">{{ node.planLabel || (node.key === 'load' ? '计划装货' : '计划卸货') }}：{{ node.planTime }}</div>
           <div class="wd-node-line">{{ node.actualLabel }}：{{ node.actualTime }}</div>
+          <div v-if="node.containerCount != null" class="wd-node-cargo">实际{{ node.sign === '装' ? '装载' : '卸载' }}：{{ node.containerCount }} 箱</div>
           <div v-for="(c, i) in node.cargo" :key="i" class="wd-node-cargo">
             <span class="wd-cargo-type">{{ c.type }}</span>
             <span class="wd-cargo-sep">|</span>

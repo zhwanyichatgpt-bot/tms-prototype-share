@@ -84,10 +84,87 @@ export const waybillDetail = {
   subsidyTypes: ['压夜费', '装卸费', '高速费', '燃油补贴', '其他'],
 }
 
-/*
- * 按运单 key 返回详情数据：通用基线当前仅提供同一张样例运单，
- * 北港定制的按单合成与地址变更联动见 prototype/projects/beigang/products/lianyun/web/运单中心/。
- */
-export function getWaybillDetail() {
-  return waybillDetail
+// 以下仅为运单详情验证用 Mock；集装箱数据均随运单只读展示。
+function makeBoxes(owner, start, count, size, cargo, status, wagon = '') {
+  return Array.from({ length: count }, (_, index) => ({
+    no: `${owner}${String(start + index).padStart(7, '0')}`,
+    size,
+    cargo,
+    seal: `SL${String(83010 + start + index).padStart(5, '0')}`,
+    weight: (size === '40GP' ? 28.5 : 16.8).toFixed(2),
+    status,
+    wagon: wagon ? `${wagon}${String(Math.floor(index / 2) + 1).padStart(2, '0')}` : '',
+  }))
+}
+
+function routeNode(key, sign, tone, name, address, planTime, actualTime, count, mode) {
+  const operation = sign === '装' ? '装' : '卸'
+  const evidence = mode === 'water' ? `${operation}船凭证` : mode === 'rail' ? `${operation}车凭证` : `${operation}货凭证`
+  return {
+    key, sign, tone, name, address, planTime, actualTime,
+    planLabel: `计划${operation}${mode === 'water' ? '船' : mode === 'rail' ? '车' : '货'}`,
+    actualLabel: `实际${operation}${mode === 'water' ? '船' : mode === 'rail' ? '车' : '货'}`,
+    containerCount: count,
+    cargo: [],
+    attachments: [{ key: `${key}-proof`, label: evidence, kind: 'bill' }],
+  }
+}
+
+const roadBoxes = makeBoxes('MSCU', 1234567, 2, '20GP', '电子配件', '已交付')
+const waterWuhan = makeBoxes('COSU', 3650001, 78, '20GP', '机械设备', '已卸船')
+const waterChongqing = makeBoxes('MSCU', 4780001, 40, '40GP', '钢材', '已卸船')
+const railXian = makeBoxes('CRSU', 5120001, 12, '40GP', '机械设备', '已卸车', 'P64-')
+const railLanzhou = makeBoxes('CRSU', 5130001, 6, '20GP', '电子配件', '已卸车', 'P64-')
+
+const containerDetails = {
+  'truck-1': {
+    ...waybillDetail,
+    waybillNo: '2609231533298948', statusLabel: '已完成',
+    vehicle: { plate: '苏A6K528', driver: '张强', phone: '138****8206' },
+    route: [
+      routeNode('road-load', '装', 'blue', '南京江宁物流仓库', '江苏省南京市江宁区', '2026-09-23 12:00', '2026-09-23 12:35', 2, 'road'),
+      routeNode('road-unload', '卸', 'green', '合肥经开区制造基地', '安徽省合肥市经开区', '2026-09-23 20:00', '2026-09-23 20:30', 2, 'road'),
+    ],
+    containerManifest: {
+      mode: 'road', modeName: '公路', groups: [
+        { key: 'road-direct', from: '南京江宁物流仓库', to: '合肥经开区制造基地', boxes: roadBoxes },
+      ],
+    },
+  },
+  'water-2': {
+    ...waybillDetail,
+    waybillNo: 'SW2609230019', statusLabel: '已完成',
+    resource: { name: '江海通达168', subline: '航次 JHTD-0923' },
+    route: [
+      routeNode('water-load', '装', 'blue', '南京港', '江苏省南京市龙潭港区', '2026-09-25 08:00', '2026-09-25 09:20', 118, 'water'),
+      routeNode('water-unload-wuhan', '卸', 'green', '武汉港', '湖北省武汉市阳逻港区', '2026-09-27 14:00', '2026-09-27 14:25', 78, 'water'),
+      routeNode('water-unload-chongqing', '卸', 'green', '重庆港', '重庆市果园港集装箱码头', '2026-09-29 17:00', '2026-09-29 17:40', 40, 'water'),
+    ],
+    containerManifest: {
+      mode: 'water', modeName: '水路', groups: [
+        { key: 'water-wuhan', from: '南京港', to: '武汉港', boxes: waterWuhan },
+        { key: 'water-chongqing', from: '南京港', to: '重庆港', boxes: waterChongqing },
+      ],
+    },
+  },
+  'rail-1': {
+    ...waybillDetail,
+    waybillNo: 'TL2609230066', statusLabel: '已完成',
+    resource: { name: 'X8001 次列车', subline: '车种 P64｜发车车次 X8001' },
+    route: [
+      routeNode('rail-load', '装', 'blue', '武汉北站', '湖北省武汉市东西湖区', '2026-09-24 09:00', '2026-09-24 09:35', 18, 'rail'),
+      routeNode('rail-unload-xian', '卸', 'green', '西安国际港站', '陕西省西安市国际港务区', '2026-09-26 11:00', '2026-09-26 11:28', 12, 'rail'),
+      routeNode('rail-unload-lanzhou', '卸', 'green', '兰州东站', '甘肃省兰州市城关区', '2026-09-27 16:00', '2026-09-27 16:20', 6, 'rail'),
+    ],
+    containerManifest: {
+      mode: 'rail', modeName: '铁路', groups: [
+        { key: 'rail-xian', from: '武汉北站', to: '西安国际港站', boxes: railXian },
+        { key: 'rail-lanzhou', from: '武汉北站', to: '兰州东站', boxes: railLanzhou },
+      ],
+    },
+  },
+}
+
+export function getWaybillDetail(key = '') {
+  return containerDetails[key] || waybillDetail
 }

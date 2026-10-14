@@ -7,29 +7,54 @@
  */
 import { computed, ref } from 'vue'
 import { getWaybillDetail } from '../mock-data'
+import DetailContainerManifest from './DetailContainerManifest.vue'
 
 const props = defineProps({
   waybillKey: { type: String, default: '' },
 })
-
 const data = computed(() => getWaybillDetail(props.waybillKey))
 const legends = ref(data.value.legends.map(l => ({ ...l })))
 const zoom = ref(1)
+const manifestOpen = ref(false)
 
 const showPlanned = computed(() => legends.value.find(l => l.key === 'planned')?.checked)
 const showBeidou = computed(() => legends.value.find(l => l.key === 'beidou')?.checked)
 const showDevice = computed(() => legends.value.find(l => l.key === 'device')?.checked)
+const containerBoxes = computed(() => data.value.containerManifest?.groups.flatMap(group => group.boxes) || [])
+const containerTypes = computed(() => {
+  const counts = new Map()
+  containerBoxes.value.forEach(box => counts.set(box.size, (counts.get(box.size) || 0) + 1))
+  return [...counts].map(([size, count]) => `${size} × ${count}`).join(' · ')
+})
+const containerMapNodes = computed(() => data.value.route.map((node, index, route) => ({
+  ...node,
+  x: route.length === 2 ? 20 + index * 60 : 15 + index * (70 / (route.length - 1)),
+  y: route.length === 2 ? 62 - index * 27 : 64 - index * (34 / (route.length - 1)),
+})))
+const containerRoutePoints = computed(() => containerMapNodes.value.map(node => `${node.x},${node.y}`).join(' '))
 
 function zoomIn() { zoom.value = Math.min(1.6, +(zoom.value + 0.2).toFixed(2)) }
 function zoomOut() { zoom.value = Math.max(0.6, +(zoom.value - 0.2).toFixed(2)) }
 </script>
 
 <template>
-  <div class="wd-map">
+  <div class="wd-map" :class="{ 'wd-map-container': data.containerManifest }">
     <div class="wd-map-canvas">
       <!-- 底图 + 缩放层 -->
       <div class="wd-map-zoom" :style="{ transform: `scale(${zoom})` }">
         <div class="wd-map-base" />
+
+        <template v-if="data.containerManifest">
+          <svg class="wd-map-route" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <polyline :points="containerRoutePoints" stroke="#3a65ff" stroke-width="0.7" stroke-dasharray="1.3 1" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div v-for="node in containerMapNodes" :key="node.key" class="wd-container-map-point" :style="{ left: `${node.x}%`, top: `${node.y}%` }">
+            <span class="wd-pin-badge" :class="node.sign === '装' ? 'load' : 'unload'">{{ node.sign }}</span>
+            <span class="wd-container-map-name">{{ node.name }}</span>
+          </div>
+        </template>
+
+        <template v-else>
 
         <!-- 城市标注点 -->
         <div
@@ -84,10 +109,11 @@ function zoomOut() { zoom.value = Math.max(0.6, +(zoom.value - 0.2).toFixed(2)) 
           <span class="wd-pin-badge unload">卸</span>
           <span class="wd-pin-label">十堰（图外西北方向）</span>
         </div>
+        </template>
       </div>
 
       <!-- 图例面板 -->
-      <div class="wd-map-legend">
+      <div v-if="!data.containerManifest" class="wd-map-legend">
         <div class="wd-legend-title">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="#3a65ff"/><circle cx="7" cy="7" r="2" fill="#3a65ff"/></svg>
           <span>运输轨迹</span>
@@ -106,10 +132,16 @@ function zoomOut() { zoom.value = Math.max(0.6, +(zoom.value - 0.2).toFixed(2)) 
         <button type="button" class="wd-zoom-btn" aria-label="缩小" @click="zoomOut">−</button>
       </div>
 
-      <span class="wd-map-attribution">高德地图</span>
+      <span class="wd-map-attribution">{{ data.containerManifest ? '路线示意 · Mock' : '高德地图' }}</span>
 
       <!-- 底部统计条 -->
-      <div class="wd-map-stats">
+      <button v-if="data.containerManifest" type="button" class="wd-container-count-entry" @click="manifestOpen = true">
+        <span class="wd-container-count-icon" aria-hidden="true">▣</span>
+        <span>集装箱数量</span>
+        <strong>{{ containerTypes }} · 共 {{ containerBoxes.length }} 箱</strong>
+        <span class="wd-container-count-link">查看箱清单 ›</span>
+      </button>
+      <div v-else class="wd-map-stats">
         <div v-for="s in data.mapStats" :key="s.key" class="wd-map-stat">
           <span class="wd-map-stat-icon" aria-hidden="true" />
           <span class="wd-map-stat-label">{{ s.label }}</span>
@@ -117,5 +149,6 @@ function zoomOut() { zoom.value = Math.max(0.6, +(zoom.value - 0.2).toFixed(2)) 
         </div>
       </div>
     </div>
+    <DetailContainerManifest v-if="data.containerManifest" :manifest="data.containerManifest" :open="manifestOpen" @close="manifestOpen = false" />
   </div>
 </template>

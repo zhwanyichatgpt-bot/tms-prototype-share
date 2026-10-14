@@ -1,17 +1,17 @@
 <template>
   <button type="button" class="lc-card" :aria-label="`${cargo.goods}${cargo.quantity}，${placeLabel(cargo.origin)}至${placeLabel(cargo.destination)}，查看货源`" @click="$emit('open',cargo)">
     <span v-if="match" class="lc-match"><strong>匹配度 {{ match.score }}%</strong></span>
-    <span class="lc-dates"><span><b>{{ dateLabel(cargo.loadDate) }}</b> {{ cargo.mode==='water'?'装船':'装货' }}</span><i/><span><b>{{ dateLabel(cargo.unloadDate) }}</b> {{ cargo.mode==='water'?'卸船':'卸货' }}</span></span>
+    <span class="lc-dates"><span><b>{{ dateLabel(cargo.loadDate) }}</b> 预计装货</span><i/><span><b>{{ dateLabel(cargo.unloadDate) }}</b> 预计卸货</span></span>
     <span class="lc-route-price">
       <span class="lc-route"><span>{{ placeLabel(cargo.origin) }}</span><span>{{ placeLabel(cargo.destination) }}</span></span>
       <span class="lc-price" :class="{'lc-price-estimate':showEstimate}"><template v-if="showEstimate"><small>预计运价</small><strong>{{ estimatedCargoPrice(cargo) }}</strong><small v-if="cargo.estimatedFreight" class="lc-price-unit">{{ cargo.estimatedFreight.unit }}</small></template><template v-else><small>{{ cargo.price.label }}</small><strong>{{ cargoPrice(cargo) }}</strong></template></span>
     </span>
-    <span class="lc-tags"><span v-for="tag in cargo.tags" :key="tag">{{ tag }}</span></span>
-    <span class="lc-publisher"><span><van-icon name="hotel-o"/><span class="lc-publisher-name">{{ cargo.publisher.short }}</span><span class="lc-score">★ {{ cargo.publisher.score.toFixed(1) }}</span></span><small>{{ cargo.publishLabel }}</small></span>
+    <span class="lc-tags"><span v-if="cargo.businessType" class="lc-business-type">{{ cargo.businessType }}</span><span v-for="tag in cargoDisplayTags(cargo)" :key="tag">{{ tag }}</span></span>
+    <span class="lc-publisher"><span><van-icon name="hotel-o"/><span class="lc-publisher-name">{{ cargo.publisher.short }}</span></span><small>{{ cargo.publishLabel }}</small></span>
   </button>
 </template>
 <script setup>
-import { cargoPrice, estimatedCargoPrice, dateLabel, placeLabel } from './cargo-data.js'
+import { cargoPrice, estimatedCargoPrice, dateLabel, placeLabel, cargoDisplayTags } from './cargo-data.js'
 defineProps({ cargo: { type: Object, required: true }, match: Object, showEstimate: Boolean })
 defineEmits(['open'])
 </script>
@@ -24,6 +24,7 @@ defineEmits(['open'])
 .lc-price{flex:none;min-width:70px;max-width:95px;display:flex;flex-direction:column;gap:4px;text-align:right}.lc-price small{font-size:10px;color:#8a93a7}.lc-price strong{font-size:17px;color:#4064ff;line-height:22px;white-space:nowrap;font-weight:600}
 .lc-tags{display:flex;gap:5px;margin:11px 0;flex-wrap:wrap}.lc-tags>span{flex:1;min-width:max-content;text-align:center;padding:4px 5px;border-radius:4px;background:#eef3ff;color:#62749c;font-size:10px;line-height:14px}
 .lc-publisher{display:flex;align-items:center;gap:6px;justify-content:space-between;border-top:1px solid #e9edf4;padding-top:9px;font-size:11px}.lc-publisher>span{display:flex;align-items:center;gap:4px;min-width:0}.lc-publisher .van-icon{padding:3px;border-radius:4px;background:#eef3ff;color:#4064ff;font-size:13px}.lc-publisher-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lc-score{color:#c77b17;white-space:nowrap}.lc-publisher>small{font-size:10px;color:#8b96a9;white-space:nowrap}
+.lc-tags>.lc-business-type{flex:none;color:#3157ee;background:#e6edff;font-weight:600}
 .lc-card:focus-visible{outline:2px solid #4064ff;outline-offset:2px}
 </style>
 

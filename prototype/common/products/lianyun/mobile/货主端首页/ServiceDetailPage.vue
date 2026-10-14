@@ -1,132 +1,129 @@
 <template>
- <section class="ly-service-page ly-detail-page sd-page" aria-label="运输方案详情">
-  <header class="ly-service-nav"><button aria-label="返回运输方案列表" @click="$emit('back')"><van-icon name="arrow-left"/></button><h1>运输方案详情</h1><span/></header>
+ <section class="ly-service-page ly-detail-page sd-page" aria-label="运输通道详情">
+  <header class="ly-service-nav"><button aria-label="返回运输方案列表" @click="$emit('back')"><van-icon name="arrow-left"/></button><h1>运输通道详情</h1><span/></header>
   <main class="ly-service-content">
-   <section class="sd-map-hero" aria-label="运输路线地图"><AssistantRouteMap :scheme="route" transfer-labels :selected="selected" :expanded="expanded" @select="selected=$event" @expand="expanded=!expanded"/></section>
-   <section class="ly-detail-card sd-route-card" aria-label="全流程路线">
-    <div class="sd-flow">
-     <div v-for="(node,index) in flowNodes" :key="index" class="sd-flow-node">
-      <span class="sd-address-badge" :class="{'sd-address-end':index===flowNodes.length-1}">{{ index===0?'起':index===flowNodes.length-1?'终':'转' }}</span>
-      <div><strong>{{ node.label }}</strong><p v-if="node.detail">{{ node.detail }}</p><div v-if="node.outgoing" class="sd-flow-leg"><i :style="{background:modeColors[node.outgoing.mode]}"/>{{ modeNames[node.outgoing.mode] || node.outgoing.mode }}<span>{{ node.outgoing.duration || '时效待确认' }}</span></div></div>
-     </div>
+   <section class="ly-detail-card sd-schemes" aria-label="运输方案">
+    <h2>运输方案 <small>{{ channel.schemes.length }}个可选</small></h2>
+    <p class="sd-channel-route">{{ service.originLabel }} → {{ service.destinationLabel }}</p>
+    <p class="sd-channel-reference">参考运价 <strong>{{ channel.price }}</strong><span>参考时效 {{ channel.duration }}</span></p>
+    <div class="sd-capabilities"><span>{{ channel.cargoTypes.join('、') }}</span><span v-for="label in capabilityLabels" :key="label">{{ label }}</span></div>
+    <div class="sd-scheme-options">
+     <button v-for="item in channel.schemes" :key="item.id" :aria-pressed="item.id===scheme.id" :class="{active:item.id===scheme.id}" @click="chooseScheme(item.id)">
+      <span><strong>{{ item.name }}</strong><van-icon v-if="item.id===scheme.id" name="checked"/></span>
+      <small>{{ channel.paths.find(path=>path.id===item.pathId).name }}</small>
+      <span class="sd-scheme-metrics">{{ item.price }}<small>{{ item.duration }}</small></span>
+     </button>
     </div>
-    <p v-if="service.summary" class="sd-route-summary">{{ service.summary }}</p>
    </section>
-
-   <section class="ly-detail-card sd-main" aria-label="方案详情信息">
+   <section class="sd-map-hero" aria-label="运输路线地图"><AssistantRouteMap :scheme="route" :selected="selected" :expanded="expanded" @select="selected=$event" @expand="expanded=!expanded"/></section>
+   <section class="ly-detail-card sd-route-card" :aria-label="route.name">
+    <div class="sd-route-heading"><h2>{{ route.name }}</h2></div>
+    <ol class="sd-flow"><li v-for="(node,index) in flowNodes" :key="index" class="sd-flow-node">
+     <span class="sd-address-badge" :class="{'sd-address-end':index===flowNodes.length-1}">{{ index===0?'起':index===flowNodes.length-1?'终':'经' }}</span><div><strong>{{ node }}</strong><small v-if="route.segments[index]">{{ segmentMode(route.segments[index].mode) }}</small></div>
+    </li></ol>
+   </section>
+   <section class="ly-detail-card sd-main" aria-label="所选经营方案信息">
+    <h2>{{ scheme.name }}</h2><p class="sd-price" aria-label="参考运价"><small>参考运价</small>{{ scheme.price }}</p>
+    <p class="sd-cargo"><van-icon name="goods-collect-o"/><span>{{ channel.cargoTypes.join('、') }}</span></p>
     <dl class="sd-facts">
-     <dt>运输方式</dt><dd>{{ service.mode==='multi'?combination:mode.label }}</dd>
-     <dt>适用货物</dt><dd>{{ service.cargo }}</dd>
-     <template v-if="boxType"><dt>箱型</dt><dd>{{ boxType }}</dd></template>
-     <template v-if="service.minimumShipment"><dt>起运量</dt><dd>{{ service.minimumShipment }}</dd></template>
-     <dt>全程时效</dt><dd>{{ duration }}</dd>
-     <dt>参考运价</dt><dd class="sd-fact-price">{{ priceParts?'¥'+priceParts[1]+priceParts[2]:'询价' }}</dd>
-     <dt>发运安排</dt><dd>{{ service.dispatchPlan || arrangement.title }}</dd>
-     <dt>交付方式</dt><dd>{{ service.coverage || '交付范围待确认' }}</dd>
-     <template v-if="detailTags.length"><dt>服务特色</dt><dd>{{ detailTags.join('、') }}</dd></template>
-     <template v-if="service.recentOrders"><dt>近30天成交</dt><dd>{{ service.recentOrders }} 单</dd></template>
+     <dt>运输类型</dt><dd>物流方案</dd>
+     <dt>运输方式</dt><dd>{{ routeModeLabel(route) }}</dd>
+     <dt>参考时效</dt><dd>{{ scheme.duration }}</dd>
+     <dt>费用组织方式</dt><dd>{{ scheme.quoteMode }}</dd>
+     <dt>仓储中转</dt><dd>{{ booleanLabel(scheme.services.warehouseTransfer,'包含','不包含') }}</dd>
+     <dt>增值服务</dt><dd>{{ servicesLabel(scheme.services.valueAdded) }}</dd>
+     <dt>通关服务</dt><dd>{{ servicesLabel(scheme.services.customs) }}</dd>
+     <dt>上门服务</dt><dd>{{ booleanLabel(scheme.services.pickup) }}</dd>
+     <dt>末端服务</dt><dd>{{ booleanLabel(scheme.services.lastMile) }}</dd>
     </dl>
-    <p class="sd-detail-note">{{ service.dispatchNote || arrangement.text }}<br>{{ priceParts?'参考运价，最终报价按货物与服务确认':service.inquiryLabel || '按货物及交付要求确认报价' }}</p>
    </section>
-
-   <section class="ly-detail-card" aria-label="承运与服务说明">
-    <h2>承运与服务说明</h2>
-    <dl><template v-for="row in conditions" :key="row[0]"><dt>{{ row[0] }}</dt><dd>{{ row[1] }}</dd></template><dt>包含服务</dt><dd>{{ includedServices }}</dd><dt>费用边界</dt><dd>{{ service.feeBoundary || '包含项目与附加费用需询价确认' }}</dd><dt>时效起算</dt><dd>{{ service.durationBasis || '起算节点与预计到达时间需在发运前确认' }}</dd></dl>
-    <details class="sd-notes"><summary>交接注意事项<van-icon name="arrow-down"/></summary><p>{{ arrangement.check }}</p></details>
+   <section class="ly-detail-card sd-publisher" aria-label="发布企业">
+    <div class="ly-company-identity"><span class="ly-company-avatar" aria-hidden="true">{{ publisher?.name.slice(0,2) || '企业' }}</span><div>
+     <button v-if="publisher" class="ly-company-name" @click="$emit('provider',publisher)">{{ publisher.name }}</button><strong v-else>发布企业未提供</strong>
+     <p class="sd-published-at">{{ channel.publishedAt ? channel.publishedAt+' 发布' : '发布时间未提供' }}</p>
+    </div></div>
+    <div class="sd-publisher-stats"><span>交易 {{ stats ? stats.transactions+'次' : '未提供' }}</span><span>发货量 {{ stats?.shipmentVolume || '未提供' }}</span>
+     <button v-if="publisher?.score!=null" @click="$emit('reviews',publisher)">评分 {{ publisher.score.toFixed(1) }}分</button><span v-else>暂无评分</span>
+    </div>
    </section>
-
-   <section class="ly-detail-card ly-logistics-company" aria-label="承运企业">
-    <div class="ly-detail-card-heading"><h2>承运企业</h2><button @click="$emit('provider',provider)">企业详情<van-icon name="arrow"/></button></div>
-    <div class="ly-company-identity"><span class="ly-company-avatar" aria-hidden="true">{{ provider.name.slice(0,2) }}</span><div><button class="ly-company-name" @click="$emit('provider',provider)">{{ provider.name }}</button><p class="sd-company-meta">{{ provider.city || provider.area }}<span v-if="provider.verified"><van-icon name="passed"/>认证企业</span></p></div></div>
-    <div class="sd-rating"><span>企业服务评分</span><ProviderRating :provider="provider" compact stars @open="$emit('reviews',$event)"/></div>
-    <dl class="ly-company-facts"><dt>主营业务</dt><dd>{{ provider.specialty }}</dd><dt>服务区域</dt><dd>{{ provider.area }}</dd></dl>
+   <section class="sd-related" aria-label="类似运输通道推荐">
+    <h2>类似运输通道推荐</h2>
+    <ServiceCard v-for="item in relatedServices" :key="item.id" :service="item" :provider="providerFor(item)" :mode="modeFor(item)" compact @open="$emit('service',$event)" @provider="$emit('provider',$event)" @reviews="$emit('reviews',$event)"/>
+    <p v-if="!relatedServices.length" class="sd-empty">暂无类似运输通道</p>
    </section>
   </main>
-  <footer class="ly-service-actions ly-detail-actions"><FavoriteButton :saved="favorite" :label="service.originLabel+'至'+service.destinationLabel+'方案'" @toggle="$emit('favorite',service)"/><button class="primary" @click="$emit('inquiry',service)">按此方案询价</button></footer>
+  <footer class="ly-service-actions ly-detail-actions"><FavoriteButton :saved="favorite" :label="channel.name" @toggle="$emit('favorite',service)"/><button class="primary" @click="$emit('inquiry',transportInquiry(service,channel,scheme))">按此方案询价</button></footer>
  </section>
 </template>
 <script setup>
 import { computed,ref } from 'vue'
 import AssistantRouteMap from './AssistantRouteMap.vue'
-import ProviderRating from './ProviderRating.vue'
 import FavoriteButton from './FavoriteButton.vue'
-import { serviceRoute,transferDescription } from './service-routes.js'
+import ServiceCard from './ServiceCard.vue'
+import { transportChannel,channelCapabilityLabels,routeModeLabel,transportInquiry,relatedTransportChannels } from './transport-channels.js'
+import { providers,services,modes } from './mock-data.js'
+import { publisherStats,booleanLabel,servicesLabel } from './service-detail-data.js'
 const props=defineProps({service:Object,provider:Object,mode:Object,favorite:Boolean})
-defineEmits(['back','provider','reviews','inquiry','favorite'])
-const route=computed(()=>serviceRoute(props.service))
+defineEmits(['back','provider','reviews','inquiry','favorite','service'])
+const channel=computed(()=>transportChannel(props.service))
+const selectedSchemeId=ref(props.service.selectedSchemeId||channel.value.schemes[0].id)
+const scheme=computed(()=>channel.value.schemes.find(item=>item.id===selectedSchemeId.value)||channel.value.schemes[0])
+const route=computed(()=>channel.value.paths.find(item=>item.id===scheme.value.pathId))
 const selected=ref(0),expanded=ref(false)
-const priceParts=computed(()=>String(props.service.price||'').match(/^(\d[\d,.]*)元(.*)$/))
-const duration=computed(()=>/询价|确认/.test(props.service.duration||'')?'时效待确认':props.service.duration||'时效待确认')
-const modeNames={road:'公路',water:'水路',rail:'铁路',air:'低空'}
-const modeColors={road:'#19b88b',water:'#3977ef',rail:'#748292',air:'#8a7de2'}
+const capabilityLabels=computed(()=>channelCapabilityLabels(channel.value.capabilities))
+const publisher=computed(()=>providers.find(item=>item.id===channel.value.publisherId))
+const stats=computed(()=>publisherStats[channel.value.publisherId])
+const segmentMode=mode=>({road:'公路',rail:'铁路',water:'水路',air:'低空'}[mode]||mode)
+function chooseScheme(id){selectedSchemeId.value=id;selected.value=0;expanded.value=false}
 const flowNodes=computed(()=>{
  const segments=route.value.segments || []
- const originDetail=props.service.originScope || (props.service.coverage?.startsWith('门')?'约定装货地点上门提货':'按约定起运节点交接')
- const destinationDetail=props.service.destinationScope || (props.service.coverage?.endsWith('门')?'约定收货地点配送交接':'按约定目的节点交接')
- if(!segments.length)return [{label:props.service.originLabel,detail:originDetail},{label:props.service.destinationLabel,detail:destinationDetail}]
- return [{label:segments[0].from,detail:originDetail,outgoing:segments[0]},...segments.map((segment,index)=>({label:segment.to,detail:index===segments.length-1?destinationDetail:transferDescription(segment.mode,segments[index+1].mode),outgoing:segments[index+1]}))]
+ return segments.length?[segments[0].from,...segments.map(segment=>segment.to)]:[props.service.originLabel,props.service.destinationLabel]
 })
-const combination=computed(()=>{
- const modes=[...new Set((route.value.segments||[]).map(item=>item.mode))]
- const ordered=modes
- if(ordered.length===1 && ordered[0]==='water' && route.value.segments.length>1)return '水水联运'
- return ordered.map(mode=>({road:'公',rail:'铁',water:'水',air:'空'}[mode])).join('')+'联运'
-})
-const boxType=computed(()=>props.service.boxType || [...new Set(props.service.condition?.match(/(?:20|40|45)(?:GP|HQ|HC)/g)||[])].join(' / '))
-const detailTags=computed(()=>[...new Set((props.service.tags||[]).filter(tag=>tag && tag!==props.service.coverage && tag!==combination.value && tag!==boxType.value && !/^(?:20|40|45)(?:GP|HQ|HC)$/.test(tag)))])
-const includedServices=computed(()=>props.service.includedServices?.join('、') || [props.service.coverage?.startsWith('门')?'起点提货':'起点节点交接',props.service.mode==='multi'?'分段运输及中转衔接':'约定干线运输',props.service.coverage?.endsWith('门')?'目的地配送':'目的节点交接'].join('、'))
-// 按方案已有资料展示承运条件，缺失项保持待确认，不推定班期、箱型或可订运力。
-const conditions=computed(()=>{
- const service=props.service
- return ({
-  road:[['适用车型',service.vehicleType||'按货量匹配，需确认']],
-  water:[['装载限制',service.loadLimit||'箱型与单箱载重需确认']],
-  rail:[['装载限制',service.loadLimit||'箱型与装载条件需确认']],
-  multi:[['装载限制',service.loadLimit||(boxType.value ? '单箱载重、单件尺寸及特殊货物需核验' : '箱型与各段装载条件需确认')]],
-  air:[['载重尺寸',service.loadLimit||'重量、尺寸需核验']]
- }[service.mode]||[])
-
-})
-const arrangement=computed(()=>({
- road:{title:'预约发运',text:'提供装货日期与货量，由企业确认车辆及提送时间。',check:'请提供单件重量与尺寸，并确认装卸设备、进场要求和收货窗口。'},
- water:{title:'航次与集港时间待确认',text:'由企业确认船期、截单及集港要求，班期不代表可订舱位。',check:'确认进港资料、码头交接要求及两端接驳范围。'},
- rail:{title:'班列与进站安排待确认',text:'由企业确认办理站、发运批次与进站交接时间。',check:'确认进站资料、交箱凭证及到站提货要求。'},
- multi:{title:'分段发运与衔接待确认',text:'由服务企业核对各段运力、换装节点及两端接驳安排。',check:'确认各段承接主体、交接凭证与异常衔接责任。'},
- air:{title:'预约及运行条件核验',text:'核对货物、起降点和天气条件后，再确认承接与发运时间。',check:'确认货物包装、交付点及天气变化后的交接安排。'}
-}[props.service.mode]||{title:'发运安排待确认',text:'由服务企业确认发运与交付时间。',check:'发运前确认货物条件、交付范围、费用及时间。'}))
+const relatedServices=computed(()=>relatedTransportChannels(props.service,services))
+const providerFor=service=>providers.find(item=>item.id===service.providerId)
+const modeFor=service=>modes.find(item=>item.key===service.mode)
 </script>
-
 <style scoped>
-/* 沿用智运详情的白卡、12px圆角、14px内边距、蓝色价格和8px按钮圆角。 */
 .sd-page{color:#333}
+.sd-channel-route{margin:10px 0 6px;font-size:13px;color:#647090;line-height:22px}
+.sd-channel-reference{margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:#888;align-items:baseline}
+.sd-channel-reference strong{color:#3a65ff;font-size:17px}.sd-channel-reference>span{margin-left:auto}
+.sd-capabilities{display:flex;flex-wrap:wrap;gap:6px}.sd-capabilities>span{background:#eef3ff;padding:4px 7px;border-radius:4px;font-size:11px;color:#647090}
+.sd-schemes h2{display:flex;justify-content:space-between}.sd-schemes h2 small{font-size:12px;color:#888;font-weight:400}
+.sd-scheme-options{display:flex;gap:8px;margin-top:12px;overflow-x:auto;padding:0 1px 5px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.sd-scheme-options button{flex:0 0 152px;min-width:0;scroll-snap-align:start;padding:10px;border:1px solid #e4e8f0;border-radius:8px;text-align:left}
+.sd-scheme-options button.active{border-color:#3a65ff;background:#f3f6ff}
+.sd-scheme-options button>span{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:13px}
+.sd-scheme-options .van-icon{color:#3a65ff}.sd-scheme-options button>small{display:block;color:#888;margin:6px 0;font-size:12px}
+.sd-scheme-options .sd-scheme-metrics{align-items:flex-start;flex-direction:column;gap:5px;font-size:13px;color:#3a65ff}.sd-scheme-metrics small{color:#647090;font-size:12px}
+.sd-flow-node>div{min-width:0}.sd-flow-node small{display:block;font-size:12px;color:#888;margin-top:5px}
+.sd-price small{display:block;font-size:12px;color:#888;font-weight:400;margin:12px 0 6px}
+
 .sd-map-hero{margin:-12px -15px 12px}
 .sd-map-hero :deep(.lya-real-map){margin:0;border:0;border-radius:0}
 .sd-page .ly-service-nav h1{font-size:17px}
-/* 路线先呈现，其他信息沿用货源详情的左右字段列表。 */
+.sd-route-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.sd-route-heading h2{margin:0}
+.sd-flow{list-style:none;margin:0;padding:0}
 .sd-flow-node{position:relative;display:flex;align-items:flex-start;gap:12px;padding-bottom:16px}
 .sd-flow-node:last-child{padding-bottom:0}
-.sd-flow-node:not(:last-child):after{content:'';position:absolute;left:8px;top:25px;bottom:5px;border-left:1px dashed #d4d8e2}
-.sd-address-badge{width:18px;height:18px;margin-top:2px;flex:none;display:grid;place-items:center;border-radius:4px;background:#e1e4ec;color:#3a4564;font-size:10px;font-weight:600}
-.sd-address-end{background:#3a65ff;color:#fff}
-.sd-flow-node>div{min-width:0;flex:1}
-.sd-flow-node strong{font-size:14px;line-height:21px;font-weight:500;color:#333}
-.sd-flow-node p{margin:3px 0 0;font-size:12px;line-height:18px;color:#999}
-.sd-flow-leg{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;line-height:18px;color:#80899d}
-.sd-flow-leg i{width:12px;height:3px;border-radius:2px;flex:none}
-.sd-flow-leg>span{margin-left:4px}
-.sd-route-summary,.sd-detail-note{margin:14px 0 0;padding:10px 12px;border-radius:8px;background:#f8f8fb;color:#666;font-size:12px;line-height:20px}
-.sd-page .sd-facts{margin:0}
-.sd-page .sd-fact-price{color:#3a65ff}
-.sd-detail-note{color:#999}
-.sd-notes{margin-top:14px;padding:10px;border-radius:8px;background:#f8f8fb;font-size:12px;line-height:20px;color:#666}
-.sd-notes summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;min-height:24px}
-.sd-notes summary::-webkit-details-marker{display:none}
-.sd-notes[open] summary .van-icon{transform:rotate(180deg)}
-.sd-notes p{margin:8px 0 0;color:#8a91a1}
-.sd-page .ly-company-avatar{font-size:14px;color:#3a65ff;background:#eff3ff}
-.sd-company-meta{font-size:12px;margin:5px 0 0;color:#8a91a1;display:flex;gap:10px}
-.sd-company-meta>span{display:flex;align-items:center;gap:3px;color:#668c7a;font-size:11px}
-.sd-rating{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-.sd-rating>span{font-size:12px;color:#8a91a1}
-.sd-page button:focus-visible,.sd-notes summary:focus-visible{outline:2px solid #3a65ff;outline-offset:2px}
+.sd-flow-node:not(:last-child):after{content:'';position:absolute;left:8px;top:23px;bottom:3px;border-left:1px dashed #d4d8e2}
+.sd-address-badge{width:18px;height:18px;margin-top:2px;flex:none;display:grid;place-items:center;border-radius:4px;background:#3a65ff;color:#fff;font-size:10px}
+.sd-address-end{background:#19b88b}
+.sd-flow-node strong{font-size:14px;line-height:21px;font-weight:500;overflow-wrap:anywhere}
+.sd-price{margin:0 0 12px;color:#ff3545;font-size:25px;font-weight:700}
+.sd-cargo{display:flex;gap:8px;align-items:flex-start;margin:0 0 16px;font-size:13px;line-height:21px;color:#666}
+.sd-cargo .van-icon{margin-top:3px}
+.sd-facts{margin:0;padding-top:16px;border-top:1px solid #eee}
+.sd-facts dd{overflow-wrap:anywhere}
+.sd-publisher .ly-company-avatar{font-size:14px;background:#85899d;color:white}
+.sd-publisher .ly-company-identity>div{min-width:0}
+.sd-publisher .ly-company-name{font-size:14px;text-align:left;overflow-wrap:anywhere}
+.sd-published-at{margin:5px 0 0;color:#999;font-size:12px;line-height:18px}
+.sd-publisher-stats{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;line-height:20px;color:#888}
+.sd-publisher-stats button{font:inherit;color:#555}
+.sd-related{margin-top:18px}
+.sd-related>h2{margin:0 0 12px;font-size:16px;font-weight:600}
+.sd-empty{font-size:13px;color:#999;text-align:center;padding:12px 0}
+.sd-page button:focus-visible{outline:2px solid #3a65ff;outline-offset:2px}
 </style>

@@ -1,25 +1,7 @@
 <template>
   <div ref="viewport" class="ana-viewport">
   <div class="ana-page" :style="{ zoom: scale }">
-    <!-- ===== 1. 综合评分 ===== -->
-    <section class="ana-card ana-score" aria-label="综合评分">
-      <div class="ana-score-left">
-        <h2 class="ana-score-title">{{ scoreOverview.title }}</h2>
-        <p class="ana-score-value">
-          <svg class="ana-score-swoosh" viewBox="0 0 55 20" aria-hidden="true">
-            <path d="M1 18 L11 3 L24 0 L29 12 L42 11 L54 6 L46 19 L27 19 L22 9 L11 10 Z" fill="#A4EB68"/>
-          </svg>
-          {{ scoreOverview.score }}<em>{{ scoreOverview.decimal }}</em><span class="ana-delta"><van-icon name="arrow-up"/>{{ scoreOverview.delta }}</span>
-        </p>
-        <p class="ana-score-compare">{{ scoreOverview.compare }}</p>
-      </div>
-      <div class="ana-score-right">
-        <button class="ana-mode" type="button"><span>{{ scoreOverview.mode }}</span><van-icon name="arrow-down"/></button>
-        <span class="ana-score-radar"><AnalysisCharts kind="radar" :data="scoreOverview.radar" label="业务、财务、风控三维雷达图"/></span>
-      </div>
-    </section>
-
-    <!-- ===== 2. 业务表现 ===== -->
+    <!-- ===== 1. 业务表现 ===== -->
     <section class="ana-card ana-business" aria-label="业务表现">
       <button class="ana-more" type="button" aria-label="查看业务表现详情"><van-icon name="arrow"/></button>
       <h2 class="ana-section-title">{{ businessPerformance.title }}</h2>
@@ -297,7 +279,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import AnalysisCharts from './AnalysisCharts.vue'
-import { businessPerformance, financialAnalysis, riskWarning, scoreOverview } from './analysis-data.js'
+import { businessPerformance, financialAnalysis, riskWarning } from './analysis-data.js'
 
 // 与条带 SVG 的间距和柱宽保持一致，虚线分别落在两段交界与收益段末端。
 const revenue = businessPerformance.revenue

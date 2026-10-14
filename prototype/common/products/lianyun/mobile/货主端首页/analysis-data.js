@@ -1,20 +1,6 @@
 // 分析页 Mock 数据。
 // 全部指标、文案与示例数值取自 Pixso 设计稿“组合 910”（节点 267:5580），
 // 仅用于原型演示与评审，不代表真实经营结果、统计口径、计算规则或下钻页面。
-export const scoreOverview = {
-  title: '运输综合评分',
-  score: '78',
-  decimal: '.20',
-  delta: '10%',
-  compare: '高于行业 2.75 分',
-  mode: '陆运',
-  radar: [
-    { key: 'business', label: '业务', value: 75 },
-    { key: 'finance', label: '财务', value: 75 },
-    { key: 'risk', label: '风控', value: 80 },
-  ],
-}
-
 export const businessPerformance = {
   title: '业务表现',
   hint: '目前完成率≥55%，可新增托运计划，',
