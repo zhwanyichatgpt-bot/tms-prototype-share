@@ -11,6 +11,7 @@ import DetailLeftPanel from './components/DetailLeftPanel.vue'
 import DetailMap from './components/DetailMap.vue'
 import DetailFees from './components/DetailFees.vue'
 import { getWaybillDetail } from './mock-data'
+import { openPrototypePage } from '../../../../../../../../src/review/prototype-navigation.mjs'
 import './waybill-detail.css'
 
 const route = useRoute()
@@ -23,7 +24,7 @@ const initialTab = computed(() => route.query.tab || '')
 const detail = computed(() => getWaybillDetail(waybillKey.value))
 
 function handleBack() {
-  router.push('/waybillCenter')
+  openPrototypePage(router, route, 'waybillCenter')
 }
 </script>
 
