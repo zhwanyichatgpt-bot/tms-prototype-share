@@ -30,6 +30,7 @@ export function routeModeLabel(route){
 }
 function referencePrice(value){return !value || /询价|确认|面议/.test(value)?'面议':value}
 export function transportChannel(service){
+ if(service.homeDesignChannel)return service.homeDesignChannel
  const details=serviceDetails[service.id]||{}
  const source=serviceRoute(service)
  const path={...source,id:service.id+'-path-1',name:routeModeLabel(source)+(source.segments?.length>1?'衔接路线':'直达路线')}

@@ -1,5 +1,6 @@
 // 地点库用于选择与对话解析，坐标为规划参考位置。
-export const locations = [
+const locationEntries = [
+  {id:'fz-mawei',name:'福州港马尾码头',type:'port',region:['福建省','福州市','福州港马尾码头'],xy:null},
   {id:'dalian',name:'大连市甘井子区',type:'region',region:['辽宁省','大连市','甘井子区'],xy:[121.53,38.95]},
   {id:'wuhan-hs',name:'武汉市洪山区',type:'region',region:['湖北省','武汉市','洪山区'],xy:[114.35,30.50]},
   {id:'wuhan-dxh',name:'武汉市东西湖区',type:'region',region:['湖北省','武汉市','东西湖区'],xy:[114.08,30.67]},
@@ -23,9 +24,28 @@ export const locations = [
   {id:'rotterdam',name:'荷兰鹿特丹港',type:'overseas',region:['荷兰','鹿特丹','鹿特丹港'],xy:[4.48,51.9]},
   {id:'yangon',name:'缅甸仰光物流节点',type:'overseas',region:['缅甸','仰光','仰光物流节点'],xy:[96.16,16.84]},
 ]
+// 地区统一到城市；港口、场站等具体物流节点仍独立保留。
+const cityKey = item => item.type === 'port' ? item.id : item.type + ':' + item.region.slice(0,2).join('/')
+const cityLocations = new Map()
+for (const item of locationEntries) {
+  const key = cityKey(item)
+  if (!cityLocations.has(key)) cityLocations.set(key, item.type === 'port' ? item : {
+    ...item, name:item.type === 'region' ? item.region[1] : item.region[0]+item.region[1], region:item.region.slice(0,2),
+  })
+}
+export const locations = [...cityLocations.values()]
 export function resolveLocation(name) {
-  const exact=locations.find(item=>item.name===name)
-  if(exact) return exact
-  const matches=locations.filter(item=>item.name.includes(name) || name.includes(item.name))
-  return matches.length===1 ? matches[0] : null
+  if (!name?.trim()) return null
+  const text = name.trim()
+  const exact = locationEntries.find(item => item.name === text)
+  if (exact) return cityLocations.get(cityKey(exact))
+  const city = locations.find(item => item.name === text)
+  if (city) return city
+  // 兼容旧区县名称、城市简称与既有节点名称，回填一律使用当前城市口径。
+  const matches = new Map()
+  for (const item of locationEntries) {
+    const location = cityLocations.get(cityKey(item))
+    if (item.name.includes(text) || text.includes(item.name) || location.name.includes(text) || text.includes(location.name)) matches.set(location.id,location)
+  }
+  return matches.size === 1 ? [...matches.values()][0] : null
 }

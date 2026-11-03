@@ -1,0 +1,29 @@
+<svg viewBox="0 0 221 150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="221.000000" height="150.000000" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_118">
+			<effect x="2.000000" y="0.000000" visibility="visible" fill="rgb(36,63,161)" fill-opacity="0.150000006" effectType="dropShadow" stdDeviation="35" radius="0" />
+		</g>
+		<filter id="filter_118" width="221.000000" height="150.000000" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_118)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 " />
+			<feOffset dx="2.000000" dy="0.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="11.666667" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.141176 0 0 0 0 0.247059 0 0 0 0 0.631373 0 0 0 0.15 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_135" x1="108.500008" x2="108.500008" y1="35" y2="89.3719025" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0" />
+		</linearGradient>
+		<linearGradient id="paint_linear_136" x1="108.5" x2="108.5" y1="35" y2="115" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0" />
+		</linearGradient>
+	</defs>
+	<g filter="url(#filter_118)">
+		<path id="矩形 42723" d="M66 35L153.49 35C163.239 35 171.568 42.0299 173.206 51.641L184 115L33 115L33 68C33 49.7746 47.7746 35 66 35Z" fill="url(#paint_linear_135)" fill-rule="evenodd" />
+		<path id="矩形 42723" d="M66 35L153.49 35C163.239 35 171.568 42.0299 173.206 51.641L184 115L33 115L33 68C33 49.7746 47.7746 35 66 35ZM66 36C48.3269 36 34 50.3269 34 68L34 114L182.815 114L172.22 51.8089Q171.906 49.9675 171.256 48.2536L171.253 48.2455Q170.712 46.8222 169.94 45.487Q169.153 44.1277 168.169 42.9313L168.168 42.9308Q167.078 41.6058 165.745 40.4805C164.053 39.0529 162.173 37.9547 160.105 37.186C157.977 36.3953 155.772 36 153.49 36L66 36Z" fill="url(#paint_linear_136)" fill-opacity="0" fill-rule="evenodd" />
+	</g>
+</svg>

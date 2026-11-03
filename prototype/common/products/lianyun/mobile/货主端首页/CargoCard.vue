@@ -1,35 +1,25 @@
 <template>
-  <button type="button" class="lc-card" :aria-label="`${cargo.goods}${cargo.quantity}，${placeLabel(cargo.origin)}至${placeLabel(cargo.destination)}，查看货源`" @click="$emit('open',cargo)">
-    <span v-if="match" class="lc-match"><strong>匹配度 {{ match.score }}%</strong></span>
-    <span class="lc-dates"><span><b>{{ dateLabel(cargo.loadDate) }}</b> 预计装货</span><i/><span><b>{{ dateLabel(cargo.unloadDate) }}</b> 预计卸货</span></span>
-    <span class="lc-route-price">
-      <span class="lc-route"><span>{{ placeLabel(cargo.origin) }}</span><span>{{ placeLabel(cargo.destination) }}</span></span>
-      <span class="lc-price" :class="{'lc-price-estimate':showEstimate}"><template v-if="showEstimate"><small>预计运价</small><strong>{{ estimatedCargoPrice(cargo) }}</strong><small v-if="cargo.estimatedFreight" class="lc-price-unit">{{ cargo.estimatedFreight.unit }}</small></template><template v-else><small>{{ cargo.price.label }}</small><strong>{{ cargoPrice(cargo) }}</strong></template></span>
-    </span>
-    <span class="lc-tags"><span v-if="cargo.businessType" class="lc-business-type">{{ cargo.businessType }}</span><span v-for="tag in cargoDisplayTags(cargo)" :key="tag">{{ tag }}</span></span>
-    <span class="lc-publisher"><span><van-icon name="hotel-o"/><span class="lc-publisher-name">{{ cargo.publisher.short }}</span></span><small>{{ cargo.publishLabel }}</small></span>
+  <button type="button" class="lyhp-cargo-card" :style="{'--cargo-price-width':price.text.length>9?'130px':'90px'}" :aria-label="`${cargo.goods}${cargo.quantity}，${placeLabel(cargo.origin)}至${placeLabel(cargo.destination)}，查看货源`" @click="$emit('open',cargo)">
+    <div class="lyhp-cargo-dates"><img v-if="score===96" :src="asset('match-score.png')" alt="匹配度96%"/><span v-else-if="score!=null" class="lyhp-cargo-match"><b>{{ score }}%</b><small>匹配度</small></span><span><b>{{ dateParts(cargo.loadDate)[0] }}</b>月<b>{{ dateParts(cargo.loadDate)[1] }}</b>日<small>装货</small></span><i></i><span><b>{{ dateParts(cargo.unloadDate)[0] }}</b>月<b>{{ dateParts(cargo.unloadDate)[1] }}</b>日<small>卸货</small></span></div>
+    <div class="lyhp-cargo-body"><div class="lyhp-cargo-routes"><p v-for="(place,index) in [cargo.origin,cargo.destination]" :key="index"><i></i><b :title="placeLabel(place)">{{ placeLabel(place) }}</b><small v-if="distances[index]">{{ distances[index] }}</small></p></div><div class="lyhp-tags"><span>{{ cargoParticipationLabel(cargo) }}</span><span v-for="tag in tags" :key="tag">{{ tag }}</span></div><div class="lyhp-estimate"><small>{{ price.label }}</small><div><b>{{ price.text }}</b><span v-if="price.unit">{{ price.unit }}</span></div></div></div>
+    <div class="lyhp-card-footer"><span><img :src="asset('publisher-logo.png')" alt=""/><span class="lyhp-cargo-publisher">{{ cargo.publisher.name }}</span></span><time>{{ cargo.publishLabel }}</time></div>
   </button>
 </template>
 <script setup>
-import { cargoPrice, estimatedCargoPrice, dateLabel, placeLabel, cargoDisplayTags } from './cargo-data.js'
-defineProps({ cargo: { type: Object, required: true }, match: Object, showEstimate: Boolean })
+import { computed } from 'vue'
+import { cargoParticipationLabel } from './cargo-participation.js'
+import { placeLabel,cargoDisplayTags } from './cargo-data.js'
+const props=defineProps({cargo:{type:Object,required:true},match:Object,showEstimate:Boolean,distances:{type:Array,default:()=>[]}})
 defineEmits(['open'])
+const dateParts=date=>date.slice(5).split('-').map(Number)
+const asset=name=>'/lianyun-mobile-assets/home-design/'+name
+const score=computed(()=>props.match?.score??props.cargo.matchScore??null)
+const tags=computed(()=>props.showEstimate?props.cargo.tags:cargoDisplayTags(props.cargo))
+const price=computed(()=>{
+ const cargo=props.cargo,estimate=props.showEstimate&&cargo.publishMode!=='抢单'?cargo.estimatedFreight:null
+ const number=value=>Number(value).toLocaleString('zh-CN')
+ if(estimate)return {label:'预计运价',text:number(estimate.min)+(estimate.max!==estimate.min?'—'+number(estimate.max):''),unit:estimate.unit}
+ if(cargo.price.amount==null)return {label:cargo.price.label||'货主发布价',text:'面议',unit:''}
+ return {label:cargo.publishMode==='抢单'?'货主定价':cargo.price.label,text:number(cargo.price.amount),unit:cargo.price.unit}
+})
 </script>
-<style scoped>
-.lc-match{display:flex;align-items:center;flex-wrap:wrap;gap:4px 7px;margin-bottom:10px;font-size:11px;line-height:18px;color:#647090}.lc-match strong{padding:2px 5px;border-radius:4px;color:#3a65ff;background:#edf2ff;font-weight:600}.lc-match small{margin-left:auto;color:#8a91a1;font-size:10px}
-
-.lc-card{display:block;box-sizing:border-box;width:100%;padding:13px 12px 10px;margin:0 0 10px;background:#fff;border:1px solid #e8ecf3;border-radius:12px;text-align:left;color:#30343b;font:inherit;cursor:pointer}
-.lc-dates{display:flex;align-items:center;gap:10px;justify-content:space-between;font-size:12px;white-space:nowrap;margin-bottom:12px}.lc-dates>span{flex:1}.lc-dates>span:last-child{text-align:right}.lc-dates b{font-size:14px;font-weight:600;margin-right:3px}.lc-dates i{height:13px;border-left:1px solid #e0e4ed}
-.lc-route-price{display:flex;align-items:center;gap:8px}.lc-route{min-width:0;flex:1;display:flex;flex-direction:column;gap:11px;padding-left:15px}.lc-route>span{position:relative;font-size:13px;font-weight:500;line-height:19px;overflow-wrap:anywhere}.lc-route>span:before{content:'';position:absolute;left:-15px;top:6px;width:6px;height:6px;border-radius:50%;background:#4064ff}.lc-route>span:last-child:before{background:#15b58a}.lc-route>span:first-child:after{content:'';position:absolute;left:-12.5px;top:14px;height:16px;border-left:1px solid #d7dfec}
-.lc-price{flex:none;min-width:70px;max-width:95px;display:flex;flex-direction:column;gap:4px;text-align:right}.lc-price small{font-size:10px;color:#8a93a7}.lc-price strong{font-size:17px;color:#4064ff;line-height:22px;white-space:nowrap;font-weight:600}
-.lc-tags{display:flex;gap:5px;margin:11px 0;flex-wrap:wrap}.lc-tags>span{flex:1;min-width:max-content;text-align:center;padding:4px 5px;border-radius:4px;background:#eef3ff;color:#62749c;font-size:10px;line-height:14px}
-.lc-publisher{display:flex;align-items:center;gap:6px;justify-content:space-between;border-top:1px solid #e9edf4;padding-top:9px;font-size:11px}.lc-publisher>span{display:flex;align-items:center;gap:4px;min-width:0}.lc-publisher .van-icon{padding:3px;border-radius:4px;background:#eef3ff;color:#4064ff;font-size:13px}.lc-publisher-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lc-score{color:#c77b17;white-space:nowrap}.lc-publisher>small{font-size:10px;color:#8b96a9;white-space:nowrap}
-.lc-tags>.lc-business-type{flex:none;color:#3157ee;background:#e6edff;font-weight:600}
-.lc-card:focus-visible{outline:2px solid #4064ff;outline-offset:2px}
-</style>
-
-<style scoped>
-.lc-price.lc-price-estimate{min-width:110px;max-width:145px}
-.lc-price-estimate strong{font-size:15px;line-height:20px}
-.lc-price-estimate .lc-price-unit{color:#647090;font-size:11px;line-height:14px}
-</style>

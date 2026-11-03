@@ -56,7 +56,13 @@ const baseCargos = [
       flows:[{id:'board-flow',from:'board-load',to:'board-unload',cargoName:'板材',packaging:'散装',quantity:100,unit:'吨',dimension:'按重量'}],boxes:[]}
   }
 ]
-export const cargos = [...baseCargos, ...homeCargoScenarios.map(scene => ({
+const grabCargos=[
+ {...baseCargos[0],id:'cargo-grab-steel',number:'HY-QD-20261103-01',publishMode:'抢单',grabAvailability:'open',grabEndsAt:'2026-11-10T18:00:00+08:00',deadline:'2026-11-10 18:00',loadDate:'2026-11-12',unloadDate:'2026-11-13',publishedAt:'2026-11-03 10:00',publishLabel:'今天发布',price:{amount:3840,unit:'元/票',label:'货主定价'},fixedPrice:{unitPrice:3840,quantity:1,unit:'票'},fees:'含全程运输费；装卸费由货主承担，无额外运输加价。',payment:'签收后7日内付款'},
+ {...baseCargos[1],id:'cargo-grab-container',number:'HY-QD-20261103-02',publishMode:'抢单',grabAvailability:'open',grabEndsAt:'2026-11-10T18:00:00+08:00',deadline:'2026-11-10 18:00',loadDate:'2026-11-12',unloadDate:'2026-11-16',publishedAt:'2026-11-03 09:50',publishLabel:'今天发布',price:{amount:7800,unit:'元/箱',label:'货主定价'},fixedPrice:{lines:[{label:'普通集装箱40GP · 普货',quantity:4,unitPrice:7800}]},fees:'含4箱提送、干线与约定交接；不含货物装卸及额外保险。',payment:'月结',summary:'按货主已发布的箱型箱量与节点承接，抢单时不另行报价。'},
+ {...baseCargos[0],id:'cargo-grab-taken',number:'HY-QD-20261103-03',publishMode:'抢单',grabAvailability:'taken',grabEndsAt:'2026-11-10T18:00:00+08:00',deadline:'2026-11-10 18:00',loadDate:'2026-11-12',unloadDate:'2026-11-13',publishedAt:'2026-11-03 09:40',publishLabel:'今天发布',price:{amount:4000,unit:'元/票',label:'货主定价'},fixedPrice:{unitPrice:4000,quantity:1,unit:'票'},fees:'含全程运输费，不含装卸费。'},
+ {...baseCargos[0],id:'cargo-grab-expired',number:'HY-QD-20261103-04',publishMode:'抢单',grabAvailability:'open',grabEndsAt:'2026-11-02T18:00:00+08:00',deadline:'2026-11-02 18:00',loadDate:'2026-11-04',unloadDate:'2026-11-05',publishedAt:'2026-11-01 09:00',publishLabel:'此前发布',price:{amount:3700,unit:'元/票',label:'货主定价'},fixedPrice:{unitPrice:3700,quantity:1,unit:'票'},fees:'含运输费，装卸费另计。'}
+]
+export const cargos = [...baseCargos, ...grabCargos, ...homeCargoScenarios.map(scene => ({
   ...baseCargos[0], id:scene.id, businessType:scene.businessType, number:scene.number, mode:scene.mode, category:scene.cargo, goods:scene.cargo, quantity:scene.quantity,
   origin:{city:'苏州',district:scene.mode==='water'?'太仓港':scene.mode==='rail'?'指定铁路场站':scene.key==='nj'?'工业园区':'吴中区',name:'',address:scene.originLabel,xy:scene.path[0]},
   destination:{city:scene.to,district:scene.district,name:'',address:scene.destinationLabel,xy:scene.xy},
@@ -68,11 +74,11 @@ export const cargos = [...baseCargos, ...homeCargoScenarios.map(scene => ({
   deadline:'2026-10-11 18:00',fees:scene.mode==='road'?'运输费按票计，装卸费另计':'单箱参考价，两端接驳与装卸费用另询',
   publisher:{...baseCargos[0].publisher,name:scene.publisherName,short:scene.publisherName.replace('有限公司',''),area:'苏州',business:`${scene.cargo}运输委托`},
   publishLabel:'今天发布',routeId:scene.routeId,matchScore:scene.matchScore,
-}))].map(cargo => ({ ...cargo, estimatedFreight: homeFreightEstimates[cargo.id] }))
+}))].map(cargo => ({ ...cargo, publishMode:cargo.publishMode||'报价', estimatedFreight: homeFreightEstimates[cargo.id] }))
 export const dateLabel = date => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`
 export const placeLabel = place => `${place.city}·${place.district}${place.name}`
-export const cargoPrice = cargo => cargo.price.amount == null ? '邀约报价' : `¥${cargo.price.amount.toLocaleString('zh-CN')}${cargo.price.unit === '元/吨' ? '/吨' : cargo.price.unit === '元/箱' ? '/箱' : ''}`
-export const estimatedCargoPrice = cargo => cargo.estimatedFreight ? `¥${cargo.estimatedFreight.min.toLocaleString('zh-CN')}–${cargo.estimatedFreight.max.toLocaleString('zh-CN')}` : '待询价'
+export const cargoPrice = cargo => cargo.price.amount == null ? '面议' : `¥${cargo.price.amount.toLocaleString('zh-CN')}${cargo.price.unit === '元/吨' ? '/吨' : cargo.price.unit === '元/箱' ? '/箱' : ''}`
+export const estimatedCargoPrice = cargo => cargo.estimatedFreight ? `¥${cargo.estimatedFreight.min.toLocaleString('zh-CN')}${cargo.estimatedFreight.min===cargo.estimatedFreight.max?'':'–'+cargo.estimatedFreight.max.toLocaleString('zh-CN')}` : '待询价'
 export function cargoRoute(cargo) {
   if (!cargo.routeId) return { id: cargo.id, name: `${cargo.origin.city} → ${cargo.destination.city}`, segments: [] }
   const route = serviceRoute({ id: cargo.routeId, originLabel: cargo.origin.city, destinationLabel: cargo.destination.city })

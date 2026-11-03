@@ -1,97 +1,53 @@
 <template>
-  <section class="lyar-map" aria-label="当前方案分段路线示意">
-    <div ref="canvas" class="lyar-basemap" aria-hidden="true"/>
-    <div class="lyar-map-caption"><span>路线示意 · 非等比例</span><div><span v-for="mode in modes" :key="mode"><i :style="{background:colors[mode]}"/>{{ modeLabels[mode] }}</span><span><i class="transfer"/>转换点</span></div></div>
-    <svg viewBox="0 0 375 288" preserveAspectRatio="none" role="img" :aria-label="scheme.segments.map(s => s.from+'经'+modeLabels[s.mode]+'到'+s.to).join('；')">
-      <g v-for="(leg,index) in geometry.legs" :key="index" :opacity="selected < 0 || selected === index ? 1 : 0.35">
-        <path :d="leg.path" fill="none" :stroke="colors[leg.mode]" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-        <path :d="leg.path" fill="none" :stroke="fills[leg.mode]" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
-        <path v-for="(arrow,i) in leg.arrows" :key="i" d="M-3 -2 L0 0 L-3 2" fill="none" stroke="white" stroke-width="1.5" :transform="'translate('+arrow.x+' '+arrow.y+') rotate('+arrow.angle+')'"/>
-        <path :d="leg.path" class="lyar-map-hit" role="button" tabindex="0" :aria-label="'查看第'+(index+1)+'段 '+modeLabels[leg.mode]" :aria-pressed="selected === index" @click="$emit('select',index)" @keydown.enter="$emit('select',index)" @keydown.space.prevent="$emit('select',index)"/>
-        <g :transform="'translate('+leg.tag[0]+' '+leg.tag[1]+')'" class="lyar-map-leg"><rect width="70" height="20" rx="10" :fill="colors[leg.mode]"/><text x="35" y="14">{{ modeLabels[leg.mode] }} {{ leg.km }}km</text></g>
-      </g>
-      <g v-for="(node,index) in geometry.nodes" :key="index">
-        <circle :cx="node.point[0]" :cy="node.point[1]" r="6" fill="white" stroke="#3e4969" stroke-width="3"/>
-        <g :transform="'translate('+node.label[0]+' '+node.label[1]+')'" class="lyar-map-node">
-          <rect :width="node.width" :height="node.transfer ? 38 : 27" rx="13" fill="white" stroke="#d7deea"/>
-          <circle cx="14" cy="13" r="10" :fill="index === 0 ? '#3a65ff' : index === geometry.nodes.length-1 ? '#20b68d' : '#3e4969'"/>
-          <text x="14" y="17" text-anchor="middle" fill="white">{{ index === 0 ? '起' : index === geometry.nodes.length-1 ? '终' : index }}</text>
-          <text x="28" y="17" fill="#333"><title>{{ node.name }}</title>{{ shortName(node.name) }}</text>
-          <text v-if="node.transfer" x="28" y="31" fill="#68758c" font-size="9">{{ node.transfer }}</text>
-        </g>
+  <section class="lyar-map lyd-design-map" :class="{'lyd-map-card-preview':cardPreview}" aria-label="运输方案路线示意">
+    <svg :viewBox="cardPreview ? '0 0 415 325' : '0 0 686 426'" role="img" :aria-label="scheme.segments.map(item => item.from+'至'+item.to).join('；')">
+      <defs><clipPath :id="clipId"><rect x="15" y="15" width="654" height="392" rx="18"/></clipPath></defs>
+      <template v-if="cardPreview"><image href="/lianyun-mobile-assets/scheme-overview/map-background.png" x="-10" y="-5.5" width="425" height="429" preserveAspectRatio="none"/><image :href="assetRoot+'route-shape.svg'" x="-8" y="5" width="439.04" height="272.64"/></template>
+      <template v-else><rect width="686" height="426" rx="18" fill="#fff" fill-opacity=".63"/>
+      <image :href="assetRoot+'map-background.png'" x="15" y="15" width="654" height="392" preserveAspectRatio="xMidYMid slice" :clip-path="'url(#'+clipId+')'"/>
+      <image :href="assetRoot+'route-shape.svg'" width="686" height="426"/></template>
+      <g v-for="(node,index) in nodes" :key="index" class="lyd-map-node">
+        <circle v-if="!node.transfer" :cx="node.x" :cy="node.y" :r="cardPreview ? 7 : 11" fill="#fff" stroke="#404a6b" :stroke-width="cardPreview ? 4 : 6"/>
+        <image v-else :href="assetRoot+'transfer-marker.svg'" :x="node.x-(cardPreview?11:16)" :y="node.y-(cardPreview?11:16)" :width="cardPreview?22:32" :height="cardPreview?22:32"/>
+        <foreignObject :x="node.labelX" :y="node.y-(cardPreview?36:54)" :width="node.width" :height="cardPreview?30:43">
+          <div xmlns="http://www.w3.org/1999/xhtml" class="lyd-map-bubble" :title="node.name"><span v-if="!node.transfer" class="lyd-map-endpoint" :class="{destination:index === nodes.length-1}">{{ index === 0 ? '起' : '终' }}</span><img v-else :src="assetRoot+'transfer-marker.svg'" alt=""/><span>{{ node.label }}</span></div>
+        </foreignObject>
       </g>
     </svg>
-    <small class="lyar-map-credit">OpenFreeMap · © OpenMapTiles · © OpenStreetMap</small>
   </section>
 </template>
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import 'maplibre-gl/dist/maplibre-gl.css'
-import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
-import { createRouteMapStyle } from './route-map-theme.js'
-import { modeLabels } from './assistant-data.js'
-const props = defineProps({scheme:{type:Object,required:true},selected:{type:Number,default:-1}})
-defineEmits(['select'])
-const canvas = ref(null)
-const colors = {road:'#20b68d',rail:'#6a869c',water:'#538bea',air:'#279bc4'}
-const fills = {road:'#91dbc8',rail:'#b8cad6',water:'#acc8f5',air:'#a1d9ea'}
-const modes = computed(() => [...new Set(props.scheme.segments.map(s => s.mode))])
-const shortName = name => name.replace(/市|装货点|卸货点|物流节点/g,'').slice(0,9)
-function arrows(points) {
-  return points.slice(1).flatMap((point,index) => {
-    const from = points[index], distance = Math.hypot(point[0]-from[0],point[1]-from[1])
-    if(distance < 22) return []
-    return [{x:(from[0]+point[0])/2,y:(from[1]+point[1])/2,angle:Math.atan2(point[1]-from[1],point[0]-from[0])*180/Math.PI}]
-  })
-}
-// 展开短接驳段以便手机辨认；所有节点位置均为非等比例示意，不是地理定位。
-const geometry = computed(() => {
+import { computed, useId } from 'vue'
+const props = defineProps({scheme:{type:Object,required:true},selected:{type:Number,default:-1},cardPreview:Boolean})
+const clipId = 'detail-map-'+useId()
+const assetRoot = '/lianyun-mobile-assets/scheme-detail/'
+const shortMode = {road:'公',rail:'铁',water:'水',air:'空'}
+// 坐标来自设计稿的路线示意区；仅用于排布，不代表地理位置或真实轨迹。
+const nodes = computed(() => {
   const segments = props.scheme.segments, count = segments.length
-  let points, labels, paths, tags
-  if(count === 3) {
-    // 节点上下错开，分段标签沿各段排布，避免全部挤在地图底部。
-    points = [[34,166],[122,83],[248,207],[340,127]]
-    labels = [[8,202],[58,37],[186,223],[252,78]]
-    paths = [[[34,166],[57,151],[69,121],[101,109],[122,83]],[[122,83],[152,112],[169,147],[201,165],[222,193],[248,207]],[[248,207],[271,189],[283,159],[317,151],[340,127]]]
-    tags = [[18,108],[153,137],[285,178]]
-  } else if(count === 4) {
-    points = [[34,143],[106,88],[188,196],[269,87],[340,161]]
-    labels = [[8,185],[55,38],[130,225],[225,38],[249,193]]
-    paths = [[[34,143],[55,126],[79,115],[106,88]],[[106,88],[130,118],[151,161],[188,196]],[[188,196],[213,165],[240,119],[269,87]],[[269,87],[289,110],[319,131],[340,161]]]
-    tags = [[14,91],[108,139],[213,165],[293,119]]
-  } else {
-    points = Array.from({length:count+1},(_,i) => [35+i*305/count,i === 0 ? 100 : i === count ? 80 : i%2 ? 182 : 95])
-    labels = points.map((p,i) => [Math.max(8,Math.min(250,p[0]-52)),p[1]+(i === 0 || i === count ? -40 : i%2 ? 15 : -47)])
-    paths = segments.map((s,i) => [points[i],[points[i][0]+(points[i+1][0]-points[i][0])*.35,points[i][1]+20],[points[i][0]+(points[i+1][0]-points[i][0])*.65,points[i+1][1]+18],points[i+1]])
-    tags = segments.map((s,i) => [(points[i][0]+points[i+1][0])/2-35,Math.max(points[i][1],points[i+1][1])+48])
-  }
-  return {legs:segments.map((segment,i) => ({...segment,path:'M'+paths[i].map(p => p.join(' ')).join(' L'),arrows:arrows(paths[i]),tag:tags[i]})),nodes:points.map((point,i) => {
-    const name = i === count ? segments[count-1].to : segments[i].from
-    const transfer = i > 0 && i < count ? modeLabels[segments[i-1].mode]+' → '+modeLabels[segments[i].mode] : ''
-    return {point,label:labels[i],name,transfer,width:Math.min(125,38+shortName(name).length*10)}
-  })}
+  const anchors = count === 1 ? [[86,201],[598,182]]
+    : count === 2 ? [[86,201],[255,279],[598,182]]
+      : count === 3 ? [[86,201],[255,279],[538,254],[598,182]]
+        : [[86,201],...Array.from({length:count-1},(_,i) => [255+i*283/(count-2),279-i*25/(count-2)]),[598,182]]
+  return anchors.map(([x,y],index) => {
+    if(props.cardPreview){x=x*.64-8;y=y*.64+5}
+    const name = index === count ? segments.at(-1).to : segments[index].from
+    const transfer = index > 0 && index < count
+    const city = name.replace(/铁路货运场站|铁路场站|铁路节点|物流节点|物流交接点|提货点|交付点/g,'')
+    const label = transfer ? city+'｜'+shortMode[segments[index-1].mode]+'转'+shortMode[segments[index].mode] : name
+    const width = props.cardPreview ? Math.max(72,30+label.length*13) : Math.max(100,47+label.length*20)
+    return {x,y,name,label,transfer,width,labelX:Math.max(0,Math.min(x-(props.cardPreview?30:50),(props.cardPreview?415:678)-width))}
+  })
 })
-let map, observer, disposed = false
-function fitMap() {
-  if(!map) return
-  map.resize()
-  const points = props.scheme.segments.flatMap(segment => segment.path || [])
-  if(!points.length) return
-  const xs = points.map(p => p[0]), ys = points.map(p => p[1])
-  map.fitBounds([[Math.min(...xs),Math.min(...ys)],[Math.max(...xs),Math.max(...ys)]],{padding:38,duration:0,maxZoom:8})
-}
-onMounted(async () => {
-  await nextTick()
-  const {Map,setWorkerUrl} = await import('maplibre-gl')
-  if(disposed || !canvas.value) return
-  setWorkerUrl(mapWorkerUrl)
-  const style = createRouteMapStyle()
-  style.layers = style.layers.filter(layer => !layer.id.startsWith('city-'))
-  map = new Map({container:canvas.value,style,center:[114,29],zoom:5,interactive:false,attributionControl:false})
-  fitMap()
-  observer = new ResizeObserver(fitMap)
-  observer.observe(canvas.value)
-})
-watch(() => props.scheme,() => nextTick(fitMap))
-onBeforeUnmount(() => {disposed=true;observer?.disconnect();map?.remove()})
 </script>
+<style scoped>
+.lyd-design-map{position:relative;width:100%;height:100%;overflow:hidden;border-radius:9px}
+.lyd-design-map>svg{display:block;width:100%;height:100%}
+.lyd-map-bubble{display:inline-flex;align-items:center;gap:6px;height:38px;max-width:100%;padding:3px 8px 3px 3px;border-radius:70px;background:#fff;box-shadow:0 2px 8px #3a456333;font:20px/28px 'PingFang SC',sans-serif;white-space:nowrap;color:#333}
+.lyd-map-bubble>img{width:30px;height:30px;flex:none}
+.lyd-map-bubble>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lyd-map-endpoint{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:#3a65ff;color:#fff;font-size:20px;line-height:30px}
+.lyd-map-endpoint.destination{background:#21bd88}
+.lyd-map-card-preview .lyd-map-bubble{height:25px;padding:2px 5px 2px 2px;gap:3px;font-size:14px;line-height:20px}
+.lyd-map-card-preview .lyd-map-bubble>img,.lyd-map-card-preview .lyd-map-endpoint{width:20px;height:20px;font-size:14px;line-height:20px}
+</style>

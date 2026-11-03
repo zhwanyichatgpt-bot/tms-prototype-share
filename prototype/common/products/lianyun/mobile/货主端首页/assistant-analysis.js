@@ -40,3 +40,17 @@ export function analyseSchemes(items, priority = '综合考虑') {
     badges,
   }
 }
+
+// 详情页用两句话说明方案优势和适用场景；政策状态独立展示，不推定补贴优惠。
+export function schemeRecommendation(items, schemeId) {
+  const scheme = items.find(item => item.id === schemeId)
+  if(!scheme) return ''
+  const alternatives = items.filter(item => item.id !== scheme.id && item.delivery === scheme.delivery)
+  const slower = alternatives.find(item => scheme.hours[1] < item.hours[0])
+  const costlier = scheme.priceKnown && alternatives.find(item => item.priceKnown && scheme.price[1] < item.price[0])
+  if(slower && costlier) return '时效短于'+slower.name+'，参考费用低于'+costlier.name+'。适合交期允许'+scheme.duration+'、兼顾费用与时效的需求。'
+  if(costlier) return '参考费用低于'+costlier.name+'，预计'+scheme.duration+'。适合交期相对宽裕、优先控制费用的需求。'
+  if(slower) return '时效短于'+slower.name+'，预计'+scheme.duration+'。适合更关注交期的运输需求。'
+  if(!scheme.transfers) return '预计'+scheme.duration+'，直达减少中转。适合希望减少衔接环节的运输需求。'
+  return '预计'+scheme.duration+'，包含'+scheme.transfers+'次运输衔接。适合按计划组织分段运输的需求。'
+}

@@ -1,0 +1,33 @@
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48.000000" height="48.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+	</defs>
+	<mask id="mask_133" width="48.000000" height="48.000000" x="0.000000" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 20200" width="48.000000" height="48.000000" x="0.000000" y="0.000000" fill="rgb(255,255,255)" />
+			<rect id="矩形 20200" width="47.000000" height="47.000000" x="0.500000" y="0.500000" stroke="rgb(255,255,255)" stroke-width="1.000000" />
+		</g>
+	</mask>
+	<g id="蒙版组 710" mask="url(#mask_133)">
+		<g id="组 43901">
+			<path id="路径 32878" d="M24 2.64941C12.2084 2.64941 2.64941 12.2084 2.64941 24C2.64941 35.7916 12.2084 45.3506 24 45.3506C35.7916 45.3506 45.3506 35.7916 45.3506 24C45.3374 12.2137 35.7863 2.66259 24 2.64941ZM24 42.3005C13.893 42.3005 5.6995 34.107 5.6995 24C5.6995 13.893 13.893 5.6995 24 5.6995C34.107 5.6995 42.3005 13.893 42.3005 24C42.2873 34.1016 34.1016 42.2873 24 42.3005Z" fill="rgb(51,51,51)" fill-rule="nonzero" />
+			<path id="路径 32878" d="M2.64941 24C2.64941 35.7916 12.2084 45.3506 24 45.3506C35.7916 45.3506 45.3506 35.7916 45.3506 24C45.3374 12.2137 35.7863 2.66259 24 2.64941C12.2084 2.64941 2.64941 12.2084 2.64941 24ZM5.6995 24C5.6995 13.893 13.893 5.6995 24 5.6995C34.107 5.6995 42.3005 13.893 42.3005 24C42.2873 34.1016 34.1016 42.2873 24 42.3005C13.893 42.3005 5.6995 34.107 5.6995 24Z" fill-rule="nonzero" stroke="rgb(51,51,51)" stroke-width="0.200000" />
+			<rect id="矩形 20193" width="5.000000" height="5.000000" x="15.000000" y="15.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20193" width="4.000000" height="4.000000" x="15.500000" y="15.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20194" width="5.000000" height="5.000000" x="22.000000" y="15.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20194" width="4.000000" height="4.000000" x="22.500000" y="15.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20195" width="5.000000" height="5.000000" x="29.000000" y="15.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20195" width="4.000000" height="4.000000" x="29.500000" y="15.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20196" width="5.000000" height="5.000000" x="15.000000" y="22.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20196" width="4.000000" height="4.000000" x="15.500000" y="22.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20197" width="5.000000" height="5.000000" x="22.000000" y="22.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20197" width="4.000000" height="4.000000" x="22.500000" y="22.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20198" width="5.000000" height="5.000000" x="29.000000" y="22.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20198" width="4.000000" height="4.000000" x="29.500000" y="22.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+			<rect id="矩形 20199" width="19.000000" height="4.000000" x="15.000000" y="29.000000" rx="1.400000" fill="rgb(51,51,51)" />
+			<rect id="矩形 20199" width="18.000000" height="3.000000" x="15.500000" y="29.500000" rx="0.900000" stroke="rgb(112,112,112)" stroke-opacity="0" stroke-linecap="butt" stroke-dasharray="0.4 " stroke-width="1.000000" />
+		</g>
+	</g>
+</svg>

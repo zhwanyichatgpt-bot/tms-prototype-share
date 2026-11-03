@@ -1,0 +1,10 @@
+<svg viewBox="0 0 52.3564 26.9238" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="52.356445" height="26.923828" fill="none" customFrame="#000000">
+	<defs>
+		<linearGradient id="paint_linear_145" x1="5.2487421" x2="57.1427879" y1="22.0621738" y2="4.60187912" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(18,231,206)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(150,246,123)" offset="0.645024002" stop-opacity="1" />
+			<stop stop-color="rgb(208,251,88)" offset="1" stop-opacity="1" />
+		</linearGradient>
+	</defs>
+	<path id="顶部区/标语装饰图标" d="M7.76172 26.9238L0 22.0371C13.0986 1.23242 23.3457 3.04102 28.293 5.96484C30.7119 7.39453 32.3408 9.2793 33.3984 11.332C37.5625 6.94531 43.1846 2.14062 49.3428 0L52.3564 8.66211C44.4375 11.418 36.2822 21.6113 33.8086 25.3086L25.584 21.5078C25.5898 21.4844 27.0449 15.8848 23.6191 13.8555C20.1973 11.8242 14.1152 16.832 7.76172 26.9238Z" fill="url(#paint_linear_145)" fill-rule="evenodd" />
+</svg>

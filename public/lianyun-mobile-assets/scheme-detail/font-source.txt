@@ -1,0 +1,3 @@
+数字字体用于还原 Pixso 中的 Douyin Sans Bold。
+来源：https://github.com/bytedance/fonts/tree/main/DouyinSans
+字体文件保持原样，许可见同目录 OFL.txt。

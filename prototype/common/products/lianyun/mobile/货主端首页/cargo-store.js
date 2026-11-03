@@ -1,9 +1,10 @@
 import { reactive } from 'vue'
 import { cargos } from './cargo-data.js'
+import { homeDesignCargoIds } from './home-design-data.js'
 import { totals, validateSnapshot } from './cargo-quote-model.js'
 
 const key = 'lianyun-cargo-preview-v1'
-const validId = id => cargos.some(cargo => cargo.id === id)
+const validId = id => cargos.some(cargo => cargo.id === id) || homeDesignCargoIds.includes(id)
 let initial = {}
 try { initial = JSON.parse(localStorage.getItem(key) || '{}') || {} } catch { /* 本机记录不可读时保留可用的空状态。 */ }
 const units = ['元/票', '元/吨', '元/箱']

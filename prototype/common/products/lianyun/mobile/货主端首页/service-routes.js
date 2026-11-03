@@ -24,7 +24,7 @@ const routes={
  leg('广州港','广州·黄埔','road',[[113.68,22.68],[113.48,23.1]],'配送时效待确认')
  ]}
 }
-export function serviceRoute(service){return {...routes[service.id],id:service.id,name:service.originLabel+' → '+service.destinationLabel}}
+export function serviceRoute(service){if(service.homeDesignChannel)return service.homeDesignChannel.paths[0];return {...routes[service.id],id:service.id,name:service.originLabel+' → '+service.destinationLabel}}
 
 // 仅说明方案中的方式衔接，不推定吊装、装拆箱或具体作业能力。
 export function transferDescription(incoming, outgoing) {

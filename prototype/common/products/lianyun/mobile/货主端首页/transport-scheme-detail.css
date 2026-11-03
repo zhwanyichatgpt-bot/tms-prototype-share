@@ -1,0 +1,70 @@
+@font-face{font-family:'LianyunDetailNumbers';src:url('/lianyun-mobile-assets/scheme-detail/DouyinSansBold.ttf') format('truetype');font-style:normal;font-weight:700;font-display:swap}
+/* Pixso「02方案详情」350:918与「02-1方案详情」350:598共用750×1624布局，按375×812显示；理由与操作按已确认口径展示。 */
+.ly-screen.ly-ai-screen:has(.lya-result-shell){background:#f0f4fb url('/lianyun-mobile-assets/scheme-detail/background.png') center top/100% 100% no-repeat;border-radius:30px;outline:3px solid #3f4350}
+.ly-screen.ly-ai-screen:has(.lya-result-shell) .ly-status{background:transparent;padding:14px 38px 0;font-size:14px;line-height:20px}
+.ly-screen.ly-ai-screen:has(.lya-result-shell) .ly-status-icons{width:71.8335px;height:12.5px;margin-top:3px;background:url('/lianyun-mobile-assets/scheme-detail/status-icons.svg') center/contain no-repeat}
+.ly-screen.ly-ai-screen:has(.lya-result-shell) .ly-status-icons>*{visibility:hidden}
+.lya-shell.lya-result-shell{background:transparent}
+.lya-body.lya-results-layout{display:flex;padding:0;overflow:hidden}
+.lyd-view{position:relative;display:flex;flex-direction:column;flex:1;min-width:0;min-height:0;color:#333;line-height:1.4}
+.lyd-view button{cursor:pointer}
+.lyd-view .lyd-toolbar{display:flex;align-items:center;gap:10px;height:44px;min-height:44px;padding:0 16px}
+.lyd-view .lyd-route{display:flex;align-items:center;gap:7px;flex:1;min-width:0;text-align:left;font-size:14px}
+.lyd-view .lyd-route>span{min-width:0;max-width:94px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lyd-view .lyd-route>i{flex:none;font-style:normal}
+.lyd-view .lyd-route>.van-icon{font-size:10px;margin-left:2px}
+.lyd-view .lyd-settings{display:grid;place-items:center;flex:none;width:23px;height:23px;padding:0}
+.lyd-view .lyd-settings img{display:block;width:23px;height:23px}
+.lyd-view .lyd-capsule{position:relative;flex:none;height:27.5px;width:70.5px}
+
+
+.lyd-view .lyd-tabs{display:flex;align-items:center;gap:10px;flex:none;min-height:36px;padding:0 16px 5px;overflow-x:auto;scrollbar-width:none}
+.lyd-view .lyd-tabs>button{flex:0 0 75px;height:31px;padding:0 8px;white-space:nowrap;border:1px solid #fff;border-radius:20px;background:#ffffff80;color:#737680;font-size:14px}
+.lyd-view .lyd-tabs>button.active{background:linear-gradient(90deg,#1e4df6,#5c8bfe);border-color:transparent;color:#fff}
+.lyd-view .lyd-capsule img{display:block;width:70.5px;height:27.5px}
+.lyd-view .lyd-content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;border-radius:20px 20px 0 0;margin-bottom:10px;background:url('/lianyun-mobile-assets/scheme-detail/panel-background.svg') center/100% 100% no-repeat;box-shadow:inset 0 1px 0 #ffffff99;backdrop-filter:blur(12px)}
+.lyd-view .lyd-panel{position:relative;min-height:100%;padding:0 16px 112px}
+.lyd-view .lyd-summary{position:relative;padding:20.5px 4.5px 0}
+.lyd-view .lyd-title{display:flex;align-items:center;gap:8px;min-height:18px;padding-right:40px}
+.lyd-view .lyd-title h2{font-size:18px;line-height:18px;font-weight:600;overflow-wrap:anywhere}
+.lyd-view .lyd-preference{flex:none;padding:3px 6px;border-radius:4px;color:#7e5010;background:linear-gradient(135deg,#fdd697,#fdbe68);font-size:10px;line-height:12px;white-space:nowrap}
+.lyd-view .lyd-panel-close{position:absolute;right:0;top:14px;display:grid;place-items:center;width:35px;height:35px;padding:0;border-radius:50%;background:#ffffffcc;box-shadow:0 2px 28px #8da2b470;font-size:19px}
+.lyd-view .lyd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10.5px;padding-right:24px}
+.lyd-view .lyd-tags>span{padding:3px 7px;border-radius:4px;background:#f0f4ff;color:#2643ba;font-size:10px;line-height:12px;white-space:nowrap}
+/* 明示推荐理由与政策状态，沿用两句话正文，不增加二级页面。 */
+.lyd-view .lyd-recommendation{margin:9px 0 8px;padding:8px 10px;border:1px solid #ffffffb3;border-radius:9px;background:#ffffff73}
+.lyd-view .lyd-recommendation>h3{margin:0;color:#3659c5;font-size:12px;font-weight:600;line-height:17px}
+.lyd-view .lyd-summary .lyd-explanation{margin:4px 0 0;font-size:12px;line-height:18px;color:#46516a}
+.lyd-view .lyd-recommendation>.lyd-policy{display:flex;align-items:baseline;gap:7px;margin:6px 0 0;padding-top:6px;border-top:1px solid #dce5f3;font-size:11px;line-height:16px;color:#7a8498}
+.lyd-view .lyd-policy>strong{flex:none;font-weight:500;color:#5c6b86}
+.lyd-view .lyd-metrics{display:grid;grid-template-columns:minmax(0,293fr) repeat(2,minmax(0,178fr));gap:9.25px;margin:1.5px -2px 0 -7px}
+.lyd-view .lyd-metrics>div{display:flex;flex-direction:column;justify-content:center;min-width:0;height:56.5px;padding:8px 10px;border:1px solid #fff;border-radius:9px;background:#ffffffa1}
+.lyd-view .lyd-metrics dt{font-size:10px;color:#737680;line-height:14px;white-space:nowrap}
+.lyd-view .lyd-metrics dd{margin:5px 0 0;font-size:16px;line-height:18px;font-weight:700;font-family:'LianyunDetailNumbers',var(--ly-font);white-space:nowrap;letter-spacing:-.3px}
+.lyd-view .lyd-metrics dd small{margin-left:2px;font-size:10px;font-weight:400;letter-spacing:0;font-family:var(--ly-font)}
+.lyd-view .lyd-metrics .lyd-price{font-size:16px;color:#3a65ff;letter-spacing:-.5px}
+.lyd-view .lyd-metrics .lyd-time{font-size:16px}
+.lyd-view .lyd-map-pane{height:213px;padding:0;margin:14.5px 2.5px 0 -2.5px;border-radius:9px;background:transparent}
+.lyd-view .lyd-map-pane .lyar-map{width:100%;height:100%;min-height:0;flex:none;border-radius:9px}
+.lyd-view .lyd-segments{display:grid;gap:10px;list-style:none;padding:0;margin:14px 0 0}
+.lyd-view .lyd-segments>li>button{display:block;width:100%;min-height:76px;padding:10px 14px;border-radius:10px;background:#fff;text-align:left}
+.lyd-view .lyd-segment-heading{display:flex;align-items:center;gap:8px;justify-content:space-between;min-height:20px}
+.lyd-view .lyd-segment-heading>strong{display:flex;align-items:center;gap:6px;flex:1;min-width:0;font-size:14px;font-weight:500}
+.lyd-view .lyd-segment-heading>strong>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lyd-view .lyd-segment-heading>img{display:block;width:43px;height:19px;object-fit:contain;flex:none}
+.lyd-view .lyd-mode-air{font-size:10px;padding:2px 5px;border-radius:4px;color:#fff;background:#279bc4;flex:none}
+.lyd-view .lyd-segments .lyd-segment-facts{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:10px;line-height:14px;color:#666}
+.lyd-view .lyd-segment-facts>i{height:10px;width:1px;background:#aaa}
+.lyd-view .lyd-segments .lyd-segment-note{margin:2px 0 0;color:#999;font-size:10px;line-height:14px}
+.lyd-view .lyd-actions{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-start;justify-content:center;gap:10px;height:100px;padding:25px 16px 29px;background:linear-gradient(180deg,#e0e4ed00,#dfe3ec);pointer-events:none}
+.lyd-view .lyd-actions>button{pointer-events:auto;flex:1;min-width:0;min-height:46px;border-radius:32px;font-size:16px;line-height:20px;font-weight:500;box-shadow:0 2px 16px #5f657d52}
+.lyd-view .lyd-actions>.lyd-primary{flex:0 1 212.5px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(100deg,#1e4df6,#5c8bfe);color:#fff}
+.lyd-view .lyd-primary>small{font-size:10px;line-height:14px;font-weight:400;opacity:.55}
+.lyd-view .lyd-home-indicator{position:absolute;bottom:9px;left:50%;width:101px;height:4px;border-radius:4px;transform:translateX(-50%);background:#33333324}
+.lyd-view .lyd-panel-close::before,.lyd-view .lyd-panel-close::after{content:"";position:absolute;top:50%;left:50%;width:12.5px;height:1.5px;border-radius:24px;background:#333;transform:translate(-50%,-50%) rotate(45deg)}
+.lyd-view .lyd-panel-close::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.lyd-view .lyd-price .lyd-currency{margin:0 2px 0 0}
+.lyd-view .lyd-segment-arrow{display:block;flex:none;width:17.5px;height:10px}
+
+/* 胶囊右半侧返回首页，保留图片外观；左侧更多暂不接行为。 */
+.lyd-view .lyd-capsule>.lyd-exit{position:absolute;inset:0 0 0 auto;width:35.25px;height:27.5px;margin:0;padding:0;border:0;border-radius:0 5px 5px 0;background:transparent}

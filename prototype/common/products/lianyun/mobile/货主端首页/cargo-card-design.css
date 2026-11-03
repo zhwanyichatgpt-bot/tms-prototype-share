@@ -1,0 +1,305 @@
+/* 首页与货源大厅共用已确认的Pixso首页货源卡片样式。 */
+
+
+.ly-screen .lyhp-cargo-card {
+  display: block;
+  text-align: left;
+  width: 100%;
+  min-height: 160.5px;
+  margin: 0 0 10px;
+  box-sizing: border-box;
+  border: 0;
+  color: #1f2533;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px 14px 16.5px;
+  box-shadow: 0 4px 12px #b1bed717
+}
+
+
+
+.ly-screen .lyhp-cargo-dates {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap
+}
+
+
+
+.ly-screen .lyhp-cargo-dates>img {
+  width: 57px;
+  height: 16px;
+  object-fit: contain
+}
+
+
+
+.ly-screen .lyhp-cargo-dates span {
+  font-size: 10px;
+  display: flex;
+  gap: 1px;
+  align-items: baseline;
+  color: #80899c
+}
+
+
+
+.ly-screen .lyhp-cargo-dates b {
+  font-size: 16px;
+  font-weight: 500;
+  color: #30384a;
+  font-family: 'Bahnschrift',Arial,sans-serif
+}
+
+
+
+.ly-screen .lyhp-cargo-dates>i {
+  height: 10px;
+  width: 1px;
+  background: #e7eaf0;
+  margin: 0 3px
+}
+
+
+
+.ly-screen .lyhp-cargo-body {
+  position: relative;
+  margin-top: 10px;
+  height: 70px
+}
+
+
+
+.ly-screen .lyhp-cargo-routes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative
+}
+
+
+
+.ly-screen .lyhp-cargo-routes:before {
+  content: '';
+  position: absolute;
+  border-left: 1px dashed #b6c3d8;
+  height: 25px;
+  top: 10px;
+  left: 3px
+}
+
+
+
+.ly-screen .lyhp-cargo-routes p {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap
+}
+
+
+
+.ly-screen .lyhp-cargo-routes p>i {
+  width: 6px;
+  height: 6px;
+  background: #6493ff;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  flex: none
+}
+
+
+
+.ly-screen .lyhp-cargo-routes p:nth-child(2)>i {
+  background: #2dc8a6
+}
+
+
+
+.ly-screen .lyhp-cargo-routes b {
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 222px;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+
+
+.ly-screen .lyhp-cargo-routes small {
+  font-size: 12px;
+  color: #8f98aa
+}
+
+
+
+.ly-screen .lyhp-tags {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px
+}
+
+
+
+.ly-screen .lyhp-tags span {
+  font-size: 10px;
+  line-height: 10px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  color: #7a869b;
+  background: #f3f5fa
+}
+
+
+
+.ly-screen .lyhp-tags span:first-child {
+  color: #4e7de3;
+  background: #eaf1ff
+}
+
+
+
+.ly-screen .lyhp-cargo-body>.lyhp-tags {
+  margin-top: 7px;
+  max-width: 205px
+}
+
+
+
+.ly-screen .lyhp-cargo-body>.lyhp-tags span:nth-child(2) {
+  background: #eff4ff;
+  color: #778fb5
+}
+
+
+
+.ly-screen .lyhp-estimate {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  text-align: right
+}
+
+
+
+.ly-screen .lyhp-estimate>small {
+  font-size: 8px;
+  line-height: 10.5px;
+  display: block;
+  color: #949eaf
+}
+
+
+
+.ly-screen .lyhp-estimate div {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  color: #3a65ff
+}
+
+
+
+.ly-screen .lyhp-estimate b,.ly-screen .lyhp-service-price b {
+  font-family: 'LianyunDetailNumbers','Arial',sans-serif;
+  font-size: 16px;
+  font-weight: 700
+}
+
+
+
+.ly-screen .lyhp-estimate span,.ly-screen .lyhp-service-price span {
+  font-size: 10px
+}
+
+
+
+.ly-screen .lyhp-card-footer {
+  border-top: .5px solid #ebedf2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8a96a8
+}
+
+
+
+.ly-screen .lyhp-card-footer>span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap
+}
+
+
+
+.ly-screen .lyhp-card-footer img {
+  width: 16.8px;
+  height: 16.3px;
+  object-fit: contain
+}
+
+
+
+.ly-screen .lyhp-card-footer time {
+  white-space: nowrap
+}
+
+
+
+.ly-screen .lyhp-cargo-card>.lyhp-card-footer {
+  margin-top: 10px;
+  padding-top: 9px;
+  height: 25.5px
+}
+
+
+
+.ly-screen .lyhp-service-card>.lyhp-card-footer {
+  height: 26px;
+  margin-top: 6px;
+  padding-top: 6px
+}
+
+
+
+.ly-screen .lyhp-service-card .lyhp-tags span:nth-child(2) {
+  color: #4b72c2;
+  background: #edf2fc
+}
+
+
+
+.ly-screen .lyhp-tags span:nth-child(3) {
+  color: #289c93;
+  background: #e5f4f1
+}
+
+
+
+.ly-screen .lyhp-card-footer>span>img {
+  width: 23.5625px;
+  height: 23.068px;
+  margin: -3.375px;
+  margin-right: -.5px
+}
+
+
+
+.ly-screen .lyhp-cargo-dates small {
+  font-size: 10px;
+  margin-left: 1px;
+}
+
+.ly-screen .lyhp-cargo-card p{margin:0}.ly-screen .lyhp-cargo-card *{box-sizing:border-box}.ly-screen .lyhp-cargo-card:focus-visible{outline:2px solid #4064ff;outline-offset:2px}.ly-screen .lyhp-cargo-publisher{display:block;max-width:190px;overflow:hidden;text-overflow:ellipsis}.ly-screen .lyhp-cargo-dates .lyhp-cargo-match{color:#0dbb82;gap:3px}.ly-screen .lyhp-cargo-match>b{font-size:14px;color:#0dbb82}.ly-screen .lyhp-cargo-match>small{font-size:9px}.ly-screen .lyhp-cargo-card .lyhp-tags{max-width:min(205px,calc(100% - var(--cargo-price-width,90px)));overflow:hidden}.ly-screen .lyhp-cargo-card .lyhp-tags>span{padding-inline:6px;flex:none}.ly-screen .lyhp-cargo-card .lyhp-tags>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}.ly-screen .lyhp-cargo-card .lyhp-estimate{max-width:130px}.ly-screen .lyhp-cargo-card .lyhp-estimate div{justify-content:flex-end;white-space:nowrap}
+
+.ly-screen .lyhp-cargo-list>.lyhp-cargo-card{margin:0}

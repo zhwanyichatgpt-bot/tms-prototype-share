@@ -1,59 +1,9 @@
 <template>
   <div class="ly-preview">
-    <div ref="screenRoot" class="ly-screen" :class="{ 'ly-ai-screen': activeTab === 'ai' }">
+    <div ref="screenRoot" class="ly-screen" :class="{ 'ly-ai-screen': activeTab === 'ai', 'ly-home-screen': activeTab==='home' && !openedService && !openedProvider && !serviceList && !catalog && !nodeDetail && !requestsPage && !favoritesOpen && !cargoOverlay }">
       <div class="ly-status" aria-hidden="true"><span>9:41</span><span class="ly-status-icons"><i class="ly-signal"></i><van-icon name="wifi-o"/><i class="ly-battery"></i></span></div>
-      <main v-show="activeTab === 'home'" ref="homeScroll" class="ly-scroll lh-home" aria-label="至简联运首页">
-        <header class="lh-brand">
-          <h1><img src="/lianyun-mobile-assets/brand-logo-v2.png" alt=""/>至简联运</h1>
-          <button class="lh-region-entry" aria-label="选择当前区域" title="当前区域" @click="regionOpen=true"><van-icon name="location-o"/><span>{{ browseRegion }}</span><van-icon name="arrow-down"/></button>
-          <button class="lh-notifications" aria-label="消息通知" @click="openNotifications"><van-icon name="bell"/><span>消息通知</span></button>
-        </header>
-        <section class="lh-section lh-operation-banner" aria-label="平台运营专题"><IndustrySolutionBanner compact @solution="openIndustrySolution"/></section>
-        <section class="lh-query" aria-label="运输助手">
-          <div class="lh-query-heading"><h2>运输助手 <small>AI</small></h2><button class="lh-publish-entry" @click="openPublish">发布货源<van-icon name="plus"/></button></div>
-          <RouteQueryForm ref="homeQuery" v-model:mode="serviceMode" compact :teleport="screenRoot" @query="queryFromHome"/>
-          <button class="lh-chat" @click="openAssistant()"><img src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt=""/>查在途或问运输，和小简聊聊<van-icon name="arrow"/></button>
-        </section>
-        <button v-if="businessReminder.hasRecords" class="lh-reminder" @click="openRequests()"><van-icon name="orders-o"/><strong>{{ businessReminder.title }}</strong><span>{{ businessReminder.detail }}</span><van-icon name="arrow"/></button>
-        <section class="lh-section lh-recommendations" aria-label="货源、运输方案与物流企业推荐">
-          <div class="lh-section-heading">
-            <nav class="lh-recommendation-tabs" role="tablist" aria-label="推荐内容">
-              <button v-for="(item,index) in recommendationTabs" :id="`recommendation-tab-${item.key}`" :key="item.key" role="tab" :aria-selected="recommendationTab===item.key" :tabindex="recommendationTab===item.key?0:-1" :aria-controls="`recommendation-panel-${item.key}`" @click="recommendationTab=item.key" @keydown.right.prevent="switchRecommendation(index+1,$event)" @keydown.left.prevent="switchRecommendation(index-1,$event)">{{ item.label }}</button>
-            </nav>
-          </div>
-          <div ref="serviceSection" id="recommendation-panel-service" v-show="recommendationTab==='service'" role="tabpanel" aria-labelledby="recommendation-tab-service">
-          <nav class="lh-featured-tabs" role="tablist" aria-label="精选方案运输方式"><button v-for="item in featuredModes" :key="item.key" role="tab" :aria-selected="featuredMode===item.key" aria-controls="featured-service-panel" @click="featuredMode=item.key">{{ item.label }}</button></nav>
-          <div id="featured-service-panel" role="tabpanel" :aria-label="featuredModes.find(item=>item.key===featuredMode)?.label+'运输方案'">
-          <ServiceCard v-for="service in featuredServices" :key="service.id" compact :service="service" :provider="providerById(service.providerId)" :mode="modeInfo(service.mode)" @open="openService" @provider="openProvider" @reviews="openReviews"/>
-          <div v-if="!featuredServices.length" class="ly-empty"><p>暂无符合当前条件的方案</p><button class="ly-text-button" @click="homeOrigin='全国'; featuredMode='all';browseRegion='全国'">查看推荐方案</button></div>
-          </div>
-          </div>
-          <div id="recommendation-panel-cargo" v-show="recommendationTab==='cargo'" role="tabpanel" aria-labelledby="recommendation-tab-cargo">
-            <CargoMarketplace ref="cargoMarket" embedded :recommended-cargos="recommendedCargos" :teleport="screenRoot" @overlay-change="cargoOverlay=$event"/>
-          </div>
-          <div id="recommendation-panel-provider" v-show="recommendationTab==='provider'" role="tabpanel" aria-labelledby="recommendation-tab-provider">
-          <article v-for="provider in featuredProviders" :key="provider.id" class="lh-provider">
-            <header>
-              <button class="lh-provider-identity" @click="openProvider(provider)">
-                <span class="lh-provider-logo" aria-hidden="true">{{ provider.name.slice(0,2) }}</span>
-                <span class="lh-provider-heading"><strong :title="provider.name">{{ provider.name }}</strong><span class="lh-provider-location"><span v-if="provider.city">{{ provider.city }}</span><small v-if="provider.verified" class="lh-provider-verified"><van-icon name="passed"/>认证企业</small></span></span>
-              </button>
-              <ProviderRating :provider="provider" compact readable stars @open="openReviews"/>
-            </header>
-            <div class="lh-provider-body">
-              <p class="lh-provider-match"><van-icon name="location-o"/>{{ browseRegion==='全国'?'服务能力推荐':'区域匹配：'+browseRegion }}</p>
-              <p v-if="provider.operatingStats" class="lh-provider-operations"><span>累计承运 <b>{{ provider.operatingStats.completedOrders }}</b> 单</span><span>承运 <b>{{ provider.operatingStats.volume }}</b></span></p>
-              <div class="lh-provider-tags" aria-label="主营业务与服务能力"><span v-for="tag in [...new Set([...provider.specialty.split(' · '),...provider.capabilities])].slice(0,4)" :key="tag">{{ tag }}</span></div>
-              <p class="lh-provider-area"><span>服务区域</span>{{ provider.area }}</p>
-              <p class="lh-provider-description">{{ provider.description }}</p>
-            </div>
-            <footer><button v-for="service in providerServices(provider.id).slice(0,1)" :key="service.id" class="lh-representative" @click="openService(service)"><small>代表线路</small><strong>{{ service.from }} → {{ service.to }}</strong><van-icon name="arrow"/></button><button class="lh-provider-action" @click="openProvider(provider)">企业详情<van-icon name="arrow"/></button></footer>
-          </article><div v-if="!featuredProviders.length" class="ly-empty"><p>当前地区暂无推荐企业</p><button class="ly-text-button" @click="openProviders(providers)">浏览全部企业</button></div>
-          </div>
-          <button class="lh-recommendation-more" @click="openRecommendationList">查看全部{{ recommendationTab==='cargo'?'货源':recommendationTab==='service'?'运输方案':'物流企业' }}<van-icon name="arrow"/></button>
-        </section>
-
-      </main>
+      <LianyunHomePage v-show="activeTab==='home'" ref="homeQuery" :fixtures="homeDesign" :teleport="screenRoot" :region="homeRegionSelected ? browseRegion : ''" v-model:mode="serviceMode" @region="regionOpen=true" @publish="openPublish" @assistant="openAssistant()" @industry="openIndustrySolution(industrySolutions[0])" @query="queryFromHome" @cargo="cargoMarket.openCargo($event)" @service="openService" @provider="openProvider" @reviews="openReviews"/>
+      <CargoMarketplace ref="cargoMarket" headless :teleport="screenRoot" @overlay-change="cargoOverlay=$event"/>
 
       <NetworkNodeDetail v-if="nodeDetail" v-show="!catalog && !openedService" :key="nodeDetail.id" :place="nodeDetail" @back="nodeDetail=null" @offer="openOffer" @service="openService" @provider="openProvider" @reviews="openReviews" @request="place=>startRequest('node',place)"/>
       <PlatformCatalog v-if="catalog" v-show="!openedService" :key="catalog.category+catalog.offer+catalog.guide" :initial-category="catalog.category" :initial-offer="catalog.offer" :initial-guide="catalog.guide" :initial-region="catalog.region||browseRegion" @back="catalog=null" @provider="openProvider" @request="offer=>startRequest('offer',offer)"/>
@@ -84,8 +34,9 @@
         </main>
       </section>
       <nav v-show="(activeTab !== 'ai' || (assistantRef?.isLanding && !assistantRef?.overlayOpen)) && !openedService && !openedProvider && !serviceList && !catalog && !networkExpanded && !nodeDetail && !requestsPage && !favoritesOpen && !cargoOverlay && !appsOverlay" class="ly-bottom-nav" :class="{ 'ly-ai-navigation': activeTab === 'ai' }" aria-label="主导航">
-        <button v-for="tab in tabs" :key="tab.key" :class="['ly-tab', { active: activeTab === tab.key, 'ly-tab-ai': tab.key === 'ai' }]" :aria-current="activeTab === tab.key ? 'page' : undefined" @click="activeTab = tab.key">
-          <img v-if="tab.key === 'ai'" class="ly-tab-mascot" src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="">
+        <button v-for="tab in tabs" :key="tab.key" :class="['ly-tab', { active: activeTab === tab.key, 'ly-tab-ai': tab.key === 'ai' }]" :aria-label="tab.label" :aria-current="activeTab === tab.key ? 'page' : undefined" @click="activeTab = tab.key">
+          <span v-if="activeTab==='home'" aria-hidden="true"/>
+          <img v-else-if="tab.key === 'ai'" class="ly-tab-mascot" src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="">
           <img v-else-if="tab.key !== 'analysis'" class="ly-tab-icon" :src="'/zhiyun-mobile-assets/icons/tab-' + tab.key + '.svg'" alt="">
           <van-icon v-else :name="tab.icon"/><span>{{ tab.label }}</span>
         </button><span class="ly-home-indicator"></span>
@@ -99,7 +50,7 @@
 
       <van-popup v-model:show="regionOpen" position="bottom" round :teleport="screenRoot" :style="{ position: 'absolute' }" :overlay-style="{ position: 'absolute' }" class="ly-sheet">
         <div class="ly-sheet-title"><h2>选择当前区域</h2><button aria-label="关闭区域选择" @click="regionOpen=false"><van-icon name="cross"/></button></div>
-        <div class="ly-sheet-body"><p class="ly-sheet-hint">选择所在或经营区域，查看相关货源、运输方案和企业。</p><div class="lh-region-options"><button v-for="region in recommendationRegions" :key="region" :aria-pressed="browseRegion===region" @click="browseRegion=region;regionOpen=false">{{ region }}<van-icon v-if="browseRegion===region" name="success"/></button></div></div>
+        <div class="ly-sheet-body"><p class="ly-sheet-hint">选择所在或经营区域，查看相关货源、运输方案和企业。</p><div class="lh-region-options"><button v-for="region in recommendationRegions" :key="region" :aria-pressed="browseRegion===region" @click="browseRegion=region;homeRegionSelected=true;regionOpen=false">{{ region }}<van-icon v-if="browseRegion===region" name="success"/></button></div></div>
       </van-popup>
 
       <van-popup v-model:show="sheet.open" position="bottom" round :teleport="screenRoot" :style="{ position: 'absolute' }" :overlay-style="{ position: 'absolute' }" class="ly-sheet">
@@ -151,12 +102,14 @@ import TransportIcon from './TransportIcon.vue'
 import TransportNetwork from './TransportNetwork.vue'
 import ProviderRating from './ProviderRating.vue'
 import TransportAssistant from './TransportAssistant.vue'
-import RouteQueryForm from './RouteQueryForm.vue'
+import LianyunHomePage from './LianyunHomePage.vue'
+import { createHomeDesignFixtures } from './home-design-data.js'
+import { transportChannel } from './transport-channels.js'
+import { industrySolutions } from './industry-solutions.js'
 import ServiceCard from './ServiceCard.vue'
 import ServiceDetailPage from './ServiceDetailPage.vue'
 import ProviderDetailPage from './ProviderDetailPage.vue'
 import PlatformCatalog from './PlatformCatalog.vue'
-import IndustrySolutionBanner from './IndustrySolutionBanner.vue'
 import NetworkNodeDetail from './NetworkNodeDetail.vue'
 import ServiceRequests from './ServiceRequests.vue'
 import AnalysisPage from './AnalysisPage.vue'
@@ -166,14 +119,14 @@ import CargoMarketplace from './CargoMarketplace.vue'
 import CargoCard from './CargoCard.vue'
 import { cargos } from './cargo-data.js'
 import { cargoStore } from './cargo-store.js'
-import { recommendCargos } from './home-recommendations.js'
-import { requestStore } from './platform-requests.js'
 import { browsingRegions, serviceCategories, catalogOffers, networkPlaces } from './platform-data.js'
 import './home.css'
 import './service-cards.css'
 import './platform-home.css'
 import './homepage-ui.css'
 
+const homeDesign=createHomeDesignFixtures({cargos,services,providers,makeChannel:transportChannel})
+const homeRegionSelected=ref(false)
 const screenRoot = ref(null)
 const cargoMarket = ref(null), cargoOverlay = ref(false)
 const favoritesOpen = ref(false), favoriteMode = ref('services')
@@ -185,37 +138,15 @@ function toggleSaved(kind,id){
   const saved=toggleFavorite(kind,id)
   showToast({message:favoriteStore.storageError ? '已更新收藏，当前仅保存在本次会话' : saved ? '已收藏，可在“我的收藏”查看' : '已取消收藏',teleport:screenRoot.value})
 }
-const homeScroll = ref(null)
-const serviceSection = ref(null)
 const openedService = ref(null)
 const openedProvider = ref(null), providerReturnService = ref(null)
 const serviceList = ref(null)
 const browseRegion=ref('苏州'), homeOrigin=ref('全国'), listOrigin=ref('全国'), listDestination=ref('全国'), listMode=ref('all')
 const catalog=ref(null), networkExpanded=ref(false)
 const nodeDetail=ref(null), requestsPage=ref(null)
-const businessReminder=computed(()=>{
-  const draft=requestStore.items.filter(item=>item.status==='draft').length
-  const waiting=requestStore.items.filter(item=>item.status==='submitted').length
-  return {hasRecords:requestStore.items.length>0,title:requestStore.items.length?'我的服务需求':'服务需求与进展',detail:requestStore.items.length?`${draft}份待确认 · ${waiting}份待回复`:'找好服务后，在这里继续办理'}
-})
-const regionOpen=ref(false), recommendationTab=ref('cargo')
-const recommendationTabs=[{key:'cargo',label:'精选货源'},{key:'service',label:'运输方案'},{key:'provider',label:'物流企业'}]
+const regionOpen=ref(false)
 const recommendationRegions=[...new Set(['全国',...browsingRegions,...cargos.flatMap(item=>[item.origin.city,item.destination.city])])]
-const recommendedCargos=computed(()=>recommendCargos(cargos,browseRegion.value))
-function openRecommendationList(){
-  if(recommendationTab.value==='cargo')cargoMarket.value?.openHall()
-  else if(recommendationTab.value==='service')openList('运输方案',services,'',featuredMode.value)
-  else openProviders(providers)
-}
-function switchRecommendation(index,event){
-  recommendationTab.value=recommendationTabs[(index+recommendationTabs.length)%recommendationTabs.length].key
-  nextTick(()=>event.target.parentElement.querySelector('[aria-selected="true"]')?.focus())
-}
-const featuredMode=ref('all')
-const featuredModes=[{key:'all',label:'推荐'},{key:'road',label:'公路'},{key:'water',label:'水路'},{key:'rail',label:'铁路'},{key:'multi',label:'联运'},{key:'air',label:'低空'}]
 const destinationRegions=['全国',...new Set(services.map(item=>item.to))]
-const orderedServices=[...services.filter(item=>['road-sz-hz','multi-cd-wh-gz'].includes(item.id)),...services.filter(item=>!['road-sz-hz','multi-cd-wh-gz'].includes(item.id))]
-const featuredServices=computed(()=>orderedServices.filter(item=>(featuredMode.value==='all'||item.mode===featuredMode.value)&&(homeOrigin.value==='全国'||item.from.includes(homeOrigin.value))&&(browseRegion.value==='全国'||(item.from+item.to).includes(browseRegion.value))).slice(0,5))
 const filteredListServices=computed(()=>(serviceList.value?.items||[]).filter(item=>(listOrigin.value==='全国'||item.from.includes(listOrigin.value))&&(listDestination.value==='全国'||item.to.includes(listDestination.value))&&(listMode.value==='all'||item.mode===listMode.value)))
 const activeTab = ref('home')
 const assistantPrompt = ref('')
@@ -233,7 +164,6 @@ const networkMode = ref('all')
 const selectedRouteId = ref(services[0].id)
 const sheet = ref({ open: false, kind: 'notice', title: '' })
 const visibleServices = computed(() => services.filter(service => serviceMode.value === 'all' || service.mode === serviceMode.value))
-const featuredProviders = computed(()=>providers.filter(provider=>browseRegion.value==='全国'||providerServices(provider.id).some(service=>(service.from+service.to).includes(browseRegion.value))||catalogOffers.some(offer=>offer.providerId===provider.id&&offer.city===browseRegion.value)).slice(0,5))
 const networkRoutes = computed(() => services.filter(service => networkMode.value === 'all' || service.mode === networkMode.value))
 const selectedRoute = computed(() => networkRoutes.value.find(service => service.id === selectedRouteId.value))
 const filteredAddresses = computed(() => addresses.filter(address => (address.city + address.district).includes(addressQuery.value.trim())))

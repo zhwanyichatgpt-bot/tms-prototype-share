@@ -1,0 +1,82 @@
+/* Pixso：选择承运商350:193、确认询价350:101、修改要求350:537。750稿按375画布显示。 */
+.ly-screen.ly-ai-screen:has(.lya-provider-shell),.ly-screen.ly-ai-screen:has(.lya-inquiry-shell){border-radius:30px;outline:3px solid #3f4350;background:#f0f4fb}
+.ly-screen.ly-ai-screen:has(.lya-inquiry-shell){background:#f0f4fb url('/lianyun-mobile-assets/assistant-flow/inquiry-background.png') center top/375px 240px no-repeat}
+.ly-screen.ly-ai-screen:has(.lya-provider-shell) .ly-status,.ly-screen.ly-ai-screen:has(.lya-inquiry-shell) .ly-status{background:transparent;padding:14px 38px 0;font-size:14px;line-height:20px}
+.ly-screen.ly-ai-screen:has(.lya-provider-shell) .ly-status-icons,.ly-screen.ly-ai-screen:has(.lya-inquiry-shell) .ly-status-icons{width:71.8335px;height:12.5px;margin-top:3px;background:url('/lianyun-mobile-assets/scheme-detail/status-icons.svg') center/contain no-repeat}
+.ly-screen.ly-ai-screen:has(.lya-provider-shell) .ly-status-icons>*,.ly-screen.ly-ai-screen:has(.lya-inquiry-shell) .ly-status-icons>*{visibility:hidden}
+.lya-shell.lya-provider-shell,.lya-shell.lya-inquiry-shell{background:transparent}
+.lya-body.lyf-flow-layout{display:flex;padding:0;overflow:hidden}
+.lyf-page{position:relative;display:flex;flex-direction:column;flex:1;min-width:0;min-height:0;color:#333;line-height:1.4}
+.lyf-page button{border:0;padding:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.lyf-page .lyf-primary{display:grid;place-items:center;border:0;border-radius:6px;background:#3a65ff;color:#fff;font-size:16px;font-weight:500}
+.lyf-page .lyf-primary:disabled{opacity:.45;cursor:default}
+.lyf-page-header{display:flex;align-items:center;flex:none;height:44px;padding:0 17.5px 0 18px}
+.lyf-page-header>button{display:grid;place-items:center;width:14px;height:28px;margin-right:3px;font-size:18px}
+.ly-screen .lyf-page-header>h1{flex:1;font-size:18px;line-height:25px;font-weight:600}
+.lyf-capsule{position:relative;width:70.5px;height:27.5px;flex:none}
+.lyf-capsule>img{display:block;width:100%;height:100%}
+.lyf-capsule>button{position:absolute;inset:0 0 0 auto;width:35.25px;border-radius:0 5px 5px 0}
+.lyf-provider-list{flex:1;min-height:0;overflow:auto;scrollbar-width:none;padding:15.5px 16px 86px;display:flex;flex-direction:column;gap:10px}
+.lyf-carrier-card{position:relative;flex:none;width:343px;min-height:93px;border-radius:10px;background:#fff}
+.lyf-page .lyf-carrier-choice{position:absolute;left:14px;right:75px;top:14px;display:flex;align-items:flex-start;gap:8px;min-width:0;text-align:left}
+.lyf-choice-mark{display:inline-grid;place-items:center;box-sizing:border-box;flex:0 0 16px;width:16px;height:16px;margin-top:1px;border:1.5px solid #dedede;border-radius:50%;color:#fff}
+.lyf-choice-mark.selected{background:#3a65ff;border-color:#3a65ff}
+.lyf-choice-mark>.van-icon{font-size:11px;line-height:13px}
+.lyf-carrier-identity{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.lyf-carrier-identity>strong{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;line-height:22.5px;font-weight:500}
+.lyf-carrier-tags{display:flex;align-items:center;gap:6px;min-width:0;height:18px;overflow:hidden}
+.lyf-carrier-tags>span{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 6px;border-radius:3px;background:#eef2fc;color:#4a62b7;font-size:10px;line-height:12px}
+.lyf-carrier-tags>span:nth-child(2){background:#e9f6f2;color:#35948c}
+.lyf-carrier-tags>span:nth-child(3){background:#e9edf7;color:#6479a5}
+.lyf-page .lyf-carrier-score{position:absolute;top:16px;right:20px;min-width:37.5px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.lyf-carrier-score>strong{font-family:'LianyunDetailNumbers',sans-serif;font-size:16px;line-height:19px;color:#d18442;font-weight:700}
+.lyf-carrier-score>span{font-size:8px;line-height:11px;color:#666;white-space:nowrap}
+.lyf-carrier-score .van-icon{font-size:6px;margin-left:1px}
+.lyf-page .lyf-carrier-description{position:absolute;left:38px;right:20px;top:65px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#999;font-size:12px;line-height:14px}
+.lyf-provider-footer{position:absolute;left:0;right:0;bottom:0;height:70px;background:#fff;display:flex;align-items:flex-start;justify-content:space-between;padding:11px 20px 19px 30px}
+.lyf-page .lyf-select-all{display:flex;align-items:center;gap:8px;height:40px;font-size:14px;line-height:18.5px}
+.lyf-select-all .lyf-choice-mark{margin-top:0}
+.lyf-provider-footer>.lyf-primary{width:135px;height:40px}
+.lyf-page .lyf-empty{margin:20px 0;color:#7f8da3;font-size:12px;line-height:20px;text-align:center}
+.lyf-carrier-card.lyf-carrier-compact{width:100%;min-height:36.5px;margin-top:16px;background:none}
+.lyf-page .lyf-carrier-compact .lyf-carrier-choice{position:static;width:100%;display:flex;align-items:center;gap:12px}
+.lyf-carrier-avatar{display:grid;place-items:center;flex:0 0 36.5px;width:36.5px;height:36.5px;border:1.5px solid #fff;border-radius:9px;background:linear-gradient(140deg,#f5f7fc,#bbc4da);box-shadow:0 2px 5px #8794b04d;color:#3b579a;font-size:12px;font-weight:600}
+.lyf-carrier-compact .lyf-carrier-identity{gap:3px}
+.lyf-carrier-compact .lyf-carrier-identity>strong{line-height:18px}
+.lyf-carrier-compact .lyf-carrier-tags{height:15.5px}
+.lyf-carrier-compact .lyf-carrier-tags>span{padding:2px 6px}
+.lyf-page .lyf-secondary{height:40px;flex:0 0 92px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#333;font-size:16px}
+/* 修改弹层的白色内容从设计稿y=731开始，底部保留22px安全区。 */
+.ly-screen .van-popup.lyf-edit-sheet{height:446.5px;max-height:100%;padding:18px 20.5px 0;border-radius:15px 15px 0 0;overflow:visible;background:#fff}
+.lyf-edit-heading{position:relative;height:41px}
+.ly-screen .lyf-edit-heading>h2{font-size:16px;line-height:24px;font-weight:500}
+.ly-screen .lyf-edit-heading>button{position:absolute;right:0;top:0;width:15px;height:24px;border:0;padding:0;background:none;color:#bbb;font-size:14px}
+.ly-screen .lyf-edit-heading>p{margin:0;color:#c8c8c8;font-size:12px;line-height:17px}
+.ly-screen .lyf-edit-sheet .lyf-edit-query{position:static;margin:19px 0 0;padding:0;border:0;background:none}
+.lyf-edit-modes>h4,.lyf-edit-address-title{margin:0;font-size:14px;font-weight:500;line-height:18px;color:#333}
+.lyf-edit-mode-options{display:flex;gap:6px;margin-top:11.5px;height:29.5px}
+.ly-screen .lyf-edit-mode-options>button{position:relative;flex:1;min-width:0;height:29.5px;padding:0;border:1px solid transparent;border-radius:6px;background:#f7f7f7;color:#999;font-size:12px;line-height:17px}
+.ly-screen .lyf-edit-mode-options>button[aria-pressed=true]{border-color:#3a65ff;color:#3a65ff;background:#f8faff}
+.lyf-edit-mode-options .van-icon{position:absolute;right:-1px;bottom:-1px;font-size:12px;background:#fff;border-radius:50%}
+.lyf-edit-address-title{margin-top:18px;margin-bottom:10px}
+.ly-screen .lyf-edit-query .lya-query-addresses{display:block;margin:0;padding:0 16px;width:100%;height:111.5px;border:0;border-radius:10px;background:#f7f7f7}
+.ly-screen .lyf-edit-query .lya-query-addresses>button{display:flex;align-items:center;gap:12px;min-height:0;height:55.75px;width:100%;padding:9px 0;border:0;background:none;text-align:left}
+.ly-screen .lyf-edit-query .lya-query-addresses>button+button{border-top:.5px solid #e8e8e8}
+.ly-screen .lyf-edit-query .lya-query-addresses>button>i{flex:0 0 6.5px;width:6.5px;height:6.5px;border-radius:50%;background:#4a5eff}
+.ly-screen .lyf-edit-query .lya-query-addresses>.destination>i{background:#26bba8}
+.ly-screen .lyf-edit-query .lya-query-addresses>button>span{flex:1;min-width:0}
+.ly-screen .lyf-edit-query .lya-query-addresses small{font-size:10px;line-height:14px;color:#bbb}
+.ly-screen .lyf-edit-query .lya-query-addresses strong{margin:0;font-size:14px;line-height:20px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ly-screen .lyf-edit-query .lya-query-addresses .van-icon{font-size:12px;color:#333}
+.lyf-edit-goods{display:flex;align-items:center;gap:6px;margin-top:18px;height:24px}
+.lyf-edit-goods>span{flex:1;font-size:14px;font-weight:500;white-space:nowrap}
+.lyf-edit-goods>span>small{margin-left:5px;font-size:10px;font-weight:400;color:#aeb4c0}
+.ly-screen .lyf-edit-goods>button{height:24px;max-width:125px;display:flex;align-items:center;gap:4px;border:0;border-radius:4px;background:#f7f7f7;color:#666;font-size:12px;padding:0 8px;white-space:nowrap}
+.lyf-edit-goods>button>span{overflow:hidden;text-overflow:ellipsis}
+.lyf-edit-goods>button>.van-icon{font-size:10px;color:#bbb}
+.ly-screen .lyf-edit-goods>.lyf-edit-goods-more{width:12px;padding:0;background:none;flex:none}
+.lyf-edit-goods>.lyf-edit-goods-more>.van-icon{font-size:12px;color:#333}
+.ly-screen .lyf-edit-sheet .lyf-edit-query>.lya-primary{position:absolute;bottom:41px;left:24px;right:24px;width:327px;height:40px;min-height:0;padding:0;border:0;border-radius:6px;background:#3a65ff;font-size:16px;font-weight:500;line-height:40px;color:#fff}
+.ly-screen .lyf-edit-query>.lya-error,.ly-screen .lyf-edit-error{position:absolute;left:24px;right:24px;bottom:84px;margin:0;color:#c24444;font-size:11px;line-height:14px}
+
+.ly-screen .lyf-edit-query .lya-query-addresses>button>.van-icon{flex:0 0 12px;width:12px;height:12px;background:none;border-radius:0;line-height:12px}

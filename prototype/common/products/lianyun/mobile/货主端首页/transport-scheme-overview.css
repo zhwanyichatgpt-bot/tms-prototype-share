@@ -1,0 +1,65 @@
+/* Pixso「01运输方案」750×1624，按375×812显示；方案数据与详情共用。 */
+.ly-screen.ly-ai-screen:has(.lya-overview-shell){background:#f0f4fb url('/lianyun-mobile-assets/scheme-overview/background.png') center top/375px 812px no-repeat;border-radius:30px;outline:3px solid #3f4350}
+.ly-screen.ly-ai-screen:has(.lya-overview-shell) .ly-status{background:transparent;padding:14px 38px 0;font-size:14px;line-height:20px}
+.ly-screen.ly-ai-screen:has(.lya-overview-shell) .ly-status-icons{width:71.8335px;height:12.5px;margin-top:3px;background:url('/lianyun-mobile-assets/scheme-detail/status-icons.svg') center/contain no-repeat}
+.ly-screen.ly-ai-screen:has(.lya-overview-shell) .ly-status-icons>*{visibility:hidden}
+.lya-shell.lya-overview-shell{background:transparent}
+.lya-body.lya-overview-layout{display:flex;padding:0;overflow:hidden}
+.lyo-view{position:relative;flex:1;min-width:0;min-height:0;color:#333;overflow:hidden}
+.lyo-view button{font:inherit;cursor:pointer;border:0;background:none;padding:0;color:inherit}
+.lyo-toolbar{position:absolute;top:8.5px;right:17.5px;display:flex;align-items:center;gap:9px;height:27.5px}
+.lyo-toolbar>button{width:23px;height:23px;display:block}
+.lyo-toolbar>button>img{display:block;width:23px;height:23px}
+.lyo-capsule{position:relative;width:70.5px;height:27.5px;margin-left:5px}
+.lyo-capsule>img{display:block;width:100%;height:100%}
+.lyo-capsule>button{position:absolute;inset:0 0 0 auto;width:35.25px;border-radius:0 5px 5px 0}
+.lyo-view .lyo-route{position:absolute;left:65.5px;top:54.5px;width:239.5px;height:39px;border: .5px solid #fff;border-radius:35px;background:#ffffffb8;display:flex;align-items:center;justify-content:center;gap:4px;padding:9.5px 19.5px;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap}
+.lyo-route>span{overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0;max-width:84px}
+.lyo-route>span:first-child{flex:none;max-width:84px}
+.lyo-route>img{width:12px;height:5px;flex:none}
+.lyo-route>img:last-child{width:8.5px;height:4.5px;margin-left:2px}
+.ly-screen .lyo-title{position:absolute;left:15px;right:15px;top:111.5px;text-align:center;font-size:28px;font-weight:700;line-height:40px;color:#1a2d73;white-space:nowrap;letter-spacing:-.7px}
+.lyo-title>strong{font-family:'LianyunDetailNumbers',sans-serif;font-weight:700;background:linear-gradient(145deg,#1fc989 50%,#3a65ff 50%);background-clip:text;color:transparent}
+.lyo-title>img{position:absolute;top:12px;left:178px;width:26.18px;height:13.46px;pointer-events:none}
+.ly-screen .lyo-recommendation{position:absolute;left:23.5px;right:23.5px;top:170.5px;font-size:14px;font-weight:500;line-height:21px;color:#3b3f4d;text-align:center;height:63.5px}
+.lyo-carousel{position:absolute;left:0;right:0;top:231.605px;height:282px;touch-action:pan-y;user-select:none;isolation:isolate}
+.lyo-view .lyo-card{position:absolute;left:74px;top:0;width:232.5px;height:260.5px;border-radius:18px;background:#fff;box-shadow:0 2px 36.5px #58598347;text-align:left;transition:transform .25s,opacity .25s;transform-origin:top left;overflow:hidden}
+.lyo-card-active{z-index:3;transform:translateX(var(--drag-x,0px))}
+.lyo-view .lyo-card-previous{left:16.595px;top:21.02px;transform:rotate(-6.047deg) scale(.9236);opacity:.13;z-index:1}
+.lyo-view .lyo-card-next{left:142.5195px;top:-.1695px;transform:rotate(9.748deg) scale(.9221);opacity:.22;z-index:2}
+.lyo-view .lyo-card-hidden{visibility:hidden;pointer-events:none;opacity:0}
+.lyo-card-map{position:absolute;left:12.5px;top:11.5px;width:207.5px;height:162.5px;border-radius:12px;overflow:hidden}
+.lyo-card .lyo-card-badge{position:absolute;top:21px;right:23px;max-width:100px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;border:.25px solid #fff7;border-radius:4px;background:linear-gradient(110deg,#fdd697,#fdbe68);padding:2px 6px;font-size:10px;line-height:14px;color:#7e5010}
+.lyo-view-detail{position:absolute;top:83.395px;left:44.5px;width:143.5px;height:39px;border-radius:32px;background:#ffffffd6;backdrop-filter:blur(5px);box-shadow:0 2px 18px #5f657d94;display:grid;place-items:center;font-size:16px;font-weight:600;line-height:22.5px;color:#3b3f4d}
+.lyo-card:not(.lyo-card-active) .lyo-view-detail{visibility:hidden}
+.ly-screen .lyo-card h2{position:absolute;left:12.5px;top:180.5px;max-width:144.5px;font-size:16px;font-weight:600;line-height:22.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lyo-mode{position:absolute;right:12.5px;top:186px;max-width:70px;border-radius:4px;background:#eff3ff;color:#27419c;padding:4px 8px;font-size:10px;line-height:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lyo-card-facts{position:absolute;left:12.5px;right:12.5px;top:209.02px;display:flex;align-items:center;gap:4px;font-size:10px;line-height:14px;color:#555;white-space:nowrap}
+.lyo-card-facts>span{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lyo-card-facts>span:first-child{flex:none}
+.lyo-card-facts>i{width:.5px;height:6px;background:#b6bcc7;flex:none}
+.ly-screen .lyo-card-price{position:absolute;left:12.5px;top:229.5px;display:flex;align-items:baseline;gap:2px;color:#3a65ff;white-space:nowrap}
+.lyo-card-price>strong{font-family:'LianyunDetailNumbers',sans-serif;font-size:16px;font-weight:700;line-height:19.5px}
+.lyo-card-price>small{font-size:10px;line-height:14px}
+.lyo-card-price>small:last-child{font-size:8px;color:#8d9099;line-height:11px}
+.lyo-dots{position:absolute;left:0;right:0;top:510.105px;display:flex;justify-content:center;gap:6px;height:8px;padding:0}
+.lyo-view .lyo-dots>button{width:8px;height:4px;margin:0;border-radius:3px;background:#a5afc2;transition:width .2s}
+.lyo-view .lyo-dots>button[aria-current=true]{width:15px;background:#555e72}
+.lyo-view .lyo-composer{position:absolute;left:16px;bottom:40px;width:348px;height:53px;border:1px solid #8d9099;border-radius:14px;background:#fff;box-shadow:0 1px 14px #9ca4b91c;display:flex;align-items:center;padding:11.5px 13px;gap:10px}
+.lyo-keyboard{width:24px;height:24px;flex:none;display:block}
+.lyo-keyboard>img{display:block;width:24px;height:24px}
+.lyo-view .lyo-composer>input{width:0;min-width:0;flex:1;border:0;outline:0;background:none;text-align:center;color:#3b3f4d;font-size:16px;font-weight:600;line-height:22.5px;padding:0;height:30px}
+.lyo-composer>input::placeholder{color:#3b3f4d;opacity:1}
+.lyo-view .lyo-send{display:block;flex:none;width:30px;height:30px;border-radius:10px;background:#3a65ff}
+.lyo-view .lyo-send:disabled{background:none;cursor:default}
+.lyo-send>img{display:block;width:16px;height:16px;margin:7px}
+.lyo-send:disabled>img{width:30px;height:30px;margin:0}
+.ly-screen .lyo-ai-note{position:absolute;bottom:21px;left:0;right:0;text-align:center;font-size:10px;line-height:14px;color:#999}
+.lyo-home-indicator{position:absolute;bottom:8px;left:50%;width:136.5px;height:6px;transform:translateX(-50%);border-radius:3px;background:#333}
+.lyo-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* 两侧箭头与滑动、分页点共用方案选择逻辑。 */
+.lyo-view .lyo-carousel-arrow{position:absolute;top:344px;z-index:4;width:36px;height:36px;display:grid;place-items:center;border:.5px solid #fff;border-radius:50%;background:#ffffffd9;box-shadow:0 2px 10px #637aa52e;color:#3a65ff;font-size:20px;backdrop-filter:blur(6px)}
+.lyo-carousel-previous{left:20px}
+.lyo-carousel-next{right:20px}
+.lyo-view .lyo-carousel-arrow:disabled{opacity:.35;cursor:default}
