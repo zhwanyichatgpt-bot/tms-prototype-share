@@ -1,0 +1,11 @@
+/* 司机端 AI 页签：44px 状态栏下承载与货主端共用的 AI 页面。 */
+.driver-ai-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, #e5efff 0%, #eef5ff 45%, #f2f5fb 100%);
+}
+.driver-ai-screen > .aia-page {
+  top: 44px;
+  z-index: 1;
+}

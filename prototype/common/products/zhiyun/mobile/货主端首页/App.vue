@@ -100,12 +100,37 @@
           @back="invoiceDetail = null"
           @reapply="reapplyInvoice"
         />
+        <section v-if="!showQuickPublish && currentTab === 'ai' && !aiLegacy && !aiConversation.open && !subPage.key && !aiPage" class="zy-ai-screen" aria-label="至小简 AI 首页">
+          <AiStatusBar/>
+          <AiRecommendHome
+            :bills="aiBills"
+            :groups="aiHistoryGroups"
+            object-label="运单"
+            :extra-menus="aiHomeMenus"
+            @message="openLegacyAiChat"
+            @analyse="openAiAnalysis"
+            @open-select="aiPage = 'select'"
+            @history-select="onAiHistoryRecord"
+            @close="currentTab = 'home'"
+            @new-task="backToAiHome"
+            @restart="backToAiHome"
+            @menu-action="onAiMenuAction"
+          />
+        </section>
+        <section v-else-if="!showQuickPublish && currentTab === 'ai' && !aiLegacy && !aiConversation.open && !subPage.key && aiPage === 'select'" class="zy-ai-screen" aria-label="选择运单数据">
+          <AiStatusBar/>
+          <AiBillSelectPage :bills="aiBills" object-label="运单" :default-range="aiDefaultRange" @back="aiPage = ''" @analyse="openAiAnalysis"/>
+        </section>
+        <section v-else-if="!showQuickPublish && currentTab === 'ai' && !aiLegacy && !aiConversation.open && !subPage.key && aiPage === 'analysis'" class="zy-ai-screen" aria-label="运单分析对话">
+          <AiStatusBar/>
+          <AiBillAnalysisPage :bills="aiAnalysisBills" :groups="aiHistoryGroups" object-label="运单" @close="currentTab = 'home'" @new-task="backToAiHome" @history-select="onAiHistoryRecord"/>
+        </section>
         <AiHomePage
-          v-if="!showQuickPublish && currentTab === 'ai' && !aiConversation.open && !subPage.key"
+          v-if="!showQuickPublish && currentTab === 'ai' && aiLegacy && !aiConversation.open && !subPage.key"
           :entry="aiEntry"
           :restore-state="aiHomeState"
           @open-conversation="openConversation"
-          @close="currentTab = 'home'"
+          @close="aiLegacy = false"
         />
         <AiPublishAdjustPage
           v-show="!showQuickPublish && currentTab === 'ai' && subPage.key === 'adjust'"
@@ -299,7 +324,7 @@
         <!-- /可滚动内容区 -->
 
         <!-- 9. 底部 Tab 栏（设计 组合585：渐变背景带 + 中央缺口玻璃带 + 4 Tab + 小简AI白猫） -->
-        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen && !profileView && !settleWaybill && !businessOverlayOpen" class="tab-bar" :class="{ 'tab-bar-business': currentTab === 'business' }">
+        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen && !profileView && !settleWaybill && !businessOverlayOpen && !(currentTab === 'ai' && !aiLegacy)" class="tab-bar" :class="{ 'tab-bar-business': currentTab === 'business' }">
           <img class="tab-bg-top" src="/zhiyun-mobile-assets/icons/tab-band-top.svg" alt="" />
           <img class="tab-bg-bottom" src="/zhiyun-mobile-assets/icons/tab-band-bottom.svg" alt="" />
           <img class="tab-glass" src="/zhiyun-mobile-assets/icons/tab-glass-band.svg" alt="" />
@@ -333,6 +358,12 @@ import AiCargoRiskPage from './AiCargoRiskPage.vue'
 import AiSettlementPage from './AiSettlementPage.vue'
 import AiMarketInsightPage from './AiMarketInsightPage.vue'
 import AiConversationPage from './AiConversationPage.vue'
+import AiRecommendHome from '../../../../shared/mobile/ai/AiRecommendHome.vue'
+import AiStatusBar from '../../../../shared/mobile/ai/AiStatusBar.vue'
+import AiBillSelectPage from '../../../../shared/mobile/ai/AiBillSelectPage.vue'
+import AiBillAnalysisPage from '../../../../shared/mobile/ai/AiBillAnalysisPage.vue'
+import { aiBills, aiDefaultRange, aiHistoryGroups } from './ai-data.js'
+import '../../../../shared/mobile/ai/ai-pages.css'
 import QuickPublishFlow from './QuickPublishFlow.vue'
 import DriverDetailPage from './DriverDetailPage.vue'
 import CargoSourcePage from './CargoSourcePage.vue'
@@ -471,6 +502,11 @@ const resumePublish = (cargo) => {
 }
 const aiEntry = ref('')
 const aiConversation = ref({ open: false, context: 'overview', from: '' })
+/* 新 AI 页签：'' 首页 | 'select' 选择运单 | 'analysis' 运单分析；aiLegacy 保留原经营助手及其二级页 */
+const aiLegacy = ref(false)
+const aiPage = ref('')
+const aiAnalysisBills = ref([])
+const aiHomeMenus = [{ key: 'workbench', label: '经营助手' }]
 /* 二级页：'' | 'adjust' | 'risk' | 'settlement' | 'market'；用 v-show 保持页面内输入与选择状态 */
 const subPage = ref({ key: '', state: {} })
 const settlementReturn = ref('ai')
@@ -478,10 +514,16 @@ const aiHomeState = ref({ scrollTop: 0, evidenceOpen: false })
 const openAi = (entry = '') => {
   aiEntry.value = entry
   aiConversation.value = { open: false, context: entry || 'overview', from: '' }
+  aiLegacy.value = false
+  aiPage.value = ''
+  aiAnalysisBills.value = []
+  subPage.value = { key: '', state: {} }
   currentTab.value = 'ai'
   emit('open-ai', entry === 'market' ? { route: '福州→天津' } : undefined)
 }
 const openConversation = (payload = {}) => {
+  aiPage.value = ''
+  aiAnalysisBills.value = []
   aiHomeState.value = {
     scrollTop: payload.scrollTop || 0,
     evidenceOpen: Boolean(payload.evidenceOpen),
@@ -522,6 +564,35 @@ const closeConversation = () => {
 const closeSubPage = () => {
   subPage.value = { key: '', state: {} }
   aiHomeState.value = { ...aiHomeState.value, evidenceOpen: false }
+}
+/* 新 AI 主链路：首页、选择运单、运单分析；原经营助手通过首页菜单保留。 */
+const openAiAnalysis = (bills) => {
+  aiAnalysisBills.value = [...bills]
+  aiPage.value = 'analysis'
+  aiLegacy.value = false
+  subPage.value = { key: '', state: {} }
+  currentTab.value = 'ai'
+}
+const backToAiHome = () => {
+  aiAnalysisBills.value = []
+  aiPage.value = ''
+  aiLegacy.value = false
+  subPage.value = { key: '', state: {} }
+  currentTab.value = 'ai'
+}
+const onAiHistoryRecord = () => openAiAnalysis(aiBills)
+const onAiMenuAction = (key) => {
+  if (key !== 'workbench') return
+  aiEntry.value = ''
+  aiPage.value = ''
+  aiLegacy.value = true
+  subPage.value = { key: '', state: {} }
+}
+const openLegacyAiChat = (text) => {
+  aiPage.value = ''
+  aiLegacy.value = false
+  subPage.value = { key: '', state: {} }
+  aiConversation.value = { open: true, context: 'question', from: '', detail: text }
 }
 const selectedHomeAddresses = ref({ load: null, unload: null })
 const addressPicker = ref({ mode: null }) // null | 'load' | 'unload'
@@ -605,6 +676,9 @@ const openPayment = (source) => {
   settlementReturn.value = source
   aiEntry.value = ''
   aiConversation.value = { open: false, context: 'payment', from: '' }
+  aiPage.value = ''
+  aiLegacy.value = false
+  aiAnalysisBills.value = []
   currentTab.value = 'ai'
   subPage.value = { key: 'settlement', state: { tab: 'payment' } }
 }
@@ -677,6 +751,9 @@ const onAddressConfirm = (addr) => {
 const openInsight = () => {
   aiEntry.value = ''
   aiConversation.value = { open: false, context: 'market', from: '' }
+  aiPage.value = ''
+  aiLegacy.value = false
+  aiAnalysisBills.value = []
   currentTab.value = 'ai'
   subPage.value = { key: 'market', state: {} }
 }
@@ -1583,4 +1660,16 @@ const selectTab = (key) => {
   color: #7b8699;
 }
 .tab-ai.active .tab-label { color: #3a65ff; font-weight: 500; }
+
+/* ===== 新 AI 页签：44px 状态栏下承载共享 AI 页面 ===== */
+.zy-ai-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 16;
+  background: linear-gradient(180deg, #e5efff 0%, #eef5ff 45%, #f2f5fb 100%);
+}
+.zy-ai-screen > .aia-page {
+  top: 44px;
+  z-index: 1;
+}
 </style>

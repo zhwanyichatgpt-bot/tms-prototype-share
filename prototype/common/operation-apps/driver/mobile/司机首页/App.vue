@@ -304,6 +304,30 @@
         @open-order-setting="currentPage = 'orderSetting'"
       />
 
+      <section v-else-if="currentPage === 'assistant' && !driverAiPage" class="driver-ai-screen" aria-label="至小简 AI 首页">
+        <AiStatusBar/>
+        <AiRecommendHome
+          :bills="aiBills"
+          :groups="aiHistoryGroups"
+          object-label="运单"
+          @message="openDriverAiChat"
+          @analyse="openDriverAiAnalysis"
+          @open-select="driverAiPage = 'select'"
+          @history-select="openDriverAiHistory"
+          @close="closeDriverAi"
+          @new-task="backToDriverAiHome"
+          @restart="backToDriverAiHome"
+        />
+      </section>
+      <section v-else-if="currentPage === 'assistant' && driverAiPage === 'select'" class="driver-ai-screen" aria-label="选择运单数据">
+        <AiStatusBar/>
+        <AiBillSelectPage :bills="aiBills" object-label="运单" :default-range="aiDefaultRange" @back="driverAiPage = ''" @analyse="openDriverAiAnalysis"/>
+      </section>
+      <section v-else-if="currentPage === 'assistant' && driverAiPage === 'analysis'" class="driver-ai-screen" aria-label="运单分析对话">
+        <AiStatusBar/>
+        <AiBillAnalysisPage :bills="driverAiBills" :groups="aiHistoryGroups" object-label="运单" @close="closeDriverAi" @new-task="backToDriverAiHome" @history-select="openDriverAiHistory"/>
+      </section>
+
       <DriverWorkPage
         v-else
         :page="currentPage"
@@ -365,9 +389,16 @@ import DriverTaskAcceptOrder from './DriverTaskAcceptOrder.vue'
 import AssignedTaskList from './AssignedTaskList.vue'
 import AssignedTaskDetail from './AssignedTaskDetail.vue'
 import DriverFlowForm from './DriverFlowForm.vue'
+import AiRecommendHome from '../../../../shared/mobile/ai/AiRecommendHome.vue'
+import AiStatusBar from '../../../../shared/mobile/ai/AiStatusBar.vue'
+import AiBillSelectPage from '../../../../shared/mobile/ai/AiBillSelectPage.vue'
+import AiBillAnalysisPage from '../../../../shared/mobile/ai/AiBillAnalysisPage.vue'
+import { aiBills, aiDefaultRange, aiHistoryGroups } from './ai-data.js'
 import './home.css'
 import './zhiyun-shell.css'
 import './driver-flow.css'
+import '../../../../shared/mobile/ai/ai-pages.css'
+import './driver-ai.css'
 
 const screenRoot = ref(null)
 const homeScroll = ref(null)
@@ -424,6 +455,8 @@ const visibleExpiredItems = computed(() => followedExpiredItems.value.filter((it
 const hasActiveFollow = computed(() => followedActiveItems.value.length > 0)
 
 const activeBottomTab = ref('home')
+const driverAiPage = ref('')
+const driverAiBills = ref([])
 const cargoOpen = ref(false)
 const selectedCargo = ref(null)
 const selectedCargoDetail = ref(null)
@@ -539,6 +572,13 @@ function selectBottomTab(tab) {
   navigateDriverPage(tab.key)
 }
 function navigateDriverPage(page) {
+  if (page === 'assistant') {
+    driverAiPage.value = ''
+    driverAiBills.value = []
+    currentPage.value = 'assistant'
+    activeBottomTab.value = 'assistant'
+    return
+  }
   if (['home', 'run', 'order', 'mine'].includes(page)) {
     currentPage.value = page
     activeBottomTab.value = page
@@ -546,6 +586,27 @@ function navigateDriverPage(page) {
   }
   const tab = bottomTabs.find((item) => item.key === page)
   notify(`${tab?.label || '该'}页面后续验证`)
+}
+/* 司机端新 AI 主链路：首页、选择运单、运单分析，共用移动端 AI 公共组件。 */
+function openDriverAiAnalysis(bills) {
+  driverAiBills.value = [...bills]
+  driverAiPage.value = 'analysis'
+  currentPage.value = 'assistant'
+  activeBottomTab.value = 'assistant'
+}
+function openDriverAiChat() { openDriverAiAnalysis(aiBills) }
+function openDriverAiHistory() { openDriverAiAnalysis(aiBills) }
+function backToDriverAiHome() {
+  driverAiPage.value = ''
+  driverAiBills.value = []
+  currentPage.value = 'assistant'
+  activeBottomTab.value = 'assistant'
+}
+function closeDriverAi() {
+  driverAiPage.value = ''
+  driverAiBills.value = []
+  currentPage.value = 'home'
+  activeBottomTab.value = 'home'
 }
 function openWaybillDetail(waybill) {
   selectedWaybill.value = waybill

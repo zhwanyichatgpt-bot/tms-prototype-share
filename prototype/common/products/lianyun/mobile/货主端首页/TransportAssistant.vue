@@ -1,8 +1,10 @@
 <template>
   <section ref="shellElement" class="lya-shell" :class="{ 'lya-start-shell': isLanding, 'lya-result-shell': view === 'results', 'lya-overview-shell': view === 'overview', 'lya-provider-shell':view==='providers', 'lya-inquiry-shell':['consignment','done'].includes(view) }" aria-label="运输助手完整流程">
-    <AssistantStartPage v-show="isLanding" :sessions="savedSessions" @message="submitText" @restore="restoreSession" @restart="reset" @overlay="overlayOpen = $event"/>
-    <AssistantWorkbenchBar v-if="!isLanding && !['results','overview','providers','consignment','done'].includes(view)" :title="titles[view]" @back="goBack" @restart="resetOpen = true"/>
-    <main v-show="!isLanding" ref="scrollArea" class="lya-body" :class="{ 'lya-chat-body': view === 'chat', 'lya-results-layout': view === 'results', 'lya-overview-layout': view === 'overview', 'lyf-flow-layout':['providers','consignment','done'].includes(view) }">
+    <AssistantStartPage v-show="isLanding" :sessions="savedSessions" @message="submitText" @restore="restoreSession" @restart="reset" @overlay="overlayOpen = $event" @open-select="openBillSelect" @analyse="openBillAnalysis" @history-select="onHistoryRecord" @close="closeAi"/>
+    <AiBillSelectPage v-if="aiSubpage === 'select'" :bills="aiBills" object-label="托运单" :default-range="aiDefaultRange" @back="backToAiHome" @analyse="openBillAnalysis"/>
+    <AiBillAnalysisPage v-else-if="aiSubpage === 'analysis'" :bills="analysisBills" :sessions="savedSessions" :groups="aiHistoryGroups" object-label="托运单" @close="closeAi" @new-task="newAiTask" @history-select="onHistoryRecord"/>
+    <AssistantWorkbenchBar v-if="!aiSubpage && !isLanding && !['results','overview','providers','consignment','done'].includes(view)" :title="titles[view]" @back="goBack" @restart="resetOpen = true"/>
+    <main v-show="!isLanding && !aiSubpage" ref="scrollArea" class="lya-body" :class="{ 'lya-chat-body': view === 'chat', 'lya-results-layout': view === 'results', 'lya-overview-layout': view === 'overview', 'lyf-flow-layout':['providers','consignment','done'].includes(view) }">
       <template v-if="view === 'planning'">
         <section class="lya-planning" aria-label="运输方案查询进度" aria-busy="true">
           <div class="lya-planning-avatar"><img src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="小简"/></div>
@@ -72,7 +74,7 @@
       </template>
     </main>
 
-    <form v-if="view === 'chat' && !isLanding" class="lya-composer" @submit.prevent="send"><textarea v-model="input" aria-label="向运输助手发送消息" placeholder="说说装卸地点、货物，或继续追问…" rows="2" maxlength="500"/><div><span>可继续追问当前路线、费用与时效</span><button type="submit" :disabled="!input.trim() || loading" aria-label="发送消息"><van-icon name="arrow-up"/></button></div></form>
+    <form v-if="view === 'chat' && !isLanding && !aiSubpage" class="lya-composer" @submit.prevent="send"><textarea v-model="input" aria-label="向运输助手发送消息" placeholder="说说装卸地点、货物，或继续追问…" rows="2" maxlength="500"/><div><span>可继续追问当前路线、费用与时效</span><button type="submit" :disabled="!input.trim() || loading" aria-label="发送消息"><van-icon name="arrow-up"/></button></div></form>
     <footer v-else-if="view==='map'" class="lya-footer"><button class="lya-outline" @click="navigate('chat')">继续问小简</button><button class="lya-primary" @click="chosenProviderId ? confirmCarrierSelection() : showProviders()">{{ chosenProviderId ? '填写指定托运' : '选择承运商' }}</button></footer>
     <AssistantDemandEditSheet ref="resultEditForm" v-model:show="editOpen" v-model:mode="editMode" :teleport="shellElement" :error="error" @query="saveEditedDemand"/>
     <div v-if="reviewProvider || resetOpen" class="lya-modal-backdrop" @click.self="reviewProvider = null; resetOpen = false">
@@ -85,6 +87,9 @@
 <script setup>
 import AssistantWorkbenchBar from './AssistantWorkbenchBar.vue'
 import AssistantStartPage from './AssistantStartPage.vue'
+import AiBillSelectPage from '../../../../shared/mobile/ai/AiBillSelectPage.vue'
+import AiBillAnalysisPage from '../../../../shared/mobile/ai/AiBillAnalysisPage.vue'
+import { aiBills, aiHistoryGroups } from './ai-data.js'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import AssistantRouteMap from './AssistantRouteMap.vue'
 import TransportSchemeDetail from './TransportSchemeDetail.vue'
@@ -104,6 +109,7 @@ import { extraProviders } from './assistant-scenarios.js'
 import { resolveLocation } from './assistant-locations.js'
 import { analyseSchemes, schemeRecommendation } from './assistant-analysis.js'
 import './assistant.css'
+import '../../../../shared/mobile/ai/ai-pages.css'
 const props = defineProps({mode:{default:'all'}})
 const emit = defineEmits(['close','update:mode','demand-change'])
 const shellElement = ref(null), editForm = ref(null)
@@ -113,7 +119,9 @@ const planningStep = ref(0), planningResult = ref(null)
 const entrySource = ref('assistant')
 const view = ref('chat'), history = ref([]), input = ref(''), messages = ref([]), draft = ref(blankDemand()), confirmed = ref(blankDemand())
 const savedSessions = ref([]), overlayOpen = ref(false)
-const isLanding = computed(() => view.value === 'chat' && messages.value.length === 0)
+const aiSubpage = ref(''), analysisBills = ref([])
+const aiDefaultRange = { start: '2026-10-01', end: '2026-10-31' }
+const isLanding = computed(() => view.value === 'chat' && messages.value.length === 0 && !aiSubpage.value)
 const needsConfirmation = ref(false), error = ref(''), schemes = ref([]), selectedId = ref(''), selectedSegment = ref(0), scrollArea = ref(null), loading = ref(false)
 const tracking = ref(null), noMatchReason = ref(''), chosenProviderId = ref(''), reviewProvider = ref(null), resetOpen = ref(false)
 const consignmentDraft=ref(null),consignmentRecord=ref(null),retained=ref(false),retainedDemand=ref(null)
@@ -150,8 +158,18 @@ const contextualQuestions = computed(() => selected.value ? ['这个价格包含
 async function scrollBottom() { await nextTick(); if(scrollArea.value) scrollArea.value.scrollTop = scrollArea.value.scrollHeight }
 function navigate(target) { if (view.value !== target) history.value.push(view.value); view.value = target; error.value = ''; nextTick(() => { if(scrollArea.value) scrollArea.value.scrollTop = 0 }) }
 function exitHomeQuery() {
-  history.value = []; view.value = 'chat'; error.value = ''; needsConfirmation.value = false
+  history.value = []; view.value = 'chat'; error.value = ''; needsConfirmation.value = false; aiSubpage.value = ''
   entrySource.value = 'assistant'; emit('close')
+}
+// AI 首页、托运单选择与分析对话之间的页面切换。
+function openBillSelect() { aiSubpage.value = 'select' }
+function openBillAnalysis(bills) { analysisBills.value = [...bills]; aiSubpage.value = 'analysis' }
+function backToAiHome() { aiSubpage.value = '' }
+function closeAi() { aiSubpage.value = ''; emit('close') }
+function newAiTask() { aiSubpage.value = ''; reset() }
+function onHistoryRecord(record) {
+  if (record?.session) { restoreSession(record.session); aiSubpage.value = ''; return }
+  openBillAnalysis(aiBills)
 }
 function goBack() {
   if(loading.value) { cancelPlanning(); return }
@@ -294,13 +312,6 @@ defineExpose({ start, fillDemand, query:quickQuery, queryFromHome, isLanding, ov
 </script>
 
 <style>
-.lya-shell.lya-start-shell{bottom:84px;background:#fff}
-.lya-start-shell:has(.las-overlay){bottom:0}
-.ly-screen.ly-ai-screen:has(.lya-start-shell) .ly-status{background:#fff}
-.ly-bottom-nav.ly-ai-navigation{left:0;right:0;bottom:0;height:84px;padding:7px 7px 25px;border:0;border-top:1px solid #edf0f5;border-radius:0;background:#fff;backdrop-filter:none}
-.ly-bottom-nav.ly-ai-navigation::before{display:none}
-.ly-ai-navigation .ly-tab-mascot{position:static;width:30px;height:30px;object-fit:contain}
-.ly-ai-navigation .ly-tab{gap:3px;padding:0;font-size:11px}
-.ly-ai-navigation .ly-tab-ai{padding:0}
-.ly-ai-navigation .ly-home-indicator{bottom:7px}
+/* AI 页签按 Pixso 设计稿为全屏对话界面，不再叠加 App 底部导航。 */
+.lya-shell.lya-start-shell{bottom:0;background:#eaf2ff}
 </style>

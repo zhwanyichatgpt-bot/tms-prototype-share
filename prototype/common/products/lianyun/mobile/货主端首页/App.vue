@@ -25,7 +25,7 @@
       <CompanyProfilePage v-if="companyProfile" @back="companyProfile = false"/>
       <AddressBookPage v-if="mineDirectory === 'address'" :teleport="screenRoot" @back="mineDirectory = ''"/>
       <ContactsPage v-if="mineDirectory === 'contacts'" :teleport="screenRoot" @back="mineDirectory = ''"/>
-      <nav v-show="(activeTab !== 'ai' || (assistantRef?.isLanding && !assistantRef?.overlayOpen)) && !openedService && !openedProvider && !serviceList && !catalog && !networkExpanded && !nodeDetail && !requestsPage && !accountPage && !companyProfile && !mineDirectory && !cargoOverlay && !appsOverlay" class="ly-bottom-nav" :class="{ 'ly-ai-navigation': activeTab === 'ai' }" aria-label="主导航">
+      <nav v-show="activeTab !== 'ai' && !openedService && !openedProvider && !serviceList && !catalog && !networkExpanded && !nodeDetail && !requestsPage && !accountPage && !companyProfile && !mineDirectory && !cargoOverlay && !appsOverlay" class="ly-bottom-nav" aria-label="主导航">
         <button v-for="tab in tabs" :key="tab.key" :class="['ly-tab', { active: activeTab === tab.key, 'ly-tab-ai': tab.key === 'ai' }]" :aria-label="tab.label" :aria-current="activeTab === tab.key ? 'page' : undefined" @click="activeTab = tab.key">
           <span v-if="activeTab==='home'" aria-hidden="true"/>
           <img v-else-if="tab.key === 'ai'" class="ly-tab-mascot" src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="">
