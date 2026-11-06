@@ -19,11 +19,11 @@
       "order": 3
     }
   ],
-  "status": "in_progress",
+  "status": "completed",
   "revision": "R16",
   "publishedAt": "2026-09-23T03:21:13.162Z",
   "lastPublishedAt": "2026-09-23T03:21:13.162Z",
-  "completedAt": null,
+  "completedAt": "2026-11-06T13:18:28.637Z",
   "createdAt": "2026-09-23T03:21:13.148Z",
-  "updatedAt": "2026-11-06T13:09:01.449Z"
+  "updatedAt": "2026-11-06T13:18:28.637Z"
 }
