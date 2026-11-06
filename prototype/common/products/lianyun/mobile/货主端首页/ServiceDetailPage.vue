@@ -52,19 +52,18 @@
     <p v-if="!relatedServices.length" class="sd-empty">暂无类似运输通道</p>
    </section>
   </main>
-  <footer class="ly-service-actions ly-detail-actions"><FavoriteButton :saved="favorite" :label="channel.name" @toggle="$emit('favorite',service)"/><button class="primary" @click="$emit('inquiry',transportInquiry(service,channel,scheme))">按此方案询价</button></footer>
+  <footer class="ly-service-actions ly-detail-actions"><button class="primary" @click="$emit('inquiry',transportInquiry(service,channel,scheme))">按此方案询价</button></footer>
  </section>
 </template>
 <script setup>
 import { computed,ref } from 'vue'
 import AssistantRouteMap from './AssistantRouteMap.vue'
-import FavoriteButton from './FavoriteButton.vue'
 import ServiceCard from './ServiceCard.vue'
 import { transportChannel,channelCapabilityLabels,routeModeLabel,transportInquiry,relatedTransportChannels } from './transport-channels.js'
 import { providers,services,modes } from './mock-data.js'
 import { publisherStats,booleanLabel,servicesLabel } from './service-detail-data.js'
-const props=defineProps({service:Object,provider:Object,mode:Object,favorite:Boolean})
-defineEmits(['back','provider','reviews','inquiry','favorite','service'])
+const props=defineProps({service:Object,provider:Object,mode:Object})
+defineEmits(['back','provider','reviews','inquiry','service'])
 const channel=computed(()=>transportChannel(props.service))
 const selectedSchemeId=ref(props.service.selectedSchemeId||channel.value.schemes[0].id)
 const scheme=computed(()=>channel.value.schemes.find(item=>item.id===selectedSchemeId.value)||channel.value.schemes[0])

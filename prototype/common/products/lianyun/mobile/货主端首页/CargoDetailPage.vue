@@ -10,7 +10,7 @@
         <section class="cgd-card"><dl class="cgd-facts"><dt>货源号</dt><dd>{{ cargo.number }} <button class="cgd-copy" aria-label="复制货源号" @click="copyNumber"><van-icon name="description-o"/></button></dd><dt>发布企业</dt><dd><button class="cgd-text-button" @click="info='company'">{{ cargo.publisher.name }}</button></dd><dt>发布联系人</dt><dd>{{ cargo.publisher.contact }}（{{ cargo.publisher.phone }}）</dd><dt>发布时间</dt><dd>{{ cargo.publishedAt }}</dd></dl></section>
       </section>
     </main>
-    <footer v-show="!flowOpen" class="cgd-actions"><button class="cgd-favorite" :aria-pressed="saved" :aria-label="(saved?'取消收藏':'收藏')+cargo.goods+'货源'" @click="toggleSaved"><van-icon :name="saved?'star':'star-o'"/><small>{{ saved?'已收藏':'收藏' }}</small></button><button class="cgd-contact" @click="info='contact'">联系货主</button><button class="cgd-primary" @click="isGrab?grabOpen=true:quoteOpen=true">{{ isGrab?(state==='won'?'查看抢单详情':state==='ready'?'立即抢单':'查看状态'):quote?'查看我的报价':'提交报价' }}</button></footer>
+    <footer v-show="!flowOpen" class="cgd-actions"><button class="cgd-contact" @click="info='contact'">联系货主</button><button class="cgd-primary" @click="isGrab?grabOpen=true:quoteOpen=true">{{ isGrab?(state==='won'?'查看抢单详情':state==='ready'?'立即抢单':'查看状态'):quote?'查看我的报价':'提交报价' }}</button></footer>
     <CargoGrabFlow v-if="grabOpen" :cargo="cargo" @close="grabOpen=false" @browse="$emit('browse')"/><CargoQuoteFlow v-if="quoteOpen&&!isGrab" :cargo="cargo" :existing="quote" :teleport="teleport" @close="quoteOpen=false"/>
     <van-popup :show="!!info" position="bottom" round :teleport="teleport" :z-index="95" :style="{position:'absolute'}" :overlay-style="{position:'absolute'}" @update:show="value=>{if(!value)info=''}"><div class="cgd-contact-sheet"><div class="cgd-between"><h2>{{ info==='company'?'发布企业':'联系货主' }}</h2><button aria-label="关闭企业信息" @click="info=''"><van-icon name="cross"/></button></div><strong>{{ cargo.publisher.name }}</strong><dl class="cgd-facts"><dt>联系人</dt><dd>{{ cargo.publisher.contact }}</dd><dt>联系电话</dt><dd>{{ cargo.publisher.phone }}</dd></dl></div></van-popup>
   </section>
@@ -24,7 +24,7 @@ import { cargoGrabStore } from './cargo-grab-store.js'
 import CargoQuoteFlow from './CargoQuoteFlow.vue'
 import CargoPlaces from './CargoPlaces.vue'
 import { cargoPublishedRequirements, dateLabel } from './cargo-data.js'
-import { cargoStore, toggleCargoFavorite } from './cargo-store.js'
+import { cargoStore } from './cargo-store.js'
 const props=defineProps({cargo:{type:Object,required:true},teleport:Object})
 defineEmits(['back','browse'])
 const quoteOpen=ref(false),grabOpen=ref(false),info=ref(''),now=ref(Date.now())
@@ -32,12 +32,10 @@ const timer=setInterval(()=>{now.value=Date.now()},1000);onUnmounted(()=>clearIn
 const isGrab=computed(()=>isGrabCargo(props.cargo)),flowOpen=computed(()=>quoteOpen.value||grabOpen.value)
 const grabRecord=computed(()=>cargoGrabStore.records.find(row=>row.cargoId===props.cargo.id))
 const state=computed(()=>grabState(props.cargo,grabRecord.value,now.value))
-const saved=computed(()=>cargoStore.favorites.includes(props.cargo.id))
 const quote=computed(()=>cargoStore.quotes.find(item=>item.cargoId===props.cargo.id))
 const days=computed(()=>Math.max(0,Math.round((Date.parse(props.cargo.unloadDate)-Date.parse(props.cargo.loadDate))/86400000)))
 function weekdayLabel(date){return ['周日','周一','周二','周三','周四','周五','周六'][new Date(`${date}T12:00:00`).getDay()]}
 function formatTime(time){return new Date(time).toLocaleString('zh-CN',{hour12:false})}
-function toggleSaved(){const value=toggleCargoFavorite(props.cargo.id);showToast({message:cargoStore.storageError?'收藏仅保存在本次会话':value?'已收藏，可在我的收藏查看':'已取消收藏',teleport:props.teleport})}
 async function copyNumber(){try{await navigator.clipboard.writeText(props.cargo.number);showToast({message:'货源号已复制',teleport:props.teleport})}catch{showToast({message:props.cargo.number,teleport:props.teleport})}}
 </script>
 <style src="./cargo-ui.css"></style>

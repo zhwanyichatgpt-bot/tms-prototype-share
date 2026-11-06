@@ -1,6 +1,6 @@
 <template>
   <div class="ly-preview">
-    <div ref="screenRoot" class="ly-screen" :class="{ 'ly-ai-screen': activeTab === 'ai', 'ly-home-screen': activeTab==='home' && !openedService && !openedProvider && !serviceList && !catalog && !nodeDetail && !requestsPage && !favoritesOpen && !cargoOverlay }">
+    <div ref="screenRoot" class="ly-screen" :class="{ 'ly-ai-screen': activeTab === 'ai', 'ly-home-screen': activeTab==='home' && !openedService && !openedProvider && !serviceList && !catalog && !nodeDetail && !requestsPage && !cargoOverlay }">
       <div class="ly-status" aria-hidden="true"><span>9:41</span><span class="ly-status-icons"><i class="ly-signal"></i><van-icon name="wifi-o"/><i class="ly-battery"></i></span></div>
       <LianyunHomePage v-show="activeTab==='home'" ref="homeQuery" :fixtures="homeDesign" :teleport="screenRoot" :region="homeRegionSelected ? browseRegion : ''" v-model:mode="serviceMode" @region="regionOpen=true" @publish="openPublish" @assistant="openAssistant()" @industry="openIndustrySolution(industrySolutions[0])" @query="queryFromHome" @cargo="cargoMarket.openCargo($event)" @service="openService" @provider="openProvider" @reviews="openReviews"/>
       <CargoMarketplace ref="cargoMarket" headless :teleport="screenRoot" @overlay-change="cargoOverlay=$event"/>
@@ -13,27 +13,19 @@
         <header class="ly-service-nav"><button aria-label="返回首页" @click="serviceList=null"><van-icon name="arrow-left"/></button><h1>{{ serviceList.title }}</h1><span/></header>
         <main class="ly-service-content"><p v-if="serviceList.context" class="ly-sheet-hint">{{ serviceList.context }}</p><div class="ly-list-filters"><label>出发地<select v-model="listOrigin"><option v-for="region in browsingRegions" :key="region">{{ region }}</option></select></label><label>目的地<select v-model="listDestination"><option v-for="region in destinationRegions" :key="region">{{ region }}</option></select></label></div><div class="ly-filters"><button :class="{active:listMode==='all'}" @click="listMode='all'">全部</button><button v-for="mode in modes" :key="mode.key" :class="{active:listMode===mode.key}" @click="listMode=mode.key">{{ mode.short }}</button></div><ServiceCard v-for="service in filteredListServices" :key="service.id" :service="service" :provider="providerById(service.providerId)" :mode="modeInfo(service.mode)" @open="openService" @provider="openProvider" @reviews="openReviews"/><div v-if="!filteredListServices.length" class="ly-empty"><p>暂无符合条件的方案，请调整条件。</p><button class="ly-text-button" @click="listOrigin='全国';listDestination='全国';listMode='all'">重置筛选</button></div></main>
       </section>
-      <ServiceDetailPage :favorite="isFavorite('services',openedService.id)" @favorite="item=>toggleSaved('services',item.id)" v-if="openedService" v-show="!requestsPage" :key="openedService.id" :service="openedService" :provider="providerById(openedService.providerId)" :mode="modeInfo(openedService.mode)" @back="openedService=null" @provider="openProvider" @reviews="openReviews" @inquiry="openInquiry" @service="openService"/>
-      <ProviderDetailPage v-if="openedProvider" v-show="!openedService && !requestsPage" :key="openedProvider.id" :provider="openedProvider" :services="providerServices(openedProvider.id)" :offers="catalogOffers.filter(item=>item.providerId===openedProvider.id)" :modes="modes" :favorite="isFavorite('providers',openedProvider.id)" @back="closeProvider" @service="openService" @offer="openProviderOffer" @reviews="openReviews" @favorite="item=>toggleSaved('providers',item.id)" @contact="contactProvider"/>
+      <ServiceDetailPage v-if="openedService" v-show="!requestsPage" :key="openedService.id" :service="openedService" :provider="providerById(openedService.providerId)" :mode="modeInfo(openedService.mode)" @back="openedService=null" @provider="openProvider" @reviews="openReviews" @inquiry="openInquiry" @service="openService"/>
+      <ProviderDetailPage v-if="openedProvider" v-show="!openedService && !requestsPage" :key="openedProvider.id" :provider="openedProvider" :services="providerServices(openedProvider.id)" :offers="catalogOffers.filter(item=>item.providerId===openedProvider.id)" :modes="modes" @back="closeProvider" @service="openService" @offer="openProviderOffer" @reviews="openReviews" @contact="contactProvider"/>
       <TransportAssistant v-show="activeTab === 'ai'" v-model:mode="serviceMode" ref="assistantRef" @demand-change="homeQuery?.prefill($event)" @close="activeTab = 'home'"/>
       <main v-show="activeTab === 'analysis'" class="ly-scroll ly-analysis-scroll" aria-label="运输分析">
         <AnalysisPage/>
       </main>
       <AppsPage v-show="activeTab === 'app'" @overlay-change="appsOverlay=$event"/>
-      <MinePage v-show="activeTab === 'mine'" :favorite-counts="{ services: savedServices.length, providers: savedProviders.length, cargos: savedCargos.length }" @navigate="onMineNavigate"/>
-      <section v-if="favoritesOpen" v-show="!openedService && !cargoOverlay" class="ly-service-page" aria-label="我的收藏">
-        <header class="ly-service-nav"><button aria-label="返回我的" @click="favoritesOpen=false"><van-icon name="arrow-left"/></button><h1>我的收藏</h1><span/></header>
-        <main class="ly-service-content lh-home lh-favorites-content">
-          <div class="lh-featured-tabs" role="tablist" aria-label="收藏分类"><button role="tab" :aria-selected="favoriteMode==='services'" @click="favoriteMode='services'">运输方案 {{ savedServices.length }}</button><button role="tab" :aria-selected="favoriteMode==='providers'" @click="favoriteMode='providers'">物流企业 {{ savedProviders.length }}</button><button role="tab" :aria-selected="favoriteMode==='cargos'" @click="favoriteMode='cargos'">货源 {{ savedCargos.length }}</button></div>
-          <p v-if="favoriteStore.storageError" role="status" class="ly-sheet-hint">收藏暂时只保存在当前会话，浏览器存储不可用。</p>
-          <template v-if="favoriteMode==='services'"><ServiceCard v-for="service in savedServices" :key="service.id" compact :service="service" :provider="providerById(service.providerId)" :mode="modeInfo(service.mode)" @open="openService" @provider="openProvider" @reviews="openReviews"/></template>
-          <template v-else-if="favoriteMode==='providers'"><article v-for="provider in savedProviders" :key="provider.id" class="lh-saved-provider"><div><button class="ly-list-row" @click="openProvider(provider)"><TransportIcon :mode="provider.mode"/><span><strong>{{ provider.name }}</strong><small>{{ provider.area }}</small></span><van-icon name="arrow"/></button></div><ProviderRating :provider="provider" compact stars @open="openReviews"/></article></template>
-          <template v-else><CargoCard v-for="cargo in savedCargos" :key="cargo.id" :cargo="cargo" @open="cargoMarket.openCargo($event)"/></template>
-          <p v-if="favoriteMode==='cargos' && cargoStore.storageError" role="status" class="ly-sheet-hint">货源收藏暂时只保存在当前会话。</p>
-          <div v-if="!(favoriteMode==='services' ? savedServices : favoriteMode==='providers' ? savedProviders : savedCargos).length" class="ly-empty"><van-icon name="like-o"/><p>还没有收藏{{ favoriteMode==='services' ? '运输方案' : favoriteMode==='providers' ? '物流企业' : '货源' }}</p><button class="ly-text-button" @click="favoritesOpen=false; activeTab='home'">去首页看看</button></div>
-        </main>
-      </section>
-      <nav v-show="(activeTab !== 'ai' || (assistantRef?.isLanding && !assistantRef?.overlayOpen)) && !openedService && !openedProvider && !serviceList && !catalog && !networkExpanded && !nodeDetail && !requestsPage && !favoritesOpen && !cargoOverlay && !appsOverlay" class="ly-bottom-nav" :class="{ 'ly-ai-navigation': activeTab === 'ai' }" aria-label="主导航">
+      <MinePage v-show="activeTab === 'mine'" @navigate="onMineNavigate"/>
+      <AccountCenterPage v-if="accountPage" :key="accountPage.view" :config="lianyunAccountCenterConfig" :initial-view="accountPage.view" @back="accountPage = null" @open-payment="onAccountPayment"/>
+      <CompanyProfilePage v-if="companyProfile" @back="companyProfile = false"/>
+      <AddressBookPage v-if="mineDirectory === 'address'" :teleport="screenRoot" @back="mineDirectory = ''"/>
+      <ContactsPage v-if="mineDirectory === 'contacts'" :teleport="screenRoot" @back="mineDirectory = ''"/>
+      <nav v-show="(activeTab !== 'ai' || (assistantRef?.isLanding && !assistantRef?.overlayOpen)) && !openedService && !openedProvider && !serviceList && !catalog && !networkExpanded && !nodeDetail && !requestsPage && !accountPage && !companyProfile && !mineDirectory && !cargoOverlay && !appsOverlay" class="ly-bottom-nav" :class="{ 'ly-ai-navigation': activeTab === 'ai' }" aria-label="主导航">
         <button v-for="tab in tabs" :key="tab.key" :class="['ly-tab', { active: activeTab === tab.key, 'ly-tab-ai': tab.key === 'ai' }]" :aria-label="tab.label" :aria-current="activeTab === tab.key ? 'page' : undefined" @click="activeTab = tab.key">
           <span v-if="activeTab==='home'" aria-hidden="true"/>
           <img v-else-if="tab.key === 'ai'" class="ly-tab-mascot" src="/zhiyun-mobile-assets/icons/tab-cat-ai.png" alt="">
@@ -96,7 +88,6 @@
 <script setup>
 import { computed, nextTick, ref } from 'vue'
 import { showToast } from 'vant'
-import { favoriteStore, isFavorite, toggleFavorite } from './platform-favorites.js'
 import { addresses, modes, providers, services, tabs } from './mock-data.js'
 import TransportIcon from './TransportIcon.vue'
 import TransportNetwork from './TransportNetwork.vue'
@@ -115,12 +106,17 @@ import ServiceRequests from './ServiceRequests.vue'
 import AnalysisPage from './AnalysisPage.vue'
 import AppsPage from './AppsPage.vue'
 import MinePage from './MinePage.vue'
+import AccountCenterPage from '../../../../shared/mobile/account-center/AccountCenterPage.vue'
+import CompanyProfilePage from './CompanyProfilePage.vue'
+import AddressBookPage from './AddressBookPage.vue'
+import ContactsPage from './ContactsPage.vue'
+import { lianyunAccountCenterConfig } from './account-center-data.js'
 import CargoMarketplace from './CargoMarketplace.vue'
-import CargoCard from './CargoCard.vue'
 import { cargos } from './cargo-data.js'
-import { cargoStore } from './cargo-store.js'
 import { browsingRegions, serviceCategories, catalogOffers, networkPlaces } from './platform-data.js'
 import './home.css'
+import './mine-directory.css'
+import './contacts.css'
 import './service-cards.css'
 import './platform-home.css'
 import './homepage-ui.css'
@@ -129,15 +125,10 @@ const homeDesign=createHomeDesignFixtures({cargos,services,providers,makeChannel
 const homeRegionSelected=ref(false)
 const screenRoot = ref(null)
 const cargoMarket = ref(null), cargoOverlay = ref(false)
-const favoritesOpen = ref(false), favoriteMode = ref('services')
+const accountPage = ref(null)
+const companyProfile = ref(false)
+const mineDirectory = ref('')
 const appsOverlay = ref(false)
-const savedServices = computed(()=>favoriteStore.services.map(id=>services.find(item=>item.id===id)).filter(Boolean))
-const savedProviders = computed(()=>favoriteStore.providers.map(id=>providers.find(item=>item.id===id)).filter(Boolean))
-const savedCargos = computed(()=>cargoStore.favorites.map(id=>cargos.find(item=>item.id===id)).filter(Boolean))
-function toggleSaved(kind,id){
-  const saved=toggleFavorite(kind,id)
-  showToast({message:favoriteStore.storageError ? '已更新收藏，当前仅保存在本次会话' : saved ? '已收藏，可在“我的收藏”查看' : '已取消收藏',teleport:screenRoot.value})
-}
 const openedService = ref(null)
 const openedProvider = ref(null), providerReturnService = ref(null)
 const serviceList = ref(null)
@@ -176,12 +167,27 @@ const providerServices = id => services.filter(service => service.providerId ===
 function openAddress(mode) { addressMode.value = mode; addressQuery.value = ''; addressOpen.value = true }
 function selectAddress(address) { if (addressMode.value === 'load') loadAddress.value = address; else unloadAddress.value = address; addressOpen.value = false; queryError.value = '' }
 function openNotice(title, heading, body) { sheet.value = { open: true, kind: 'notice', title, heading, body } }
-function onMineNavigate({ target }) {
-  if (target === 'favorites') {
-    favoritesOpen.value = true
+function onMineNavigate({ target, view }) {
+  if (target === 'account') {
+    accountPage.value = { view: view === 'history' ? 'flow' : view === 'frozen' ? 'frozen' : 'overview' }
+    return
+  }
+  if (target === 'payment') {
+    accountPage.value = { view: 'overview' }
+    return
+  }
+  if (target === 'company') {
+    companyProfile.value = true
+    return
+  }
+  if (target === 'address' || target === 'contacts') {
+    mineDirectory.value = target
     return
   }
   showToast({ message: '该功能页面暂未接入', teleport: screenRoot.value })
+}
+function onAccountPayment() {
+  showToast({ message: '付款办理页面暂未接入（原型演示）', teleport: screenRoot.value })
 }
 function openNotifications() { openNotice('消息通知', '暂无新消息', '收到新的业务或平台通知后，会在这里显示。') }
 function openList(title, items, context = '', mode = serviceMode.value) { sheet.value.open = false; listOrigin.value=homeOrigin.value; listDestination.value='全国';listMode.value=mode;serviceList.value = { title, items, context } }

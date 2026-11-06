@@ -1,0 +1,50 @@
+/* 常用联系人：按 Pixso 832:602「01工作台/全局搜索－联系人」完整还原。 */
+.ly-screen:has(.ly-contacts-page) > .ly-status { background: #fff; }
+.ly-contacts-page.ly-service-page { background: #fff; }
+.ly-contacts-page button { cursor: pointer; }
+
+/* 顶部搜索：300×35 搜索框 + 右侧「取消」。 */
+.ly-contacts-searchbar { display: flex; flex: none; align-items: center; gap: 15px; padding: 5px 16px 0; }
+.ly-contacts-search { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; height: 35px; padding: 0 10px; border-radius: 5px; background: #f6f6f6; }
+.ly-contacts-search .van-icon { flex: none; color: #9a9a9a; font-size: 14px; }
+.ly-contacts-page .ly-contacts-search input { flex: 1; min-width: 0; height: 35px; padding: 0; border: 0; outline: 0; background: none; color: #333; font: inherit; font-size: 14px; line-height: 35px; appearance: none; }
+.ly-contacts-search input::placeholder { color: #9a9a9a; }
+.ly-contacts-search input::-webkit-search-cancel-button { display: none; }
+.ly-contacts-page .ly-contacts-clear { display: grid; flex: none; place-items: center; width: 28px; height: 28px; margin-right: -4px; padding: 0; border: 0; background: none; color: #b8b8b8; font-size: 14px; }
+.ly-contacts-page .ly-contacts-cancel { flex: none; width: 28px; height: 35px; padding: 0; border: 0; background: none; color: #3a65ff; font-size: 14px; font-weight: 600; line-height: 35px; text-align: right; white-space: nowrap; }
+
+/* 六个分类页签：16px，当前项 #333 加粗，蓝色 19×3 下划线。 */
+.ly-contacts-tabs { display: flex; flex: none; gap: 28px; margin: 14px 0 0; padding: 0 11px 14px 16px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.ly-contacts-tabs::-webkit-scrollbar { display: none; }
+.ly-contacts-page .ly-contacts-tabs button { position: relative; flex: none; padding: 0; border: 0; background: none; color: #9fa1b5; font-size: 16px; font-weight: 400; line-height: 22px; white-space: nowrap; }
+.ly-contacts-page .ly-contacts-tabs button.is-active { color: #333; font-weight: 600; }
+.ly-contacts-page .ly-contacts-tabs button.is-active::after { content: ''; position: absolute; bottom: -3.5px; left: 50%; width: 19px; height: 3.5px; border-radius: 2.5px; background: #3a65ff; transform: translateX(-50%); }
+
+/* 联系人列表：行高 90，头像 40，文字 14/12/12，10px 标签。 */
+.ly-contacts-results { flex: 1; min-height: 0; padding: 0 16px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.ly-contact-row { position: relative; box-sizing: border-box; height: 90px; padding: 7px 0 0; }
+.ly-contact-row.is-expanded { height: auto; min-height: 90px; padding-bottom: 8px; }
+.ly-contact-row:not(:last-child)::after { content: ''; position: absolute; right: 0; bottom: 0; left: 52px; height: .5px; background: #ededed; }
+.ly-contact-row-main { display: flex; gap: 12px; align-items: flex-start; }
+.ly-contact-avatar { display: grid; flex: none; place-items: center; width: 40px; height: 40px; border-radius: 6px; font-size: 15px; font-weight: 600; }
+.ly-contact-avatar.tone-blue { background: #edf2ff; color: #3a65ff; }
+.ly-contact-avatar.tone-green { background: #e8f7f0; color: #0f9f6e; }
+.ly-contact-avatar.tone-orange { background: #fff3e6; color: #d9822b; }
+.ly-contact-avatar.tone-purple { background: #f1edff; color: #7b61ff; }
+.ly-contact-body { flex: 1; min-width: 0; padding-right: 50px; }
+.ly-contact-name { margin: 0; overflow: hidden; color: #3a65ff; font-size: 14px; font-weight: 500; line-height: 20px; text-overflow: ellipsis; white-space: nowrap; }
+.ly-contacts-page .ly-contact-role { margin: 4px 0 0; overflow: hidden; color: #666; font-size: 12px; line-height: 17px; text-overflow: ellipsis; white-space: nowrap; }
+.ly-contacts-page .ly-contact-company { margin: 0; overflow: hidden; color: #999; font-size: 12px; line-height: 17px; text-overflow: ellipsis; white-space: nowrap; }
+.ly-contacts-page .ly-contact-tag { display: flex; align-items: center; width: fit-content; height: 14px; margin-top: 1px; padding: 0 4px; border-radius: 2px; background: #3a65ff14; color: #3a65ff; font-size: 10px; line-height: 14px; }
+.ly-contact-tools { position: absolute; top: -1px; right: -13px; display: flex; }
+.ly-contacts-page .ly-contact-tools button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: none; }
+.ly-contacts-page .ly-contact-tools button:first-child { color: #15bc83; font-size: 20px; }
+.ly-contacts-page .ly-contact-tools button:last-child { color: #3a65ff; font-size: 20px; }
+.ly-contacts-page .ly-contact-expand { position: absolute; top: 39px; right: -6px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: none; color: #333; font-size: 14px; }
+.ly-contact-expand .van-icon { transition: transform .2s ease; }
+.ly-contact-expand .van-icon.is-open { transform: rotate(180deg); }
+.ly-contact-detail { margin: 6px 0 2px 52px; padding-top: 6px; border-top: 1px dashed #ededed; color: #999; font-size: 12px; line-height: 18px; }
+.ly-contact-detail p { margin: 0; }
+.ly-contacts-page .ly-contact-detail .danger { min-height: 44px; margin-top: 4px; padding: 0; border: 0; background: none; color: #e25555; font-size: 12px; }
+
+.ly-contacts-page button:focus-visible, .ly-contacts-page input:focus-visible { outline: 2px solid #3a65ff; outline-offset: 2px; }

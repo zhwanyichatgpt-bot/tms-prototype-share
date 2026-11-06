@@ -38,6 +38,8 @@
 .ly-mine-account { min-height: 163px; padding: 14px 16px 12px; border: 2px solid #fff; border-bottom: 0; border-radius: 16px 16px 0 0; background: linear-gradient(112deg, #ffffff1a, #dce6ff80 60%, #ffffff29); }
 .ly-mine-heading { min-height: 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .ly-mine-heading h2 { font-size: 16px; line-height: 20px; font-weight: 700; }
+.ly-mine .ly-mine-heading-entry { display: inline-flex; align-items: center; gap: 4px; font-size: 16px; line-height: 20px; font-weight: 700; }
+.ly-mine-heading-entry .van-icon { font-size: 13px; color: var(--mine-muted); }
 .ly-mine .ly-mine-link { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; color: var(--mine-muted); font-size: 12px; white-space: nowrap; }
 .ly-mine-link .van-icon { font-size: 12px; }
 .ly-mine-account-metrics { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 16px; margin: 13px 8px 10px; }
@@ -81,11 +83,6 @@
 .ly-mine-inbox-metric small { color: var(--mine-secondary); font-size: 11px; line-height: 18px; white-space: nowrap; }
 .ly-mine-inbox-metric > .van-icon { align-self: center; margin-left: auto; color: #a5a9b3; font-size: 12px; }
 .ly-mine-inbox-metric.is-empty { align-items: center; }
-.ly-mine-shortcuts { margin-top: 16px; padding-top: 14px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #f0f2f6; }
-.ly-mine-shortcuts button { min-width: 0; display: flex; align-items: center; flex-direction: column; }
-.ly-mine-shortcut-icon { width: 28px; height: 28px; display: grid; place-items: center; color: #626c80; font-size: 23px; }
-.ly-mine-shortcuts strong { margin-top: 4px; font-size: 12px; line-height: 18px; font-weight: 500; white-space: nowrap; }
-.ly-mine-shortcuts small { margin-top: 2px; color: var(--mine-secondary); font-size: 10px; line-height: 15px; white-space: nowrap; }
 .ly-mine-panel { margin-bottom: 12px; padding: 8px 10px; border-radius: 16px; background: #fff; }
 .ly-mine-panel-title { padding: 8px 8px 4px; font-size: 14px; line-height: 20px; font-weight: 650; }
 .ly-mine .ly-mine-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 10px 8px; text-align: left; }

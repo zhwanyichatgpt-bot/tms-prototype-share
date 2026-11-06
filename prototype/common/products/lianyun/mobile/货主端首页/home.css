@@ -57,6 +57,8 @@
 .ly-input input { width:100%; min-width:0; border:0; background:transparent; font-size:12px; color:#333; line-height:20px; }
 .ly-input input::placeholder,.ly-query textarea::placeholder { color:#999; }
 .ly-query .van-button--primary,.ly-sheet .van-button--primary { height:43px; border:0; border-radius:12px; background:var(--ly-button-gradient); color:#fff; font-size:14px; font-weight:600; }
+.ly-sheet .van-button--plain.van-button--primary { background:#fff; color:var(--ly-brand); border:1px solid var(--ly-brand); }
+.ly-sheet .ly-industry-catalog-action { margin-top:10px; }
 .ly-publish-link { display:flex; align-items:center; gap:4px; margin:10px 0 -2px auto; border:0; background:none; color:var(--ly-brand)!important; font-size:12px; }
 .ly-example { display:block; padding:0 0 12px; background:none; border:0; color:var(--ly-brand)!important; font-size:11px; text-align:left; }
 .ly-query textarea { display:block; resize:vertical; width:100%; min-height:90px; max-height:130px; border:1px solid #e9edf4; border-radius:10px; padding:10px; font-size:12px; color:#333; }

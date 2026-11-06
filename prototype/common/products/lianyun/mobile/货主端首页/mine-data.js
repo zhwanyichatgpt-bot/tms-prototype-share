@@ -23,14 +23,6 @@ export const mineInvoiceSummary = {
   processingCount: 1,
 }
 
-export const minePersonalSummary = {
-  recentCount: 6,
-  reviewCount: 3,
-  routeCount: 2,
-  addressCount: 6,
-  contactCount: 4,
-}
-
 // 待办与未读消息为独立示例数量，不从「等待供应方回复」等状态累加。
 export const mineInboxSummary = {
   todoCount: 2,

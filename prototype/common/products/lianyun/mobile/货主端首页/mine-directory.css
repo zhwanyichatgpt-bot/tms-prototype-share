@@ -1,0 +1,59 @@
+/* 我的资料二级页：地址簿与常用联系人共用列表、表单与确认弹层样式。 */
+.ly-dir-page .ly-service-nav { background: #f3f5f9; }
+.ly-dir-page .ly-service-nav button { display: grid; place-items: center; height: 44px; }
+.ly-dir-page button { font: inherit; cursor: pointer; }
+.ly-dir-content { padding: 12px 15px 16px; }
+.ly-dir-summary { margin: 0 2px 11px; color: #8b94a6; font-size: 12px; line-height: 18px; }
+.ly-dir-filters { display: flex; gap: 8px; margin-bottom: 10px; }
+.ly-dir-filter { flex: 1; min-height: 36px; padding: 0 8px; border: 1px solid #e3e8f2; border-radius: 8px; background: #fff; color: #667085; font-size: 12px; line-height: 20px; }
+.ly-dir-filter span { margin-left: 3px; font-size: 11px; opacity: .72; }
+.ly-dir-filter.is-active { border-color: #3a65ff; background: #edf2ff; color: #3a65ff; font-weight: 600; }
+.ly-dir-list { display: grid; gap: 10px; }
+.ly-dir-card { padding: 14px; border-radius: 12px; background: #fff; }
+.ly-dir-card-head { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ly-dir-card-head h2 { flex: 1; min-width: 0; margin: 0; overflow: hidden; color: #30343b; font-size: 15px; font-weight: 600; line-height: 22px; text-overflow: ellipsis; white-space: nowrap; }
+.ly-dir-badge { display: inline-flex; flex: none; align-items: center; gap: 2px; padding: 1px 6px; border-radius: 4px; background: #edf2ff; color: #3a65ff; font-size: 10px; line-height: 17px; }
+.ly-dir-type { flex: none; padding: 1px 6px; border-radius: 4px; font-size: 10px; line-height: 17px; }
+.ly-dir-type.load { background: #e8f7f0; color: #0f9f6e; }
+.ly-dir-type.unload { background: #fff3e6; color: #d9822b; }
+.ly-dir-address { display: flex; gap: 5px; margin: 9px 0 0; color: #596273; font-size: 12px; line-height: 18px; }
+.ly-dir-address .van-icon { flex: none; margin-top: 2px; color: #98a2b3; font-size: 14px; }
+.ly-dir-address span { min-width: 0; overflow-wrap: anywhere; }
+.ly-dir-contact { display: flex; align-items: center; gap: 6px; margin: 7px 0 0; color: #8b94a6; font-size: 12px; line-height: 18px; }
+.ly-dir-contact .van-icon { flex: none; font-size: 14px; }
+.ly-dir-contact b { min-width: 0; overflow: hidden; color: #4b5565; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.ly-dir-contact span { margin-left: auto; flex: none; }
+.ly-dir-actions { display: flex; align-items: center; justify-content: flex-end; gap: 2px; margin-top: 10px; padding-top: 4px; border-top: 1px solid #f0f2f7; }
+.ly-dir-actions button { min-height: 44px; padding: 0 9px; border: 0; background: none; color: #667085; font-size: 12px; }
+.ly-dir-actions .primary { color: #3a65ff; }
+.ly-dir-actions .danger { color: #e25555; }
+.ly-dir-empty { display: flex; flex-direction: column; align-items: center; padding: 62px 24px 46px; color: #b6bdca; text-align: center; }
+.ly-dir-empty .van-icon { color: #cbd3e1; font-size: 42px; }
+.ly-dir-empty p { margin: 12px 0 0; color: #667085; font-size: 14px; line-height: 20px; }
+.ly-dir-empty small { margin-top: 6px; max-width: 240px; font-size: 12px; line-height: 18px; }
+.ly-dir-footer { flex: none; padding: 10px 15px 24px; border-top: 1px solid #e6eaf1; background: #fff; }
+.ly-dir-add { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; min-height: 44px; border: 0; border-radius: 9px; background: #3a65ff; color: #fff; font-size: 14px; font-weight: 500; }
+.ly-dir-add .van-icon { font-size: 16px; }
+.ly-dir-sheet { display: flex; flex-direction: column; max-height: 88%; overflow: hidden; border-radius: 18px 18px 0 0; background: #fff; }
+.ly-dir-sheet-head { display: flex; flex: none; align-items: center; justify-content: space-between; padding: 14px 16px 8px; border-bottom: 1px solid #f0f2f7; }
+.ly-dir-sheet-head h2 { margin: 0; color: #30343b; font-size: 16px; font-weight: 600; line-height: 24px; }
+.ly-dir-sheet-head button { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; border: 0; background: none; color: #667085; font-size: 19px; }
+.ly-dir-form { flex: 1; min-height: 0; padding: 4px 16px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.ly-dir-field { display: block; padding: 11px 0; border-bottom: 1px solid #edf0f5; }
+.ly-dir-field > span { display: block; margin-bottom: 5px; color: #7c8698; font-size: 12px; line-height: 18px; }
+.ly-dir-field em { margin-left: 2px; color: #e25555; font-style: normal; }
+.ly-dir-field input, .ly-dir-field textarea { display: block; box-sizing: border-box; width: 100%; padding: 0; border: 0; outline: 0; background: none; color: #30343b; font: inherit; font-size: 14px; line-height: 22px; }
+.ly-dir-field textarea { min-height: 44px; resize: none; }
+.ly-dir-field input::placeholder, .ly-dir-field textarea::placeholder { color: #b6bdca; }
+.ly-dir-types { display: flex; gap: 8px; }
+.ly-dir-types button { flex: 1; min-height: 38px; border: 1px solid #e3e8f2; border-radius: 8px; background: #fff; color: #667085; font-size: 13px; }
+.ly-dir-types button.is-active { border-color: #3a65ff; background: #edf2ff; color: #3a65ff; font-weight: 600; }
+.ly-dir-hint { margin: 12px 0 16px; color: #9aa2b1; font-size: 11px; line-height: 17px; }
+.ly-dir-submit { width: 100%; min-height: 44px; border: 0; border-radius: 10px; background: #3a65ff; color: #fff; font-size: 15px; font-weight: 500; }
+.ly-dir-confirm { box-sizing: border-box; width: 280px; padding: 20px 18px 14px; border-radius: 14px; background: #fff; }
+.ly-dir-confirm h2 { margin: 0; color: #30343b; font-size: 16px; font-weight: 600; line-height: 24px; text-align: center; }
+.ly-dir-confirm p { margin: 9px 0 18px; color: #7c8698; font-size: 13px; line-height: 20px; text-align: center; }
+.ly-dir-confirm > div { display: flex; gap: 10px; }
+.ly-dir-confirm button { flex: 1; min-height: 42px; border: 0; border-radius: 8px; background: #f2f4f8; color: #4b5565; font-size: 14px; }
+.ly-dir-confirm button.danger { background: #e25555; color: #fff; }
+.ly-dir-page button:focus-visible, .ly-dir-page input:focus-visible, .ly-dir-page textarea:focus-visible { outline: 2px solid #3a65ff; outline-offset: 2px; }

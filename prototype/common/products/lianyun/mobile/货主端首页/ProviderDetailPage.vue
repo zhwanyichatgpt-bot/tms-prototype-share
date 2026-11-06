@@ -46,17 +46,16 @@
 
    <section class="ly-detail-card" aria-label="货主评价"><div class="ly-detail-card-heading"><h2>货主评价</h2><button v-if="provider.reviews?.length" @click="$emit('reviews',provider)">查看全部<van-icon name="arrow"/></button></div><article v-for="review in provider.reviews?.slice(0,2)" :key="review.id" class="pd-review"><div><strong>货主评价</strong><span class="pd-review-stars">★ {{ review.score.toFixed(1) }}</span></div><small>{{ review.business }} · {{ review.date }}</small><p>{{ review.text }}</p></article><p v-if="!provider.reviews?.length" class="ly-detail-muted">暂无评价</p></section>
   </main>
-  <footer class="ly-service-actions ly-detail-actions"><FavoriteButton :saved="favorite" :label="provider.name" @toggle="$emit('favorite',provider)"/><button class="primary" @click="$emit('contact',provider)">联系企业</button></footer>
+  <footer class="ly-service-actions ly-detail-actions"><button class="primary" @click="$emit('contact',provider)">联系企业</button></footer>
  </section>
 </template>
 <script setup>
 import { computed,ref } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 import ProviderRating from './ProviderRating.vue'
-import FavoriteButton from './FavoriteButton.vue'
 import TransportIcon from './TransportIcon.vue'
-const props=defineProps({provider:{type:Object,required:true},services:{type:Array,default:()=>[]},offers:{type:Array,default:()=>[]},modes:Array,favorite:Boolean})
-defineEmits(['back','service','offer','reviews','favorite','contact'])
+const props=defineProps({provider:{type:Object,required:true},services:{type:Array,default:()=>[]},offers:{type:Array,default:()=>[]},modes:Array})
+defineEmits(['back','service','offer','reviews','contact'])
 const showAll=ref(false)
 const visibleServices=computed(()=>showAll.value?props.services:props.services.slice(0,2))
 const transportModes=computed(()=>(props.provider.transportModes||[props.provider.mode]).map(key=>({key,label:props.modes.find(item=>item.key===key)?.label||key})))
