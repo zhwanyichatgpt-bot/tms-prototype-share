@@ -159,7 +159,7 @@ export const driverOperatingServices = [
 // 账户与服务：按设计稿为竖排列表，设置归入本组
 export const driverSupportItems = [
   { key: 'agreement', label: '合同与协议', image: '/zhiyun-mobile-assets/mine/menu-agreement.svg' },
-  { key: 'rules', label: '平台规则', image: '/zhiyun-mobile-assets/mine/menu-rules.svg' },
+  { key: 'rules', label: '隐私政策', image: '/zhiyun-mobile-assets/mine/menu-rules.svg' },
   { key: 'service', label: '联系客服', image: '/zhiyun-mobile-assets/mine/menu-service.svg' },
   { key: 'setting', label: '设置', image: '/zhiyun-mobile-assets/mine/menu-setting.svg' },
 ]
