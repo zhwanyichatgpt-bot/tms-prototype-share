@@ -176,12 +176,13 @@ import { computed } from 'vue'
 import { settlementPage } from './ai-home-data.js'
 import { waybillList } from './mock-data.js'
 import { canInvoiceWaybill, invoiceRecords, waybillInvoiceAmount } from './invoice-data.js'
+import { favoriteCapacityItems } from './favorite-capacity-store.js'
 
 defineProps({
   profile: { type: Object, required: true },
   enterprise: { type: Object, required: true },
 })
-const emit = defineEmits(['open-invoice', 'open-account', 'open-payment', 'open-waybills', 'open-profile'])
+const emit = defineEmits(['open-invoice', 'open-account', 'open-payment', 'open-waybills', 'open-profile', 'open-capacity'])
 
 const accountSummary = {
   balance: '20,680.00',
@@ -208,7 +209,7 @@ const transportItems = computed(() => [
   { key: 'abnormal', label: '有异常', count: waybillList.filter((item) => item.exception).length, mode: 'transport', status: 'abnormal', attention: true },
 ])
 
-const commonApps = [
+const commonApps = computed(() => [
   {
     key: 'address',
     label: '地址簿',
@@ -219,7 +220,7 @@ const commonApps = [
   {
     key: 'capacity',
     label: '收藏运力',
-    summary: '15 个收藏',
+    summary: `${favoriteCapacityItems.value.length} 个收藏`,
     icon: 'logistics',
     tone: 'green',
   },
@@ -239,13 +240,13 @@ const commonApps = [
     tone: 'purple',
     badge: '1',
   },
-]
+])
 
 const basicMenus = [
-  { key: 'rules', label: '平台规则', icon: 'records-o' },
+  { key: 'rules', label: '用户协议', icon: 'records-o' },
   { key: 'service', label: '联系客服', icon: 'service-o' },
   { key: 'feedback', label: '意见反馈', icon: 'edit' },
-  { key: 'setting', label: '设置', icon: 'setting-o' },
+  { key: 'setting', label: '隐私政策', icon: 'shield-o' },
 ]
 
 const notify = (label) => {
@@ -271,6 +272,10 @@ const openWaybills = (item) => {
 }
 
 const onApp = (item) => {
+  if (item.key === 'capacity') {
+    emit('open-capacity')
+    return
+  }
   notify(item.label)
 }
 

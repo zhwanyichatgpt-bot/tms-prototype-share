@@ -1553,13 +1553,13 @@ export const VEHICLE_CERT_KEYS = [
 export const driverVehicleArchives = reactive([
   {
     id: 'v-1',
-    plateNo: '闽A·8K62Q',
+    plateNo: '闽A·8K999',
     vehicleType: '13米高栏',
     loadCapacity: '35吨',
     energyType: '柴油',
     isDefault: true,
     certs: [
-      { key: 'drivingLicense', label: '行驶证', no: '闽A·8K62Q', expireDate: '2028-04-12', issueOrg: '福建省福州市公安局交通警察支队', reviewState: 'none' },
+      { key: 'drivingLicense', label: '行驶证', no: '闽A·8K999', expireDate: '2028-04-12', issueOrg: '福建省福州市公安局交通警察支队', reviewState: 'none' },
       { key: 'transportPermit', label: '道路运输证', no: '闽交运管榕字 3501******21', expireDate: '2026-11-30', issueOrg: '福州市道路运输管理处', reviewState: 'none' },
     ],
   },

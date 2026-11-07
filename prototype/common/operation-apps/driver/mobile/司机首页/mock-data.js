@@ -60,18 +60,19 @@ export const runningWaybills = roadWaybills.filter((item) => ['transporting', 'l
 // 避免同一车牌在资料卡与接单页出现两种车型描述。
 export const driverProfile = {
   name: '张建国',
-  avatar: '/zhiyun-mobile-assets/mine/avatar.png',
-  tags: ['已实名', '已认证'],
+  avatar: '/zhiyun-mobile-assets/mine/avatar-glow.png',
+  // 个人中心展示司机的实名/资质整体状态；未认证时以灰色标签提示补充资料
+  verifyStatus: '未认证',
 }
 
 export const driverAccount = {
-  balance: '12,680.00',
+  balance: '40,500.80',
   // 仅统计本月实际进入钱包的资金，不包含仍处于运单结算过程中的金额。
-  monthIncome: '16,980',
-  monthWithdrawal: '5,000',
-  withdrawing: '2,000',
-  // 已完成运单收入 18,420 - 本月实际入账 16,980。
-  pendingEntry: '1,440',
+  monthIncome: '16000',
+  monthWithdrawal: '5000',
+  withdrawing: '2000',
+  // 已完成运单收入 18,420 - 本月实际入账 16,000。
+  pendingEntry: '1400',
 }
 
 // 钱包流水只记录实际发生的资金变动；待打款运单不计入钱包流水。
@@ -117,15 +118,15 @@ export const driverBusinessOverview = {
   frequentRoute: '福州 → 厦门',
   routeOrders: '6',
   metrics: [
-    { label: '平均每趟', value: '1,023', unit: '元' },
-    { label: '载货里程', value: '3,426', unit: 'km' },
+    { label: '平均每趟', value: '1023', unit: '元' },
+    { label: '载货里程', value: '3426', unit: 'km' },
     { label: '空驶里程', value: '652', unit: 'km' },
     { label: '空驶率', value: '16', unit: '%' },
   ],
   // 本月收入走势（按周累计，单位元）。仅用于展示趋势，不承诺收益预测。
   incomeTrend: [2160, 4820, 7350, 10480, 13960, 18420],
   // 一句话经营洞察由平台基于运单结构生成，非司机可编辑内容
-  insight: '本月完成运单收入 18,420 元，短驳运单占比 76%，可进一步测算换车成本',
+  insight: '本月完成运单收入18,420元。短驳运单占比 76%，可进一步测算换车成本。',
 }
 
 // AI车辆建议仅用于经营辅助判断，不直接替用户做换车决策。
@@ -149,29 +150,69 @@ export const driverVehicleInsight = {
   riskTip: '需先确认固定停车点的夜间充电条件，并验证高峰期连续接单时的补能时间。',
 }
 
-// 一级页快捷入口行。待办数量由 store 的待办派生结果实时给出，不写死在此处；
-// 「运输资质」不单列入口——证件与车辆档案统一在「我的资料」管理，避免重复入口；
-// 「常跑路线」已并入接单设置，不再单列。
-export const driverQuickEntries = [
-  { key: 'order-setting', label: '接单设置', icon: 'setting-o', tone: 'blue' },
-  { key: 'credit', label: '信用评价', icon: 'star-o', tone: 'purple' },
-  { key: 'todo', label: '全部待办', icon: 'notes-o', tone: 'orange', badge: 'todo' },
-]
-
-// 原「司机与接单」模块已撤销：接单设置、信用评价、常跑路线三个入口
-// 上移到一级页快捷入口行，不再占用独立卡片。
-
 // 油气电来自平台能源账户实付订单，ETC来自已同步的通行账单；未绑定时应显示绑定空状态。
 export const driverOperatingServices = [
-  { key: 'energy', label: '油气电', metricLabel: '本月消费', value: '¥3,860', summary: '已优惠 ¥286 · 附近3站', icon: 'fire-o', tone: 'energy' },
-  { key: 'etc', label: 'ETC服务', metricLabel: '本月通行', value: '¥1,260', summary: '待出账 ¥320', icon: 'debit-pay', tone: 'etc' },
+  { key: 'energy', label: '油电汽', metricLabel: '本月消费', value: '¥3200.00', image: '/zhiyun-mobile-assets/mine/service-energy.png' },
+  { key: 'etc', label: 'ETC服务', metricLabel: '本月通行', value: '¥1260.00', image: '/zhiyun-mobile-assets/mine/service-etc.png' },
 ]
 
-// 其他服务：按设计稿为横排图标，去掉原竖排列表的「设置」项
+// 账户与服务：按设计稿为竖排列表，设置归入本组
 export const driverSupportItems = [
-  { key: 'agreement', label: '合同与协议', icon: 'description' },
-  { key: 'security', label: '安全中心', icon: 'shield-o' },
-  { key: 'rules', label: '平台规则', icon: 'records-o' },
-  { key: 'service', label: '联系客服', icon: 'service-o' },
-  { key: 'feedback', label: '意见反馈', icon: 'edit' },
+  { key: 'agreement', label: '合同与协议', image: '/zhiyun-mobile-assets/mine/menu-agreement.svg' },
+  { key: 'rules', label: '平台规则', image: '/zhiyun-mobile-assets/mine/menu-rules.svg' },
+  { key: 'service', label: '联系客服', image: '/zhiyun-mobile-assets/mine/menu-service.svg' },
+  { key: 'setting', label: '设置', image: '/zhiyun-mobile-assets/mine/menu-setting.svg' },
 ]
+
+// 全部应用：按司机日常场景分组，承接出勤、费用、车务等基础功能入口。
+// 图标按业务语义取色，同一分组内保持多彩但统一线宽，避免整组同色的单调。
+export const driverAppGroups = [
+  {
+    key: 'attendance',
+    label: '出勤与作业',
+    items: [
+      { key: 'leave', label: '请假管理', icon: 'calendar-o', tone: 'blue' },
+      { key: 'attendance-record', label: '考勤记录', icon: 'clock-o', tone: 'green' },
+      { key: 'entry', label: '入场预约', icon: 'todo-list-o', tone: 'cyan' },
+      { key: 'weigh', label: '过磅记录', icon: 'balance-o', tone: 'orange' },
+      { key: 'abnormal', label: '异常报备', icon: 'warning-o', tone: 'yellow' },
+    ],
+  },
+  {
+    key: 'salary',
+    label: '工资与费用',
+    items: [
+      { key: 'income-record', label: '收入记录', icon: 'gold-coin-o', tone: 'yellow' },
+      { key: 'expense-record', label: '支出记录', icon: 'cash-back-record', tone: 'blue' },
+      { key: 'transit-cost', label: '在途费用', icon: 'logistics', tone: 'cyan' },
+      { key: 'salary-slip', label: '工资条', icon: 'bill-o', tone: 'green' },
+      { key: 'salary-detail', label: '工资明细', icon: 'orders-o', tone: 'green' },
+    ],
+  },
+  {
+    key: 'vehicle',
+    label: '车务与服务',
+    items: [
+      { key: 'repair', label: '维修管理', icon: 'setting-o', tone: 'yellow' },
+      { key: 'maintain', label: '保养管理', icon: 'certificate', tone: 'blue' },
+      { key: 'vehicle-other', label: '其他车务', icon: 'apps-o', tone: 'yellow' },
+      { key: 'safety', label: '安全培训', icon: 'shield-o', tone: 'blue' },
+      { key: 'document', label: '文档签署', icon: 'description', tone: 'blue' },
+      { key: 'location', label: '定位服务', icon: 'location-o', tone: 'yellow' },
+    ],
+  },
+  {
+    key: 'other',
+    label: '其他相关',
+    items: [
+      { key: 'party', label: '云上党建', icon: 'flag-o', tone: 'red' },
+      { key: 'evaluate', label: '客户评价', icon: 'star-o', tone: 'blue' },
+      { key: 'feedback', label: '评价与反馈', icon: 'comment-o', tone: 'blue' },
+      { key: 'hotline', label: '客服热线', icon: 'service-o', tone: 'green' },
+    ],
+  },
+]
+
+// 最近使用应用按用户最近操作倒序排列，原型用司机近期高频入口作为示例。
+// 这里只存入口 key，图标与文案仍取分组数据，避免同一入口维护两份。
+export const driverRecentAppKeys = ['entry', 'weigh', 'salary-slip', 'maintain', 'abnormal']

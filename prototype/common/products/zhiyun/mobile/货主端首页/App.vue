@@ -64,6 +64,12 @@
           @open-account="openAccount"
           @open-payment="openPaymentFromMine"
           @open-waybills="openWaybillsFromMine"
+          @open-capacity="openCapacity"
+        />
+        <FavoriteCapacityPage
+          v-if="!showQuickPublish && currentTab === 'mine' && capacityOpen"
+          @back="closeCapacity"
+          @open-detail="openCapacityDetail"
         />
         <ProfilePage
           v-if="!showQuickPublish && currentTab === 'mine' && profileView"
@@ -324,7 +330,7 @@
         <!-- /可滚动内容区 -->
 
         <!-- 9. 底部 Tab 栏（设计 组合585：渐变背景带 + 中央缺口玻璃带 + 4 Tab + 小简AI白猫） -->
-        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen && !profileView && !settleWaybill && !businessOverlayOpen && !(currentTab === 'ai' && !aiLegacy)" class="tab-bar" :class="{ 'tab-bar-business': currentTab === 'business' }">
+        <div v-show="!showQuickPublish && !aiConversation.open && !subPage.key && !invoiceOpen && !accountOpen && !profileView && !capacityOpen && !settleWaybill && !businessOverlayOpen && !(currentTab === 'ai' && !aiLegacy)" class="tab-bar" :class="{ 'tab-bar-business': currentTab === 'business' }">
           <img class="tab-bg-top" src="/zhiyun-mobile-assets/icons/tab-band-top.svg" alt="" />
           <img class="tab-bg-bottom" src="/zhiyun-mobile-assets/icons/tab-band-bottom.svg" alt="" />
           <img class="tab-glass" src="/zhiyun-mobile-assets/icons/tab-glass-band.svg" alt="" />
@@ -344,7 +350,8 @@
             <span class="tab-label">{{ aiTab.label }}</span>
           </button>
         </div>
-        <DriverDetailPage v-if="selectedDriver" :driver="selectedDriver" :route-name="activeRoute" :match-score="isNewShipper ? null : matchScore(selectedDriver)" :is-new-shipper="isNewShipper" @back="selectedDriver = null" @target-publish="openTargetedPublish" />
+        <DriverDetailPage v-if="selectedDriver" :driver="selectedDriver" :route-name="driverDetailFromCapacity ? '' : activeRoute" :match-score="driverDetailFromCapacity || isNewShipper ? null : matchScore(selectedDriver)" :is-new-shipper="isNewShipper" @back="closeDriverDetail" @target-publish="openTargetedPublish" />
+        <FleetDetailPage v-if="selectedFleet" :carrier="selectedFleet" @back="closeFleetDetail" @target-publish="openTargetedPublish" />
       </div>
     </div>
   </div>
@@ -366,6 +373,7 @@ import { aiBills, aiDefaultRange, aiHistoryGroups } from './ai-data.js'
 import '../../../../shared/mobile/ai/ai-pages.css'
 import QuickPublishFlow from './QuickPublishFlow.vue'
 import DriverDetailPage from './DriverDetailPage.vue'
+import FleetDetailPage from './FleetDetailPage.vue'
 import CargoSourcePage from './CargoSourcePage.vue'
 import CargoDetailPage from './CargoDetailPage.vue'
 import WaybillPage from './WaybillPage.vue'
@@ -373,7 +381,9 @@ import WaybillDetailPage from './WaybillDetailPage.vue'
 import WaybillSettlePage from './WaybillSettlePage.vue'
 import BusinessPage from './BusinessPage.vue'
 import MinePage from './MinePage.vue'
+import FavoriteCapacityPage from './FavoriteCapacityPage.vue'
 import ProfilePage from './ProfilePage.vue'
+import { syncFavoriteCapacity } from './favorite-capacity-store.js'
 import AccountPage from './AccountPage.vue'
 import InvoicePage from './InvoicePage.vue'
 import InvoiceTitlePage from './InvoiceTitlePage.vue'
@@ -434,7 +444,12 @@ function vehicleSummary(carrier) {
 }
 const showQuickPublish = ref(false)
 const selectedDriver = ref(null)
-const openCarrier = (carrier) => { selectedDriver.value = carrier }
+const selectedFleet = ref(null)
+const driverDetailFromCapacity = ref(false)
+const openCarrier = (carrier) => {
+  driverDetailFromCapacity.value = false
+  selectedDriver.value = carrier
+}
 const publishPrefill = ref(null)
 const currentTab = ref('home')
 const businessOverlayOpen = ref(false)
@@ -608,6 +623,8 @@ const invoicePageRef = ref(null)
 /* 我的账户：统一承接余额、冻结、充值提现、流水与账户管理 */
 const accountOpen = ref(false)
 const accountInitialView = ref('overview')
+/* 收藏运力：从“我的-收藏运力”进入，与司机/车队详情共用关注状态 */
+const capacityOpen = ref(false)
 /* 企业货主资料仅在当前页面会话内演示，不保存真实证照到本地存储。 */
 const profileView = ref('')
 const personalProfile = ref({
@@ -624,7 +641,34 @@ const enterpriseProfile = ref({
 const openProfile = () => {
   resetInvoice()
   closeAccount()
+  capacityOpen.value = false
   profileView.value = 'all'
+}
+const openCapacity = () => {
+  resetInvoice()
+  closeAccount()
+  profileView.value = ''
+  capacityOpen.value = true
+}
+const closeCapacity = () => {
+  capacityOpen.value = false
+}
+const openCapacityDetail = (item) => {
+  if (item.kind === 'fleet') {
+    selectedFleet.value = item.carrier
+    return
+  }
+  driverDetailFromCapacity.value = true
+  selectedDriver.value = item.carrier
+}
+const closeDriverDetail = () => {
+  selectedDriver.value = null
+  driverDetailFromCapacity.value = false
+  syncFavoriteCapacity()
+}
+const closeFleetDetail = () => {
+  selectedFleet.value = null
+  syncFavoriteCapacity()
 }
 const revokeLocalImage = (url) => {
   if (url?.startsWith('blob:')) URL.revokeObjectURL(url)
@@ -650,6 +694,7 @@ const toast = (message) => {
 }
 const openInvoice = () => {
   accountOpen.value = false
+  capacityOpen.value = false
   invoiceOpen.value = true
   invoiceDetail.value = null
   invoiceTitlesOpen.value = false
@@ -657,6 +702,7 @@ const openInvoice = () => {
 }
 const openAccount = (view = 'overview') => {
   resetInvoice()
+  capacityOpen.value = false
   accountInitialView.value = view
   accountOpen.value = true
 }
@@ -672,6 +718,7 @@ const openPaymentFromMine = () => {
 }
 const openPayment = (source) => {
   accountOpen.value = false
+  capacityOpen.value = false
   resetInvoice()
   settlementReturn.value = source
   aiEntry.value = ''
@@ -729,6 +776,8 @@ const resetInvoice = () => {
 const resetMineSubPages = () => {
   resetInvoice()
   closeAccount()
+  capacityOpen.value = false
+  selectedFleet.value = null
   profileView.value = ''
 }
 
@@ -768,6 +817,8 @@ const openTargetedPublish = (target) => {
     targetFleet: { id: target.id, name: target.name, platform: target.platform, kind: target.kind },
   }
   selectedDriver.value = null
+  selectedFleet.value = null
+  driverDetailFromCapacity.value = false
   showQuickPublish.value = true
 }
 /* 行情页“按此条件准备货源”：带入线路、货品、货量与测算单价，进入流程后仍需货主核对 */
