@@ -1,0 +1,143 @@
+/* 首页与技能工作区只作用于当前AI原型，公共TMS框架保持复用。 */
+/* 视觉基准：Pixso「首页–输入」2:5769，1920×930；这里只替换业务内容。 */
+.ai-workbench-frame .ai-view-home{background:#fff;overflow:hidden}
+.ai-home-v2{width:1000px;margin:60px 0 0 274px}
+.ai-home-v2 .ai-welcome{text-align:center;height:66.72px}
+.ai-home-v2 .ai-welcome h1{font-size:28px;font-weight:400;line-height:40px;color:#333}
+.ai-home-v2 .ai-welcome p{font-size:16px;color:#333;line-height:22px;margin-top:4.72px}
+.ai-discovery-v2{display:grid;grid-template-columns:376px 600px;gap:24px;margin-top:18.28px;align-items:stretch}
+.ai-capability-panel,.ai-results-panel{min-height:300px;border-radius:16px;padding:16px 20px 20px;min-width:0}
+.ai-capability-panel{background:linear-gradient(136deg,#dfe5fe 0%,#e9f3fe 75.13%,#d6eefc 100%)}
+.ai-results-panel{background:linear-gradient(141deg,#eeedfe 0%,#f9fafd 41.55%,#f5f7fe 82.09%,#d9edf8bd 100%)}
+.ai-capability-panel>header,.ai-results-panel>header{display:flex;align-items:center;gap:8px;height:24px;margin-bottom:12px}
+.ai-capability-panel h2,.ai-results-panel h2{font-size:16px;font-weight:400;line-height:24px;color:#333;white-space:nowrap}
+.ai-capability-list{display:flex;flex-direction:column;gap:12px}
+.ai-capability-card{display:flex;gap:12px;align-items:center;width:100%;height:68px;text-align:left;background:#fff!important;border-radius:12px;padding:12px 14px!important}
+.ai-capability-card:hover{background:#fafbff!important}
+.ai-capability-card>img{width:44px;height:44px;object-fit:contain;padding:4px;border:1px solid #eee;border-radius:13px}
+.ai-capability-card>div{flex:1;min-width:0}
+.ai-capability-card h3{font-size:14px!important;line-height:20px;display:flex;align-items:center;gap:6px;font-weight:400!important;color:#333}
+.ai-capability-card p{font-size:13px;color:#68738a;margin-top:4px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-report-entry{display:block;width:100%;text-align:left;padding:9px 0!important;border-bottom:1px solid #f0f2f7!important}
+.ai-report-entry h3{font-size:14px!important;line-height:20px;margin:0!important}
+.ai-report-entry p{font-size:12px;color:#777;line-height:18px}
+.ai-capability-panel .ai-panel-link,.ai-results-panel .ai-panel-link{margin-left:auto;color:#3a65ff;font-size:13px;white-space:nowrap}
+.ai-results-list{height:228px;border-radius:12px;background:linear-gradient(105deg,#fff 85%,#effdff);padding:10px 16px;overflow-y:auto;scrollbar-width:thin}
+.ai-all-results .ai-back{margin-bottom:14px}
+.ai-all-results>.ai-work-result-list{margin-top:16px;padding:8px 18px;border:1px solid #e4ebf7;border-radius:12px;background:#fff}
+
+.ai-view-home .ai-composer-wrap{position:absolute;left:274px;bottom:52px;width:1000px;margin:0}
+.ai-view-home .ai-composer{border-radius:20px;box-shadow:0 10px 14px #0000000d}
+.ai-view-home .ai-composer.is-expanded{min-height:198px}
+.ai-input-tool{display:flex;align-items:center;gap:7px;height:36px;border:1px solid #eee!important;padding:0 10px!important;border-radius:8px;color:#333!important;font-size:14px!important;background:#fff!important}
+.ai-input-tool:last-child{color:#3a65ff!important;border-color:#5275ff!important;background:#f3f6ff!important}
+.ai-sidebar-heading .ai-sidebar-guide{margin-left:auto;padding:3px 6px;border-radius:5px;color:#526bba;font-size:12px;white-space:nowrap}
+.ai-sidebar-heading .ai-sidebar-guide:hover{background:#eef3ff}
+.ai-sidebar-heading .ai-sidebar-guide+.ai-icon-button{margin-left:8px}
+.ai-sidebar .ai-agent-list{margin-top:10px}
+.ai-sidebar .ai-history-heading{margin-top:10px;border-top:1px solid #edf0f6;padding-top:7px;height:43px}
+.ai-sidebar-row.is-active{color:#5275ed;background:#f2f5ff}
+.ai-view-skill,.ai-view-catalog,.ai-view-results{overflow-y:auto;background:#f7f9fe}
+.ai-skill-workspace{padding:24px var(--ai-page-gutter) 45px;max-width:1180px;--el-color-primary:#5275ed}
+.ai-skill-header{display:flex;align-items:center;gap:15px;font-size:13px;color:#999;margin-bottom:23px}
+.ai-back{color:#6b86c9!important}
+.ai-skill-header small{margin-left:auto;font-size:11px;color:#adb7c8}
+.ai-skill-heading{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.ai-skill-heading>img{width:44px;height:44px}
+.ai-skill-heading h1{font-size:24px!important;font-weight:500!important}
+.ai-skill-heading p{font-size:13px;color:#999;margin-top:5px}
+.ai-skill-type{margin-left:auto;background:#edf1fc;border-radius:5px;color:#95a4c5;padding:4px 10px;font-size:12px}
+.ai-skill-steps{display:flex;align-items:center;gap:24px;color:#999;background:#edf2ff;border-radius:10px;padding:14px 20px;margin-bottom:18px;font-size:13px}
+.ai-skill-steps b{font-weight:500;color:#6381d2}
+.ai-skill-form{background:#fff;border:1px solid #e8edf8;border-radius:13px;padding:24px;max-width:900px}
+.ai-skill-fields{display:flex;flex-direction:column;gap:20px}
+.ai-skill-fields>label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#333}
+.ai-skill-fields label>small{font-size:11px;color:#999}
+.ai-skill-fields .el-select{width:250px}
+.ai-field-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:#333}
+.ai-field-title button,.ai-sample-link{color:#7696dc!important;font-size:12px!important}
+.ai-upload-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:1px dashed #c8d6f4!important;border-radius:9px;width:100%;padding:20px!important;background:#fafcff!important;color:#a0b5e0!important}
+.ai-upload-zone strong{font-size:14px;font-weight:400;color:#7f94b8}
+.ai-upload-zone>span{font-size:11px;color:#999}
+.ai-skill-file{display:flex;align-items:center;gap:9px;border:1px solid #e8edf8;border-radius:6px;padding:9px 12px;margin-top:8px;color:#8398bb;font-size:13px}
+.ai-skill-file small{margin-left:auto;color:#999;font-size:11px}
+.ai-skill-file button{font-size:19px!important;color:#999!important}
+.ai-skill-submit{border-top:1px solid #edf1f8;margin-top:22px;padding-top:18px;display:flex;align-items:center;gap:18px}
+.ai-skill-submit p{font-size:11px;color:#999;flex:1;line-height:20px}
+.ai-skill-error{color:#d97868;font-size:13px;margin-top:12px!important}
+.ai-running-card{max-width:900px;text-align:center;background:#fff;padding:35px;border:1px solid #e8eef9;border-radius:14px}
+.ai-running-symbol{display:grid;place-items:center;color:#7c9ce8;background:#eff4ff;border-radius:16px;width:65px;height:65px;margin:0 auto 18px}
+.ai-running-card h2{font-size:21px!important;color:#333}
+.ai-running-card p{color:#999;margin-top:10px;font-size:13px}
+.ai-running-card ol{list-style:none;display:flex;justify-content:center;gap:45px;margin:30px 0;padding:0;color:#999}
+.ai-running-card li{display:flex;align-items:center;gap:7px}
+.ai-running-card li>span{border:1px solid #dfe6f3;border-radius:50%;width:24px;height:24px}
+.ai-running-card li.current{color:#7999e1}.ai-running-card li.done{color:#78b3a3}
+.ai-run-input-summary{display:flex;flex-direction:column;gap:8px;padding:17px;text-align:left;background:#f7f9fd;border-radius:8px;margin:10px 0 22px;color:#333;font-size:13px}
+.ai-run-input-summary strong{font-weight:500;color:#333}
+.ai-running-card>small{display:block;font-size:11px;color:#999;margin-bottom:16px}
+.ai-report-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:18px}.ai-report-toolbar>span{margin-right:auto;color:#87a593;font-size:12px}
+.ai-full-report{background:#fff;border:1px solid #e5ebf5;border-radius:12px;padding:30px 36px;max-width:1000px;margin:auto;line-height:1.9}
+.ai-skill-workspace>.ai-full-report{margin-inline:0}
+.ai-full-report>h1{font-size:25px!important;text-align:center;margin:20px 0 10px!important;font-weight:500!important}
+.ai-report-disclaimer{background:#f5f7fc;padding:10px 14px;border-radius:6px;color:#999;font-size:12px}
+.ai-report-meta{text-align:center;color:#999;font-size:12px;margin-bottom:24px}
+.ai-full-report section{margin:22px 0}.ai-full-report h2{font-size:17px!important;margin-bottom:10px!important;font-weight:500!important;color:#333}
+.ai-full-report p{font-size:14px;color:#333;margin-top:8px!important}
+.ai-full-report table{width:100%;border-collapse:collapse;font-size:13px;color:#333}.ai-full-report th,.ai-full-report td{text-align:left;padding:11px;border:1px solid #e7edf6}.ai-full-report th{background:#f6f8fd;font-weight:500}.ai-full-report td button{color:#7294db!important}
+.ai-source-detail{background:#f6f9ff;border-radius:8px;padding:15px;margin-top:12px;color:#8397ba}.ai-source-detail small{font-size:11px;color:#999}
+.ai-capability-catalog{padding:24px var(--ai-page-gutter) 45px;max-width:1200px}.ai-capability-catalog>h1{font-size:26px!important}.ai-capability-catalog>p{color:#999;margin:9px 0 22px!important}
+.ai-catalog-filters{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px}.ai-catalog-filters button{padding:7px 18px!important;border:1px solid #e6ecf6!important;border-radius:6px;color:#999;background:#fff!important}.ai-catalog-filters button.selected{color:#6586d6;background:#eef3ff!important;border-color:#cfdefb!important}
+.ai-catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.ai-catalog-grid>button{background:#fff!important;padding:23px!important;text-align:left;border:1px solid #e4ebf7!important;border-radius:12px}
+@container(max-width:560px){.ai-catalog-grid{grid-template-columns:minmax(0,1fr)}}
+.ai-catalog-grid img{width:40px;height:40px;margin-bottom:15px}.ai-catalog-grid h2{font-size:17px!important}.ai-catalog-grid small{font-size:11px;color:#999}.ai-catalog-grid p{color:#999;font-size:13px;margin:9px 0 18px!important}.ai-catalog-grid span{color:#7898dc;font-size:12px}
+.ai-session-run{position:absolute;top:68px;left:274px;width:1000px;z-index:4;display:flex;align-items:center;gap:12px;background:#eef3ff;padding:10px 15px;border:1px solid #dfe8fa;border-radius:7px;font-size:13px;color:#8198c2}.ai-session-run button{margin-left:auto;color:#6c8dd3!important}
+.ai-session-run+.ai-chat-scroll{top:120px}
+.ai-storage-warning{position:absolute;top:114px;right:25px;background:#fff6e8;border:1px solid #f2d8a7;border-radius:7px;padding:9px 15px;color:#b79864;font-size:12px;z-index:90}
+
+/* 系统单据分析沿用对话区的成果卡与技能标签。 */
+.ai-document-skill{background:#f3f6ff;color:#3a65ff}
+.ai-document-result{max-width:640px;padding:14px 16px;border:1px solid #e2e9fb;border-radius:10px;background:#f7f9ff}
+.ai-document-result strong{display:block;font-size:16px;font-weight:500}
+.ai-document-result small{display:block;color:#737b91;margin:4px 0 8px}
+.ai-document-result p{margin:4px 0 8px;color:#444}
+.ai-document-result button{color:#3a65ff;text-align:left}
+.ai-document-result .ai-document-candidate{display:block;margin-top:8px;padding:6px 10px;border:1px solid #dfe7fb;border-radius:6px;background:#fff}
+
+/* 报告在同一会话中阅读，两侧可独立滚动。 */
+.ai-conversation-pane{position:absolute;inset:0}
+.ai-conversation-pane.has-report{right:57%}
+.has-report .ai-chat-stream{width:auto;margin:0 24px 0 70px}
+.has-report .ai-chat-scroll{bottom:142px}
+.has-report .ai-composer-wrap{left:24px;right:24px;bottom:24px;width:auto}
+.has-report .ai-response-actions{flex-wrap:wrap;gap:12px}
+.has-report .ai-message-check{left:-23px}
+.has-report .ai-response-avatar{left:-47px;width:34px;height:34px}
+.has-report .ai-response-avatar img{left:0;width:55px;height:44px}
+.has-report .ai-selection-bar{padding:0 16px;gap:10px;flex-wrap:wrap}
+
+.ai-document-reply{max-width:720px}
+.ai-document-reply h2{font-family:"PingFang SC",sans-serif;font-size:18px;font-weight:400;line-height:24px;color:#333}
+.ai-document-reply>ul{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.ai-document-reply>ul>li{display:grid;grid-template-columns:44px 1fr;gap:8px;color:#333;font-size:16px;line-height:24px}
+.ai-document-reply>ul>li>strong{color:#333;font-weight:400}
+.ai-document-reply .ai-document-link{display:flex;align-items:center;gap:12px;width:100%;margin:18px 0 12px;padding:10px 12px;border:1px solid #e0e8f8;border-radius:9px;background:#f7f9fd;text-align:left;line-height:1.4;color:#385ed2}
+.ai-document-link strong,.ai-document-link small{display:block}
+.ai-document-link strong{color:#263755;font-size:14px}
+.ai-document-link small{margin-top:3px;color:#66738c;font-size:12px}
+.ai-document-link-action{margin-left:auto;font-size:13px;white-space:nowrap}
+.ai-document-reply .document-progress{margin-bottom:0}
+
+/* 对话标题与业务范围采用正常文档流，正文独立滚动。 */
+.ai-conversation-header{flex:none;padding:18px 24px 12px;background:#f6f7fb;border-bottom:1px solid #e6eaf2}
+.ai-conversation-header h1{font-size:20px!important;font-weight:500!important;line-height:28px!important;overflow-wrap:anywhere}
+.ai-conversation-header .ai-business-context{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:8px 12px;font-size:13px;line-height:20px}
+.ai-conversation-header .ai-business-context span{min-width:0;overflow-wrap:anywhere}
+.ai-conversation-header .ai-business-context button{flex:none;margin-left:auto}
+.ai-conversation-header .ai-session-run{position:static;width:auto;margin-top:10px}
+.ai-view-chat .ai-conversation-pane{display:flex;flex-direction:column;min-height:0}
+.ai-view-chat .ai-chat-scroll{position:relative;inset:auto;flex:1;min-height:0;margin-bottom:180px;padding-top:18px}
+.ai-view-chat .has-report .ai-chat-scroll{margin-bottom:142px}
+.ai-view-home .ai-conversation-header{background:#fff}
+/* 展开早报时，首页内容在输入区上方滚动，避免覆盖能力卡片。 */
+.ai-view-home .ai-home-v2{position:absolute;left:274px;top:60px;bottom:240px;margin:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;padding-bottom:8px}

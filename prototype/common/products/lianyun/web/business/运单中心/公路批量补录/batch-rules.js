@@ -56,12 +56,13 @@ export function buildBoxContainerKeyMap(poolBoxes) {
  * @returns {string[]} 错误文案
  */
 export function validateRow(row, context) {
-  const { pool, boxOwners, nodeSequence, boxContainerKey } = context
+  const { pool, boxOwners, nodeSequence, boxContainerKey, phoneRequired } = context
   const errors = []
 
   const containerKey = String(row.containerKey || '').trim()
   if (!containerKey) errors.push('箱型必填')
   if (!String(row.driver || '').trim()) errors.push('司机必填')
+  if (phoneRequired && !String(row.phone || '').trim()) errors.push('司机手机号必填')
   if (!String(row.plateNo || '').trim()) errors.push('车牌号必填')
 
   const slots = boxSlots(row)

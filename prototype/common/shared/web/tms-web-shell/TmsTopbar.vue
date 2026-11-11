@@ -18,13 +18,15 @@ defineProps({
     ],
   },
   activeMenu: { type: String, default: 'dashboard' },
+  /** 框架规格：design（设计稿 60px）/ business（业务系统 72px） */
+  variant: { type: String, default: 'design' },
 })
 const emit = defineEmits(['menu-select'])
 const slots = useSlots()
 </script>
 
 <template>
-  <div class="tms-topbar">
+  <div class="tms-topbar" :class="`tms-topbar--${variant}`">
     <div class="tms-topbar-logo">
       <slot name="logo" />
     </div>
@@ -46,6 +48,7 @@ const slots = useSlots()
         :class="{ active: menu.key === activeMenu }"
         @click="emit('menu-select', menu.key)"
       >{{ menu.label }}</button>
+      <slot name="menu-extra" />
     </div>
 
     <div class="tms-topbar-status">
@@ -213,4 +216,140 @@ const slots = useSlots()
   align-items: center;
   gap: 12px;
 }
+
+/* =====================================================
+ * business 规格：与 AI 工作台一致的头部（72px 顶栏、灰底胶囊菜单）
+ * 只覆盖坐标与字号，不改动 design 规格
+ * ===================================================== */
+.tms-topbar--business {
+  height: 72px;
+}
+
+.tms-topbar--business .tms-topbar-logo {
+  left: 64px;
+  top: 23px;
+  width: 124px;
+  height: 29px;
+}
+
+.tms-topbar--business .tms-topbar-divider {
+  left: 216px;
+  top: 24px;
+  height: 24px;
+  background-color: #3d4050;
+}
+
+.tms-topbar--business .tms-topbar-avatar {
+  left: 244px;
+  top: 22px;
+  width: 32px;
+  height: 32px;
+}
+
+.tms-topbar--business .tms-topbar-id {
+  left: 284px;
+  top: 18px;
+  gap: 0;
+}
+
+.tms-topbar--business .tms-topbar-site {
+  font-size: 16px;
+  font-weight: 400;
+  color: #3d4050;
+  line-height: 22px;
+}
+
+.tms-topbar--business .tms-topbar-org {
+  font-size: 12px;
+  color: #91939e;
+  line-height: 16px;
+  max-width: 190px;
+}
+
+.tms-topbar--business .tms-topbar-menus {
+  left: 852px;
+  top: 18px;
+  width: auto;
+  height: 40px;
+  padding: 2px;
+  box-sizing: border-box;
+  gap: 0;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+.tms-topbar--business .tms-topbar-menu-item {
+  flex: none;
+  width: auto;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  background: transparent;
+  color: #909499;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.tms-topbar--business .tms-topbar-menu-item.active {
+  background-color: #ffffff;
+  color: #3d4050;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.tms-topbar--business .tms-topbar-menu-item:hover {
+  color: #3d4050;
+}
+
+.tms-topbar--business .tms-topbar-status {
+  left: auto;
+  right: 172px;
+  top: 18px;
+  width: auto;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tms-topbar--business .tms-topbar-date {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: auto;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3d4050;
+  line-height: 22px;
+}
+
+.tms-topbar--business .tms-topbar-weather {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: auto;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3d4050;
+  line-height: 22px;
+}
+
+.tms-topbar--business .tms-topbar-weather-icon {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tms-topbar--business .tms-topbar-actions {
+  left: auto;
+  right: 33px;
+  top: 25px;
+  height: 22px;
+  gap: 20px;
+}
+
 </style>

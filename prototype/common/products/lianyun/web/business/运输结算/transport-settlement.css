@@ -1,0 +1,1906 @@
+/* =========================================================
+ * 运输结算 3.0 —— 按真实系统页面尺寸与色值复刻（1920 × 936）
+ * 颜色、字号、间距取自 2026-11-08 真实页面计算样式
+ * ========================================================= */
+
+.ts-root {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ts-canvas {
+  width: 1920px;
+  height: 936px;
+  transform-origin: left top;
+  position: relative;
+}
+
+.ts-app {
+  position: relative;
+  width: 1920px;
+  height: 936px;
+  overflow: hidden;
+  background: linear-gradient(127deg, #edf3f8 0%, #f2f1f6 100%);
+  font-family: -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
+  font-size: 14px;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ts-logo {
+  width: 124px;
+  height: 28px;
+  display: block;
+}
+
+/* ---------------- 业务主体 ---------------- */
+.ts-body {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: #fff;
+}
+
+/* 左侧业务菜单 */
+.ts-side {
+  width: 246px;
+  height: 828px;
+  padding: 15px 0 0 20px;
+  box-sizing: border-box;
+  flex: none;
+  position: relative;
+}
+
+.ts-side-group {
+  width: 225px;
+}
+
+.ts-side-group-title {
+  width: 204px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ts-side-group-title img.ts-menu-icon {
+  width: 26px;
+  height: 16px;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
+  margin-right: 7px;
+}
+
+.ts-side-group-title span {
+  font-size: 14px;
+  color: #323234;
+  line-height: 36px;
+}
+
+.ts-side-group-title .ts-arrow {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  display: block;
+}
+
+.ts-side-child {
+  width: 202px;
+  height: 36px;
+  line-height: 36px;
+  font-size: 14px;
+  color: #323234;
+  cursor: pointer;
+  padding-left: 0;
+}
+
+.ts-side-child.active {
+  background: #f7f7f7;
+  color: #3a65ff;
+  font-weight: 700;
+}
+
+.ts-side-child:hover {
+  color: #3a65ff;
+}
+
+/* 右侧内容 */
+.ts-content {
+  width: 1605px;
+  height: 828px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  position: relative;
+  border-left: 1px solid #f0f1f4;
+}
+
+/* 顶部页签 */
+.ts-tabs {
+  height: 48px;
+  padding: 16px 16px 0;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.ts-tab {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #323234;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+
+.ts-tab:nth-child(1) {
+  width: 122px;
+}
+
+.ts-tab:nth-child(2) {
+  width: 122px;
+}
+
+.ts-tab:nth-child(3) {
+  width: 160px;
+}
+
+.ts-tab.active {
+  background: #3a65ff;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.ts-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #3a65ff;
+  transform: translateX(-50%);
+}
+
+/* 搜索区 */
+.ts-search {
+  height: 48px;
+  margin-top: 20px;
+  padding: 0 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.ts-search-fields {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ts-input-box {
+  height: 32px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ts-input-box.search {
+  width: 251px;
+  padding-left: 10px;
+}
+
+.ts-input-box.search .ts-magnifier {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-right: 8px;
+  color: #c0c4cc;
+}
+
+.ts-input-box.search input {
+  border: 0;
+  outline: none;
+  height: 30px;
+  width: 100%;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+  font-family: inherit;
+}
+
+.ts-input-box.search input::placeholder {
+  color: #c0c4cc;
+}
+
+.ts-select-field {
+  height: 32px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 8px 0 10px;
+  cursor: pointer;
+  background: #fff;
+  position: relative;
+  user-select: none;
+}
+
+.ts-select-field .ts-select-label {
+  color: #909399;
+  font-size: 14px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.ts-select-field .ts-select-value {
+  color: #333;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-select-field .ts-select-value.placeholder {
+  color: #c0c4cc;
+}
+
+.ts-select-field .ts-caret {
+  margin-left: auto;
+  padding-left: 10px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #c0c4cc;
+  flex: none;
+}
+
+.ts-select-pop {
+  position: absolute;
+  left: 0;
+  top: 34px;
+  min-width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #e4e7ed;
+  border-radius: 2px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  z-index: 40;
+  padding: 6px 0;
+}
+
+.ts-select-option {
+  height: 34px;
+  line-height: 34px;
+  padding: 0 20px;
+  font-size: 14px;
+  color: #606266;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ts-select-option:hover {
+  background: #f5f7fa;
+}
+
+.ts-select-option.selected {
+  color: #3a65ff;
+  font-weight: 700;
+}
+
+.ts-search-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 通用按钮 */
+.ts-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+  white-space: nowrap;
+  background: transparent;
+}
+
+.ts-btn.primary {
+  background: #3a65ff;
+  border-color: #3a65ff;
+  color: #fff;
+}
+
+.ts-btn.primary.is-disabled,
+.ts-btn.primary:disabled {
+  background: #99afff;
+  border-color: #99afff;
+  cursor: not-allowed;
+}
+
+.ts-btn.default {
+  background: #f7f7f7;
+  border-color: #f7f7f7;
+  color: #3d4050;
+}
+
+.ts-btn.plain {
+  color: #3d4050;
+  padding: 0 8px;
+}
+
+.ts-btn.text-link {
+  color: #3a65ff;
+  padding: 0 8px;
+}
+
+.ts-btn .caret-down {
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  opacity: 0.9;
+}
+
+.ts-icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #606266;
+  padding: 0;
+}
+
+/* 工具栏 */
+.ts-toolbar {
+  height: 32px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+  position: relative;
+}
+
+.ts-toolbar .ts-tool-gap {
+  width: 16px;
+}
+
+/* 表格 */
+.ts-table-wrap {
+  margin: 12px 16px 0;
+  height: 532px;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.ts-table {
+  width: 1710px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 14px;
+  color: #3d4050;
+}
+
+.ts-table th,
+.ts-table td {
+  border-right: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
+  box-sizing: border-box;
+  padding: 0 15px;
+  text-align: left;
+  font-weight: 400;
+}
+
+.ts-table thead th {
+  height: 37px;
+  background: #f5f5f5;
+  font-weight: 700;
+  color: #3d4050;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.ts-table thead th:first-child,
+.ts-table tbody td:first-child {
+  border-left: 1px solid #ebeef5;
+}
+
+.ts-table thead th {
+  border-top: 1px solid #ebeef5;
+}
+
+.ts-table tbody tr {
+  background: #fff;
+}
+
+.ts-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.ts-table tbody tr:hover {
+  background: #f5f7fa;
+}
+
+.ts-table tbody td {
+  height: 73px;
+  vertical-align: middle;
+}
+
+.ts-table .col-check {
+  width: 50px;
+  text-align: center;
+  padding: 0;
+}
+
+.ts-table .cell {
+  overflow: hidden;
+}
+
+.ts-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 2px;
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background: #fff;
+  position: relative;
+  cursor: pointer;
+}
+
+.ts-checkbox.checked {
+  background: #3a65ff;
+  border-color: #3a65ff;
+}
+
+.ts-checkbox.checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.ts-settle-no {
+  display: flex;
+  align-items: center;
+}
+
+.ts-settle-no img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex: none;
+}
+
+.ts-settle-no .ts-settle-text {
+  margin-left: 9px;
+  min-width: 0;
+}
+
+.ts-black-title {
+  font-size: 14px;
+  color: #3d4050;
+  line-height: 28px;
+  white-space: nowrap;
+}
+
+.ts-black-title .ts-status-inline {
+  font-size: 12px;
+  font-weight: 700;
+  padding-left: 10px;
+}
+
+.ts-status-inline.green {
+  color: #21bd88;
+}
+
+.ts-status-inline.blue {
+  color: #3a65ff;
+}
+
+.ts-grey-title {
+  font-size: 12px;
+  color: #909399;
+  line-height: 20px;
+}
+
+.ts-grey-title p {
+  margin: 0;
+}
+
+.ts-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid;
+  box-sizing: border-box;
+}
+
+.ts-tag-pill.green {
+  color: #21bd88;
+  border-color: #21bd88;
+  background: rgba(33, 189, 136, 0.1);
+}
+
+.ts-tag-pill.blue {
+  color: #165dff;
+  border-color: #165dff;
+  background: rgba(22, 93, 255, 0.1);
+}
+
+.ts-op-cell {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ts-link {
+  color: #3a65ff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ts-link:hover {
+  opacity: 0.8;
+}
+
+.ts-table .col-op {
+  width: 180px;
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  background: inherit;
+  box-shadow: -3px 0 6px rgba(0, 0, 0, 0.04);
+}
+
+.ts-table thead .col-op {
+  background: #f5f5f5;
+  z-index: 4;
+}
+
+/* 分页 */
+.ts-list-footer {
+  height: 52px;
+  padding: 16px 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.ts-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #303133;
+  font-size: 14px;
+}
+
+.ts-pagination .ts-page-size {
+  height: 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #606266;
+  cursor: pointer;
+  background: #fff;
+}
+
+.ts-page-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #606266;
+  font-size: 14px;
+}
+
+.ts-page-btn.active {
+  color: #3a65ff;
+  font-weight: 700;
+}
+
+.ts-page-jump {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #606266;
+}
+
+.ts-page-jump input {
+  width: 40px;
+  height: 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+
+.ts-select-info {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.ts-select-info b {
+  font-weight: 400;
+}
+
+/* 空状态（其他页签） */
+.ts-page-empty {
+  height: 532px;
+  margin: 12px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.ts-page-empty img {
+  width: 140px;
+  height: 132px;
+  margin-bottom: 16px;
+}
+
+/* ---------------- 新增核算单（全屏抽屉） ---------------- */
+.ts-drawer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 936px;
+  background: #fff;
+  z-index: 100;
+}
+
+.ts-drawer-head {
+  height: 23px;
+  margin: 26px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-crumb {
+  display: flex;
+  align-items: center;
+  height: 14px;
+  font-size: 14px;
+  color: #333;
+}
+
+.ts-crumb .ts-crumb-link {
+  color: #3a65ff;
+  cursor: pointer;
+}
+
+.ts-crumb .ts-crumb-sep {
+  color: #c0c4cc;
+  margin: 0 8px;
+}
+
+.ts-close {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: #606266;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ts-drawer-body {
+  padding: 0 24px;
+}
+
+.ts-section-title {
+  position: relative;
+  padding-left: 11px;
+  height: 14px;
+  line-height: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}
+
+.ts-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 14px;
+  background: #3a65ff;
+}
+
+.ts-section-title.first {
+  margin-top: 14px;
+}
+
+.ts-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 16px -15px 0;
+}
+
+.ts-form-item {
+  height: 71px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.ts-form-item.full {
+  grid-column: 1 / -1;
+}
+
+.ts-form-item label {
+  display: block;
+  height: 22px;
+  line-height: 14px;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.ts-form-item label .req {
+  color: #f5453e;
+  margin-right: 4px;
+}
+
+.ts-field {
+  height: 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+}
+
+.ts-field .ts-field-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-field .ts-field-value.placeholder {
+  color: #c0c4cc;
+}
+
+.ts-field .ts-field-caret {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #c0c4cc;
+  margin-left: 8px;
+  flex: none;
+}
+
+.ts-field.disabled {
+  background: #f5f5f5;
+  cursor: default;
+  color: #333;
+}
+
+.ts-field input[type='date'] {
+  color: transparent;
+}
+
+.ts-field input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.ts-textarea-wrap {
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  height: 40px;
+  position: relative;
+}
+
+.ts-textarea-wrap textarea {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ts-textarea-wrap textarea::placeholder {
+  color: #c0c4cc;
+}
+
+.ts-textarea-count {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-size: 12px;
+  color: #c0c4cc;
+}
+
+.ts-waybill-title {
+  margin-top: 9px;
+}
+
+.ts-waybill-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.ts-btn.small {
+  height: 28px;
+  font-size: 14px;
+  padding: 0 12px;
+}
+
+.ts-formula {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  font-size: 14px;
+  color: #333;
+}
+
+.ts-formula .ts-info-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3a65ff;
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  margin-right: 8px;
+  font-style: normal;
+  flex: none;
+}
+
+.ts-drawer-empty {
+  height: 300px;
+  margin-top: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ts-drawer-empty img {
+  width: 140px;
+  height: 132px;
+  display: block;
+}
+
+.ts-drawer-empty p {
+  margin: 8px 0 12px;
+  font-size: 16px;
+  color: #999;
+}
+
+.ts-drawer-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1920px;
+  height: 60px;
+  padding: 4px 24px 24px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ts-drawer-footer .ts-btn {
+  width: 80px;
+  padding: 0;
+}
+
+/* ---------------- 待核算运单选择（右侧覆盖） ---------------- */
+.ts-picker {
+  position: absolute;
+  left: 384px;
+  top: 0;
+  width: 1536px;
+  height: 936px;
+  background: #fff;
+  z-index: 110;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+}
+
+.ts-picker-head {
+  height: 22px;
+  padding: 20px 24px 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-picker-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+.ts-picker-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 0 32px;
+}
+
+.ts-picker-search {
+  width: 250px;
+  height: 36px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.ts-picker-search input {
+  border: 0;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333;
+  width: 100%;
+  margin-left: 8px;
+}
+
+.ts-picker-search input::placeholder {
+  color: #c0c4cc;
+}
+
+.ts-picker-group {
+  height: 36px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ts-picker-group span {
+  padding: 0 10px;
+  font-size: 14px;
+  color: #606266;
+  white-space: nowrap;
+  border-right: 1px solid #e0e0e0;
+  height: 34px;
+  line-height: 34px;
+}
+
+.ts-picker-group input {
+  border: 0;
+  outline: none;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333;
+  min-width: 0;
+  flex: 1;
+}
+
+.ts-picker-group input::placeholder {
+  color: #c0c4cc;
+}
+
+.ts-picker-group .ts-date-sep {
+  border-right: 0;
+  color: #c0c4cc;
+  padding: 0 6px;
+}
+
+.ts-picker-table {
+  width: 1470px;
+  margin: 24px 0 0 32px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 14px;
+  color: #3d4050;
+}
+
+.ts-picker-table th,
+.ts-picker-table td {
+  border-right: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
+  height: 40px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  text-align: left;
+  font-weight: 400;
+}
+
+.ts-picker-table thead th {
+  background: #f5f5f5;
+  font-weight: 700;
+  border-top: 1px solid #ebeef5;
+}
+
+.ts-picker-table thead th:first-child,
+.ts-picker-table tbody td:first-child {
+  border-left: 1px solid #ebeef5;
+  text-align: center;
+  padding: 0;
+}
+
+.ts-picker-empty {
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.ts-picker-empty img {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.ts-picker-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1536px;
+  height: 60px;
+  padding: 0 24px 0 32px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #333;
+}
+
+.ts-picker-footer .ts-footer-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ts-picker-footer .ts-btn {
+  width: 80px;
+  padding: 0;
+}
+
+/* ---------------- 顶部提示 ---------------- */
+.ts-toast {
+  position: absolute;
+  left: 50%;
+  top: 19px;
+  transform: translateX(-50%);
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 4px;
+  background: #fdf6ec;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  z-index: 220;
+  white-space: nowrap;
+}
+
+.ts-toast .ts-toast-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f5a623;
+  color: #fff;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  margin-right: 8px;
+  font-style: normal;
+}
+
+/* ---------------- 下拉菜单 ---------------- */
+.ts-dropdown {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  min-width: 132px;
+  background: #fff;
+  border: 1px solid #ebeef5;
+  border-radius: 2px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 5px 0;
+  z-index: 50;
+}
+
+.ts-dropdown-item {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 16px;
+  font-size: 14px;
+  color: #606266;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ts-dropdown-item:hover {
+  background: #f5f7fa;
+  color: #3a65ff;
+}
+
+/* ============================================================
+   结算单详情（全屏抽屉）
+   复刻对象：真实系统列表「详情」，2026-11-08 抓取
+   ============================================================ */
+.tsd-root {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  font-size: 14px;
+  color: #323234;
+}
+
+/* —— 抽屉头部 —— */
+.tsd-header {
+  flex: none;
+  height: 43px;
+  padding: 20px 20px 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.tsd-crumb {
+  display: flex;
+  align-items: center;
+  height: 23px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #333333;
+}
+
+.tsd-crumb-sep {
+  width: 10px;
+  height: 14px;
+  margin: 0 7px;
+  background: url('/transport-settlement-assets/detail-crumb.png') center / 10px 14px no-repeat;
+}
+
+.tsd-crumb-current {
+  color: #3a65ff;
+}
+
+.tsd-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 23px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.tsd-back-icon {
+  width: 20px;
+  height: 20px;
+  background: url('/transport-settlement-assets/detail-back.png') center / 20px 20px no-repeat;
+}
+
+/* —— 滚动主体 —— */
+.tsd-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 72px;
+  box-sizing: border-box;
+}
+
+.tsd-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tsd-body::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 2px;
+}
+
+/* —— 结算单概览卡 —— */
+.tsd-summary {
+  margin: 20px;
+  height: 136px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  border: 1px solid #e6ecff;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f2f7ff, #f8f9ff);
+}
+
+.tsd-summary-icon {
+  width: 58px;
+  height: 58px;
+  margin-top: -9px;
+  flex: none;
+}
+
+.tsd-summary-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 19px;
+}
+
+.tsd-summary-title {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #323234;
+}
+
+.tsd-summary-title .tsd-tag {
+  margin-left: 6px;
+}
+
+.tsd-desc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 8px;
+}
+
+.tsd-desc-item {
+  display: flex;
+  align-items: center;
+  height: 31px;
+  font-size: 14px;
+  color: #606266;
+  line-height: 21px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tsd-desc-label {
+  flex: none;
+  margin-right: 10px;
+}
+
+/* —— 主体两栏 —— */
+.tsd-main {
+  margin: 0 20px 20px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.tsd-left {
+  width: 1126px;
+  flex: none;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+
+.tsd-section-title {
+  position: relative;
+  height: 14px;
+  line-height: 14px;
+  padding-left: 11px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tsd-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 14px;
+  background: #3a65ff;
+}
+
+/* —— 计划分组卡 —— */
+.tsd-plan {
+  border: 1px solid #e0e0e0;
+}
+
+.tsd-plan-head {
+  height: 40px;
+  padding-left: 1px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  background: #f7f7f7;
+}
+
+.tsd-caret {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  cursor: pointer;
+}
+
+.tsd-caret::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 7px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #606266;
+  transition: transform 0.2s;
+}
+
+.tsd-caret.collapsed::before {
+  transform: rotate(-90deg);
+}
+
+.tsd-plan-name {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.tsd-waybill {
+  display: flex;
+  align-items: center;
+  height: 81px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.tsd-waybill > .tsd-checkbox {
+  margin-right: 10px;
+  flex: none;
+}
+
+.tsd-waybill-info {
+  display: flex;
+  align-items: center;
+  width: 320px;
+  flex: none;
+}
+
+.tsd-file-icon {
+  width: 46px;
+  height: 51px;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.tsd-file-icon img {
+  width: 22px;
+  height: 22px;
+}
+
+.tsd-waybill-text {
+  margin-left: 9px;
+  min-width: 0;
+}
+
+.tsd-waybill-no {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  font-size: 14px;
+  color: #323234;
+}
+
+.tsd-clip {
+  width: 20px;
+  height: 20px;
+}
+
+.tsd-waybill-sub {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #606266;
+  line-height: 19px;
+}
+
+.tsd-metric {
+  width: 128px;
+  flex: none;
+  text-align: left;
+}
+
+.tsd-metric-label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #999999;
+  line-height: 19px;
+}
+
+.tsd-metric-value {
+  font-size: 14px;
+  color: #606266;
+  line-height: 19px;
+}
+
+/* —— 标签 —— */
+.tsd-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 9px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tsd-tag.green {
+  color: #21bd88;
+  border-color: #21bd88;
+  background: rgba(33, 189, 136, 0.1);
+}
+
+.tsd-tag.inner {
+  height: 20px;
+  padding: 0 3px;
+  color: #3a65ff;
+  border-color: #99afff;
+  background: rgba(58, 101, 255, 0.08);
+  font-size: 12px;
+}
+
+/* —— 右侧计费面板 —— */
+.tsd-right {
+  width: 713px;
+  flex: none;
+  margin: 34px 0 0 15px;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+}
+
+.tsd-block + .tsd-block {
+  margin-top: 33px;
+}
+
+.tsd-right .tsd-section-title {
+  margin-bottom: 12px;
+}
+
+.tsd-desc-columns {
+  display: flex;
+  margin-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+
+.tsd-desc-columns .tsd-desc-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.tsd-desc-columns.single .tsd-desc-item {
+  flex: none;
+  width: 100%;
+}
+
+.tsd-desc-columns.single .tsd-desc-label {
+  width: 50px;
+}
+
+.tsd-empty {
+  height: 123px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tsd-empty img {
+  width: 100px;
+  height: 100px;
+}
+
+.tsd-empty p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 23px;
+  color: #909399;
+}
+
+.tsd-sub-title {
+  margin: 0;
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  color: #323234;
+}
+
+.tsd-sub-title + .tsd-table-wrap {
+  margin-top: 12px;
+}
+
+.tsd-sub-title.other {
+  margin-top: 20px;
+}
+
+.tsd-table-wrap {
+  width: 671px;
+  margin-left: 10px;
+  overflow-x: auto;
+  border: 1px solid #ebeef5;
+  border-bottom: 0;
+  box-sizing: border-box;
+}
+
+.tsd-table-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tsd-table-wrap::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+
+.tsd-table {
+  width: 790px;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.tsd-table th {
+  height: 44px;
+  padding: 0;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-right: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
+  font-size: 14px;
+  font-weight: 400;
+  color: #606266;
+  text-align: center;
+}
+
+.tsd-table th:last-child,
+.tsd-table td:last-child {
+  border-right: 0;
+}
+
+.tsd-table td {
+  height: 67px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-right: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
+  font-size: 14px;
+  color: #606266;
+  text-align: center;
+  line-height: 20px;
+  word-break: break-all;
+}
+
+.tsd-table tfoot td {
+  height: 45px;
+  background: #fafafa;
+}
+
+.tsd-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #3a65ff;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* —— 底部操作条 —— */
+.tsd-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  padding: 20px 18px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #ffffff;
+}
+
+.tsd-footer .ts-btn.plain {
+  width: 80px;
+}
+
+/* 补贴费用空态紧贴标题（真实系统无额外间距） */
+.tsd-right .tsd-section-title + .tsd-empty {
+  margin-top: -12px;
+}
+
+/* 概览卡第二行备注占两列 */
+.tsd-desc-item.wide {
+  grid-column: span 2;
+}
+
+
+/* 顶部栏 slot 内的图片尺寸（避免原始大图撑破头部） */
+.tms-topbar--business .tms-topbar-avatar img,
+.tms-topbar--business .tms-topbar-weather-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tms-topbar--business .tms-topbar-actions > img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+/* ---------------- 嵌入 AI 工作台：新建运输核算单 ---------------- */
+.ts-drawer.is-embedded {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ececec;
+}
+
+.ts-drawer.is-embedded .ts-drawer-head { flex: none; margin: 14px 20px 0; }
+
+.ts-drawer.is-embedded .ts-drawer-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 20px 12px;
+  scrollbar-width: thin;
+}
+
+.ts-drawer.is-embedded .ts-form { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 12px -15px 0; }
+.ts-drawer.is-embedded .ts-form-item { height: 66px; }
+
+.ts-drawer.is-embedded .ts-drawer-footer {
+  position: static;
+  width: auto;
+  height: 56px;
+  flex: none;
+  padding: 0 20px;
+  border-top: 1px solid #f0f2f6;
+}
+
+.ts-drawer.is-embedded .ts-drawer-empty { height: 220px; }
+
+.ts-drawer-table-wrap {
+  margin: 12px 0 8px;
+  overflow-x: auto;
+  border: 1px solid #ebeef5;
+  border-radius: 2px;
+}
+
+.ts-draft-table { width: 100%; min-width: 1798px; font-size: 12px; }
+
+.ts-drawer.is-embedded .ts-table th { height: 37px; padding: 0 10px; white-space: nowrap; }
+.ts-drawer.is-embedded .ts-table td { height: 38px; padding: 0 10px; }
+
+.ts-draft-table .ts-num { text-align: right; font-variant-numeric: tabular-nums; }
+.ts-draft-table .ts-center { text-align: center; }
+.ts-draft-table .ts-strong { font-weight: 600; }
+
+/* 计费计划条 */
+.ts-plan-strip {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #3d4050;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.ts-plan-title { flex: none; font-weight: 600; margin-right: 24px; }
+.ts-plan-field { flex: none; display: flex; align-items: center; margin-right: 18px; color: #4a4f5c; }
+.ts-plan-field i {
+  font-style: normal;
+  margin-left: 6px;
+  width: 110px;
+  height: 26px;
+  line-height: 24px;
+  padding: 0 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background: #fff;
+  color: #3d4050;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-plan-formula { flex: none; color: #3a65ff; }
+
+/* 运单分组行 */
+.ts-draft-waybill td { height: auto !important; padding: 0 12px !important; background: #fff; border-top: 1px dashed #e6ebf5; }
+.ts-wb-line { display: flex; align-items: center; gap: 8px; height: 40px; }
+.ts-wb-title { color: #4a4f5c; }
+.ts-wb-links { margin-left: auto; }
+.ts-wb-links button { color: #3a65ff; font-size: 12px; margin-left: 12px; }
+.ts-draft-waybill .ts-flag-tag { margin-left: 6px; }
+
+/* 运单明细行 */
+.ts-draft-detail td { height: 71px !important; vertical-align: middle; }
+.ts-draft-detail.ts-draft-diff td { background: #fffdf6; }
+.ts-draft-detail.ts-draft-diff:hover td { background: #fff9ea; }
+.ts-draft-detail .ts-merged { padding: 0 !important; }
+.ts-merged-flex { display: flex; height: 71px; }
+.ts-sub {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  padding: 0 10px;
+  border-right: 1px solid #f0f2f7;
+  flex: none;
+}
+.ts-sub:last-child { border-right: 0; }
+.ts-sub-goods { width: 250px; flex-direction: row; align-items: center; }
+.ts-sub-places { width: 180px; }
+.ts-sub-num { width: 120px; }
+.ts-sub-line { line-height: 18px; color: #3d4050; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ts-pair { display: flex; align-items: center; gap: 4px; }
+.ts-pair label { flex: none; color: #8a8f99; font-size: 11px; }
+.ts-pair i {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  line-height: 20px;
+  padding: 0 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background: #fff;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+.ts-pair i:empty { background: #fafafa; }
+.ts-goods-box { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border: 1px solid #3a65ff; border-radius: 2px; flex: none; }
+.ts-place-tag { display: inline-block; width: 16px; height: 16px; line-height: 16px; text-align: center; border-radius: 2px; font-size: 10px; margin-right: 6px; }
+.ts-place-tag.load { color: #3a65ff; background: #eef3ff; }
+.ts-place-tag.unload { color: #d46b08; background: #fff4e5; }
+.ts-loss, .ts-mileage { line-height: 18px; color: #4a4f5c; font-variant-numeric: tabular-nums; }
+.ts-fee { color: #4a4f5c; white-space: nowrap; }
+.ts-fee button { color: #3a65ff; font-size: 12px; margin-left: 4px; }
+
+/* 合计行 */
+.ts-draft-total td {
+  height: 56px !important;
+  background: #fafafa;
+  font-weight: 600;
+  text-align: center;
+  padding: 6px 10px !important;
+  line-height: 18px;
+}
+.ts-draft-total td:first-child { text-align: left; }
+
+.ts-flag-tag {
+  display: inline-block;
+  padding: 0 6px;
+  line-height: 20px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #b26a00;
+  background: #fff4e5;
+  white-space: nowrap;
+}
+
+.ts-flag-tag.muted { color: #8a8f99; background: #f2f3f5; }
+.ts-draft-summary { margin: 0 0 12px; font-size: 12px; color: #8a8f99; }

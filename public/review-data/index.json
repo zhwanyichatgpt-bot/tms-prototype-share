@@ -2,6 +2,21 @@
   "schemaVersion": 1,
   "versions": [
     {
+      "id": "TMS-COMMON-202611-01",
+      "name": "至小简 AI 工作台与业务协同 V1.0",
+      "scope": "common",
+      "projectId": null,
+      "baseVersionId": null,
+      "targetReleaseDate": "2026-11-11",
+      "status": "in_progress",
+      "revision": "R0",
+      "publishedAt": "2026-11-11T11:51:05.906Z",
+      "lastPublishedAt": "2026-11-11T11:51:05.906Z",
+      "completedAt": null,
+      "createdAt": "2026-11-11T11:51:05.885Z",
+      "updatedAt": "2026-11-11T11:51:05.906Z"
+    },
+    {
       "id": "TMS-COMMON-202609-01",
       "name": "至简联运、至简智运APP升级-V2.0.0.2版本",
       "scope": "common",
@@ -92,5 +107,5 @@
       "updatedAt": "2026-08-22T09:09:20.278Z"
     }
   ],
-  "updatedAt": "2026-11-07T08:35:08.000Z"
+  "updatedAt": "2026-11-11T11:51:05.906Z"
 }

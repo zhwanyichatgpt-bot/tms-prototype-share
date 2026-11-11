@@ -1,0 +1,116 @@
+/* 沿用既有至小简框架及Pixso规范快照，样式限定在补录工作区。 */
+.ai-supplement {
+  --el-color-primary: #3a65ff;
+  --el-color-success: #21bd88;
+  --el-color-warning: #faad14;
+  --el-color-danger: #e64b4b;
+  --el-border-radius-base: 4px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  color: #333;
+  background: #fff;
+  font: 14px/22px 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.ais-body { display: grid; grid-template-columns: minmax(0, 1fr); flex: 1; min-height: 0; }
+.ais-conversation { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #f6f7fb; }
+.ai-view-chat .ai-supplement .ai-chat-scroll { margin-bottom: 0; }
+.ais-chat { padding: 16px 24px; }
+.ais-message { margin: 16px 0; line-height: 24px; }
+.ais-muted { color: #777; font-size: 12px; line-height: 18px; }
+.ais-candidates { display: flex; flex-direction: column; align-items: stretch; width: 100%; gap: 8px; margin: 8px 0 16px; }
+.ais-candidate { display: flex; flex-direction: column; padding: 8px 12px; border: 1px solid #dcdfe6; background: #fff; border-radius: 4px; }
+.ais-candidate:has(input:checked) { border-color: #3a65ff; }
+.ais-candidate .el-radio { margin: 0; height: auto; min-height: 32px; white-space: normal; }
+.ais-candidate .el-radio__label { white-space: normal; overflow-wrap: anywhere; line-height: 20px; }
+.ais-candidate > span, .ais-candidate > small { margin-left: 22px; }
+.ais-candidate > small { color: #777; font-size: 12px; line-height: 18px; margin-top: 4px; }
+.ais-choice-list { gap: 12px; margin: 16px 0 12px; }
+.ais-choice-list .ais-choice { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 76px; padding: 14px; border: 1px solid #e2e5ea; border-radius: 8px; background: #fff; color: #3d4050; font: inherit; line-height: 20px; text-align: left; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.ais-choice-list .ais-choice:is(:hover, :focus-visible) { border-color: #bccbff; background: #f4f6ff; color: #3a65ff; }
+.ais-choice-list .ais-choice:focus-visible { outline: 2px solid #3a65ff; outline-offset: 2px; }
+.ais-choice-list .ais-choice:active { border-color: #3a65ff; background: #edf1ff; }
+.ais-choice-badge { display: flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 8px; background: #f4f6ff; color: #3a65ff; font-size: 13px; font-weight: 700; }
+.ais-choice-copy { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.ais-choice-copy strong { font-size: 14px; font-weight: 700; line-height: 22px; }
+.ais-choice-copy small { color: #808080; font-size: 12px; line-height: 20px; }
+.ais-choice-arrow { display: flex; align-items: center; justify-content: center; flex: none; width: 24px; height: 24px; border-radius: 50%; color: #3a65ff; background: #f4f6ff; }
+.ais-choice:is(:hover, :focus-visible) .ais-choice-arrow { color: #fff; background: #3a65ff; }
+.ais-choice-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.ais-choice-actions .el-button + .el-button { margin-left: 0; }
+.ais-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.ais-buttons .el-button + .el-button { margin-left: 0; }
+.ais-task-candidate .el-radio strong { font-size: 14px; }
+.ais-task-meta { margin-left: 22px; color: #666; font-size: 12px; line-height: 20px; }
+.ais-evidence-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; margin: 8px 0; font-size: 14px; line-height: 22px; }
+.ais-evidence-grid > div { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.ais-evidence-grid dt { flex: none; color: #666; }
+.ais-evidence-grid dd { margin: 0; overflow-wrap: anywhere; }
+.ais-task-candidate .ais-evidence-grid { margin-left: 22px; }
+.ais-trip-evidence .ais-evidence-grid { padding: 8px 12px; background: #f6f7fb; border-radius: 4px; }
+.ais-trip-hint { margin: 8px 0 12px; }
+.ais-notice { margin-top: 16px; }
+.ais-history { margin-top: 24px; color: #777; font-size: 12px; line-height: 18px; }
+.ais-history summary { cursor: pointer; }
+.ais-history p { padding-left: 12px; border-left: 2px solid #dcdfe6; }
+.ai-supplement .ai-composer-wrap { position: static; width: calc(100% - 64px); max-width: 1040px; padding: 12px 0 24px; margin: 0 auto; flex: none; }
+.ai-supplement .ai-composer { width: 100%; min-height: 120px; }
+.ai-supplement .ai-composer textarea { width: 100%; font-size: 14px; }
+.ai-supplement .ai-composer-options { display: none; }
+.ai-supplement .el-table { --el-table-header-bg-color: #f6f6f7; --el-table-header-text-color: #333; --el-table-text-color: #333; font-size: 14px; }
+.ai-supplement .el-table .el-table__cell { padding: 7px 0; }
+.ai-supplement .el-table th.el-table__cell { font-weight: 700; }
+.ais-deferred { padding: 8px 16px; background: #fffbe6; display: flex; gap: 16px; align-items: center; }
+.ais-result-item { border-bottom: 1px solid #ececec; padding: 12px 0; }
+/* 对话选项按容器宽度排版。 */
+@container (max-width: 900px) {
+  .ais-chat { padding: 16px; }
+}
+@container (max-width: 660px) {
+  .ais-evidence-grid { grid-template-columns: 1fr; }
+}
+
+/* 补录对话在工作台与业务页共用，滚动区由当前容器分配高度。 */
+.ai-supplement .ai-chat-scroll { position: relative; inset: auto; flex: 1; min-height: 0; margin: 0; }
+.ai-supplement .ai-chat-stream { width: auto; max-width: 1040px; margin: 0 auto; padding: 0 32px 24px 84px; }
+.zx-chat:has(.ai-supplement-business) { display: flex; flex-direction: column; width: min(600px, calc(100vw - 64px)); height: min(760px, calc(100vh - 190px)); max-height: none; overflow: hidden; border-radius: 8px; }
+.zx-chat:has(.ai-supplement-business) > header { flex: none; padding: 12px 16px; color: #3d4050; background: #fff; border-bottom: 1px solid #e2e5ea; }
+.zx-chat:has(.ai-supplement-business) > .zx-context { flex: none; padding: 8px 16px; }
+.ai-supplement-business { flex: 1; min-height: 0; }
+.ai-supplement-business * { box-sizing: border-box; }
+.ai-supplement-business button { font-family: inherit; cursor: pointer; }
+.ai-supplement-business .ais-body { min-height: 0; }
+.ai-supplement-business .ai-chat-stream { padding: 0 16px 20px 48px; }
+.ai-supplement-business .ai-message-row { margin: 12px 0; }
+.ai-supplement-business .ai-response-avatar { width: 28px; height: 28px; left: -36px; top: 6px; }
+.ai-supplement-business .ai-response-avatar img { width: 44px; height: 35px; top: -6px; }
+.ai-supplement-business .ai-user-message { max-width: 94%; padding: 8px 12px; font-size: 14px; line-height: 22px; border-radius: 8px; }
+.ai-supplement-business .ai-user-message p { margin: 0; }
+.ai-supplement-business .ai-assistant-message { padding: 12px; border-radius: 8px; font-size: 14px; line-height: 22px; overflow-wrap: anywhere; }
+.ai-supplement-business .ais-message { margin: 0 0 12px; }
+.ai-supplement-business .ai-composer-wrap { width: auto; margin: 0 12px; padding: 8px 0 12px; }
+.ai-supplement-business form.ai-composer { min-height: 84px; padding: 8px 10px; row-gap: 6px; border-radius: 8px; }
+.ai-supplement-business .ai-composer textarea { height: 32px; min-height: 32px; font-size: 14px; line-height: 22px; }
+.ai-supplement-business .ai-composer.is-expanded textarea { height: 76px; }
+.ai-supplement-business .ai-composer-footer { min-height: 28px; }
+.ai-supplement-business .ai-send-button { width: 28px; height: 28px; }
+.ai-supplement-business .ais-evidence-grid { grid-template-columns: 1fr; }
+.ai-supplement-business .ais-trip-evidence { overflow-x: auto; }
+.ai-supplement-business .ais-trip-evidence .el-table { font-size: 12px; }
+.ai-supplement-business .ais-chat { padding: 16px; }
+.ai-supplement-business .ais-message { margin-bottom: 16px; }
+.ai-supplement-business .ais-trip-evidence .ais-evidence-grid { gap: 8px; margin: 0 0 12px; padding: 12px; border-radius: 6px; background: #f6f7fb; }
+.ai-supplement-business .ais-evidence-grid dt { min-width: 64px; color: #808080; font-size: 12px; }
+.ai-supplement-business .ais-evidence-grid dd { color: #3d4050; font-size: 13px; }
+.ai-supplement-business .ais-trip-hint { margin: 12px 0 16px; font-size: 12px; line-height: 20px; }
+.ai-supplement-business .ais-choice-actions .el-button { height: 28px; color: #808080; font-size: 12px; }
+.ai-supplement-business .ais-choice-actions .el-button:hover { color: #3a65ff; }
+.ai-supplement-business .ai-composer-actions { width: 100%; justify-content: space-between; }
+.ai-supplement-business .ai-composer-actions > button { border: 0; }
+.ai-supplement-business .ai-composer-actions .ai-icon-button { width: 28px; height: 28px; padding: 0; border-radius: 6px; background: transparent; color: #808080; }
+.ai-supplement-business .ai-composer-actions .ai-icon-button:hover { color: #3a65ff; background: #f4f6ff; }
+
+.ais-group-switch { display: flex; gap: 16px; padding: 0 16px; border-bottom: 1px solid #e2e5ea; flex: none; }
+.ais-group-switch button { padding: 10px 0; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #808080; }
+.ais-group-switch button.active { color: #3a65ff; border-bottom-color: #3a65ff; }

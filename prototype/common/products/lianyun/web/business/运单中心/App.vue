@@ -3,7 +3,7 @@
  * 运单中心 —— 页面主入口
  * 职责：组合公共系统框架 + 运单中心业务组件 + 页面级状态，不承载重复运单结构。
  */
-import { computed, ref } from 'vue'
+import { inject, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { openPrototypePage } from '../../../../../../../src/review/prototype-navigation.mjs'
 import { TmsWebShell } from '../../../../../shared/web/tms-web-shell/index.js'
@@ -35,7 +35,7 @@ const tabs = [
   { key: 'transportTemplate', label: '运输模板' },
   { key: 'containerDispatch', label: '集装箱调度3.0' },
 ]
-const shellScale = 0.85
+const shellScale = 1
 
 const navItems = [
   {
@@ -101,10 +101,11 @@ function onFilterReset() {
 
 const router = useRouter()
 const route = useRoute()
+const availablePageKeys = inject('prototypePageKeys', null)
 
 function onAction({ row, action }) {
   if (action === '详情') {
-    if (route.params.versionId) {
+    if (route.params.versionId && !availablePageKeys?.value.has('waybillCenterDetail')) {
       detailNotice.value = '运单详情未纳入本次评审版本'
       return
     }
@@ -119,7 +120,12 @@ function onSupplement() {
     water: 'waterContainerWaybillSupplement',
     rail: 'railContainerWaybillSupplement',
   }
-  openPrototypePage(router, route, pageByMode[transportMode.value])
+  const target = pageByMode[transportMode.value]
+  if (route.params.versionId && !availablePageKeys?.value.has(target)) {
+    detailNotice.value = '该补录页面未纳入本次评审版本'
+    return
+  }
+  openPrototypePage(router, route, target)
 }
 
 /* 批量补录本期仅开放公路，其余运输方式保持置灰。 */
@@ -137,9 +143,10 @@ function onMenuSelect() {}
 </script>
 
 <template>
-  <div class="waybill-center-viewport">
+  <div class="waybill-center-viewport wc-standard">
     <div class="waybill-center-stage">
       <TmsWebShell
+        variant="business"
         :site-name="siteName"
         :organization-name="organizationName"
         :date-text="dateText"
@@ -219,10 +226,10 @@ function onMenuSelect() {}
 
             <div class="wc-toolbar">
               <button type="button" class="wc-toolbar-btn">导出</button>
-              <button type="button" class="wc-toolbar-btn" @click="onSupplement">运单补录</button>
+              <button type="button" class="wc-toolbar-btn is-primary" @click="onSupplement">运单补录</button>
               <button
                 type="button"
-                class="wc-toolbar-btn"
+                class="wc-toolbar-btn is-secondary"
                 :disabled="transportMode !== 'truck'"
                 :title="transportMode === 'truck' ? '按运输任务批量补录车次' : '批量补录暂未开放，本期仅支持公路运输'"
                 @click="onBatchSupplement"

@@ -2,6 +2,8 @@ import { markRaw } from 'vue'
 import { pageCatalog } from '../review/page-catalog.mjs'
 
 const rawPageDefinitions = [
+  { key: 'systemWorkbench', name: '系统首页', module: '业务端 · 系统工作台', icon: '▦', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/系统首页/App.vue') },
+  { key: 'aiWorkbench', name: 'AI工作台', module: '业务端 · 至小简AI工作台', icon: '✨', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/AI工作台/App.vue') },
   { key: 'inquiryHall', name: '货源大厅', module: '门户端 · 货源大厅', icon: '🏷️', status: 'ready', channel: 'portal', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/portal/货源大厅/App.vue') },
   { key: 'waybillQuote', name: '承运商报价', module: '门户端 · 承运商报价', icon: '💰', status: 'ready', channel: 'portal', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/portal/承运商报价/App.vue') },
   { key: 'waybillManage', name: '托运单管理', module: '业务端 · 列表 + 创建', icon: '📦', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/托运单管理/App.vue') },
@@ -9,6 +11,7 @@ const rawPageDefinitions = [
   { key: 'multimodalManage', name: '联运计划管理', module: '业务端 · 联运计划管理', icon: '📋', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/联运计划管理/App.vue') },
   { key: 'multimodalCreate', name: '创建联运计划', module: '联运计划管理 · 创建联运计划', icon: '🚢', status: 'ready', channel: 'business', platform: 'web', parentKey: 'multimodalManage', load: () => import('../prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/App.vue') },
   { key: 'shipperSettlement', name: '货主结算', module: '业务端 · 货主结算', icon: '🧾', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/货主结算/App.vue') },
+  { key: 'transportSettlement', name: '运输结算', module: '业务端 · 运输结算', icon: '🧮', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/运输结算/App.vue') },
   { key: 'containerPlan', name: '集装箱计划创建', module: '业务端 · 集装箱计划创建', icon: '🚂', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/集装箱计划创建/App.vue') },
   { key: 'transportChannel', name: '运输通道管理', module: '业务端 · 运输通道管理', icon: '🛣️', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/运输通道管理/App.vue') },
   { key: 'transportTask', name: '运输任务', module: '业务端 · 运输任务流转', icon: '🚚', status: 'ready', channel: 'business', platform: 'web', load: () => import('../prototype/common/products/lianyun/web/business/运输任务/App.vue') },

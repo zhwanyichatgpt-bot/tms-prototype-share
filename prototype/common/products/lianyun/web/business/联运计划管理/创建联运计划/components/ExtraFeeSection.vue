@@ -28,7 +28,7 @@ function removeRow(i) {
         <tbody>
           <tr v-for="(row, i) in rows" :key="row.id">
             <td class="col-seq">{{ i + 1 }}</td>
-            <td><input v-model="row.name" class="cp-cell-input" type="text" placeholder="请输入" /></td>
+            <td><input v-if="!row.name || row.editing" v-model="row.name" class="cp-cell-input" type="text" placeholder="请输入" @blur="row.editing=false" /><span v-else @dblclick="row.editing=true">{{ row.name }}</span></td>
             <td><input v-model="row.amount" class="cp-cell-input" type="number" placeholder="请输入" /></td>
             <td>
               <button type="button" class="cp-attach-btn">＋ 附件</button>

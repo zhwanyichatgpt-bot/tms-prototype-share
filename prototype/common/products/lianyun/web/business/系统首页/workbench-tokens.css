@@ -1,0 +1,41 @@
+.system-home {
+  /* Pixso 外部组件规范：Typography、Color、Spacing & Grid、Charts。 */
+  --wb-font-text: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+  --wb-font-number: "Workbench Douyin Sans", "PingFang SC", Arial, sans-serif;
+  --wb-body: 14px;
+  --wb-body-line: 22px;
+  --wb-small: 12px;
+  --wb-small-line: 18px;
+  --wb-caption: 10px;
+  --wb-caption-line: 18px;
+  --wb-title-sm: 16px;
+  --wb-title-sm-line: 24px;
+  --wb-number: 20px;
+  --wb-number-line: 28px;
+  --wb-text: #333333;
+  --wb-text-secondary: #808080;
+  --wb-surface: #ffffff;
+  --wb-panel: #f2f2f2;
+  --wb-subtle: #f6f7f9;
+  --wb-border: #d4d8e0;
+  --wb-border-subtle: #e2e5ea;
+  --wb-primary: #3a65ff;
+  --wb-success: #21bd88;
+  --wb-danger: #e64b4b;
+  --wb-chart-axis: #757b87;
+  --wb-chart-grid: #e2e5ea;
+  --wb-chart-1: #3a65ff;
+  --wb-chart-2: #1977ff;
+  --wb-chart-3: #21bd88;
+  --wb-chart-4: #faad14;
+  --wb-chart-5: #fa8714;
+  --wb-radius-sm: 4px;
+  --wb-radius-md: 6px;
+  --wb-radius-lg: 8px;
+  --wb-radius-pill: 999px;
+  --wb-space-1: 4px;
+  --wb-space-2: 8px;
+  --wb-space-3: 12px;
+  --wb-space-4: 16px;
+  --wb-space-6: 24px;
+}

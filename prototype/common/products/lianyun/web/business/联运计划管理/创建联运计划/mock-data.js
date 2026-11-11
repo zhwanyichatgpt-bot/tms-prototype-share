@@ -23,7 +23,7 @@ export const cargoRows = [
   { id: 'c1', name: '玉米', volume: 100, weight: 50, quantity: 1000, unitPrice: 1000, totalPrice: 10000, package: '-', remark: '备注备注信息备注信息' },
   { id: 'c2', name: '小麦', volume: 100, weight: 50, quantity: 1000, unitPrice: 1000, totalPrice: 10000, package: '-', remark: '-' },
   // 设计稿第三行为编辑态
-  { id: 'c3', name: '玉米', volume: 0, weight: 0, quantity: 0, unitPrice: 0, totalPrice: 0, package: '', remark: '', editing: true },
+  { id: 'c3', name: '玉米', volume: '', weight: '', quantity: 0, unitPrice: '', totalPrice: '', package: '', remark: '', editing: true },
 ]
 
 // 报价方案（运输通道 / 通道路线）
@@ -67,7 +67,7 @@ export const routeSegments = [
     ],
   },
   {
-    id: 'seg2', name: '路程2', mode: '水运', cargoType: '集装箱', planName: '', createPlan: true, createPlan: true,
+    id: 'seg2', name: '路程2', mode: '水运', cargoType: '集装箱', planName: '', createPlan: true,
     nodes: [
       routeNode('装', '富邦总部大楼', [{ text: '普通集装 | 20GP*30' }, { text: '普通集装 | 20GP*30' }]),
       routeNode('卸', '富邦总部大楼', [{ text: '普通集装 | 20GP*30' }, { text: '普通集装 | 25GP*30' }]),

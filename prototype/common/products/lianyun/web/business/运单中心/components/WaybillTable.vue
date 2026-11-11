@@ -36,7 +36,7 @@ const modeMeta = computed(() => transportModeMeta[props.transportMode] || transp
       <span class="wc-col wc-col-no">
         <span class="wc-no-icon" aria-hidden="true" />
           <span class="wc-no-text">
-            <span class="wc-no-value">{{ row.waybillNo }}</span>
+            <span class="wc-no-value" :title="row.waybillNo">{{ row.waybillNo }}</span>
             <span class="wc-no-time">接单：{{ row.acceptTime }}</span>
           </span>
       </span>
@@ -56,14 +56,14 @@ const modeMeta = computed(() => transportModeMeta[props.transportMode] || transp
       <span class="wc-col wc-col-resource">
         <span class="wc-resource-icon" :class="`is-${row.transportMode}`" aria-hidden="true" />
         <span class="wc-resource-text">
-          <span class="wc-resource-primary">{{ row.resource.primary }}</span>
-          <span class="wc-resource-secondary">{{ row.resource.secondary }}</span>
+          <span class="wc-resource-primary" :title="row.resource.primary">{{ row.resource.primary }}</span>
+          <span class="wc-resource-secondary" :title="row.resource.secondary">{{ row.resource.secondary }}</span>
         </span>
       </span>
       <span class="wc-col wc-col-stops">
         <span v-for="(stop, i) in row.stops" :key="i" class="wc-stop">
           <i class="wc-stop-dot" :class="i === 0 ? 'start' : 'end'" aria-hidden="true" />
-          <span class="wc-stop-name">{{ stop.name }}</span>
+          <span class="wc-stop-name" :title="stop.name">{{ stop.name }}</span>
           <span class="wc-stop-time">{{ stop.time }}</span>
         </span>
       </span>

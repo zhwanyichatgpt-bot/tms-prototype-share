@@ -1,13 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import { routeCombos, routeCards, routeSegments as mockSegments } from '../mock-data'
+import { routeSegments as mockSegments } from '../mock-data'
 
-const activeCombo = ref('铁水')
 const channel = ref('')
 const channelRoute = ref('')
-const segments = ref(mockSegments.map(s => ({ ...s })))
-const activeRouteCard = ref('r1')
-const routeTab = ref('transport') // transport=运输路线查询 history=历史线路查询
+const segments = ref(structuredClone(mockSegments))
 
 function addNode(seg) {
   seg.nodes.push({ type: '', address: '富邦总部大楼', isSite: true, workTime: '', contact: '', phone: '', cargoItems: [{ text: '粮食丨玉米 | 30吨丨30m³' }] })
@@ -15,20 +12,15 @@ function addNode(seg) {
 function removeNode(seg, i) {
   if (seg.nodes.length > 1) seg.nodes.splice(i, 1)
 }
-function addSegment() {
-  const n = segments.value.length + 1
-  segments.value.push({
-    id: `seg${Date.now()}`, name: `路程${n}`, mode: '汽运', cargoType: '散杂货', planName: '',
-    nodes: [
-      { type: '装', address: '富邦总部大楼', isSite: true, workTime: '', contact: '', phone: '', cargoItems: [{ text: '粮食丨玉米 | 30吨丨30m³' }] },
-      { type: '卸', address: '富邦总部大楼', isSite: true, workTime: '', contact: '', phone: '', cargoItems: [{ text: '粮食丨玉米 | 30吨丨30m³' }] },
-    ],
-    operations: [],
-  })
+function applyRoute(route) {
+  const goods = segments.value[0]?.nodes[0]?.cargoItems || []
+  const points = route.via ? [route.from, route.via, route.to] : [route.from, route.to]
+  segments.value = route.modes.map((mode, index) => ({
+    id: crypto.randomUUID(), name: `路程${index + 1}`, mode, cargoType: route.cargoType || '散杂货', planName: '', operations: [],
+    nodes: ['装', '卸'].map((type, nodeIndex) => ({ type, address: points[index + nodeIndex], isSite: false, workTime: '', contact: '', phone: '', cargoItems: goods.map(item => ({ ...item })) })),
+  }))
 }
-function useRoute(card) {
-  activeRouteCard.value = card.id
-}
+defineExpose({ segments, applyRoute })
 </script>
 
 <template>
@@ -54,7 +46,6 @@ function useRoute(card) {
         <span class="cp-caret">▾</span>
       </div>
     </div>
-
     <div class="cp-route-body">
       <!-- 左：路程段 -->
       <div class="cp-segments">
@@ -76,26 +67,27 @@ function useRoute(card) {
               </select>
               <span class="cp-caret">▾</span>
             </div>
-            <div class="cp-input-wrap cp-seg-plan">
+            <div v-if="!seg.createPlan" class="cp-input-wrap cp-seg-plan">
               <input v-model="seg.planName" class="cp-input" type="text" placeholder="计划名称" />
               <span class="cp-seg-plan-ic">✕</span>
             </div>
-            <button type="button" class="cp-icon-btn" title="设置">⚙</button>
+            <details v-if="seg.createPlan" class="cp-plan-menu" open><summary>创建计划<span class="cp-caret">▾</span></summary><div><button type="button" @click="seg.createPlan=false">运输计划</button><button type="button" @click="seg.createPlan=false">托运计划</button></div></details>
+            <button type="button" class="cp-icon-btn" aria-label="路程设置" />
           </div>
 
           <!-- 节点 -->
           <div class="cp-nodes">
             <div v-for="(node, ni) in seg.nodes" :key="ni" class="cp-node">
-              <button type="button" class="cp-node-del" @click="removeNode(seg, ni)">✕</button>
+              <button type="button" class="cp-node-del" aria-label="删除运输节点" @click="removeNode(seg, ni)" />
               <span class="cp-node-badge" :class="node.type === '卸' ? 'unload' : 'load'">{{ node.type || '·' }}</span>
-              <span class="cp-node-swap">⇄</span>
+              <span class="cp-node-swap" aria-hidden="true" />
               <div class="cp-node-addr">
                 <span class="cp-node-addr-text">{{ node.address }}</span>
                 <span v-if="node.isSite" class="cp-site-tag">网点</span>
               </div>
-              <span class="cp-node-add">⊕</span>
+              <span class="cp-node-add" aria-hidden="true" />
               <div class="cp-input-wrap cp-node-time">
-                <span class="cp-cal-ic">📅</span>
+                <span class="cp-cal-ic" aria-hidden="true" />
                 <input v-model="node.workTime" class="cp-input" type="text" placeholder="请选择作业时间" />
                 <span class="cp-caret">▾</span>
               </div>
@@ -115,23 +107,23 @@ function useRoute(card) {
             <div class="cp-op-head">
               <span class="cp-op-name">{{ op.name }}</span>
               <span class="cp-caret">▾</span>
-              <button type="button" class="cp-node-del">✕</button>
+              <button type="button" class="cp-node-del" aria-label="删除作业" @click="seg.operations.splice(seg.operations.indexOf(op),1)" />
             </div>
             <div v-for="(node, ni) in op.nodes" :key="ni" class="cp-node cp-op-node">
-              <button type="button" class="cp-node-del">✕</button>
+              <button type="button" class="cp-node-del" aria-label="删除作业节点" @click="op.nodes.splice(ni,1)" />
               <div class="cp-node-addr">
                 <span class="cp-node-addr-text">{{ node.address }}</span>
                 <span v-if="node.isSite" class="cp-site-tag">网点</span>
               </div>
-              <span class="cp-node-swap">⇄</span>
-              <span class="cp-node-add">⊕</span>
+              <span class="cp-node-swap" aria-hidden="true" />
+              <span class="cp-node-add" aria-hidden="true" />
               <div class="cp-input-wrap cp-node-time">
-                <span class="cp-cal-ic">📅</span>
-                <input class="cp-input" type="text" placeholder="请选择预计作业时间" />
+                <span class="cp-cal-ic" aria-hidden="true" />
+                <input v-model="node.workTime" class="cp-input" type="text" placeholder="请选择预计作业时间" />
                 <span class="cp-caret">▾</span>
               </div>
-              <div class="cp-input-wrap cp-node-contact"><input class="cp-input" type="text" placeholder="作业联系人" /></div>
-              <div class="cp-input-wrap cp-node-phone"><input class="cp-input" type="text" placeholder="联系电话" /></div>
+              <div class="cp-input-wrap cp-node-contact"><input v-model="node.contact" class="cp-input" type="text" placeholder="作业联系人" /></div>
+              <div class="cp-input-wrap cp-node-phone"><input v-model="node.phone" class="cp-input" type="text" placeholder="联系电话" /></div>
               <div class="cp-node-cargo">
                 <span class="cp-node-cargo-label">货物</span>
                 <span v-for="(c, ci) in node.cargoItems" :key="ci" class="cp-cargo-chip">{{ c.text }}</span>
@@ -141,51 +133,11 @@ function useRoute(card) {
           </div>
         </div>
 
-        <button type="button" class="cp-add-seg-btn" @click="addSegment">添加路程</button>
+
       </div>
 
       <!-- 右：运输路线查询 -->
-      <aside class="cp-route-aside">
-        <div class="cp-aside-tabs">
-          <button type="button" class="cp-aside-tab" :class="{ on: routeTab === 'transport' }" @click="routeTab = 'transport'">运输路线查询</button>
-          <button type="button" class="cp-aside-tab" :class="{ on: routeTab === 'history' }" @click="routeTab = 'history'">历史线路查询</button>
-        </div>
-        <div class="cp-aside-endpoints">
-          <span class="cp-endpoint">始发地</span>
-          <span class="cp-endpoint-swap">⇄</span>
-          <span class="cp-endpoint">目的地</span>
-        </div>
-        <div class="cp-combo-tabs">
-          <button
-            v-for="c in routeCombos" :key="c" type="button"
-            class="cp-combo-tab" :class="{ on: activeCombo === c }"
-            @click="activeCombo = c"
-          >{{ c }}</button>
-        </div>
 
-        <div class="cp-route-cards">
-          <div
-            v-for="card in routeCards" :key="card.id"
-            class="cp-route-card" :class="{ on: activeRouteCard === card.id }"
-          >
-            <div class="cp-rc-head">
-              <span class="cp-rc-city">{{ card.from }}</span>
-              <span class="cp-rc-arrow">→</span>
-              <span class="cp-rc-city">{{ card.to }}</span>
-              <span class="cp-rc-price">￥{{ card.price }}<em>{{ card.unit }}</em></span>
-            </div>
-            <div class="cp-rc-tags">
-              <span v-for="t in card.tags" :key="t" class="cp-rc-tag">{{ t }}</span>
-            </div>
-            <div class="cp-rc-row"><span class="cp-rc-label">{{ card.departLabel }}</span><span>{{ card.depart }}</span></div>
-            <div class="cp-rc-row"><span class="cp-rc-label">{{ card.cargoLabel }}</span><span>{{ card.cargo }}</span></div>
-            <div class="cp-rc-foot">
-              <button type="button" class="cp-rc-more">更多信息</button>
-              <button type="button" class="cp-rc-use" @click="useRoute(card)">使用路线</button>
-            </div>
-          </div>
-        </div>
-      </aside>
     </div>
   </section>
 </template>

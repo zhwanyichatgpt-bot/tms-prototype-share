@@ -116,3 +116,15 @@ test('未纳入当前版本的页面不能通过版本路由进入', () => {
     (error) => error.code === 'PAGE_NOT_IN_VERSION',
   )
 })
+
+
+test('进入版本内至小简时保留业务对话上下文', () => {
+  const router = makeRouterSpy()
+  const state = { systemHomeAi: { draft: '分析这张托运单', context: { kind: 'detail', id: 'WT01' } } }
+  openPrototypePage(router, { params: { versionId: 'TMS-COMMON-202611-01' } }, 'aiWorkbench', {}, state)
+  assert.deepEqual(router.calls[0], {
+    name: 'versionPrototype',
+    params: { versionId: 'TMS-COMMON-202611-01', pageKey: 'aiWorkbench' },
+    query: {}, state,
+  })
+})

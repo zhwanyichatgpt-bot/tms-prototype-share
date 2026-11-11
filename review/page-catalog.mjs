@@ -1,14 +1,27 @@
 export const pageCatalog = Object.freeze([
   {
+    key: 'systemWorkbench', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: '至小简系统首页入口；研发版本 TMS-COMMON-202611-01', remark: '依据现网工作台还原首页 16 张看板，支持至小简入口方案对照。业务数据为本地模拟。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/至小简入口/', 'prototype/common/products/lianyun/web/business/系统首页/', 'prototype/common/products/lianyun/web/business/AI工作台/account-demo.js', 'prototype/common/products/lianyun/web/business/托运单管理/详情/assets/xiaojian-inspector-poses.png', 'prototype/common/shared/web/tms-web-shell/', 'public/ai-workbench-assets/', 'public/lianyun-mobile-assets/scheme-detail/DouyinSansBold.ttf', 'public/zhiyun-mobile-assets/invoice/empty-box.png'],
+    evidencePaths: ['discussions/common/products/lianyun/2026-11-08_至小简_入口体验与业务价值阶段讨论.md'],
+  },
+  {
+    key: 'aiWorkbench', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS3.0 AI工作台；研发版本 TMS-COMMON-202611-01', remark: '依据Pixso画板复刻并合并重复状态，以单入口串联提问、智能体、历史搜索、收藏、分享及反馈。本地Mock演示，纳入至小简 AI 工作台与业务协同 V1.0 首次交付。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/至小简入口/', 'prototype/common/products/lianyun/web/business/AI工作台/', 'prototype/common/products/lianyun/web/business/运单中心/公路批量补录/App.vue', 'prototype/common/products/lianyun/web/business/运单中心/公路批量补录/mock-data.js', 'prototype/common/products/lianyun/web/business/运单中心/公路批量补录/batch-rules.js', 'prototype/common/products/lianyun/web/business/运单中心/公路批量补录/road-batch-supplement.css', 'prototype/common/products/lianyun/web/business/运单中心/公路集装箱补录/road-container-supplement.css', 'prototype/common/products/lianyun/web/business/托运单管理/详情/assets/xiaojian-inspector-poses.png', 'prototype/common/shared/web/ai-document-analysis/', 'prototype/common/shared/web/tms-web-shell/', 'public/ai-workbench-assets/', 'public/tms-web-shell-assets/Vector_26_176.svg', 'prototype/common/products/lianyun/web/business/运输结算/components/CreateDrawer.vue', 'prototype/common/products/lianyun/web/business/运输结算/components/WaybillPicker.vue', 'prototype/common/products/lianyun/web/business/运输结算/mock-data.js', 'prototype/common/products/lianyun/web/business/运输结算/transport-settlement.css', 'public/transport-settlement-assets/'],
+    evidencePaths: ['prd/common/products/lianyun/运单中心_AI辅助公路集装箱运单补录_PRD_v1.md', 'prd/common/products/lianyun/公路结算_AI辅助结算_PRD_v1.md', 'discussions/common/products/lianyun/2026-11-09_公路结算_对账规则与双向发起讨论.md', 'prototype/common/products/lianyun/web/business/AI工作台/原型说明.md', 'context/project-rules/Pixso设计稿还原与原型源码治理规范.md'],
+  },
+  {
     key: 'waybillManage', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用托运单管理', remark: '用于验证托运单列表、详情和创建流程。',
-    sourcePaths: ["prototype/common/products/lianyun/web/business/托运单管理/App.vue", "prototype/common/products/lianyun/web/business/托运单管理/BulkWaybillCreate.vue", "prototype/common/products/lianyun/web/business/托运单管理/mock-data.js"], evidencePaths: ['prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md'],
+    sourcePaths: ['prototype/common/products/lianyun/web/business/至小简入口/', "prototype/common/products/lianyun/web/business/托运单管理/App.vue", "prototype/common/products/lianyun/web/business/托运单管理/BulkWaybillCreate.vue", "prototype/common/products/lianyun/web/business/托运单管理/mock-data.js"], evidencePaths: ['prd/common/products/lianyun/托运单管理_托运单创建与管理_PRD_v1.md'],
   },
   {
     key: 'waybillDetail', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用托运单管理', remark: '用于验证待执行状态下的托运单详情、费用、货品与联运路段北斗轨迹。',
-    sourcePaths: [
+    sourcePaths: ['prototype/common/products/lianyun/web/business/至小简入口/',
       'prototype/common/products/lianyun/web/business/托运单管理/详情/',
+      'prototype/common/shared/web/ai-document-analysis/',
       'prototype/common/shared/web/tms-web-shell/',
     ],
     evidencePaths: [
@@ -29,7 +42,7 @@ export const pageCatalog = Object.freeze([
   {
     key: 'multimodalCreate', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用多式联运', remark: '用于验证多式联运计划的创建和路线组织。',
-    sourcePaths: ['prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/'], evidencePaths: ['prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md'],
+    sourcePaths: ['prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/', 'public/multimodal-plan-assets/', 'prototype/common/products/lianyun/web/business/至小简入口/', 'prototype/common/shared/web/tms-web-shell/', 'prototype/common/shared/web/ai-answer/', 'public/ai-workbench-assets/', 'prototype/common/products/lianyun/web/business/托运单管理/详情/assets/xiaojian-inspector-poses.png'], evidencePaths: ['prd/common/products/lianyun/多式联运_创建联运计划_PRD_v1.md'],
   },
   {
     key: 'multimodalManage', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
@@ -37,6 +50,7 @@ export const pageCatalog = Object.freeze([
     sourcePaths: [
       'prototype/common/products/lianyun/web/business/联运计划管理/App.vue',
       'prototype/common/products/lianyun/web/business/联运计划管理/mock-data.js',
+      'prototype/common/products/lianyun/web/business/联运计划管理/创建联运计划/created-plan-store.js',
     ],
     evidencePaths: ['prd/common/products/lianyun/多式联运_联运计划管理页_PRD_v1.md'],
   },
@@ -44,6 +58,11 @@ export const pageCatalog = Object.freeze([
     key: 'shipperSettlement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用货主结算', remark: '用于验证货主结算单据、费用和确认流程。',
     sourcePaths: ['prototype/common/products/lianyun/web/business/货主结算/'], evidencePaths: ['prd/common/products/lianyun/多式联运_货主结算_PRD_v1.md'],
+  },
+  {
+    key: 'transportSettlement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: 'TMS 通用运输结算', remark: '按真实系统运输结算3.0复刻，用于验证结算单列表、新建核算单及后续 AI 对账衔接。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运输结算/'], evidencePaths: ['discussions/common/products/lianyun/AI能力/公路结算对账_AI任务卡_v1.md'],
   },
   {
     key: 'containerPlan', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
@@ -98,7 +117,7 @@ export const pageCatalog = Object.freeze([
   {
     key: 'roadBatchWaybillSupplement', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: 'TMS 通用运单中心公路运单批量补录', remark: '用于验证锁定单个运输任务后按台账批量补录公路集装箱车次：模板下载、Excel 导入与粘贴、按任务路段派生列、全量校验与一次生成多张运单。',
-    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/公路批量补录/'],
+    sourcePaths: ['prototype/common/products/lianyun/web/business/运单中心/公路批量补录/', 'prototype/common/products/lianyun/web/business/至小简入口/', 'prototype/common/products/lianyun/web/business/AI工作台/supplement-handoff.js', 'prototype/common/products/lianyun/web/business/AI工作台/supplement-flow.js', 'prototype/common/products/lianyun/web/business/AI工作台/supplement-flow.css', 'prototype/common/products/lianyun/web/business/AI工作台/ai-workbench.css', 'prototype/common/products/lianyun/web/business/AI工作台/components/', 'prototype/common/products/lianyun/web/business/AI工作台/mock-data.js', 'prototype/common/products/lianyun/web/business/托运单管理/详情/assets/xiaojian-inspector-poses.png', 'prototype/common/shared/web/ai-answer/', 'prototype/common/shared/web/ai-document-analysis/', 'public/ai-workbench-assets/'],
     evidencePaths: ['prd/common/products/lianyun/运单中心_公水铁集装箱运单补录_PRD_v1.md'],
   },
   {

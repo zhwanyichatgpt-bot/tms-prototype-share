@@ -1,0 +1,57 @@
+.tms-ai-workbench-chrome {
+  --tms-topbar-height: 72px;
+  --tms-workbar-height: 36px;
+}
+.tms-ai-workbench-chrome .tms-topbar-logo{left:64px;top:23px;width:124px;height:29px}
+.tms-ai-workbench-chrome .tms-ai-brand-logo{width:124px;height:29px}
+.tms-ai-workbench-chrome .tms-topbar-divider{left:216px;top:24px}
+.tms-ai-workbench-chrome .tms-topbar-avatar{left:244px;top:22px;width:32px;height:32px}
+.tms-ai-workbench-chrome .tms-topbar-avatar img{width:32px;height:32px;border-radius:50%}
+.tms-ai-workbench-chrome .tms-topbar-id{left:284px;top:18px;gap:0}
+.tms-ai-workbench-chrome .tms-topbar-site{font-weight:400;line-height:22px}
+.tms-ai-workbench-chrome .tms-topbar-org{max-width:190px;line-height:16px}
+.tms-ai-workbench-chrome .tms-topbar-menus{left:852px;top:18px;width:322px;height:40px;padding:2px}
+.tms-ai-workbench-chrome .tms-topbar-menu-item{font-weight:400;flex-basis:106px;width:106px}
+.tms-ai-workbench-chrome .tms-topbar-status{top:28px;pointer-events:none}
+.tms-ai-workbench-chrome .tms-topbar-date,.tms-ai-workbench-chrome .tms-topbar-weather{font-weight:400;line-height:22px}
+.tms-ai-workbench-chrome .tms-topbar-weather-icon{top:-6px}
+.tms-ai-workbench-chrome .tms-topbar-weather-icon img{position:absolute;left:-9px;top:-8px;width:55px;height:47px}
+.tms-ai-workbench-chrome .tms-topbar-actions{left:1794px;top:27px;gap:20px}
+.tms-ai-workbench-chrome .tms-topbar-actions>img{width:22px;height:22px}
+.tms-ai-workbench-chrome .tms-ai-header-divider{position:absolute;left:-24px;top:0;width:1px;height:22px;background:#3d4050}
+.tms-ai-workbench-chrome .tms-workbar{left:64px;width:1856px}
+.tms-ai-workbench-chrome .tms-workbar-home-text{font-weight:400}
+.tms-ai-workbench-chrome .tms-workbar-tabs{left:153px;width:auto;display:flex;gap:6px}
+.tms-ai-workbench-chrome .tms-workbar-tab{width:156px;background:#fff;border-radius:8px 8px 0 0}
+.tms-ai-workbench-chrome .tms-workbar-tab-label{left:24px;top:7px;font-size:14px;font-weight:400}
+.tms-ai-workbench-chrome .tms-workbar-tab-close{left:auto;right:16px}
+
+.tms-ai-workbench-chrome-fluid .tms-topbar { width: 100%; }
+.tms-ai-workbench-chrome-fluid .tms-topbar-menus { left: max(394px, calc(50% - 108px)); }
+.tms-ai-workbench-chrome-fluid .tms-topbar-status { left: auto; right: 172px; width: auto; display: flex; gap: 12px; }
+.tms-ai-workbench-chrome-fluid :is(.tms-topbar-date, .tms-topbar-weather, .tms-topbar-weather-icon) { position: relative; inset: auto; width: auto; }
+.tms-ai-workbench-chrome-fluid .tms-topbar-weather-icon { width: 36px; }
+.tms-ai-workbench-chrome-fluid .tms-topbar-actions { left: auto; right: 33px; }
+.tms-ai-workbench-chrome-fluid .tms-workbar { width: calc(100% - 64px); }
+.tms-ai-workbench-chrome-fluid .tms-workbar-home { isolation: isolate; color: var(--tms-text-primary); }
+.tms-ai-workbench-chrome-fluid .tms-workbar-home::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 -48px;
+  width: 145px;
+  border-radius: 12px 8px 0 0;
+  background: #fff;
+}
+
+@container (max-width: 1420px) {
+  .tms-ai-workbench-chrome-fluid .tms-topbar-menus { left: max(390px, calc(50% - 140px)); }
+  .tms-ai-workbench-chrome-fluid .tms-topbar-date { display: none; }
+}
+
+@container (max-width: 1120px) {
+  .tms-ai-workbench-chrome-fluid .tms-topbar-menus { left: 390px; width: auto; }
+  .tms-ai-workbench-chrome-fluid .tms-topbar-menu-item { flex-basis: 88px; width: 88px; font-size: 12px; }
+  .tms-ai-workbench-chrome-fluid .tms-topbar-status { right: 138px; }
+  .tms-ai-workbench-chrome-fluid .tms-topbar-actions { right: 20px; gap: 12px; }
+}

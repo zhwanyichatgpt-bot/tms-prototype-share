@@ -16,7 +16,7 @@ function addFile() {
     <h3 class="cp-section-title">附件</h3>
     <div class="cp-upload">
       <div v-for="(f, i) in files" :key="f.id" class="cp-file">
-        <span class="cp-file-icon">📄</span>
+        <span class="cp-file-icon" aria-hidden="true" />
         <div class="cp-file-info">
           <span class="cp-file-name">{{ f.name }}</span>
           <div v-if="f.progress !== null" class="cp-file-progress">

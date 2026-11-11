@@ -1,0 +1,188 @@
+.zx-account-dialog.el-dialog {
+  --account-primary: var(--tms-brand-blue, #3a65ff);
+  --account-primary-border: #bccbff;
+  --account-primary-fill: #f4f6ff;
+  --account-text: var(--tms-text-primary, #3d4050);
+  --account-secondary: #808080;
+  --account-divider: #e2e5ea;
+  --account-fill: #f6f7f9;
+  --account-warning: #faad14;
+  --el-color-primary: var(--account-primary);
+  --el-color-primary-light-3: #6183ff;
+  --el-color-primary-light-5: #bccbff;
+  --el-color-primary-light-7: #bccbff;
+  --el-color-primary-light-8: #e2e5ea;
+  --el-color-primary-light-9: var(--account-primary-fill);
+  --el-color-primary-dark-2: #345be6;
+  --el-text-color-primary: var(--account-text);
+  --el-text-color-regular: var(--account-text);
+  --el-border-color: #d4d8e0;
+  --el-border-radius-base: 4px;
+  --el-fill-color-light: var(--account-fill);
+  --el-dialog-padding-primary: 0px;
+  --el-dialog-border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(31,35,41,.16);
+  padding: 0;
+  color: var(--account-text);
+  font: 14px/22px 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.zx-account-dialog > .el-dialog__header {
+  margin: 0;
+  padding: 16px 50px 16px 24px;
+  border-bottom: 1px solid var(--account-divider);
+}
+.zx-account-dialog .el-dialog__title { font-size: 16px; font-weight: 700; color: var(--account-text); }
+.zx-account-dialog .el-dialog__headerbtn { width: 54px; height: 56px; }
+.zx-account-dialog > .el-dialog__body { padding: 0; color: inherit; }
+.zx-account-dialog .el-button { height: 32px; font-size: 14px; }
+.zx-account-dialog .el-button--small { height: 28px; font-size: 12px; }
+.zx-account-dialog :is(button, input):focus-visible {
+  outline: 2px solid var(--account-primary);
+  outline-offset: 2px;
+}
+.zx-account-dialog * { box-sizing: border-box; }
+.zx-account-dialog h2, .zx-account-dialog h3, .zx-account-dialog p { margin: 0; }
+.zx-account-dialog h2 { font-size: 20px; line-height: 28px; font-weight: 700; }
+.zx-account-dialog h3 { font-size: 16px; line-height: 24px; font-weight: 700; }
+.zx-account-layout {
+  display: grid;
+  grid-template-columns: 174px minmax(0, 1fr);
+  height: min(690px, calc(100dvh - 90px));
+  min-height: 0;
+}
+.zx-account-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px;
+  border-right: 1px solid var(--account-divider);
+  background: var(--account-fill);
+}
+.zx-account-profile { display: flex; align-items: center; gap: 8px; padding: 4px 8px 16px; }
+.zx-account-profile strong, .zx-account-profile small { display: block; white-space: nowrap; }
+.zx-account-profile small { margin-top: 2px; color: var(--account-secondary); }
+.zx-account-icon { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 6px; background: var(--account-primary-fill); color: var(--account-primary); }
+.zx-account-nav button, .zx-account-tabs button, .zx-calendar-heading button, .zx-account-link {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.zx-account-nav button { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+.zx-account-nav button:hover, .zx-account-nav button[aria-current] { background: var(--account-primary-fill); color: var(--account-primary); }
+.zx-account-nav button[aria-current] { font-weight: 700; }
+.zx-account-content { min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 24px; }
+.zx-account-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.zx-account-heading p { margin-top: 5px; color: var(--account-secondary); }
+.zx-account-link { padding: 2px 0; color: var(--account-primary); }
+.zx-account-link:hover { text-decoration: underline; }
+.zx-account-heading > button { white-space: nowrap; }
+.zx-account-card { padding: 16px; border: 1px solid var(--account-divider); border-radius: 8px; background: #fff; }
+.zx-balance-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 20px; background: var(--account-primary-fill); border-color: var(--account-primary-border); }
+.zx-balance-card .zx-account-number { margin-top: 4px; font-size: 36px; line-height: 44px; }
+.zx-balance-stats { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 0; }
+.zx-balance-stats > div { padding-left: 16px; border-left: 1px solid var(--account-divider); }
+.zx-balance-stats dt { color: var(--account-secondary); font-size: 12px; }
+.zx-balance-stats dd { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.zx-credit-section { margin: 20px 0 24px; }
+.zx-credit-section .zx-credit-groups { margin: 8px 0 0; }
+.zx-credit-card h4 { margin: 0; font-size: 14px; line-height: 22px; }
+.zx-credit-card .el-progress { margin: 8px 0 4px; }
+.zx-credit-usage { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; color: var(--account-secondary); font-size: 12px; }
+.zx-credit-card .zx-credit-timing { margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--account-divider); font-size: 12px; }
+.zx-account-number { color: var(--account-primary); font-size: 24px; line-height: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.zx-account-number small { font-size: 12px; font-weight: 400; }
+.zx-account-muted { color: var(--account-secondary); }
+.zx-account-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
+.zx-account-pair .zx-account-number { margin-top: 4px; }
+.zx-account-tabs { display: flex; flex-wrap: wrap; gap: 3px 14px; border-bottom: 1px solid var(--account-divider); margin-bottom: 14px; }
+.zx-account-tabs button { padding: 7px 3px 9px; border-bottom: 2px solid transparent; color: var(--account-secondary); white-space: nowrap; }
+.zx-account-tabs button:hover, .zx-account-tabs button[aria-pressed="true"] { color: var(--account-primary); }
+.zx-account-tabs button[aria-pressed="true"] { border-color: var(--account-primary); font-weight: 700; }
+.zx-account-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.zx-account-table th, .zx-account-table td { height: 37px; padding: 4px 12px; border-bottom: 1px solid var(--account-divider); text-align: left; }
+.zx-account-table thead th { color: var(--account-text); font-weight: 700; background: var(--account-fill); }
+.zx-account-table tbody tr:hover { background: var(--account-fill); }
+.zx-account-table tbody th { font-weight: 400; }
+.zx-account-table :is(td, th):last-child { text-align: right; }
+.zx-points { color: var(--account-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+.zx-sign-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(215px, 1fr); gap: 12px; align-items: start; }
+.zx-calendar-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.zx-calendar-heading button { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: var(--account-fill); font-size: 20px; line-height: 1; }
+.zx-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.zx-calendar-week { padding: 4px; text-align: center; color: var(--account-secondary); font-size: 12px; }
+.zx-calendar-day { display: grid; align-content: center; justify-items: center; gap: 1px; min-height: 44px; border-radius: 4px; background: var(--account-fill); color: var(--account-text); font-size: 12px; }
+.zx-calendar-day small { font-size: 10px; white-space: nowrap; color: var(--account-secondary); }
+.zx-calendar-day.is-signed { background: var(--account-primary-fill); color: var(--account-primary); }
+.zx-calendar-day.is-signed small { color: var(--account-primary); }
+.zx-calendar-day.is-today { box-shadow: inset 0 0 0 1px var(--account-primary); }
+.zx-calendar-day.is-blank { background: transparent; }
+.zx-sign-right { display: grid; gap: 12px; }
+.zx-sign-stats { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.zx-sign-stats span { color: var(--account-secondary); font-size: 12px; }
+.zx-sign-summary > button { width: 100%; }
+.zx-reward-row { display: grid; grid-template-columns: 1fr 44px 62px; align-items: center; gap: 4px; min-height: 43px; border-top: 1px solid var(--account-divider); font-size: 13px; }
+.zx-reward-row:first-of-type { margin-top: 8px; }
+.zx-reward-row > :last-child { justify-self: end; white-space: nowrap; }
+.zx-task-overview { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--account-primary-fill); }
+.zx-task-overview p { margin: 4px 0 9px; color: var(--account-secondary); font-size: 12px; }
+.zx-task-progress { margin-bottom: 6px; color: var(--account-secondary); }
+.zx-task-progress strong { font-size: 16px; color: var(--account-primary); }
+.zx-countdown { display: grid; gap: 4px; justify-items: start; padding: 8px 12px; border: 1px solid var(--account-warning); border-radius: 6px; background: #fff9ed; color: var(--account-text); font-size: 12px; }
+.zx-countdown > div, .zx-countdown > div > span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.zx-countdown strong { font-size: 20px; line-height: 1; color: var(--account-text); font-variant-numeric: tabular-nums; }
+.zx-task-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 12px 0; text-align: center; }
+.zx-task-metrics > div + div { border-left: 1px solid var(--account-divider); }
+.zx-task-metrics strong, .zx-task-metrics span { display: block; }
+.zx-task-metrics strong { color: var(--account-primary); font-size: 20px; }
+.zx-task-metrics span { color: var(--account-secondary); font-size: 12px; }
+.zx-task-toolbar { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.zx-task-toolbar .zx-account-tabs { flex: 1; }
+.zx-plan-cards { gap: 16px; margin: 0 0 24px; }
+.zx-plan-card { display: grid; grid-template-rows: auto auto 1fr auto; padding: 20px; }
+.zx-plan-title { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 32px; }
+.zx-plan-title > span { padding: 2px 8px; border-radius: 4px; background: var(--account-fill); color: var(--account-text); font-size: 12px; line-height: 20px; white-space: nowrap; }
+.zx-plan-allowance { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+.zx-plan-allowance strong { font-family: 'Douyin Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 36px; line-height: 44px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.zx-plan-allowance span, .zx-plan-card p { color: var(--account-secondary); font-size: 13px; line-height: 22px; }
+.zx-plan-highlights { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--account-divider); list-style: none; font-size: 13px; }
+.zx-plan-highlights li { display: flex; align-items: center; gap: 4px; }
+.zx-plan-highlights svg { flex: none; }
+.zx-paid-plan { border-color: var(--account-primary-border); background: var(--account-primary-fill); }
+.zx-paid-plan .zx-plan-allowance strong, .zx-paid-plan .zx-plan-highlights svg { color: var(--account-primary); }
+.zx-account-dialog .zx-plan-comparison-title { margin-bottom: 8px; }
+.zx-plan-comparison { overflow: hidden; border: 1px solid var(--account-divider); border-radius: 8px; }
+.zx-plan-comparison .zx-account-table :is(th, td):first-child { width: 40%; }
+.zx-plan-comparison .zx-account-table :is(th, td):not(:first-child) { width: 30%; text-align: center; }
+.zx-plan-comparison .zx-account-table :is(th, td):last-child { background: var(--account-primary-fill); }
+.zx-plan-comparison .zx-account-table tbody tr:last-child > * { border-bottom: 0; }
+.zx-plan-comparison .is-unavailable { color: var(--account-secondary); }
+.zx-plan-comparison .is-different { font-weight: 700; }
+.zx-account-detail h2 { margin: 10px 0 16px; }
+.zx-account-detail .zx-account-card p { margin: 5px 0 8px; }
+.zx-account-feedback {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  max-width: calc(100% - 40px);
+  padding: 8px 12px;
+  border: 1px solid var(--account-primary-border);
+  border-radius: 8px;
+  background: var(--account-primary-fill);
+  color: var(--account-primary);
+  box-shadow: 0 4px 12px rgba(31,35,41,.12);
+}
+@media (max-width: 760px) {
+  .zx-account-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .zx-account-nav { flex-direction: row; padding: 7px 10px; border: 0; border-bottom: 1px solid var(--account-divider); overflow-x: auto; }
+  .zx-account-profile { display: none; }
+  .zx-account-content { padding: 16px; }
+  .zx-sign-grid, .zx-task-overview { grid-template-columns: minmax(0, 1fr); }
+  .zx-account-table th, .zx-account-table td { padding: 8px 4px; overflow-wrap: anywhere; }
+}
+@media (max-width: 520px) {
+  .zx-plan-cards, .zx-credit-groups { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .zx-plan-card { padding: 16px; }
+}

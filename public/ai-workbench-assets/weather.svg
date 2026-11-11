@@ -1,0 +1,84 @@
+<svg viewBox="0 0 54.687 46.7368" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="54.687012" height="46.736816" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_21">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="14" />
+		</g>
+		<filter id="filter_21" width="54.687012" height="46.736816" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_21)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="4.66666651" result="effect_layerBlur_1" />
+		</filter>
+		<linearGradient id="paint_linear_159" x1="32.3305054" x2="32.3305054" y1="8.03320312" y2="21.0233192" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_160" x1="42.3883057" x2="42.3883057" y1="13.9250488" y2="15.1311035" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_161" x1="22.6011963" x2="22.6011963" y1="13.9250488" y2="15.1311035" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_162" x1="32.4951172" x2="32.4951172" y1="2.14135742" y2="6.69067383" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_163" x1="32.4951172" x2="32.4951172" y1="21.9274902" y2="26.4768066" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_164" x1="39.4902344" x2="39.4902344" y1="5.74780273" y2="9.31787109" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_165" x1="25.4992676" x2="25.4992676" y1="19.7390137" y2="23.3088379" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_166" x1="25.7185059" x2="25.7185059" y1="5.74780273" y2="9.31787109" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<linearGradient id="paint_linear_167" x1="39.7097168" x2="39.7097168" y1="19.7390137" y2="23.3088379" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(251,188,70)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(254,138,5)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_22">
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.629999995" stdDeviation="18" />
+		</g>
+		<filter id="filter_22" width="27.803711" height="19.521240" x="7.758301" y="8.884033" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_22)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_14" transform="matrix(1,0,0,1,-7.7583,-8.88403)">
+			<path d="M29.5588 14.2625C28.6196 11.1511 25.7336 8.88403 22.3159 8.88403C18.9248 8.88403 16.0549 11.115 15.0933 14.189L14.7197 14.189C10.875 14.189 7.7583 17.3057 7.7583 21.1504L7.7583 21.4438C7.7583 25.2888 10.875 28.4053 14.7197 28.4053L28.6008 28.4053C32.4456 28.4053 35.562 25.2888 35.562 21.4438L35.562 21.1504C35.562 17.6313 32.9492 14.7307 29.5588 14.2625Z" fill="rgb(255,255,255)" fill-rule="nonzero" />
+		</clipPath>
+	</defs>
+	<g id="组 25391">
+		<g opacity="0.400000006" filter="url(#filter_21)">
+			<path id="路径 17953" d="M34.9246 19.1621C34.0232 16.1758 31.2529 13.9998 27.9727 13.9998C24.7178 13.9998 21.9634 16.1411 21.0403 19.0916L20.6816 19.0916C16.9915 19.0916 14 22.083 14 25.7729L14 26.0549C14 29.7454 16.9915 32.7366 20.6816 32.7366L34.0051 32.7366C37.6951 32.7366 40.6868 29.7454 40.6868 26.0549L40.6868 25.7729C40.6868 22.3958 38.1785 19.6113 34.9246 19.1621Z" fill="rgb(104,126,170)" fill-opacity="0.342000008" fill-rule="nonzero" />
+		</g>
+		<g id="组 23658">
+			<g id="组 23657">
+				<circle id="椭圆 260" cx="32.3305054" cy="14.5282612" r="6.49505806" fill="url(#paint_linear_159)" />
+				<path id="路径 17945" d="M44.0603 13.925L40.717 13.925C40.3838 13.925 40.1138 14.1948 40.1138 14.5278C40.1138 14.8611 40.3838 15.1311 40.717 15.1311L44.0603 15.1311C44.3928 15.1311 44.6628 14.8611 44.6628 14.5278C44.6628 14.1948 44.3928 13.925 44.0603 13.925Z" fill="url(#paint_linear_160)" fill-rule="nonzero" />
+				<path id="路径 17946" d="M24.8757 14.5278C24.8757 14.1948 24.6057 13.925 24.2727 13.925L20.9292 13.925C20.5964 13.925 20.3267 14.1948 20.3267 14.5278C20.3267 14.8611 20.5964 15.1311 20.9292 15.1311L24.2727 15.1311C24.6057 15.1311 24.8757 14.8611 24.8757 14.5278Z" fill="url(#paint_linear_161)" fill-rule="nonzero" />
+				<path id="路径 17947" d="M32.4951 6.69067C32.8281 6.69067 33.0981 6.4209 33.0981 6.08789L33.0981 2.74438C33.0981 2.41138 32.8281 2.14136 32.4951 2.14136C32.1621 2.14136 31.8921 2.41138 31.8921 2.74438L31.8921 6.08789C31.8921 6.4209 32.1621 6.69067 32.4951 6.69067Z" fill="url(#paint_linear_162)" fill-rule="nonzero" />
+				<path id="路径 17948" d="M32.4951 21.9275C32.1621 21.9275 31.8921 22.1975 31.8921 22.5303L31.8921 25.8738C31.8921 26.2068 32.1621 26.4768 32.4951 26.4768C32.8281 26.4768 33.0981 26.2068 33.0981 25.8738L33.0981 22.5303C33.0981 22.1975 32.8281 21.9275 32.4951 21.9275Z" fill="url(#paint_linear_163)" fill-rule="nonzero" />
+				<path id="路径 17949" d="M38.7349 9.14136L41.0986 6.77686C41.3345 6.54126 41.3345 6.15942 41.0986 5.92456C40.8633 5.68872 40.4814 5.68872 40.2461 5.92456L37.8818 8.28882C37.646 8.52393 37.646 8.90527 37.8818 9.14136C38.1172 9.37671 38.499 9.37671 38.7349 9.14136Z" fill="url(#paint_linear_164)" fill-rule="nonzero" />
+				<path id="路径 17950" d="M26.2551 19.9155L23.8909 22.2795C23.6555 22.5149 23.6555 22.897 23.8909 23.1323C24.1262 23.3677 24.5081 23.3677 24.7434 23.1323L27.1077 20.7681C27.343 20.5327 27.343 20.1509 27.1077 19.9155C26.8723 19.6802 26.4905 19.6802 26.2551 19.9155Z" fill="url(#paint_linear_165)" fill-rule="nonzero" />
+				<path id="路径 17951" d="M26.4744 9.14136C26.7097 9.37671 27.0916 9.37671 27.3269 9.14136C27.5623 8.90527 27.5623 8.52393 27.3269 8.28882L24.9629 5.92456C24.7273 5.68872 24.3457 5.68872 24.1104 5.92456C23.8748 6.15942 23.8748 6.54126 24.1104 6.77686L26.4744 9.14136Z" fill="url(#paint_linear_166)" fill-rule="nonzero" />
+				<path id="路径 17952" d="M38.9541 19.9155C38.7183 19.6802 38.3369 19.6802 38.1016 19.9155C37.8657 20.1509 37.8657 20.5327 38.1016 20.7681L40.4656 23.1323C40.7009 23.3677 41.0828 23.3677 41.3181 23.1323C41.5535 22.897 41.5535 22.5149 41.3181 22.2795L38.9541 19.9155Z" fill="url(#paint_linear_167)" fill-rule="nonzero" />
+			</g>
+			<g data-pixso-skip-parse="true">
+				<foreignObject width="27.803711" height="19.521240" x="7.758301" y="8.884033">
+					<div xmlns="http://www.w3.org/1999/xhtml" style="-webkit-backdrop-filter:blur(9.000000px);width:100%;backdrop-filter:blur(9.000000px);height:100%;clip-path:url(#outline_mask_14);" />
+				</foreignObject>
+			</g>
+			<g filter="url(#filter_22)">
+				<path id="路径 17944" d="M29.5588 14.2625C28.6196 11.1511 25.7336 8.88403 22.3159 8.88403C18.9248 8.88403 16.0549 11.115 15.0933 14.189L14.7197 14.189C10.875 14.189 7.7583 17.3057 7.7583 21.1504L7.7583 21.4438C7.7583 25.2888 10.875 28.4053 14.7197 28.4053L28.6008 28.4053C32.4456 28.4053 35.562 25.2888 35.562 21.4438L35.562 21.1504C35.562 17.6313 32.9492 14.7307 29.5588 14.2625Z" fill="rgb(255,255,255)" fill-opacity="0.200000003" fill-rule="nonzero" />
+			</g>
+		</g>
+	</g>
+</svg>

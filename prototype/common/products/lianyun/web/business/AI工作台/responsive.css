@@ -1,0 +1,159 @@
+/* 按可用空间布局，保留字号；不缩放整张设计画布。 */
+.ai-workbench-host{height:max(680px,calc(100dvh - 96px));container-type:inline-size}
+.ai-workbench-frame{width:100%;height:100%;transform:none}
+.ai-workbench-frame .tms-web-shell{width:100%;height:100%}
+.ai-workbench-frame .tms-shell-body{width:100%;height:calc(100% - 108px)}
+.ai-workbench-frame :is(.tms-workbar,.tms-shell-content){left:var(--tms-sidenav-width);width:calc(100% - var(--tms-sidenav-width))}
+.ai-workbench-frame .tms-shell-content{height:100%}
+.ai-workbench-frame .tms-sidenav{left:calc((var(--tms-sidenav-width) - 32px) / 2)}
+.ai-sidebar{width:260px;transition:width .2s ease}
+.ai-sidebar .ai-new-chat{width:calc(100% - 36px)}
+.ai-sidebar .ai-sidebar-row{width:100%}
+.ai-main{left:260px;width:calc(100% - 260px);height:100%;container-type:inline-size;transition:left .2s ease,width .2s ease}
+
+/* 侧栏收起：收为 64px 图标栏，主内容区同步左移展开 */
+.ai-sidebar.is-collapsed{width:64px}
+.ai-sidebar.is-collapsed+.ai-main{left:64px;width:calc(100% - 64px)}
+.ai-sidebar.is-collapsed .ai-sidebar-heading{flex-direction:column;height:auto;padding:12px 0 8px;gap:6px}
+.ai-sidebar.is-collapsed .ai-sidebar-heading>img{width:34px;height:27px;align-self:center;margin:0}
+.ai-sidebar.is-collapsed .ai-sidebar-toggle{margin:0}
+.ai-sidebar.is-collapsed .ai-new-chat{width:40px;margin:2px auto 0;justify-content:center;gap:0;padding:0!important;font-size:0}
+.ai-sidebar.is-collapsed .ai-agent-list{width:40px;margin:6px auto 0}
+.ai-sidebar.is-collapsed .ai-history-heading,
+.ai-sidebar.is-collapsed .ai-history-body{display:none}
+.ai-sidebar.is-collapsed .ai-sidebar-row{width:40px;justify-content:center;padding:0!important}
+.ai-sidebar.is-collapsed .ai-sidebar-row>span{display:none}
+.ai-view-home .ai-home-v2{left:32px;top:36px;width:calc(100% - 64px);max-width:none;bottom:220px}
+.ai-home-v2 .ai-welcome{height:auto;margin-bottom:24px}
+.ai-home-v2 .ai-welcome h1{font-size:26px;line-height:36px}
+.ai-discovery-v2{grid-template-columns:minmax(260px, .9fr) minmax(280px,1.1fr);gap:32px}
+.ai-view-home .ai-composer-wrap,.ai-view-chat .ai-conversation-pane:not(.has-report) .ai-composer-wrap{left:32px;right:32px;width:auto;bottom:32px}
+.ai-chat-stream{width:auto;max-width:1100px;margin:0 auto;padding:0 28px 0 64px}
+.has-report .ai-chat-stream{margin:0;padding:0 20px 0 60px}
+.ai-response-avatar{left:-48px}
+.ai-response-actions{flex-wrap:wrap;gap:12px}
+.ai-file-chip>span,.ai-quote-chip>span{max-width:80%}
+@container(max-width:1000px){
+ .ai-sidebar{width:220px}
+ .ai-main{left:220px;width:calc(100% - 220px)}
+ .ai-sidebar-heading{padding:0 10px}
+ .ai-view-home .ai-home-v2{left:24px;width:calc(100% - 48px)}
+}
+
+@container(max-width:700px){
+ .ai-discovery-v2{grid-template-columns:1fr}
+ .ai-capability-panel,.ai-results-panel{height:auto;min-height:250px}
+ .ai-results-list{height:170px}
+}
+/* 顶栏沿用 Pixso 首页 1920 × 930 的导航尺寸与相对位置。 */
+.ai-workbench-frame .tms-topbar {
+  display: block;
+  padding: 0;
+}
+.ai-workbench-frame .tms-topbar-logo { left: 64px; top: 23px; width: 124px; }
+.ai-workbench-frame .tms-topbar-divider { left: 216px; top: 24px; }
+.ai-workbench-frame .tms-topbar-avatar { left: 244px; top: 22px; }
+.ai-workbench-frame .tms-topbar-id { left: 284px; top: 18px; }
+.ai-workbench-frame .tms-topbar-org { max-width: 179px; }
+.ai-workbench-frame .tms-topbar-menus {
+  position: absolute;
+  left: calc(50% - 106px);
+  top: 20px;
+  width: 318px;
+  height: 36px;
+  padding: 0;
+  gap: 0;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .06);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, .06);
+}
+.ai-workbench-frame .tms-topbar-menu-item {
+  flex: 0 0 106px;
+  width: 106px;
+  height: 36px;
+  border-radius: 4px;
+  color: #909499;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ai-workbench-frame .tms-topbar-menu-item.active {
+  color: #3d4050;
+  background: #fff;
+  box-shadow: 0 0 1px rgba(0, 0, 0, .05);
+}
+.ai-workbench-frame .tms-topbar-menus .zx-entry {
+  position: absolute;
+  left: calc(100% + 16px);
+  right: auto;
+  top: 1px;
+  margin: 0;
+}
+.ai-workbench-frame .tms-topbar-menus .zx-main-entry {
+  height: 34px;
+  border-color: var(--tms-brand-blue);
+  background: var(--tms-brand-blue);
+  color: #fff;
+}
+.ai-workbench-frame .tms-topbar-menus .zx-main-entry:hover {
+  border-color: #6183ff;
+  background: #6183ff;
+}
+.ai-workbench-frame .tms-topbar-menus .zx-main-entry small {
+  background: rgba(255, 255, 255, .22);
+  color: #fff;
+}
+.ai-workbench-frame .tms-topbar-status {
+  position: absolute;
+  left: auto;
+  right: 168px;
+  top: 24px;
+  width: auto;
+  height: 26px;
+  gap: 12px;
+  white-space: nowrap;
+}
+.ai-workbench-frame :is(.tms-topbar-date, .tms-topbar-weather, .tms-topbar-weather-icon) {
+  position: relative;
+  inset: auto;
+  width: auto;
+}
+.ai-workbench-frame .tms-topbar-weather-icon { width: 32px; flex: none; }
+.ai-workbench-frame .tms-topbar-actions {
+  position: absolute;
+  left: auto;
+  right: 32px;
+  top: 26px;
+  width: 96px;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.ai-workbench-frame .tms-ai-header-divider { left: -20px; }
+@container (max-width: 1600px) {
+  .ai-workbench-frame .tms-topbar-date { display: none; }
+}
+@container (max-width: 1440px) {
+  .ai-workbench-frame .tms-topbar-logo { left: 32px; }
+  .ai-workbench-frame .tms-topbar-divider { left: 172px; }
+  .ai-workbench-frame .tms-topbar-avatar { left: 190px; }
+  .ai-workbench-frame .tms-topbar-id { left: 230px; }
+  .ai-workbench-frame .tms-topbar-org { max-width: 140px; }
+}
+@container (max-width: 1280px) {
+  .ai-workbench-frame .tms-topbar-weather,
+  .ai-workbench-frame .tms-topbar-weather-icon { display: none; }
+  .ai-workbench-frame .tms-topbar-org { max-width: 112px; }
+}
+@container (max-width: 1000px) {
+  .ai-workbench-frame .tms-topbar-menus { left: calc(50% - 88px); width: 264px; }
+  .ai-workbench-frame .tms-topbar-menu-item { flex-basis: 88px; width: 88px; font-size: 12px; }
+  .ai-workbench-frame .tms-topbar-logo { left: 24px; width: 112px; }
+  .ai-workbench-frame .tms-ai-brand-logo { width: 112px; }
+  .ai-workbench-frame .tms-topbar-divider { left: 152px; }
+  .ai-workbench-frame .tms-topbar-avatar { left: 168px; }
+  .ai-workbench-frame .tms-topbar-id { left: 210px; }
+  .ai-workbench-frame .tms-topbar-actions { right: 20px; }
+}
+
+/* 成果展开后使用原有业务内容区阅读。 */
+.ai-main.result-reading > .ai-conversation-pane { visibility: hidden; pointer-events: none; }
+.ai-main.result-reading > .ai-report-pane { left: 0; z-index: 15; }

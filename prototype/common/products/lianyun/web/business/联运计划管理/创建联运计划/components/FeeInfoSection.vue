@@ -16,6 +16,7 @@ const form = reactive({
   unitPrice: '',
   lossRule: '按里程',
 })
+defineExpose({ form, enabled })
 </script>
 
 <template>
@@ -97,9 +98,9 @@ const form = reactive({
 
       <!-- 计算公式 -->
       <div class="cp-formula">
-        <span class="cp-formula-ic">✓</span>
-        <span class="cp-formula-text">{{ feeConfig.formulaText }}</span>
-        <strong class="cp-formula-amount">{{ feeConfig.formulaAmount }} 元</strong>
+        <img class="cp-formula-ic" src="/multimodal-plan-assets/formula-money.svg" alt="运费" />
+        <span class="cp-formula-text">{{ form.calcType === '单位计费' ? `运费计算方式（${form.billingBasis} × ${form.unitPrice || '待设置'} 元/${form.calcUnit}）` : feeConfig.formulaText }}</span>
+        <strong class="cp-formula-amount">{{ form.calcType === '单位计费' ? '待核算' : feeConfig.formulaAmount + ' 元' }}</strong>
       </div>
     </div>
   </section>

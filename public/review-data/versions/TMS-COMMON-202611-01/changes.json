@@ -1,0 +1,62 @@
+{
+  "versionId": "TMS-COMMON-202611-01",
+  "revisions": [
+    {
+      "revision": "R0",
+      "date": "2026-11-11T11:51:05.906Z",
+      "reason": "至小简 AI 工作台与业务协同 V1.0 首次交付",
+      "items": [
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "systemWorkbench",
+            "aiWorkbench"
+          ],
+          "before": "本次AI协同方案尚未纳入统一研发评审入口。",
+          "after": "统一至小简入口与AI工作台，包含建议办理、知识库、专家与技能、定时任务、收藏和积分权益。",
+          "devImpact": "本版本为可交互原型，业务数据与AI回复采用本地模拟；按页面交互和状态评审，真实服务由研发接入。"
+        },
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "waybillManage",
+            "waybillDetail"
+          ],
+          "before": "本次AI协同方案尚未纳入统一研发评审入口。",
+          "after": "在托运单业务页发起分析，沿用单据上下文并查看分析过程、结果和报告。",
+          "devImpact": "本版本为可交互原型，业务数据与AI回复采用本地模拟；按页面交互和状态评审，真实服务由研发接入。"
+        },
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "waybillCenter",
+            "roadBatchWaybillSupplement",
+            "waybillCenterDetail"
+          ],
+          "before": "本次AI协同方案尚未纳入统一研发评审入口。",
+          "after": "识别运输明细、确认任务后自动进入公路批量补录，携带文件与对话，通过悬浮助手补齐并生成运单。",
+          "devImpact": "本版本为可交互原型，业务数据与AI回复采用本地模拟；按页面交互和状态评审，真实服务由研发接入。"
+        },
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "transportSettlement"
+          ],
+          "before": "本次AI协同方案尚未纳入统一研发评审入口。",
+          "after": "按企业与月份整理计划和可结算运单，左右协同核算，创建后查看结算单详情，并使用知识库模板导出对账单。",
+          "devImpact": "本版本为可交互原型，业务数据与AI回复采用本地模拟；按页面交互和状态评审，真实服务由研发接入。"
+        },
+        {
+          "type": "initial_delivery",
+          "pageKeys": [
+            "multimodalManage",
+            "multimodalCreate"
+          ],
+          "before": "本次AI协同方案尚未纳入统一研发评审入口。",
+          "after": "在创建页通过悬浮至小简逐步填写企业、货品、路线、联系人与费用，核对后提交并在管理页回显。",
+          "devImpact": "本版本为可交互原型，业务数据与AI回复采用本地模拟；按页面交互和状态评审，真实服务由研发接入。"
+        }
+      ]
+    }
+  ]
+}

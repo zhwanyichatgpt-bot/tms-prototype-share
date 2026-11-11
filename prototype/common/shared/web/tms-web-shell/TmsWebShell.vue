@@ -32,6 +32,12 @@ defineProps({
   activeNav: { type: String, default: '' },
   /* 整体缩放（页面级） */
   scale: { type: Number, default: 1 },
+  /* 框架规格：design（1920×1364 设计稿）/ business（业务系统 1920×936） */
+  variant: { type: String, default: 'design' },
+  /* business 规格画布高度 */
+  canvasHeight: { type: Number, default: 936 },
+  /* 是否显示页签栏左侧「工作台」入口 */
+  showHome: { type: Boolean, default: true },
 })
 
 const emit = defineEmits([
@@ -44,8 +50,13 @@ const emit = defineEmits([
 </script>
 
 <template>
-  <div class="tms-web-shell" :style="{ '--tms-shell-scale': scale }">
+  <div
+    class="tms-web-shell"
+    :class="`tms-web-shell--${variant}`"
+    :style="{ '--tms-shell-scale': scale, '--tms-shell-height': `${canvasHeight}px` }"
+  >
     <TmsTopbar
+      :variant="variant"
       :site-name="siteName"
       :organization-name="organizationName"
       :date-text="dateText"
@@ -57,11 +68,14 @@ const emit = defineEmits([
       <template #logo><slot name="logo" /></template>
       <template #avatar><slot name="avatar" /></template>
       <template #weather-icon><slot name="weather-icon" /></template>
+      <template #menu-extra><slot name="menu-extra" /></template>
       <template #status><slot name="status" /></template>
       <template #actions><slot name="actions" /></template>
     </TmsTopbar>
 
     <TmsWorkspaceBar
+      :variant="variant"
+      :show-home="showHome"
       :tabs="tabs"
       :active-key="activeTabKey"
       @go-workbench="emit('go-workbench')"
@@ -73,6 +87,7 @@ const emit = defineEmits([
 
     <div class="tms-shell-body">
       <TmsSideNav
+        :variant="variant"
         :items="navItems"
         :active-key="activeNav"
         @navigate="emit('navigate', $event)"
@@ -109,6 +124,27 @@ const emit = defineEmits([
   top: 0;
   width: 1872px;
   height: 1268px;
+  background-color: #ffffff;
+}
+
+/* =====================================================
+ * business 规格：真实业务系统（1920×936）
+ * 顶栏 72px + 页签栏 36px + 图标栏 64px + 内容区 1856×828
+ * ===================================================== */
+.tms-web-shell--business {
+  height: var(--tms-shell-height, 936px);
+  background: linear-gradient(127deg, #edf3f8 0%, #f2f1f6 100%);
+}
+
+.tms-web-shell--business .tms-shell-body {
+  top: 108px;
+  height: calc(var(--tms-shell-height, 936px) - 108px);
+}
+
+.tms-web-shell--business .tms-shell-content {
+  left: 64px;
+  width: 1856px;
+  height: calc(var(--tms-shell-height, 936px) - 108px);
   background-color: #ffffff;
 }
 </style>

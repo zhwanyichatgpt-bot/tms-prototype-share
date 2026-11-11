@@ -1,0 +1,57 @@
+{
+  "id": "TMS-COMMON-202611-01",
+  "name": "至小简 AI 工作台与业务协同 V1.0",
+  "scope": "common",
+  "projectId": null,
+  "baseVersionId": null,
+  "targetReleaseDate": "2026-11-11",
+  "pages": [
+    {
+      "pageKey": "systemWorkbench",
+      "order": 1
+    },
+    {
+      "pageKey": "aiWorkbench",
+      "order": 2
+    },
+    {
+      "pageKey": "waybillManage",
+      "order": 3
+    },
+    {
+      "pageKey": "waybillDetail",
+      "order": 4
+    },
+    {
+      "pageKey": "waybillCenter",
+      "order": 5
+    },
+    {
+      "pageKey": "roadBatchWaybillSupplement",
+      "order": 6
+    },
+    {
+      "pageKey": "waybillCenterDetail",
+      "order": 7
+    },
+    {
+      "pageKey": "transportSettlement",
+      "order": 8
+    },
+    {
+      "pageKey": "multimodalManage",
+      "order": 9
+    },
+    {
+      "pageKey": "multimodalCreate",
+      "order": 10
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-11-11T11:51:05.906Z",
+  "lastPublishedAt": "2026-11-11T11:51:05.906Z",
+  "completedAt": null,
+  "createdAt": "2026-11-11T11:51:05.885Z",
+  "updatedAt": "2026-11-11T11:51:05.906Z"
+}

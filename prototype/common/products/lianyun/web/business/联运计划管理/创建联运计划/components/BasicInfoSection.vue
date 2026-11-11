@@ -9,6 +9,7 @@ const form = reactive({
   phone: '',
   remark: '',
 })
+defineExpose({ form })
 </script>
 
 <template>
@@ -27,6 +28,7 @@ const form = reactive({
         <div class="cp-input-wrap">
           <select v-model="form.planName" class="cp-input cp-select">
             <option value="" disabled>请选择</option>
+            <option v-if="form.planName && form.planName !== '福州到上海-9月12日汽运计划'" :value="form.planName">{{ form.planName }}</option>
             <option value="福州到上海-9月12日汽运计划">福州到上海-9月12日汽运计划</option>
           </select>
           <span class="cp-caret">▾</span>
@@ -37,6 +39,7 @@ const form = reactive({
         <div class="cp-input-wrap">
           <select v-model="form.shipper" class="cp-input cp-select">
             <option value="" disabled>请选择</option>
+            <option v-if="form.shipper && form.shipper !== '福建万维宇宙科技有限公司'" :value="form.shipper">{{ form.shipper }}</option>
             <option value="福建万维宇宙科技有限公司">福建万维宇宙科技有限公司</option>
           </select>
           <span class="cp-caret">▾</span>

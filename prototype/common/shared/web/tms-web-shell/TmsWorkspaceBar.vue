@@ -12,14 +12,17 @@ defineProps({
   },
   activeKey: { type: String, default: '' },
   closable: { type: Boolean, default: true },
+  showHome: { type: Boolean, default: true },
+  /** 框架规格：design（设计稿）/ business（业务系统） */
+  variant: { type: String, default: 'design' },
 })
 const emit = defineEmits(['go-workbench', 'switch-tab', 'close-tab'])
 const slots = useSlots()
 </script>
 
 <template>
-  <div class="tms-workbar">
-    <button type="button" class="tms-workbar-home" @click="emit('go-workbench')">
+  <div class="tms-workbar" :class="`tms-workbar--${variant}`">
+    <button v-if="showHome" type="button" class="tms-workbar-home" @click="emit('go-workbench')">
       <span v-if="slots['home-icon']" class="tms-workbar-home-icon"><slot name="home-icon" /></span>
       <span class="tms-workbar-home-text">工作台</span>
     </button>
@@ -148,5 +151,60 @@ const slots = useSlots()
 }
 .tms-workbar-tab-close-icon::after {
   transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* =====================================================
+ * business 规格：真实业务系统页签栏（白底、页签自然宽度）
+ * ===================================================== */
+.tms-workbar--business {
+  left: 64px;
+  width: 1856px;
+  background-color: #ffffff;
+  border-radius: 0;
+}
+
+.tms-workbar--business .tms-workbar-tabs {
+  left: 0;
+  width: auto;
+  display: flex;
+  align-items: stretch;
+}
+
+.tms-workbar--business .tms-workbar-tab {
+  width: auto;
+  min-width: 120px;
+  padding: 0 30px;
+  background: transparent;
+}
+
+.tms-workbar--business .tms-workbar-tab.active {
+  background-color: #f5f5f5;
+}
+
+.tms-workbar--business .tms-workbar-tab-label {
+  position: static;
+  display: inline-block;
+  line-height: 36px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+}
+
+.tms-workbar--business .tms-workbar-tab-close {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 14px;
+  vertical-align: middle;
+}
+
+.tms-workbar--business .tms-workbar-tab-close-icon {
+  position: relative;
+  inset: auto;
+  width: 16px;
+  height: 16px;
 }
 </style>

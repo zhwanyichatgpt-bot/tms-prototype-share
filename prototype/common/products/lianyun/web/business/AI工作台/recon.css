@@ -1,0 +1,382 @@
+/* =====================================================
+ * 运输结算 —— AI 工作台内创建结算单
+ * 左侧 340px 对话确认口径，右侧直接嵌入系统「新建运输核算单」页面
+ * ===================================================== */
+
+.rc-recon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  background: #fff;
+  font: 14px/1.5 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #3d4050;
+  --rc-blue: #3a65ff;
+  --rc-ai-blue: #4062ff;
+}
+
+:where(.rc-recon) * { box-sizing: border-box; }
+:where(.rc-recon) button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+:where(.rc-recon) button:disabled { cursor: not-allowed; opacity: .45; }
+:where(.rc-recon) input { font: inherit; color: inherit; }
+:where(.rc-recon) p { margin: 0; }
+:where(.rc-recon) h2 { margin: 0; font-weight: 400; }
+
+/* 查询完成前只显示对话，确认口径后再打开右侧结算单页面 */
+.rc-recon.is-chat-only { grid-template-columns: minmax(0, 1fr); }
+.rc-recon.is-chat-only .rc-chat {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  background: #fff;
+  border-right: 0;
+}
+
+/* ============================= 左侧对话 ============================= */
+
+.rc-chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: #f6f7fb;
+  border-right: 1px solid #ececec;
+}
+
+.rc-chat-head {
+  height: 52px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: #fff;
+  border-bottom: 1px solid #f0f2f6;
+}
+
+.rc-chat-logo {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f2f5ff;
+}
+
+.rc-chat-title { min-width: 0; }
+.rc-chat-title h2 { font-size: 14px; line-height: 20px; color: #2f3240; }
+.rc-chat-title p { font-size: 11px; line-height: 15px; color: #9aa0ac; }
+
+.rc-chat-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #d8dce4 transparent;
+}
+
+.rc-chat-stream { display: flex; flex-direction: column; gap: 12px; }
+
+.rc-msg { display: flex; gap: 8px; align-items: flex-start; }
+.rc-msg.user { justify-content: flex-end; }
+
+.rc-avatar { flex: none; margin-top: 6px; }
+
+.rc-msg-body { min-width: 0; flex: 1; }
+
+.rc-line {
+  font-size: 13px;
+  line-height: 20px;
+  color: #3d4050;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.rc-warn { color: #d46b08; font-weight: 600; }
+
+.rc-user-bubble {
+  max-width: 92%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #d7def7;
+  background: #eef1fb;
+  font-size: 12px;
+  line-height: 18px;
+  color: #3d4050;
+}
+
+.rc-running {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8a8f99;
+}
+.rc-running i {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #dde2ee;
+  border-top-color: #4062ff;
+  border-radius: 50%;
+  animation: rc-spin 1s linear infinite;
+}
+@keyframes rc-spin { to { transform: rotate(360deg); } }
+
+.rc-muted { font-size: 12px; line-height: 18px; color: #8a8f99; }
+
+.rc-evidence {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #ececf2;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rc-evidence > div { display: flex; gap: 8px; font-size: 12px; line-height: 18px; }
+.rc-evidence dt { flex: none; width: 62px; color: #8a8f99; }
+.rc-evidence dd { margin: 0; flex: 1; min-width: 0; color: #3d4050; overflow-wrap: anywhere; }
+.rc-evidence dd.warn { color: #d46b08; }
+.rc-evidence dd.strong { font-weight: 600; color: #2f3240; }
+
+.rc-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+.rc-btn {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 4px;
+  border: 1px solid #e2e5ec;
+  background: #fff;
+  color: #4a4f5c;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.rc-btn:hover { border-color: #c9d2ea; }
+.rc-btn.primary { background: var(--rc-blue); border-color: var(--rc-blue); color: #fff; }
+.rc-btn.primary:hover { background: #335cef; }
+
+.rc-subactions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9aa0ac;
+}
+.rc-subactions button {
+  font-size: 11px;
+  color: #6b7280;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rc-subactions button:hover { color: var(--rc-blue); }
+
+.rc-composer {
+  flex: none;
+  padding: 8px 12px 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background: #f6f7fb;
+}
+.rc-composer input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #e2e5ec;
+  border-radius: 16px;
+  outline: none;
+  font-size: 12px;
+  background: #fff;
+}
+.rc-composer input:focus { border-color: #b9c6f5; }
+.rc-composer input::placeholder { color: #b3b8c2; }
+.rc-send {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 15px;
+  background: var(--rc-ai-blue);
+  color: #fff;
+  font-size: 12px;
+}
+.rc-send:disabled { background: #c9d0e2; }
+
+/* 工作台为流式布局，窄窗口下收窄对话 */
+@container (max-width: 1100px) {
+  .rc-recon { grid-template-columns: 300px minmax(0, 1fr); }
+  .rc-chat-title p { display: none; }
+}
+
+@container (max-width: 820px) {
+  .rc-recon { grid-template-columns: 280px minmax(0, 1fr); }
+}
+
+/* 计划范围、计费确认与业务表格始终并列，左右共用同一份草稿。 */
+.rc-recon { grid-template-columns: minmax(340px, 34%) minmax(0, 1fr); --rc-blue: #3a65ff; --rc-ai-blue: #3a65ff; }
+.rc-recon .rc-chat-title p { color: #808080; font-size: 12px; line-height: 18px; }
+.rc-recon .rc-line { margin-bottom: 8px; }
+.rc-recon .rc-muted { color: #808080; }
+.rc-recon .rc-btn { height: 32px; padding: 0 12px; border: 1px solid #d4d8e0; border-radius: 4px; background: #fff; font-size: 13px; }
+.rc-recon .rc-btn.primary { border-color: #3a65ff; background: #3a65ff; color: #fff; }
+.rc-recon .rc-btn.primary:hover { border-color: #6183ff; background: #6183ff; }
+.rc-recon .rc-btn:disabled { border-color: #e2e5ea; background: #f6f7f9; color: #bcbfcc; opacity: 1; }
+.rc-recon button:focus-visible, .rc-recon input:focus-visible { outline: 2px solid #3a65ff; outline-offset: 2px; }
+.rc-recon input[type=checkbox] { width: 16px; height: 16px; margin: 0; flex: none; accent-color: #3a65ff; cursor: pointer; }
+.rc-select-all { display: flex; align-items: center; gap: 8px; margin: 16px 0 8px; font-size: 13px; cursor: pointer; }
+.rc-select-all span { margin-left: auto; color: #808080; }
+.rc-plan-options { display: grid; gap: 8px; }
+.rc-plan-option { display: flex; align-items: flex-start; gap: 8px; padding: 12px; border: 1px solid #e2e5ea; border-radius: 6px; background: #fff; cursor: pointer; }
+.rc-plan-option.selected { border-color: #bccbff; background: #f4f6ff; }
+.rc-plan-option > input { margin-top: 3px !important; }
+.rc-plan-option > div { flex: 1; min-width: 0; }
+.rc-plan-option strong { display: block; color: #3d4050; font-size: 13px; line-height: 22px; font-weight: 700; }
+.rc-plan-option small, .rc-plan-option p { display: block; color: #808080; font-size: 12px; line-height: 20px; overflow-wrap: anywhere; }
+.rc-plan-metrics { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 0; }
+.rc-plan-metrics div { display: grid; gap: 2px; }
+.rc-plan-metrics dt { color: #808080; font-size: 12px; line-height: 18px; }
+.rc-plan-metrics dd { margin: 0; color: #3d4050; font-size: 12px; line-height: 20px; }
+.rc-selection-summary { padding: 12px 0; color: #808080; font-size: 12px; line-height: 20px; }
+.rc-full-button { width: 100%; }
+.rc-recon .rc-evidence { margin-top: 12px; padding: 12px; border-color: #e2e5ea; }
+.rc-recon .rc-evidence dd.strong { color: #3a65ff; font-weight: 700; }
+.rc-recon .rc-subactions { gap: 12px; margin-top: 12px; }
+.rc-recon .rc-subactions button { color: #3a65ff; font-size: 12px; text-decoration: none; }
+.rc-recon .rc-composer input { height: 36px; border-color: #d4d8e0; border-radius: 6px; font-size: 13px; }
+.rc-recon .rc-send { height: 32px; padding: 0 12px; border-radius: 4px; background: #3a65ff; color: #fff; }
+.rc-recon .rc-send:disabled { color: #bcbfcc; background: #f6f7f9; opacity: 1; }
+.rc-recon .ts-collaboration .ts-drawer-body { padding: 0 16px 12px; }
+.rc-recon .ts-field.is-locked { cursor: default; }
+.rc-recon .ts-field.is-locked .ts-field-caret { display: none; }
+.rc-recon .ts-draft-summary { line-height: 20px; color: #808080; }
+.rc-recon .ts-drawer-footer { gap: 8px; }
+@container (max-width: 1100px) { .rc-recon { grid-template-columns: 340px minmax(0,1fr); } }
+@container (max-width: 820px) { .rc-recon { grid-template-columns: 320px minmax(0,1fr); } }
+
+.rc-recon { grid-template-rows: minmax(0,1fr); min-height: 0; }
+.rc-recon > .rc-chat, .rc-recon > .ts-drawer { height: 100%; min-height: 0; overflow: hidden; }
+.rc-recon.is-chat-only .rc-chat-scroll { padding: 20px 16px; }
+
+.rc-recon .ts-canonical-plan { margin-top: 16px; }
+.rc-recon .ts-canonical-plan .ts-plan-strip { margin-top: 0; }
+.rc-recon .ts-canonical-edit input { width: 72px; height: 24px; padding: 0 4px; border: 1px solid #d4d8e0; border-radius: 4px; background: #fff; font-size: 12px; }
+.rc-recon .ts-canonical-rate { display: grid; gap: 4px; margin-top: 6px; color: #808080; font-size: 12px; line-height: 18px; }
+.rc-recon .ts-canonical-rate input { width: 76px; height: 24px; margin-left: auto; padding: 0 4px; border: 1px solid #d4d8e0; border-radius: 4px; background: #fff; text-align: right; font-size: 12px; }
+.rc-recon .ts-canonical-edit input:disabled, .rc-recon .ts-canonical-rate input:disabled { border-color: transparent; background: transparent; color: #3d4050; opacity: 1; }
+
+/* 结算沿用工作台对话的标题、气泡和输入框规格；计划使用同一组列表。 */
+.rc-recon .rc-chat { background: #f6f7fb; container: reconConversation / inline-size; }
+.rc-recon.is-chat-only .rc-chat { width: 100%; max-width: none; margin: 0; background: #f6f7fb; }
+.rc-recon .rc-chat-head { height: 68px; padding: 12px 24px; background: #f6f7fb; border-bottom: 1px solid #e2e5ea; }
+.rc-recon .rc-chat-title h2 { font-size: 20px; line-height: 28px; font-weight: 700; color: #3d4050; }
+.rc-recon .rc-chat-title p { display: block; margin-top: 2px; font-size: 12px; line-height: 18px; color: #808080; }
+.rc-recon .rc-chat-scroll, .rc-recon.is-chat-only .rc-chat-scroll { padding: 20px 16px; }
+.rc-recon .rc-chat-stream { width: 100%; max-width: 900px; margin: 0 auto; gap: 20px; }
+.rc-recon .rc-avatar { position: relative; top: auto; left: auto; width: 40px; height: 40px; margin-top: 6px; }
+.rc-recon .rc-user-bubble { max-width: 88%; padding: 10px 14px; border: 1px solid #bccbff; border-radius: 8px; background: #f4f6ff; font-size: 14px; line-height: 22px; }
+.rc-recon .rc-msg.ai > .rc-msg-body { padding: 16px; border-radius: 8px; background: #fff; }
+.rc-recon .rc-line { margin: 0 0 12px; font-size: 14px; line-height: 24px; color: #3d4050; }
+.rc-recon p.rc-msg-body.rc-line { margin: 0; }
+.rc-recon .rc-evidence { padding: 12px 0 0; border: 0; border-top: 1px solid #e2e5ea; border-radius: 0; gap: 6px; }
+.rc-recon .rc-select-all { margin: 16px 0 12px; font-size: 13px; line-height: 22px; }
+.rc-recon .rc-plan-options { gap: 0; overflow: hidden; border: 1px solid #e2e5ea; border-radius: 6px; background: #fff; }
+.rc-recon .rc-plan-option, .rc-recon .rc-plan-option.selected { gap: 12px; padding: 12px; border: 0; border-bottom: 1px solid #e2e5ea; border-radius: 0; background: #fff; }
+.rc-recon .rc-plan-option:last-child { border-bottom: 0; }
+.rc-recon .rc-plan-option:hover { background: #f6f7f9; }
+.rc-recon .rc-plan-option:focus-within { box-shadow: inset 0 0 0 1px #bccbff; }
+.rc-recon .rc-plan-info { min-width: 0; }
+.rc-recon .rc-plan-heading { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; }
+.rc-recon .rc-plan-heading strong { font-size: 14px; line-height: 22px; }
+.rc-recon .rc-plan-heading small { font-size: 12px; line-height: 20px; }
+.rc-recon .rc-plan-info > p { margin-top: 2px; font-size: 12px; line-height: 20px; }
+.rc-recon .rc-plan-metrics { gap: 4px 24px; margin-top: 8px; }
+.rc-recon .rc-plan-metrics div { display: flex; align-items: baseline; gap: 6px; }
+.rc-recon .rc-plan-metrics dt { color: #808080; font-size: 12px; line-height: 20px; }
+.rc-recon .rc-plan-metrics dd { color: #3d4050; font-size: 13px; line-height: 22px; }
+.rc-recon .rc-selection-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-top: 16px; }
+.rc-recon .rc-selection-summary { min-width: 180px; padding: 0; flex: 1; font-size: 12px; line-height: 20px; }
+.rc-recon .rc-full-button { width: auto; flex: none; }
+.rc-recon .rc-composer { display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: calc(100% - 32px); max-width: 900px; margin: 0 auto 16px; padding: 10px 12px; border: 1px solid #bccbff; border-radius: 12px; background: #fff; }
+.rc-recon .rc-composer:focus-within { border-color: #3a65ff; }
+.rc-recon .rc-composer textarea { display: block; width: 100%; height: 32px; min-height: 32px; padding: 0; resize: none; border: 0; outline: none; background: transparent; color: #3d4050; font: 14px/22px 'PingFang SC', sans-serif; }
+.rc-recon .rc-composer textarea::placeholder { color: #909499; }
+.rc-recon .rc-composer.is-expanded textarea { height: 76px; }
+.rc-recon .rc-composer-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rc-recon .rc-composer-footer > span { color: #909499; font-size: 12px; line-height: 18px; }
+.rc-recon .rc-send { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: #3a65ff; }
+.rc-recon .rc-send:disabled { background: #d4d8e0; }
+@container reconConversation (max-width: 480px) {
+  .rc-recon .rc-chat-head { padding: 12px 16px; }
+  .rc-recon .rc-chat-scroll { padding: 16px 12px; }
+  .rc-recon .rc-msg.ai > .rc-msg-body { padding: 12px; }
+  .rc-recon .rc-plan-option { gap: 8px; }
+  .rc-recon .rc-plan-metrics { gap: 4px 12px; }
+  .rc-recon .rc-plan-metrics div { display: grid; gap: 0; }
+  .rc-recon .rc-full-button { width: 100%; }
+}
+/* 原业务页嵌入较窄区域时仅换行工具条与计划信息，保持原字段和表格结构。 */
+.rc-recon .ts-waybill-actions { height: auto; min-height: 32px; flex-wrap: wrap; gap: 8px; }
+.rc-recon .ts-waybill-actions .ts-formula { flex-basis: 100%; margin-left: 0; line-height: 20px; }
+.rc-recon .ts-canonical-plan .ts-plan-strip { height: auto; min-height: 36px; padding: 8px 12px; flex-wrap: wrap; gap: 8px 16px; overflow: visible; }
+
+/* 左右面板可拖动调宽，范围确认前不显示分隔条。 */
+.rc-recon { grid-template-columns: var(--rc-chat-width, 340px) 8px minmax(0,1fr); }
+.rc-recon.is-chat-only { grid-template-columns: minmax(0,1fr); }
+.rc-splitter { position: relative; min-width: 0; height: 100%; background: #f6f7f9; cursor: col-resize; touch-action: none; }
+.rc-splitter::before { content: ''; position: absolute; top: 0; bottom: 0; left: 3px; width: 1px; background: #e2e5ea; }
+.rc-splitter::after { content: ''; position: absolute; top: 50%; left: 2px; width: 3px; height: 32px; margin-top: -16px; border-radius: 2px; background: #bcbfcc; }
+.rc-splitter:hover, .rc-splitter:focus-visible, .rc-recon.is-resizing .rc-splitter { background: #f4f6ff; }
+.rc-splitter:hover::after, .rc-splitter:focus-visible::after, .rc-recon.is-resizing .rc-splitter::after { background: #3a65ff; }
+.rc-recon.is-resizing { user-select: none; cursor: col-resize; }
+
+/* 原页面装、卸两行采用相同的标签列、数值框和数字基线。 */
+.rc-recon .rc-msg { gap: 12px; }
+.rc-recon .ts-sub-num { justify-content: flex-start; gap: 4px; padding: 8px 10px; }
+.rc-recon .ts-sub-num .ts-pair { display: grid; grid-template-columns: 12px minmax(0,1fr); align-items: center; gap: 4px; height: 24px; min-height: 24px; }
+.rc-recon .ts-sub-num .ts-pair > label { width: 12px; color: #808080; font-size: 12px; line-height: 22px; }
+.rc-recon .ts-sub-num .ts-pair > i, .rc-recon .ts-sub-num .ts-pair > input { width: 100%; min-width: 0; height: 24px; padding: 0 6px; border: 1px solid #d4d8e0; border-radius: 4px; background: #fff; color: #3d4050; font: 12px/22px 'PingFang SC', sans-serif; font-variant-numeric: tabular-nums; text-align: right; }
+.rc-recon .ts-sub-num .ts-pair > i:empty, .rc-recon .ts-sub-num .ts-pair > input:disabled { border-color: #d4d8e0; background: #f6f7f9; color: #3d4050; opacity: 1; }
+.rc-recon .ts-canonical-edit input, .rc-recon .ts-canonical-rate input { appearance: textfield; -moz-appearance: textfield; font-variant-numeric: tabular-nums; }
+.rc-recon .ts-canonical-edit input::-webkit-inner-spin-button, .rc-recon .ts-canonical-edit input::-webkit-outer-spin-button, .rc-recon .ts-canonical-rate input::-webkit-inner-spin-button, .rc-recon .ts-canonical-rate input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* 创建后复用系统详情结构，详情在右侧独立滚动。 */
+.rc-recon .tsd-root.is-embedded { position: relative; inset: auto; z-index: 0; min-width: 0; min-height: 0; height: 100%; }
+.rc-recon .tsd-root.is-embedded .tsd-header { height: 52px; padding: 16px 20px; border-bottom: 1px solid #e6e8ef; align-items: center; }
+.rc-recon .tsd-root.is-embedded .tsd-body { overflow: auto; padding-bottom: 0; }
+.rc-recon .tsd-root.is-embedded { container: settlementDetail / inline-size; }
+.rc-recon .tsd-root.is-embedded .tsd-content { min-width: 0; }
+.rc-recon .tsd-root.is-embedded .tsd-summary { height: auto; min-height: 136px; }
+.rc-recon .tsd-root.is-embedded .tsd-summary-title { height: auto; min-height: 24px; flex-wrap: wrap; gap: 6px; }
+.rc-recon .tsd-root.is-embedded .tsd-main { gap: 20px; flex-direction: column; }
+.rc-recon .tsd-root.is-embedded .tsd-left { flex: 1; min-width: 0; width: 100%; padding-bottom: 24px; }
+.rc-recon .tsd-root.is-embedded .tsd-waybill { height: auto; min-height: 100px; flex-wrap: wrap; gap: 12px 20px; border-bottom: 1px solid #eceef3; }
+.rc-recon .tsd-root.is-embedded .tsd-waybill-info { width: 100%; }
+.rc-recon .tsd-root.is-embedded .tsd-metric { width: auto; min-width: 68px; margin-left: 0; }
+.rc-recon .tsd-root.is-embedded .tsd-right { width: 100%; margin: 0; }
+.rc-recon .tsd-root.is-embedded .tsd-plan-name { white-space: normal; line-height: 22px; }
+.rc-recon .tsd-root.is-embedded .tsd-plan + .tsd-plan { margin-top: 24px; }
+.rc-recon .tsd-root.is-embedded .tsd-desc-grid { grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+.rc-recon .tsd-root.is-embedded .tsd-desc-item { height: auto; min-height: 31px; white-space: normal; }
+.rc-recon .tsd-root.is-embedded .tsd-desc-item.wide { grid-column: 1/-1; }
+.rc-recon .tsd-root.is-embedded .tsd-footer { position: static; height: 56px; flex: none; padding: 12px 20px; border-top: 1px solid #e6e8ef; }
+.rc-recon .tsd-created-note { margin-right: auto; order: -1; color: #777; font-size: 12px; }
+@container settlementDetail (min-width: 1200px) {
+  .rc-recon .tsd-root.is-embedded .tsd-main { flex-direction: row; }
+  .rc-recon .tsd-root.is-embedded .tsd-left { width: auto; }
+  .rc-recon .tsd-root.is-embedded .tsd-right { width: 440px; flex: none; }
+  .rc-recon .tsd-root.is-embedded .tsd-desc-grid { grid-template-columns: 1fr 1fr 1.4fr; }
+}
+.rc-statement-file { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; border: 1px solid #e1e5ef; border-radius: 6px; margin-top: 12px; background: #fafbff; }
+.rc-statement-file-heading { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.rc-statement-file-heading>span { flex: none; padding: 8px 4px; border-radius: 4px; font-size: 10px; color: #27835c; background: #e9f5ef; }
+.rc-statement-file strong { font-size: 14px; font-weight: 500; line-height: 22px; overflow-wrap: anywhere; }
+.rc-statement-file p,.rc-statement-file small { color: #777; font-size: 12px; }
+.rc-recon .rc-statement-source { color: #4062ff; text-align: left; font-size: 12px; overflow-wrap: anywhere; }
+.rc-template-options { display: grid; gap: 10px; margin-top: 16px; }
+.rc-template-options>button { display: grid; grid-template-columns: 1fr 12px; gap: 4px 12px; width: 100%; padding: 12px; border: 1px solid #e1e5ef; border-radius: 6px; text-align: left; }
+.rc-template-options strong { font-size: 14px; font-weight: 500; }
+.rc-template-options span { font-size: 12px; color: #777; grid-column: 1; }
+.rc-template-options b { grid-column: 2; grid-row: 1/3; align-self: center; color: #4062ff; }
+.rc-template-options>button:hover { border-color: #a9b7ff; background: #f7f8ff; }

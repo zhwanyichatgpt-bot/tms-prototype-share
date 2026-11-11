@@ -6,6 +6,8 @@
 defineProps({
   items: { type: Array, default: () => [] },
   activeKey: { type: String, default: '' },
+  /** 框架规格：design（设计稿 44px）/ business（业务系统 64px） */
+  variant: { type: String, default: 'design' },
 })
 const emit = defineEmits(['navigate'])
 
@@ -24,7 +26,7 @@ function badgeStyle(badge) {
 </script>
 
 <template>
-  <nav class="tms-sidenav" aria-label="系统导航">
+  <nav class="tms-sidenav" :class="`tms-sidenav--${variant}`" aria-label="系统导航">
     <button
       v-for="item in items"
       :key="item.key"
@@ -83,5 +85,16 @@ function badgeStyle(badge) {
 .tms-sidenav-item-badge {
   position: absolute;
   pointer-events: none;
+}
+
+/* =====================================================
+ * business 规格：真实业务系统图标栏（64px）
+ * 图标位置由页面通过 item.left / item.top 指定
+ * ===================================================== */
+.tms-sidenav--business {
+  left: 0;
+  top: 0;
+  width: 64px;
+  height: 100%;
 }
 </style>

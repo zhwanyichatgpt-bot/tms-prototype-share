@@ -49,13 +49,15 @@ export function resolvePrototypePageLocation({ versionId, pageKey, query = {} })
  * @param {import('vue-router').RouteLocationNormalizedLoaded} route useRoute()
  * @param {string} pageKey 目标页面 key
  * @param {object} [query] 需要保留的 query 参数
+ * @param {object} [state] 随页面携带的对话上下文
  * @returns {Promise} router.push 的 Promise
  */
-export function openPrototypePage(router, route, pageKey, query = {}) {
+export function openPrototypePage(router, route, pageKey, query = {}, state) {
   const location = resolvePrototypePageLocation({
     versionId: route?.params?.versionId,
     pageKey,
     query,
   })
+  if (state) location.state = state
   return router.push(location)
 }

@@ -362,7 +362,7 @@
 
 <script setup>
 import { groupProductPages, pageProductLabel } from '../review/product-catalog.mjs'
-import { shallowRef, computed, defineAsyncComponent, onMounted, onUnmounted, nextTick, ref, reactive, watch } from 'vue'
+import { shallowRef, computed, defineAsyncComponent, onMounted, onUnmounted, nextTick, ref, reactive, watch, provide } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElCard, ElCol, ElContainer, ElHeader, ElMain, ElRow, ElButton, ElTag } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
@@ -386,6 +386,9 @@ const reviewClient = createReviewDataClient()
 const appView = computed(() => route.meta.view || 'legacy')
 const isVersionWorkbench = computed(() => appView.value === 'reviewPrototype')
 const versionContext = ref(null)
+provide('prototypePageKeys', computed(() => new Set(isVersionWorkbench.value
+  ? (versionContext.value?.pages || []).map(page => page.pageKey)
+  : pages.map(page => page.key))))
 const versionChanges = ref({ revisions: [] })
 const versionProjects = ref([])
 const versionWorkbenchPages = ref([])

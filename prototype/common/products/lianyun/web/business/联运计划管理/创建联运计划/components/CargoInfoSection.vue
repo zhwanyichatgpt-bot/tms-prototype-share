@@ -7,7 +7,7 @@ const rows = ref(mockRows.map(r => ({ ...r })))
 const editing = ref(null)
 
 function addRow() {
-  rows.value.push({ id: `c${Date.now()}`, name: '', volume: 0, weight: 0, quantity: 0, unitPrice: 0, totalPrice: 0, package: '', remark: '', editing: true })
+  rows.value.push({ id: `c${Date.now()}`, name: '', volume: '', weight: '', quantity: 0, unitPrice: '', totalPrice: '', package: '', remark: '', editing: true })
 }
 function removeRow(index) {
   rows.value.splice(index, 1)
@@ -16,8 +16,10 @@ function editRow(row) {
   editing.value = row.id
 }
 function saveRow() {
+  for (const row of rows.value) if (row.id === editing.value || row.editing) row.editing = false
   editing.value = null
 }
+defineExpose({ rows, activeMode })
 </script>
 
 <template>
@@ -36,9 +38,10 @@ function saveRow() {
     <!-- 货品表格 -->
     <div class="cp-table-wrap">
       <table class="cp-table">
+        <colgroup><col v-for="width in [160,115,109,108,103,105,127,177,88]" :key="width" :style="{ width: (width / 1092 * 100) + '%' }" /></colgroup>
         <thead>
           <tr>
-            <th class="col-cargo">货品 <i class="cp-th-icon">⊙</i></th>
+            <th class="col-cargo">货品 <i class="cp-th-icon" aria-hidden="true"></i></th>
             <th>发货体积（m³）</th>
             <th>发货重量（吨）</th>
             <th>发货数量</th>
@@ -54,22 +57,22 @@ function saveRow() {
             <td>
               <select v-if="editing === row.id || row.editing" v-model="row.name" class="cp-cell-input">
                 <option value="">请选择</option>
-                <option>玉米</option><option>小麦</option>
+                <option>玉米</option><option>小麦</option><option>煤炭</option><option>铁矿石</option><option>石灰石</option>
               </select>
               <span v-else>{{ row.name }}</span>
             </td>
-            <td><input v-if="editing === row.id || row.editing" v-model.number="row.volume" class="cp-cell-input" type="number" /><span v-else>{{ row.volume }}</span></td>
-            <td><input v-if="editing === row.id || row.editing" v-model.number="row.weight" class="cp-cell-input" type="number" /><span v-else>{{ row.weight }}</span></td>
+            <td><input v-if="editing === row.id || row.editing" v-model.number="row.volume" class="cp-cell-input" type="number" placeholder="0.00" /><span v-else>{{ row.volume }}</span></td>
+            <td><input v-if="editing === row.id || row.editing" v-model.number="row.weight" class="cp-cell-input" type="number" placeholder="0.00" /><span v-else>{{ row.weight }}</span></td>
             <td><input v-if="editing === row.id || row.editing" v-model.number="row.quantity" class="cp-cell-input" type="number" /><span v-else>{{ row.quantity }}</span></td>
-            <td><input v-if="editing === row.id || row.editing" v-model.number="row.unitPrice" class="cp-cell-input" type="number" /><span v-else>{{ row.unitPrice }}</span></td>
-            <td><input v-if="editing === row.id || row.editing" v-model.number="row.totalPrice" class="cp-cell-input" type="number" /><span v-else>{{ row.totalPrice }}</span></td>
+            <td><input v-if="editing === row.id || row.editing" v-model.number="row.unitPrice" class="cp-cell-input" type="number" placeholder="0.00" /><span v-else>{{ row.unitPrice }}</span></td>
+            <td><input v-if="editing === row.id || row.editing" v-model.number="row.totalPrice" class="cp-cell-input" type="number" placeholder="0.00" /><span v-else>{{ row.totalPrice }}</span></td>
             <td>
               <select v-if="editing === row.id || row.editing" v-model="row.package" class="cp-cell-input">
                 <option value="">请选择</option><option>散装</option><option>袋装</option><option>箱装</option>
               </select>
               <span v-else>{{ row.package }}</span>
             </td>
-            <td><input v-if="editing === row.id || row.editing" v-model="row.remark" class="cp-cell-input" type="text" placeholder="请输入" /><span v-else class="cp-remark">{{ row.remark }}</span></td>
+            <td><div v-if="editing === row.id || row.editing" class="cp-cargo-remark-input"><input v-model="row.remark" class="cp-cell-input" type="text" maxlength="50" placeholder="请输入" /><small>{{ row.remark.length }}/50</small></div><span v-else class="cp-remark">{{ row.remark }}</span></td>
             <td class="col-op">
               <template v-if="editing === row.id || row.editing">
                 <button type="button" class="cp-link danger" @click="removeRow(i)">删除</button>

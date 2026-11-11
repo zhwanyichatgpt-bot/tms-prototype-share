@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { loadCreatedPlans } from './创建联运计划/created-plan-store.js'
+import { openPrototypePage } from '../../../../../../../src/review/prototype-navigation.mjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { TmsWebShell } from '../../../../../shared/web/tms-web-shell/index.js'
 import PlanStatusTabs from './components/PlanStatusTabs.vue'
@@ -35,10 +37,13 @@ const navItems = [
   },
 ]
 
+const router = useRouter()
+const route = useRoute()
+
 /* —— 页面级状态 —— */
 const activeStatus = ref('全部')
 const filters = ref({ keyword: '', creator: '' })
-const planList = ref(mockPlans.map(p => ({ ...p, expanded: false })))
+const planList = ref([...loadCreatedPlans(route.params.versionId), ...mockPlans.map(p => ({ ...p, expanded: false }))])
 const page = ref(paginationMeta.current)
 
 const visiblePlans = computed(() => {
@@ -119,9 +124,8 @@ function confirmBox(title, message, action) {
 }
 
 /* —— 工具栏 —— */
-const router = useRouter()
 function onCreate() {
-  router.push({ name: 'multimodalCreate' })
+  openPrototypePage(router, route, 'multimodalCreate')
 }
 function onExport() {
   ElMessage.info('导出联运计划')
