@@ -207,7 +207,8 @@ export function saveFloatingAnalysis(run, messages) {
   const existingSession = chat.sessions.find(item => item.id === session.id)
   const nextSession = existingSession ? { ...existingSession, messages } : session
   const nextChat = JSON.stringify({ ...chat, sessions: [nextSession, ...chat.sessions.filter(item => item.id !== session.id)] })
-  const nextRuns = JSON.stringify(runs.some(item => item.id === run.id) ? runs : [run, ...runs])
+  const previousRun = runs.find(item => item.id === run.id)
+  const nextRuns = JSON.stringify([{ ...previousRun, ...run }, ...runs.filter(item => item.id !== run.id)])
   localStorage.setItem(conversationStorageKey, nextChat)
   try {
     localStorage.setItem(runStorageKey, nextRuns)

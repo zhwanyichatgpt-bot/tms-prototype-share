@@ -9,6 +9,7 @@ import { ElMessage } from 'element-plus'
 import { TmsWebShell } from '../../../../../../shared/web/tms-web-shell/index.js'
 import TaskTopLogo from '../../运输任务/components/TaskTopLogo.vue'
 import AssistantEntry from '../../至小简入口/AssistantEntry.vue'
+import DocumentAnalysisLauncher from './components/DocumentAnalysisLauncher.vue'
 import { captureConsignmentSnapshot } from '../../../../../../shared/web/ai-document-analysis/document-analysis.js'
 import { computed } from 'vue'
 import WaybillDetailHeader from './components/WaybillDetailHeader.vue'
@@ -44,7 +45,7 @@ const navItems = [
 ]
 
 const detailData = ref(waybillDetailData)
-const detailAssistant = ref(null)
+const detailAnalysis = ref(null)
 const detailAiContext = computed(() => { const record={id:detailData.value.id,type:'托运单',snapshot:captureConsignmentSnapshot(detailData.value)};return {kind:'detail',label:'托运单 '+record.id,record,records:[record]} })
 const activeTab = ref('segments')
 
@@ -144,7 +145,7 @@ function onMenuSelect() {}
           <img class="sun-ray" src="/tms-web-shell-assets/Vector_26_226.svg" alt="" />
         </span>
       </template>
-      <template #status><AssistantEntry ref="detailAssistant" :context="detailAiContext" /></template>
+      <template #status><AssistantEntry hide-floating :context="detailAiContext" /><DocumentAnalysisLauncher ref="detailAnalysis" :document="detailData" /></template>
       <template #actions>
         <img src="/tms-web-shell-assets/Group_26_152.svg" class="tt-top-window-icon" alt="" />
         <img src="/tms-web-shell-assets/Vector_26_158.svg" class="tt-top-window-icon" alt="" />
@@ -163,7 +164,7 @@ function onMenuSelect() {}
       </template>
 
       <div class="waybill-detail-page">
-        <div style="position:absolute;right:32px;top:16px;z-index:10;display:flex;gap:8px"><button class="zx-skill" @click="detailAssistant?.showChat()">问至小简</button><button class="zx-skill" @click="detailAssistant?.showChat(true)">单据分析</button></div>
+        <div style="position:absolute;right:32px;top:16px;z-index:10;display:flex;gap:8px"><button class="zx-skill" @click="detailAnalysis?.showAnalysis()">单据分析</button></div>
         <!-- 1. 页头面包屑与返回操作 -->
         <WaybillDetailHeader
           parent-title="托运订单"

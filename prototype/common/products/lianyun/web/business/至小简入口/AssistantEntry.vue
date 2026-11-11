@@ -9,7 +9,7 @@ import { expertAnnouncement } from '../AI工作台/expert-data.js'
 import AnswerProcess from '../../../../../shared/web/ai-answer/AnswerProcess.vue'
 import mascot from '../托运单管理/详情/assets/xiaojian-inspector-poses.png'
 import { entryPreferences, setFloatingVisible, dismissEntryIntro, dismissAnnouncement } from './entry-state.js'
-const props = defineProps({ context: Object, announcement: [Object, Array], activityNotice: Object, signInStatus: Object, updatePreview: String, workspace: Boolean, autoOpen: Boolean, placement: { type: String, default: 'status' } })
+const props = defineProps({ context: Object, announcement: [Object, Array], activityNotice: Object, signInStatus: Object, updatePreview: String, workspace: Boolean, hideFloating: Boolean, autoOpen: Boolean, placement: { type: String, default: 'status' } })
 const emit = defineEmits(['workspace', 'locate', 'dismiss-activity'])
 const router = useRouter()
 const route = useRoute()
@@ -148,7 +148,7 @@ defineExpose({ showChat, showSettings: () => { settings.value = true } })
 
  </div>
  <Teleport to="body">
-  <div v-if="!workspace" class="zx-floating" :data-business-context="context?.kind" :class="{'zx-floating-home':context?.kind==='home','zx-floating-business':placement==='business'}">
+  <div v-if="!workspace && !hideFloating" class="zx-floating" :data-business-context="context?.kind" :class="{'zx-floating-home':context?.kind==='home','zx-floating-business':placement==='business'}">
    <AssistantUpdateNotice
      v-if="canShowNotice && pendingUpdates.length"
      :updates="pendingUpdates"

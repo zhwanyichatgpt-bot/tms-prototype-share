@@ -1,18 +1,18 @@
 <script setup>
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { openPrototypePage } from '../../../../../../../../../src/review/prototype-navigation.mjs'
 import mascotPoses from '../assets/xiaojian-inspector-poses.png'
 import DocumentAnalysisProgress from '../../../../../../../shared/web/ai-document-analysis/DocumentAnalysisProgress.vue'
 import AnswerProcess from '../../../../../../../shared/web/ai-answer/AnswerProcess.vue'
 import {
   captureConsignmentSnapshot, createDocumentAnalysis, documentAnalysisStage, documentRunDuration, getDocumentReport,
-  isDocumentAnalysisRequest, resolveDocument, saveFloatingAnalysis,
+  resolveDocument, saveFloatingAnalysis,
 } from '../../../../../../../shared/web/ai-document-analysis/document-analysis.js'
 
-const props = defineProps({ document: { type: Object, required: true } })
-const documentNo = computed(() => props.document.id)
-const documentStatus = computed(() => props.document.statusText)
+const props = defineProps({ document: Object, records: { type: Array, default: () => [] }, contextLabel: String })
 const router = useRouter()
+const route = useRoute()
 const open = ref(false)
 const draft = ref('')
 const input = ref(null)
@@ -20,8 +20,6 @@ const launcher = ref(null)
 const thread = ref(null)
 const messages = ref([])
 const runs = ref({})
-const skillMenu = ref(false)
-const skillActive = ref(false)
 const notice = ref('')
 const activeRun = computed(() => Object.values(runs.value).find(run => run.status === 'running'))
 const busy = computed(() => Boolean(activeRun.value))
@@ -41,12 +39,13 @@ const petPose = computed(() => {
   if (reportReady.value) return 'ready'
   return open.value ? 'greet' : 'idle'
 })
-const record = computed(() => ({
-  id: documentNo.value,
+const record = computed(() => props.document ? {
+  id: props.document.id,
   type: '托运单',
   label: '当前页面',
   snapshot: captureConsignmentSnapshot(props.document),
-}))
+} : props.records.length === 1 ? props.records[0] : null)
+const contextTitle = computed(() => props.contextLabel || (record.value ? '托运单 ' + record.value.id : '托运单分析'))
 const sessionId = crypto.randomUUID()
 let timer
 
@@ -63,36 +62,31 @@ async function show() {
 }
 async function close() {
   open.value = false
-  skillMenu.value = false
   await nextTick()
   launcher.value?.focus()
 }
-async function selectSkill() {
-  skillMenu.value = false
-  skillActive.value = true
-  await nextTick()
-  input.value?.focus()
+async function showAnalysis() {
+  await show()
+  if (busy.value) return
+  if (record.value) {
+    submit('分析' + record.value.type + ' ' + record.value.id)
+    return
+  }
+  messages.value.push({
+    ...makeResponse(props.records.length ? '请选择本次需要分析的托运单。' : '当前范围没有可供分析的托运单，请调整筛选后重试。'),
+    documentCandidates: props.records,
+  })
 }
+defineExpose({ showAnalysis })
 function makeResponse(title, reasoning = []) {
   return { id: crypto.randomUUID(), role: 'assistant', answer: { title, sections: [], reasoning } }
 }
-function answerQuestion(question) {
-  if (/状态|进度|到哪|开始执行/.test(question)) {
-    return makeResponse(`当前页面显示，托运单 ${documentNo.value} 的状态为「${documentStatus.value}」。`, ['读取当前托运单的状态字段。'])
-  }
-  if (/单号|编号/.test(question)) return makeResponse(`当前托运单号是 ${documentNo.value}。`, ['读取当前托运单的编号。'])
-  return makeResponse('你可以问我当前托运单的单号、状态，也可以告诉我你想完成什么。', ['已关联当前托运单，需要明确要查询的字段或要执行的分析。'])
-}
-function submit(question = draft.value.trim(), useSkill = skillActive.value) {
+function submit(question = draft.value.trim()) {
   if (!question || busy.value) return
   notice.value = ''
   const user = { id: crypto.randomUUID(), role: 'user', text: question, files: [] }
-  if (!useSkill && !isDocumentAnalysisRequest(question)) {
-    messages.value.push(user, answerQuestion(question))
-    draft.value = ''
-    return
-  }
-  const resolution = resolveDocument(question, record.value)
+  const selectedRecord = props.records.find(item => question.toUpperCase().includes(item.id.toUpperCase()))
+  const resolution = resolveDocument(question, selectedRecord || record.value)
   if (!resolution.record) {
     const reasoning = [resolution.candidates?.length ? '根据输入查找候选单据，等待你确认分析对象。' : '根据输入查找系统单据，当前没有可供分析的匹配记录。']
     messages.value.push(user, { ...makeResponse(resolution.message, reasoning), documentCandidates: resolution.candidates })
@@ -110,7 +104,6 @@ function submit(question = draft.value.trim(), useSkill = skillActive.value) {
   runs.value[run.id] = run
   messages.value.push(user, response)
   draft.value = ''
-  skillActive.value = false
   timer = window.setInterval(() => {
     const task = runs.value[run.id]
     const elapsed = Date.now() - task.startedAt
@@ -129,7 +122,7 @@ function openReport(run) {
     notice.value = '本地记录保存失败。请稍后重试。'
     return
   }
-  router.push({ name: 'aiWorkbench', query: { analysisReport: run.id } })
+  openPrototypePage(router, route, 'aiWorkbench', { analysisReport: run.id })
 }
 </script>
 
@@ -141,10 +134,10 @@ function openReport(run) {
         class="document-launcher"
         :class="['pet-pose-' + petPose, { 'is-running': busy, 'is-ready': reportReady }]"
         type="button"
-        :aria-label="open ? '收起至小简' : '打开至小简'"
+        :aria-label="open ? '收起单据分析' : '打开单据分析'"
         :aria-expanded="open"
         :aria-controls="open ? 'waybill-assistant-dialog' : undefined"
-        @click="open ? close() : show()"
+        @click="open ? close() : messages.length ? show() : showAnalysis()"
       >
         <span class="document-pet" aria-hidden="true">
           <svg class="document-pet-sprite" :viewBox="petFrames[petPose]" width="75" height="86" focusable="false">
@@ -156,20 +149,20 @@ function openReport(run) {
           <svg v-else-if="reportReady" aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 2h5l3 3v9H4zM9 2v3h3M6 8h4M6 11h4" />
           </svg>
-          {{ busy ? '分析中' : reportReady ? '报告已生成' : '至小简' }}
+          {{ busy ? '分析中' : reportReady ? '报告已生成' : '单据分析' }}
         </span>
       </button>
       <Transition name="document-dialog">
-        <aside v-if="open" id="waybill-assistant-dialog" class="document-dialog" aria-label="至小简对话" @keydown.esc.stop="close">
+        <aside v-if="open" id="waybill-assistant-dialog" class="document-dialog" aria-label="单据分析对话" @keydown.esc.stop="close">
           <header>
             <div class="document-dialog-heading">
               <strong>至小简</strong>
-              <div class="document-context"><span>当前单据</span><b>托运单 {{ documentNo }}</b></div>
+              <div class="document-context"><span>分析范围</span><b>{{ contextTitle }}</b></div>
             </div>
             <button type="button" class="document-close" aria-label="关闭至小简" @click="close">×</button>
           </header>
           <div ref="thread" class="document-thread" aria-live="polite">
-            <p v-if="!messages.length" class="document-answer">你好，有什么可以帮你？</p>
+            <p v-if="!messages.length" class="document-answer">选择当前业务单据，梳理执行情况并生成分析报告。</p>
             <article v-for="message in messages" :key="message.id">
               <p v-if="message.role === 'user'" class="document-request">{{ message.text }}</p>
               <template v-else-if="message.runId">
@@ -187,7 +180,7 @@ function openReport(run) {
                 <AnswerProcess :steps="message.answer.reasoning" />
                 <p class="document-answer">{{ message.answer.title }}</p>
                 <template v-if="message === messages.at(-1)">
-                  <button v-for="item in message.documentCandidates" :key="item.id" type="button" class="document-candidate" @click="submit('分析' + item.type + ' ' + item.id, true)">{{ item.type }} {{ item.id }} · {{ item.label }}</button>
+                  <button v-for="item in message.documentCandidates" :key="item.id" type="button" class="document-candidate" @click="submit('分析' + item.type + ' ' + item.id)">{{ item.type }} {{ item.id }} · {{ item.label || item.snapshot?.shipper }}</button>
                 </template>
               </template>
             </article>
@@ -195,16 +188,10 @@ function openReport(run) {
           </div>
           <form @submit.prevent="submit()">
             <div class="document-input-row">
-              <input ref="input" v-model="draft" aria-label="向至小简提问" :placeholder="skillActive ? '告诉至小简要分析哪张单据' : '输入你想了解的问题'" />
+              <input ref="input" v-model="draft" aria-label="补充单据分析要求" placeholder="补充分析重点，或输入托运单号" />
               <button type="submit" :disabled="!draft.trim() || busy">发送</button>
             </div>
-            <div class="document-tools">
-              <button v-if="skillActive" type="button" aria-label="移除单据分析技能" @click="skillActive=false">单据分析 ×</button>
-              <template v-else>
-                <button type="button" :aria-expanded="skillMenu" @click="skillMenu=!skillMenu">选择技能</button>
-                <button v-if="skillMenu" type="button" class="document-skill-menu" @click="selectSkill">单据分析</button>
-              </template>
-            </div>
+            <div class="document-tools"><span>单据分析</span></div>
           </form>
         </aside>
       </Transition>

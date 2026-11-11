@@ -17,7 +17,8 @@
       <img class="tp-nav" src="/transport-plan-assets/nav.png" alt="nav" />
       <span class="tp-date">2022 年 05 月 27 日</span>
       <span class="tp-weather">24℃ 多云</span>
-      <AssistantEntry ref="listAssistant" placement="legacy" :context="listAiContext" @locate="locateAiRecord" />
+      <AssistantEntry hide-floating placement="legacy" :context="listAiContext" />
+      <DocumentAnalysisLauncher ref="listAnalysis" :records="listAiContext.records" :context-label="listAiContext.label" />
       <img class="tp-user" src="/transport-plan-assets/avatar.png" alt="user" />
       <span class="tp-divider2"></span>
       <img class="tp-icon i1" src="/transport-plan-assets/icon1.png" alt="icon1" />
@@ -82,7 +83,7 @@
       <!-- 3. 操作按钮行 -->
       <div class="action-row">
         <button class="btn-primary" @click="openTypeSelectDialog">新增托运单</button>
-        <button class="btn-primary" style="margin-left:12px;background:#6575dc" @click="listAssistant?.showChat()">问至小简</button>
+        <button class="btn-primary" style="margin-left:12px;background:#6575dc" @click="listAnalysis?.showAnalysis()">单据分析</button>
       </div>
 
       <!-- 4. 托运单表头栏 -->
@@ -578,9 +579,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AssistantEntry from '../至小简入口/AssistantEntry.vue'
+import DocumentAnalysisLauncher from './详情/components/DocumentAnalysisLauncher.vue'
 import BulkWaybillCreate from './BulkWaybillCreate.vue'
 import ContainerWaybillCreate from './ContainerWaybillCreate.vue'
 import WaybillDetailApp from './详情/App.vue'
@@ -647,7 +649,7 @@ const filters = reactive({
 const currentPageNum = ref(1)
 const pageSize = ref(10)
 const jumpPageNum = ref(1)
-const listAssistant = ref(null)
+const listAnalysis = ref(null)
 const checkedRows = reactive({})
 const checkAll = ref(false)
 
@@ -764,16 +766,6 @@ const listAiContext = computed(() => {
   const mapped = records.map(item => ({id:item.id,type:'托运单',snapshot:{status:item.status,shipper:item.shipperCompany,cargo:item.cargoName,route:item.route,countdownDays:item.countdownDays,countdownHours:item.countdownHours,countdownMinutes:item.countdownMinutes}}))
   return {kind,label,records:mapped,filters:{...filters,status:activeStatus.value},record:mapped.length===1?mapped[0]:null}
 })
-
-async function locateAiRecord(id) {
-  const index = filteredWaybills.value.findIndex(item => item.id === id)
-  if (index < 0) return
-  currentPageNum.value = Math.floor(index / pageSize.value) + 1
-  await nextTick()
-  const card = document.querySelector(`[data-ai-record="${CSS.escape(id)}"]`)
-  card?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  card?.animate([{background:'#eaf0ff'},{background:'#fff'}], {duration:1600})
-}
 
 const totalPageCount = computed(() => Math.max(1, Math.ceil(filteredWaybills.value.length / pageSize.value)))
 const totalPageNumbers = computed(() => {
