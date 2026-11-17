@@ -1,0 +1,41 @@
+{
+  "id": "TMS-GUANGLIN-202611-01",
+  "name": "广林1.0.4.5版本",
+  "scope": "project",
+  "projectId": "guanglin",
+  "baseVersionId": null,
+  "targetReleaseDate": "2026-11-27",
+  "pages": [
+    {
+      "pageKey": "inquiryShipper",
+      "order": 1
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-11-17T06:58:55.090Z",
+  "lastPublishedAt": "2026-11-17T06:58:55.090Z",
+  "completedAt": null,
+  "createdAt": "2026-11-17T06:20:13.048Z",
+  "updatedAt": "2026-11-17T06:58:55.090Z",
+  "scopeItems": [
+    {
+      "pageKey": "inquiryShipper",
+      "title": "货主端 · 货源询价管理",
+      "location": "货源询价 → 货主端 → 路线发布与确认",
+      "detail": "发布询价路线时选择运输方式（汽运、水运、铁路、公铁联运、公水联运、多式联运，一条路线一个方式）；货主查看无车承运人提交的对货主报价及历史版本，可确认或驳回；驳回原因必填，只同步无车承运人，不向下游承运商透传。"
+    },
+    {
+      "pageKey": "inquiryShipper",
+      "title": "无车承运人端 · 询价与报价管理",
+      "location": "询价管理 → 无车承运人端 → 路线报价管理",
+      "detail": "查看下游承运商报价并选择基准报价，按比例、固定金额、按单位或直接填写加价后提交货主，对货主报价不得低于基准报价；货主驳回后可退回报价（限已驳回路线中被选中且未过截止的报价，退回原因必填），或删除报价单（已失效、未入围、已取消、已驳回可整单硬删除）。"
+    },
+    {
+      "pageKey": "inquiryShipper",
+      "title": "承运商端 · 询价大厅与我的报价",
+      "location": "询价大厅 / 我的报价记录 → 承运商端",
+      "detail": "按运输方式筛选询价大厅并提交报价；在“我的报价记录”查看报价状态与版本历史，未成交报价可修改；报价被退回时展示退回原因、退回时间与截止时间，可在截止前重新报价，沿用同一报价单并保留原报价与退回记录。"
+    }
+  ]
+}

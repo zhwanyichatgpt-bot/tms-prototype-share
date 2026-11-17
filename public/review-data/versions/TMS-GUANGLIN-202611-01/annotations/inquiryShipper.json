@@ -1,0 +1,200 @@
+{
+  "versionId": "TMS-GUANGLIN-202611-01",
+  "page": "inquiryShipper",
+  "title": "货源询价（广林三端）",
+  "updatedAt": "2026-11-17",
+  "annotations": [
+    {
+      "id": "annot-inquiry-shipper-field-route-editor",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-field-route-editor",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "路线运输方式选项与路线判定",
+      "content": "运输方式为下拉单选，非必填，默认“汽运”，草稿状态下可修改；可选项：汽运、水运、铁路、公铁联运、公水联运、多式联运。\n\n- 一条路线只填一个运输方式，后续发布、报价、确认、生成指定托运单均沿用该值。\n- 不按运输方式拆分路线：仅运输方式不同不构成新路线，重复路线判定沿用现有规则，仍按重复路线拦截，不因运输方式差异放行。",
+      "category": "field",
+      "source": "货源询价管理_货主端_PRD_v1 5.2.5；总览 PRD 6.4；讨论记录 5",
+      "container": "page",
+      "group": "shipper-route-editor",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-detail-reject-scope",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-detail-reject-scope",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "货主驳回后的处理边界与可见范围",
+      "content": "**驳回**：货主驳回必须填写驳回原因，路线进入“已驳回”；驳回原因只同步给无车承运人，不向任何下游承运商透传。\n\n**后续处理由无车承运人完成**：无车承运人可能退回报价并要求承运商重新报价，再重新选择基准报价提交。货主端不出现“退回报价”动作、退回记录和退回原因；无车承运人重新提交后路线回到“待货主确认”，货主可再次确认或驳回。\n\n**可见范围**：货主只看到无车承运人提交的对货主报价及最新有效版本，不展示下游承运商名称与原始采购价；货主端不提供报价单删除入口。",
+      "category": "rule",
+      "source": "货源询价管理_货主端_PRD_v1 5.4.2、5.4.3；总览 PRD 6.7；讨论记录 3.5",
+      "container": "page",
+      "group": "shipper-detail",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-history-visible-scope",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-history-visible-scope",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价历史的角色可见范围",
+      "content": "**货主端**：按时间倒序展示无车承运人历次提交给货主的报价版本，每条展示提交时间、对货主运输总价 / 运输单价、提交说明。货主驳回、无车承运人退回报价并重新提交后新增一条版本，既有版本保留、可按时间回溯。不展示下游承运商名称、承运商原始采购价、退回报价的原因与记录。\n\n**承运商端**：只展示当前承运商自己在该路线上的报价版本，按时间排列，保留每次的报价金额与提交时间，包含被退回的原版本与重新报价后的新版本。不展示其他承运商的报价、无车承运人的选价结果与成交情况，也不展示货主原始驳回原因；退回原因只展示无车承运人填写给本承运商的内容。",
+      "category": "rule",
+      "source": "讨论记录 3.3、3.5；总览 PRD 5.5；货源询价管理_货主端_PRD_v1 5.4.2",
+      "container": "modal",
+      "group": "history-modal",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-history-upstream-downstream",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-history-upstream-downstream",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价历史的上下游版本范围",
+      "content": "无车承运人可查看该路线的完整链路版本：\n\n- 对货主提交版本：每次提交时间、对货主运输总价 / 单价、提交说明；\n- 下游承运商报价版本：承运商名称、运输总价 / 单价、提交时间，以及被退回的原报价、退回原因与退回时间、重新报价后的新版本。\n\n同一报价单被退回后重新报价，原版本保留并按发生时间排列，不覆盖。\n\n货主原始驳回原因属于无车承运人可见内容，不向下游承运商展示。",
+      "category": "rule",
+      "source": "讨论记录 3.3、3.5",
+      "container": "modal",
+      "group": "history-modal",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-field-route-transport-readonly",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-field-route-transport-readonly",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "路线运输方式只读展示",
+      "content": "运输方式按货主路线原值只读展示（汽运、水运、铁路、公铁联运、公水联运、多式联运），发布、选价、提交给货主时均不可修改。\n\n一条路线对应一个运输方式、一张路线发布单；运输方式不同不拆分路线，也不额外生成发布单。",
+      "category": "field",
+      "source": "询价管理_无车承运人端_PRD_v1 7.1；讨论记录 5",
+      "container": "page",
+      "group": "nvocc-detail",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-rejected-route-display",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-rejected-route-display",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "已驳回路线的最新提交与当前报价",
+      "content": "路线被货主驳回后：\n\n**未重新选价时**：按上次提交版本展示“上次提交承运商”、上次承运商运输总价 / 单价、上次货主运输总价 / 单价。\n\n**同时展示**该路线的“当前可报价数量”和“当前最低报价”，只统计状态为“已报价”的报价单；已退回、未入围、已失效、已取消、已驳回的报价单不计入。\n\n**重新选择基准报价后**：路线卡片改为按“意向承运商”展示当前选中的承运商及其运输总价 / 单价，不再展示上次提交版本。\n\n报价单删除后，上述可报价数量与最低报价随之刷新。",
+      "category": "rule",
+      "source": "询价管理_无车承运人端_PRD_v1 5.2.2；讨论记录 3.4；总览 PRD 6.8",
+      "container": "page",
+      "group": "nvocc-detail",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-action-quote-return-delete",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-action-quote-return-delete",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价单的退回与删除边界",
+      "content": "**退回报价**\n\n仅当路线处于“已驳回”、且该报价为本次提交时被选中的那条下游承运商报价时，提供“退回报价”入口；未被选中的其他报价不提供退回。\n\n同时满足以下条件才可退回：\n\n- 报价状态为“已报价”；\n- 未超过该路线竞价截止时间。\n\n已截止、已成交、已失效、已取消、未入围、已退回的报价不可退回。\n\n**退回原因与提交结果**\n\n- 退回原因必填，上限 300 字符，为空不可提交，提示“请填写退回原因”。\n- 提交后记录退回时间，该报价状态变为“已退回”，由承运商重新报价。\n- 路线保持“已驳回”，并清除该路线当前基准报价选择；无车承运人需重新选择基准报价后再提交货主。\n- 退回原因同步给被退回的承运商；货主不感知退回报价动作，也看不到退回原因。货主原始驳回原因不跨级透传给承运商。\n- 退回后报价单保留原报价与退回记录作为版本历史，不另生成第二条报价记录。\n\n**删除报价单**\n\n可删除：已失效、未入围、已取消、已驳回。\n\n不可删除：已报价（含已被选为当前提交版本的报价）、已成交、已退回。\n\n无车承运人可删除本单路线下的报价单；货主端不提供报价单删除入口。\n\n删除前二次确认；确认为整单硬删除——该报价单及其全部报价记录、版本历史一并删除，不做软删除、不保留快照、不可恢复。删除后报价列表移除该行，报价数量、当前最低报价等汇总同步刷新；不影响该路线已提交给货主的历史报价版本，也不影响已确认路线和已生成托运单。",
+      "category": "action",
+      "source": "询价管理_无车承运人端_PRD_v1 5.4.2、5.4.3；总览 PRD 6.8；讨论记录 3.1、6",
+      "container": "drawer",
+      "group": "nvocc-quote-drawer",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-quote-markup-submit",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-quote-markup-submit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "加价方式与对货主报价计算",
+      "content": "**加价方式**（四选一，必选，未选不可提交）：按比例加价、按固定金额加价、按单位加价、直接填写。\n\n- 按比例加价：对货主报价 = 基准报价 × (1 + 加价值 / 100)，加价值 ≥ 0；加价值超过 100% 时二次确认“加价值超过 100%，确认是否合理”。\n- 按固定金额加价：对货主报价 = 基准报价 + 加价值（元），加价值 ≥ 0；加价值超过基准报价 50% 时二次确认。\n- 按单位加价：对货主运输单价 = 基准报价单价 + 每单位加价；对货主运输总价 = 对货主运输单价 × 路线货量。\n- 直接填写：直接录入对货主报价，必须 ≥ 基准报价。\n\n**按单位加价口径**：\n\n- 加价值单位为元 / 路线计价单位（元/吨、元/件等），与路线单位一致；加价值 ≥ 0，0 表示不加价。\n- 基准报价为运输总价时，先折算基准单价 = 基准总价 ÷ 货量。\n- 货量为 0 或缺失时不可使用按单位加价，选择后提示并阻止提交。\n- 每单位加价超过基准单价的 50% 时二次确认“每单位加价超过基准单价的 50%，确认是否合理”。\n\n**注意**：任何加价方式下，对货主报价都不得低于基准报价。",
+      "category": "rule",
+      "source": "询价管理_无车承运人端_PRD_v1 5.4.3、7.3；讨论记录 4",
+      "container": "drawer",
+      "group": "nvocc-quote-drawer",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-filter-hall-transport",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-filter-hall-transport",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运输方式筛选",
+      "content": "运输方式筛选项包含六种：汽运、水运、铁路、公铁联运、公水联运、多式联运；不选时展示全部。\n\n- 筛选只作用于大厅内当前承运商可报价的路线；已完成报价的路线已移入“我的报价记录”，不会出现在大厅。\n- 列表与详情展示的运输方式取路线原值。",
+      "category": "filter",
+      "source": "询价大厅_承运商端_PRD_v1 5.1.2；讨论记录 5",
+      "container": "page",
+      "group": "carrier-hall",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-my-quote-ops",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-my-quote-ops",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "报价状态、重报与删除",
+      "content": "**已退回报价**\n\n报价状态为“已退回”时，列表行内以状态标签标识，操作列提供重新报价入口；退回原因与退回时间在报价记录详情页和重新报价页展示。\n\n- 未超过竞价截止时间：提供重新报价入口，进入报价详情后提交。\n- 超过竞价截止时间：重新报价入口不可用。\n- 重新报价完成后状态回到“已报价”，报价时间更新为本次提交时间，并标注“退回后重报”，同时保留上次退回原因与时间。\n\n重新报价沿用同一报价单，不新增第二条报价记录；原报价与退回记录保留为版本历史。\n\n**删除报价单**\n\n可删除：已失效、未入围、已取消、已驳回。\n\n不可删除：已报价（含被无车承运人选为当前提交版本的报价）、已成交、已退回。\n\n承运商只能删除自己名下的报价单，删除前二次确认。删除为整单硬删除，该报价单及其全部报价记录、版本历史一并删除，不做软删除、不保留快照、不可恢复；删除不影响此前已提交给无车承运人的报价版本，也不影响已确认路线与已生成托运单。",
+      "category": "rule",
+      "source": "询价大厅_承运商端_PRD_v1 5.2.2、5.3.2；总览 PRD 6.8；讨论记录 3.3、3.4、6",
+      "container": "page",
+      "group": "carrier-my-quotes",
+      "createdAt": "2026-11-13"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-returned-quote-status",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-returned-quote-status",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "已退回报价的展示与重新报价",
+      "content": "**本次变更**：承运商端补齐已退回报价的展示与重报入口。\n\n**我的报价记录**\n\n- 报价状态为“已退回”时，状态列展示“已退回”标签；操作列提供“重新报价”，其他可修改状态仍为“修改报价”。\n- 未超过竞价截止时间才提供重新报价入口；超过截止时间入口不可用。\n\n**报价记录详情**\n\n- 展示橙色退回提示卡片：退回原因、退回时间、报价截止。\n- 退回原因只展示无车承运人填写给本承运商的内容，不透传货主原始驳回原因。\n\n**重新报价页**\n\n- 展示退回原因与退回时间；提交按钮为“重新提交报价”。\n\n**提交结果**\n\n- 重新提交沿用同一报价单：状态回到“已报价”，报价时间更新为本次提交时间，标注“退回后重报”。\n- 原报价与退回记录保留为版本历史，不新增第二条报价记录。\n- 重新提交后路线仍保留在“我的报价记录”，不回退到询价大厅；由无车承运人重新选择基准报价后再次提交货主。",
+      "category": "rule",
+      "source": "询价大厅_承运商端_PRD_v1 5.2.2、5.2.3；讨论记录 3.3",
+      "container": "page",
+      "group": "carrier-my-quotes",
+      "createdAt": "2026-11-17"
+    },
+    {
+      "id": "annot-inquiry-shipper-rule-returned-quote-resubmit",
+      "type": "selector",
+      "selector": ".annot-inquiry-shipper-rule-returned-quote-resubmit",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "已退回报价的重新提交",
+      "content": "未超过竞价截止时间可重新提交；超过截止时间不可提交。\n\n- 重新提交沿用同一报价单：状态回到“已报价”，报价时间更新为本次提交时间，原报价与退回记录保留为版本历史，不新增第二条记录。\n- 重新提交后路线仍保留在“我的报价记录”，不回退到询价大厅；由无车承运人重新选择基准报价后再次提交货主。",
+      "category": "rule",
+      "source": "询价大厅_承运商端_PRD_v1 5.2.2、5.2.3；讨论记录 3.3",
+      "container": "page",
+      "group": "carrier-quote",
+      "createdAt": "2026-11-13"
+    }
+  ]
+}

@@ -2,6 +2,21 @@
   "schemaVersion": 1,
   "versions": [
     {
+      "id": "TMS-GUANGLIN-202611-01",
+      "name": "广林1.0.4.5版本",
+      "scope": "project",
+      "projectId": "guanglin",
+      "baseVersionId": null,
+      "targetReleaseDate": "2026-11-27",
+      "status": "in_progress",
+      "revision": "R0",
+      "publishedAt": "2026-11-17T06:58:55.090Z",
+      "lastPublishedAt": "2026-11-17T06:58:55.090Z",
+      "completedAt": null,
+      "createdAt": "2026-11-17T06:20:13.048Z",
+      "updatedAt": "2026-11-17T06:58:55.090Z"
+    },
+    {
       "id": "TMS-COMMON-202611-02",
       "name": "联运 Web 1.0.1.18｜调度与运输结算",
       "scope": "common",
@@ -122,5 +137,5 @@
       "updatedAt": "2026-08-22T09:09:20.278Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:00:13.162Z"
+  "updatedAt": "2026-11-17T06:58:55.090Z"
 }
