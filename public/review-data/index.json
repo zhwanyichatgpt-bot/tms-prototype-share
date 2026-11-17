@@ -54,12 +54,12 @@
       "baseVersionId": null,
       "targetReleaseDate": "2026-10-30",
       "status": "completed",
-      "revision": "R17",
+      "revision": "R19",
       "publishedAt": "2026-09-23T03:21:13.162Z",
       "lastPublishedAt": "2026-09-23T03:21:13.162Z",
       "completedAt": "2026-11-06T13:18:28.637Z",
       "createdAt": "2026-09-23T03:21:13.148Z",
-      "updatedAt": "2026-11-07T08:35:08.000Z"
+      "updatedAt": "2026-11-17T09:17:12.646Z"
     },
     {
       "id": "TMS-COMMON-202609-02",

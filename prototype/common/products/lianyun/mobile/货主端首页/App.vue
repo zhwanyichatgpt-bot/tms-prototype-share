@@ -2,7 +2,7 @@
   <div class="ly-preview">
     <div ref="screenRoot" class="ly-screen" :class="{ 'ly-ai-screen': activeTab === 'ai', 'ly-home-screen': activeTab==='home' && !openedService && !openedProvider && !serviceList && !catalog && !nodeDetail && !requestsPage && !cargoOverlay }">
       <div class="ly-status" aria-hidden="true"><span>9:41</span><span class="ly-status-icons"><i class="ly-signal"></i><van-icon name="wifi-o"/><i class="ly-battery"></i></span></div>
-      <LianyunHomePage v-show="activeTab==='home'" ref="homeQuery" :fixtures="homeDesign" :teleport="screenRoot" :region="homeRegionSelected ? browseRegion : ''" v-model:mode="serviceMode" @region="regionOpen=true" @publish="openPublish" @assistant="openAssistant()" @industry="openIndustrySolution(industrySolutions[0])" @query="queryFromHome" @cargo="cargoMarket.openCargo($event)" @service="openService" @provider="openProvider" @reviews="openReviews"/>
+      <LianyunHomePage v-show="activeTab==='home'" ref="homeQuery" :fixtures="homeDesign" :teleport="screenRoot" :region="homeRegionSelected ? browseRegion : ''" v-model:mode="serviceMode" @region="regionOpen=true" @assistant="openAssistant()" @industry="openIndustrySolution(industrySolutions[0])" @query="queryFromHome" @cargo="cargoMarket.openCargo($event)" @service="openService" @provider="openProvider" @reviews="openReviews"/>
       <CargoMarketplace ref="cargoMarket" headless :teleport="screenRoot" @overlay-change="cargoOverlay=$event"/>
 
       <NetworkNodeDetail v-if="nodeDetail" v-show="!catalog && !openedService" :key="nodeDetail.id" :place="nodeDetail" @back="nodeDetail=null" @offer="openOffer" @service="openService" @provider="openProvider" @reviews="openReviews" @request="place=>startRequest('node',place)"/>
@@ -215,7 +215,6 @@ function openRequestSource(record){
   requestsPage.value=null;catalog.value=null;openedService.value=null;openedProvider.value=null;providerReturnService.value=null;nodeDetail.value=null
   if(record.kind==='provider')openProvider(item);else if(record.kind==='transport')openService({...item,selectedSchemeId:record.schemeId});else if(record.kind==='node')openNode(item);else openOffer(item.id)
 }
-function openPublish() { openNotice('发布货源', '发布运输需求', '发布表单暂未接入，本次未提交或发布货源。') }
 
 async function openAssistant(text = '', fill = false) {
   activeTab.value = 'ai'

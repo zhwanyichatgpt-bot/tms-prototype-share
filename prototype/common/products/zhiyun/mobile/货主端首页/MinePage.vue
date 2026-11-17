@@ -78,7 +78,7 @@
               <span class="eyebrow">资金一眼看清</span>
               <h2>我的账户</h2>
             </div>
-            <button class="text-button" type="button" @click.stop="openAccount('flow')">
+            <button class="text-button" type="button" @click.stop="openAccount('overview')">
               账户明细
               <van-icon name="arrow" />
             </button>

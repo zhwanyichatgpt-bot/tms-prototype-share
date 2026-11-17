@@ -103,22 +103,6 @@
   text-overflow: ellipsis
 }
 
-.ly-screen .lyhp-publish {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
-  font-size: 12px!important;
-  font-weight: 600!important;
-  padding: 0
-}
-
-.ly-screen .lyhp-publish img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain
-}
-
 .ly-screen .lyhp-query-wrap {
   margin: 0 16px;
   height: 315px;

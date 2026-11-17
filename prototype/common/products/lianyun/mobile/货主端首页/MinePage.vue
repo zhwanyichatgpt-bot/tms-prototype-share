@@ -28,7 +28,7 @@
         <h2 id="ly-mine-account-title">
           <button class="ly-mine-heading-entry" type="button" @click="navigate('account', 'overview')">我的账户<van-icon name="arrow" /></button>
         </h2>
-        <button class="ly-mine-link" type="button" @click="navigate('account', 'history')">账户明细<van-icon name="arrow" /></button>
+        <button class="ly-mine-link" type="button" @click="navigate('account', 'overview')">账户明细<van-icon name="arrow" /></button>
       </div>
       <div class="ly-mine-account-metrics">
         <div class="ly-mine-account-amount">
@@ -97,9 +97,7 @@
         <button v-for="item in materialMenus" :key="item.key" class="ly-mine-row" type="button" @click="navigate(item.key)">
           <van-icon class="ly-mine-row-icon" :name="item.icon" />
           <span class="ly-mine-row-label">{{ item.label }}</span>
-          <span class="ly-mine-row-status" :class="{ 'is-verified': item.key === 'company' && identity.certification === '已认证' }">
-            {{ item.status }}<van-icon v-if="item.key === 'company' && identity.certification === '已认证'" name="checked" />
-          </span>
+          <span v-if="item.status" class="ly-mine-row-status">{{ item.status }}</span>
           <van-icon class="ly-mine-row-arrow" name="arrow" />
         </button>
       </section>
@@ -154,7 +152,7 @@ const inboxMenus = computed(() => {
   ]
 })
 const materialMenus = computed(() => [
-  { key: 'company', label: '企业资料与认证', icon: 'certificate', status: identity.value.certification },
+  { key: 'company', label: '企业资料', icon: 'description-o' },
   { key: 'address', label: '地址簿', icon: 'location-o', status: `${addressBookStore.addresses.length} 个地址` },
   { key: 'contacts', label: '常用联系人', icon: 'friends-o', status: `${addressBookStore.contacts.length} 位联系人` },
 ])

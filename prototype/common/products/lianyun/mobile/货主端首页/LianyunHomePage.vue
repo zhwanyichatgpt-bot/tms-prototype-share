@@ -2,7 +2,6 @@
   <main ref="page" class="lyhp-page" :class="['lyhp-state-'+state,{'lyhp-collapsed':collapsed}]" aria-label="至简联运首页" @scroll.passive="onScroll">
     <header ref="header" class="lyhp-header">
       <button class="lyhp-region" aria-label="选择当前区域" @click="$emit('region')"><van-icon name="location"/><span>{{ region || '定位名称...' }}</span><van-icon name="arrow-down"/></button>
-      <button class="lyhp-publish" @click="$emit('publish')"><img :src="asset('publish.svg')" alt=""/>发布货源</button>
     </header>
     <div class="lyhp-query-top">
       <div class="lyhp-query-wrap"><RouteQueryForm ref="queryForm" home-design v-model:mode="mode" :teleport="teleport" @query="$emit('query',$event)"/><button class="lyhp-chat" aria-label="和小简聊聊" @click="$emit('assistant')"><img :src="asset('chat-strip.svg')" alt=""/></button></div>
@@ -42,7 +41,7 @@ import CargoCard from './CargoCard.vue'
 import RouteQueryForm from './RouteQueryForm.vue'
 import './home-design.css'
 const props=defineProps({fixtures:{type:Object,required:true},teleport:{default:null},region:String})
-defineEmits(['region','publish','assistant','industry','query','cargo','service','provider','reviews'])
+defineEmits(['region','assistant','industry','query','cargo','service','provider','reviews'])
 const mode=defineModel('mode',{default:'all'})
 const page=ref(null),header=ref(null),recommendations=ref(null),collapsed=ref(false)
 // 三个页签共用同一滚动容器；顶部内容自然移出，页签与筛选吸顶。
