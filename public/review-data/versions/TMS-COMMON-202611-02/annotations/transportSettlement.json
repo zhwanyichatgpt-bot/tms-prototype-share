@@ -5,6 +5,22 @@
   "updatedAt": "2026-11-17",
   "annotations": [
     {
+      "id": "annot-transportSettlement-rule-service-menu",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-service-menu",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "运输结算菜单按企业权限展示",
+      "content": "运营后台按 SaaS 企业配置汽运、水运、联运结算服务。运输结算左侧菜单按当前企业的配置展示，已开通的服务显示对应菜单及其子项，未开通的服务隐藏对应菜单及其子项。",
+      "category": "rule",
+      "source": "1.0.1.18 运输结算需求备注及产品确认",
+      "container": "page",
+      "group": "settlement-menu",
+      "createdAt": "2026-11-17"
+    },
+    {
       "id": "annot-transportSettlement-rule-driver-billing-scope",
       "type": "selector",
       "selector": ".annot-transportSettlement-rule-driver-billing-scope",

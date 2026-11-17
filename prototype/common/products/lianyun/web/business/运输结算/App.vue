@@ -192,7 +192,7 @@ onUnmounted(() => {
 
           <!-- 业务主体 -->
           <section class="ts-body">
-            <aside class="ts-side">
+            <aside class="ts-side annot-transportSettlement-rule-service-menu">
               <div v-for="(group, gi) in menuGroups" :key="group.key" class="ts-side-group">
                 <div class="ts-side-group-title">
                   <img class="ts-menu-icon" :src="asset(group.icon)" alt="" />

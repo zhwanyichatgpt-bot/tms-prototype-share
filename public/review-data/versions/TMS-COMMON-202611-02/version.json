@@ -26,14 +26,14 @@
       "pageKey": "transportSettlement",
       "title": "汽运结算 · 司机核算",
       "location": "运输结算 → 汽运结算 → 司机（待结算列表／新增核算）",
-      "detail": "明确每张运单的计费范围和司机结算责任，按派单规则统一整趟或分段运费的核算口径。"
+      "detail": "明确每张运单的计费范围和司机结算责任，按派单规则统一整趟或分段运费的核算口径。备注：运营后台可按 SaaS 企业配置汽运、水运、联运结算服务。运输结算左侧菜单仅展示当前企业已开通的服务。"
     }
   ],
   "status": "in_progress",
-  "revision": "R0",
+  "revision": "R1",
   "publishedAt": "2026-11-17T03:59:44.479Z",
   "lastPublishedAt": "2026-11-17T03:59:44.479Z",
   "completedAt": null,
   "createdAt": "2026-11-17T03:42:45.010Z",
-  "updatedAt": "2026-11-17T03:59:44.479Z"
+  "updatedAt": "2026-11-17T06:00:13.162Z"
 }
