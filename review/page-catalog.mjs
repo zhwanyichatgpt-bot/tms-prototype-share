@@ -1,5 +1,13 @@
 export const pageCatalog = Object.freeze([
   {
+    key: 'bulkDispatch', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
+    requirement: '散杂货调度中心；研发版本 pending；当前交付 pending；进行中',
+    remark: '依据用户选中的九个 Pixso 画板还原调度中心、规划路线、调度方式、分享任务码、船舶指派、收起地图、调度记录和两种详情状态。交互使用本地 Mock。分配运输部门和委派承运商尚缺后续画板。',
+    sourcePaths: ['prototype/common/products/lianyun/web/business/散杂货调度/', 'prototype/common/shared/web/tms-web-shell/', 'public/bulk-dispatch-assets/', 'public/multimodal-plan-assets/road.svg', 'public/tms-web-shell-assets/Vector_26_176.svg', 'public/lianyun-mobile-assets/scheme-detail/DouyinSansBold.ttf'],
+    evidencePaths: ['context/project-rules/Pixso设计稿还原与原型源码治理规范.md'],
+  },
+
+  {
     key: 'systemWorkbench', productId: 'lianyun', operationAppId: null, platform: 'web', scope: 'common', projectId: null,
     requirement: '至小简系统首页入口；研发版本 TMS-COMMON-202611-01', remark: '依据现网工作台还原首页 16 张看板，支持至小简入口方案对照。业务数据为本地模拟。',
     sourcePaths: ['prototype/common/products/lianyun/web/business/至小简入口/', 'prototype/common/products/lianyun/web/business/系统首页/', 'prototype/common/products/lianyun/web/business/AI工作台/account-demo.js', 'prototype/common/products/lianyun/web/business/托运单管理/详情/assets/xiaojian-inspector-poses.png', 'prototype/common/shared/web/tms-web-shell/', 'public/ai-workbench-assets/', 'public/lianyun-mobile-assets/scheme-detail/DouyinSansBold.ttf', 'public/zhiyun-mobile-assets/invoice/empty-box.png'],

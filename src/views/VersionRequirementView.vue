@@ -35,6 +35,24 @@
         <div><span>02</span><h2>本次需求范围</h2></div>
       </header>
       <el-empty v-if="!pages.length" description="本版本暂未纳入需求页面" />
+      <div v-else-if="scopeItems.length" class="scope-table-wrap">
+        <table class="scope-table" aria-label="本次需求范围">
+          <thead>
+            <tr><th scope="col">修改模块</th><th scope="col">模块路径</th><th scope="col">需求目的</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in scopeItems" :key="item.pageKey + ':' + item.title">
+              <th scope="row">{{ item.title }}</th>
+              <td>
+                <RouterLink :to="resolvePrototypePageLocation({ versionId: version.id, pageKey: item.pageKey })">
+                  {{ item.location }}
+                </RouterLink>
+              </td>
+              <td>{{ item.detail }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div v-else class="requirement-table">
         <div class="requirement-row requirement-table-head">
           <span>序号</span>
@@ -82,6 +100,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { resolvePrototypePageLocation } from '../review/prototype-navigation.mjs'
 import {
   formatRevisionLabel,
   reviewVisibleStatus,
@@ -105,6 +124,9 @@ const revisionLabel = computed(() => formatRevisionLabel(props.version?.revision
 const visibleStatus = computed(() => reviewVisibleStatus(props.version?.status))
 const revisionBatches = computed(() => sortRevisionBatches(props.changes?.revisions))
 const pageNameMap = computed(() => new Map(props.pages.map(page => [page.key, page.name])))
+const scopeItems = computed(() => props.pages.flatMap(page =>
+  (props.version?.scopeItems || []).filter(item => item.pageKey === page.key),
+))
 
 function formatDate(value) {
   return value || '待确定'
@@ -258,6 +280,14 @@ function pageNames(pageKeys) {
 .requirement-row strong { color: #344054; font-size: 14px; }
 .requirement-row > span:last-child { color: #667085; font-size: 13px; }
 .requirement-order { color: #98a2b3; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.scope-table-wrap { border: 1px solid #e5e9f0; border-radius: 6px; overflow: auto; }
+.scope-table { width: 100%; min-width: 580px; border-collapse: collapse; text-align: left; color: #344054; line-height: 1.65; }
+.scope-table th, .scope-table td { padding: 12px 16px; vertical-align: top; }
+.scope-table thead { background: #f7f8fa; }
+.scope-table thead th:first-child { width: 19%; }
+.scope-table thead th:nth-child(2) { width: 33%; }
+.scope-table tbody tr { border-top: 1px solid #edf0f4; }
+.scope-table a { color: #3a65ff; text-decoration: underline; text-underline-offset: 3px; }
 
 .revision-list { display: flex; flex-direction: column; gap: 14px; }
 .revision-batch { padding: 18px; border: 1px solid #e7ebf0; border-radius: 7px; background: #fafbfc; }

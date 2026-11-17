@@ -1,5 +1,5 @@
 // 标注状态管理
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import type { AnnotationItem, PageAnnotation } from './types'
 import { annotationLoadUrl } from '../../../review/annotation-paths.mjs'
@@ -10,6 +10,8 @@ const editMode = ref(false)
 const activeId = ref<string>('')
 const annotations = ref<AnnotationItem[]>([])
 const pageTitle = ref('')
+const visibleCount = ref(0)
+let writes = Promise.resolve()
 
 const setVisible = (nextVisible: boolean) => {
   visible.value = nextVisible
@@ -22,7 +24,7 @@ const setVisible = (nextVisible: boolean) => {
 const toggleVisible = () => setVisible(!visible.value)
 
 const setEditMode = (nextEditMode: boolean) => {
-  editMode.value = nextEditMode
+  editMode.value = import.meta.env.DEV && nextEditMode
   if (nextEditMode) {
     visible.value = true
   } else {
@@ -37,7 +39,7 @@ export function useAnnotationControl() {
   return {
     visible,
     editMode,
-    annotations,
+    annotations, visibleCount,
     setVisible,
     toggleVisible,
     setEditMode,
@@ -81,22 +83,31 @@ export function useAnnotation() {
     return { versionId: '', pageKey: routeToFileName(route) }
   }
 
-  /** 加载当前页面标注数据（直接 fetch 静态文件，Vite dev server 提供） */
+  const ready = ref(false)
+  const dataError = ref('')
+  let generation = 0
   const loadAnnotations = async () => {
+    const current = ++generation
     const { versionId, pageKey } = annotationTarget()
+    ready.value = false
+    dataError.value = ''
+    annotations.value = []
+    pageTitle.value = ''
     try {
-      const base = import.meta.env.BASE_URL || '/'
-      const loadUrl = annotationLoadUrl({ baseUrl: base, versionId: versionId || null, pageKey })
-      const res = await fetch(`${loadUrl}?t=${Date.now()}`)
-      if (res.ok) {
-        const data: PageAnnotation = await res.json()
-        annotations.value = data.annotations || []
+      await writes
+      if (generation !== current) return
+      const url = annotationLoadUrl({ baseUrl: import.meta.env.BASE_URL, versionId: versionId || null, pageKey })
+      const response = await fetch(url, {cache:'no-store'})
+      if (response.ok && !response.headers.get('content-type')?.includes('text/html')) {
+        const data: PageAnnotation = await response.json()
+        if (generation !== current) return
+        if (!Array.isArray(data.annotations)) throw new Error('标注数据格式错误')
+        annotations.value = data.annotations
         pageTitle.value = data.title || ''
-      } else {
-        annotations.value = []
-      }
+      } else if (!response.ok && response.status !== 404) throw new Error(String(response.status))
+      if (generation === current) ready.value = true
     } catch {
-      annotations.value = []
+      if (generation === current) dataError.value = '读取标注失败，请刷新后重试'
     }
   }
 
@@ -110,19 +121,26 @@ export function useAnnotation() {
       updatedAt: new Date().toISOString().split('T')[0],
       annotations: annotations.value
     }
-    await fetch('/__annotation_save__', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
+    // 在入队时固定版本、页面和内容，连续拖动或切页时仍按操作顺序落盘。
+    const body = JSON.stringify(data)
+    const current = generation
+    writes = writes.then(async () => {
+      const result = await fetch('/__annotation_save__', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body
+      })
+      if (!result.ok) throw new Error(String(result.status))
+      if (current === generation) dataError.value = ''
+    }).catch(() => { dataError.value = pageKey + ' 的标注未保存，请检查本地服务后重试' })
   }
 
   const addAnnotation = (item: AnnotationItem) => {
+    if (!ready.value || !editMode.value || !import.meta.env.DEV) return
     annotations.value.push(item)
     saveAnnotations()
   }
 
   const updateAnnotation = (id: string, updates: Partial<AnnotationItem>) => {
+    if (!ready.value || !editMode.value || !import.meta.env.DEV) return
     const idx = annotations.value.findIndex(a => a.id === id)
     if (idx > -1) {
       annotations.value[idx] = { ...annotations.value[idx], ...updates }
@@ -131,25 +149,21 @@ export function useAnnotation() {
   }
 
   const removeAnnotation = (id: string) => {
+    if (!ready.value || !editMode.value || !import.meta.env.DEV) return
     annotations.value = annotations.value.filter(a => a.id !== id)
     saveAnnotations()
   }
 
-  // 路由变化时重新加载：先清空标注，等页面组件渲染完再加载
-  watch(() => [route.name, route.params.versionId, route.params.pageKey, route.path], () => {
+  watch(() => route.path, () => {
     activeId.value = ''
-    annotations.value = []  // 先清空，避免旧标注点在新页面短暂显示
-    // nextTick 等 Vue 路由组件挂载，再延迟 400ms 等页面内容（表格、卡片等）渲染完成
-    nextTick(() => {
-      setTimeout(() => {
-        loadAnnotations()
-      }, 400)
-    })
-  }, { immediate: true })
+    editMode.value = false
+    void loadAnnotations()
+  }, {immediate:true, flush:'sync'})
+  onUnmounted(() => { generation++; setEditMode(false) })
 
   return {
     visible, editMode, activeId, annotations, pageTitle,
-    loadAnnotations, addAnnotation, updateAnnotation,
+    visibleCount, ready, dataError, loadAnnotations, addAnnotation, updateAnnotation,
     removeAnnotation, toggleVisible, toggleEditMode
   }
 }

@@ -17,6 +17,7 @@
         :class="{
           'no-header': currentPage !== 'home',
           'waybill-workbench-main': currentPage === 'waybillManage',
+          'viewport-workbench-main': ['bulkDispatch', 'transportSettlement'].includes(currentPage),
         }"
       >
         <!-- 首页导航 -->
@@ -397,13 +398,12 @@ const versionWorkbenchError = ref('')
 const {
   visible: annotationVisible,
   editMode: annotationEditing,
-  annotations: annotationItems,
+  visibleCount: annotationCount,
   setEditMode: setAnnotationEditing,
   toggleVisible: toggleAnnotationVisible,
   toggleEditMode: toggleAnnotationEditing,
 } = useAnnotationControl()
 const annotationCanEdit = computed(() => import.meta.env.DEV)
-const annotationCount = computed(() => annotationItems.value.length)
 const AnnotationOverlay = defineAsyncComponent(
   () => import('./components/Annotation/AnnotationOverlay.vue'),
 )
@@ -680,6 +680,7 @@ function togglePrototypeDirectory() {
   padding: 24px 32px 0;
 }
 
+.app-main.viewport-workbench-main,
 .app-main.waybill-workbench-main {
   padding: 0;
 }
@@ -1219,6 +1220,12 @@ function togglePrototypeDirectory() {
 
 .prototype-workbench.directory-overlay .prototype-workbench-canvas {
   margin-left: 0;
+}
+
+.viewport-workbench-main .prototype-workbench-canvas {
+  box-sizing: border-box;
+  min-width: 0;
+  height: 100dvh;
 }
 
 /* 项目定制卡片左侧橙色标记 */

@@ -25,6 +25,7 @@
 
       <div v-if="editMode" class="panel-footer">
         <button class="panel-btn" @mousedown.stop @click="$emit('edit', annotation.id)">编辑</button>
+        <button class="panel-btn" @mousedown.stop @click="$emit('rebind', annotation.id)">重新绑定</button>
         <button class="panel-btn panel-btn-danger" @mousedown.stop @click="$emit('delete', annotation.id)">删除</button>
       </div>
 
@@ -55,6 +56,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: []
+  rebind: [id: string]
   edit: [id: string]
   delete: [id: string]
 }>()
@@ -346,6 +348,7 @@ const renderedContent = computed(() => {
   transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .panel-fade-leave-active {
+  pointer-events: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .panel-fade-enter-from {

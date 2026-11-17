@@ -1,0 +1,112 @@
+<svg viewBox="0 0 16 16.0005" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16.000000" height="16.000488" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+		<g id="pixso_custom_effect_191">
+			<effect x="-0.500000" y="-1.000000" visibility="visible" fill="rgb(0,89,209)" fill-opacity="0.690196097" effectType="innerShadow" showShadowBehind="1" stdDeviation="1" radius="0" />
+		</g>
+		<filter id="filter_191" width="12.000000" height="12.000000" x="2.000977" y="2.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_191)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feOffset dx="-0.500000" dy="-1.000000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="0.333333343" />
+			<feComposite k2="-1" k3="1" in2="SourceAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.34902 0 0 0 0 0.819608 0 0 0 0.690196 0 " />
+			<feBlend result="effect_innerShadow_1" in2="shape" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_96" x1="8.00097656" x2="8.00097656" y1="2" y2="14" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(147,223,251)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(60,154,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_192">
+			<effect x="0.000000" y="3.000000" visibility="hidden" fill="rgb(0,0,0)" fill-opacity="0.160784319" effectType="dropShadow" stdDeviation="6" radius="0" />
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.460000008" stdDeviation="4" />
+		</g>
+		<filter id="filter_192" width="8.000000" height="3.000000" x="4.000977" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_192)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_16" transform="matrix(1,0,0,1,-4.00098,-0)">
+			<path d="M12.001 1.5C12.001 0.671573 11.3294 0 10.501 0L5.50098 0C4.67255 0 4.00098 0.671573 4.00098 1.5C4.00098 2.32843 4.67255 3 5.50098 3L10.501 3C11.3294 3 12.001 2.32843 12.001 1.5Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		</clipPath>
+		<linearGradient id="paint_linear_97" x1="17.7765446" x2="4.00097656" y1="2.15820122" y2="1.49999785" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(47,140,243)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(142,219,252)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_193">
+			<effect x="0.000000" y="0.400000" visibility="visible" fill="rgb(0,52,139)" fill-opacity="0.258823544" effectType="dropShadow" stdDeviation="1" radius="0" />
+		</g>
+		<filter id="filter_193" width="7.928711" height="2.948730" x="3.000000" y="4.129639" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_193)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="0.400000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="0.333333343" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.203922 0 0 0 0 0.545098 0 0 0 0.258824 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_98" x1="5.12672901" x2="6.96446753" y1="4.30624533" y2="5.67812252" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(240,246,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_194">
+			<effect x="0.000000" y="0.400000" visibility="visible" fill="rgb(0,52,139)" fill-opacity="0.258823544" effectType="dropShadow" stdDeviation="1" radius="0" />
+		</g>
+		<filter id="filter_194" width="6.150391" height="2.948730" x="3.000000" y="6.856689" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_194)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="0.400000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="0.333333343" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.203922 0 0 0 0 0.545098 0 0 0 0.258824 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_99" x1="4.78871059" x2="6.0751276" y1="7.03329563" y2="8.4051733" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(240,246,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_195">
+			<effect x="0.000000" y="0.400000" visibility="visible" fill="rgb(0,52,139)" fill-opacity="0.258823544" effectType="dropShadow" stdDeviation="1" radius="0" />
+		</g>
+		<filter id="filter_195" width="7.132324" height="6.032471" x="7.079590" y="7.806396" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_195)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="0.400000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="0.333333343" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.203922 0 0 0 0 0.545098 0 0 0 0.258824 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_100" x1="9.05447483" x2="10.6453457" y1="6.60735893" y2="12.4389181" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(240,246,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="1" />
+		</linearGradient>
+	</defs>
+	<mask id="mask_239" width="16.000000" height="16.000000" x="0.000000" y="0.000488" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 17273" width="16.000000" height="16.000000" x="0.000000" y="0.000488" fill="rgb(255,255,255)" />
+			<rect id="矩形 17273" width="15.000000" height="15.000000" x="0.500000" y="0.500488" stroke="rgb(255,255,255)" stroke-width="1.000000" />
+		</g>
+	</mask>
+	<g id="蒙版组 758" mask="url(#mask_239)">
+		<g id="组 40391">
+			<g filter="url(#filter_191)">
+				<rect id="矩形 17269" width="12.000000" height="12.000000" x="2.000977" y="2.000000" rx="2.000000" fill="url(#paint_linear_96)" />
+			</g>
+			<g data-pixso-skip-parse="true">
+				<foreignObject width="8.000000" height="3.000000" x="4.000977" y="0.000000" />
+			</g>
+			<g filter="url(#filter_192)">
+				<rect id="矩形 17270" width="8.000000" height="3.000000" x="4.000977" y="0.000000" rx="1.500000" fill="url(#paint_linear_97)" />
+				<rect id="矩形 17270" width="7.600000" height="2.600000" x="4.200976" y="0.200000" rx="1.300000" stroke="rgb(255,255,255)" stroke-width="0.400000" />
+			</g>
+			<g filter="url(#filter_193)">
+				<rect id="矩形 17271" width="5.928936" height="0.948630" x="4.000000" y="4.729492" rx="0.474315" fill="url(#paint_linear_98)" />
+			</g>
+			<g filter="url(#filter_194)">
+				<rect id="矩形 17272" width="4.150255" height="0.948630" x="4.000000" y="7.456543" rx="0.474315" fill="url(#paint_linear_99)" />
+			</g>
+			<g filter="url(#filter_195)">
+				<path id="路径 27595" d="M9.95417 12.4389C9.84205 12.4389 9.72956 12.3992 9.63946 12.3186L8.23642 11.0631C8.04209 10.8892 8.02552 10.5907 8.19942 10.3964C8.37331 10.202 8.67181 10.1855 8.86614 10.3594L9.9187 11.3013L12.3888 8.56244C12.5634 8.36878 12.862 8.35339 13.0556 8.52805C13.2493 8.70269 13.2647 9.00125 13.09 9.19489L10.305 12.283C10.2118 12.3863 10.0832 12.4389 9.95417 12.4389Z" fill="url(#paint_linear_100)" fill-rule="nonzero" />
+			</g>
+		</g>
+	</g>
+</svg>

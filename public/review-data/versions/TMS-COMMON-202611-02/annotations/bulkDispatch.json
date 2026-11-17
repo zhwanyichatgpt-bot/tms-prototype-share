@@ -1,0 +1,72 @@
+{
+  "versionId": "TMS-COMMON-202611-02",
+  "page": "bulkDispatch",
+  "title": "散杂货调度",
+  "updatedAt": "2026-11-17",
+  "annotations": [
+    {
+      "id": "annot-bulkDispatch-rule-transport-plan",
+      "type": "selector",
+      "selector": ".annot-bulkDispatch-rule-transport-plan",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "公路与水路调度",
+      "content": "调度按公路、水路分别组织。公路计划使用车辆、司机及装车、卸车信息；水路计划使用船舶、船东及装船、卸船信息。当前运输方式应贯穿计划、路线、资源指派和调度记录展示。",
+      "category": "rule",
+      "source": "本次产品对话已确认：调度公路/水路切换、统一整趟/分段范围及所属计划费用；散杂货调度原型用于核对展示位置",
+      "container": "page",
+      "group": "center",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-bulkDispatch-rule-route-plan",
+      "type": "selector",
+      "selector": ".annot-bulkDispatch-rule-route-plan",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "路线与所属计划",
+      "content": "路线保留各段的装卸点及所属货源计划或汽运计划。后续分段计费按该段所属计划取得费用依据，不能将不同计划的路段合并为一套无来源的费用。",
+      "category": "rule",
+      "source": "本次产品对话已确认：调度公路/水路切换、统一整趟/分段范围及所属计划费用；散杂货调度原型用于核对展示位置",
+      "container": "modal",
+      "group": "dispatch-route",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-bulkDispatch-rule-billing-scope-card",
+      "type": "selector",
+      "selector": ".annot-bulkDispatch-rule-billing-scope-card",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "调度统一计费范围",
+      "content": "计费范围在整个调度上选择，支持整趟计费和分段计费。所选范围统一适用于本次调度的全部车辆与全部承运时段，司机或车辆卡片不独立切换计费范围。\n\n- 选分段计费时，各段承接所属货源计划或汽运计划的司机计费规则。\n- 完成指派时，路线各段须选齐装卸点且装在卸之前，所属计划须有司机计费规则。",
+      "category": "rule",
+      "source": "本次产品对话已确认：调度公路/水路切换、统一整趟/分段范围及所属计划费用；散杂货调度原型用于核对展示位置",
+      "container": "modal",
+      "group": "dispatch-assignment",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-bulkDispatch-rule-billing-scope-table",
+      "type": "selector",
+      "selector": ".annot-bulkDispatch-rule-billing-scope-table",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "调度统一计费范围",
+      "content": "计费范围在整个调度上选择，支持整趟计费和分段计费。所选范围统一适用于本次调度的全部车辆与全部承运时段，司机或车辆卡片不独立切换计费范围。\n\n- 选分段计费时，各段承接所属货源计划或汽运计划的司机计费规则。\n- 完成指派时，路线各段须选齐装卸点且装在卸之前，所属计划须有司机计费规则。",
+      "category": "rule",
+      "source": "本次产品对话已确认：调度公路/水路切换、统一整趟/分段范围及所属计划费用；散杂货调度原型用于核对展示位置",
+      "container": "page",
+      "group": "dispatch-assignment-table",
+      "createdAt": "2026-11-16"
+    }
+  ]
+}

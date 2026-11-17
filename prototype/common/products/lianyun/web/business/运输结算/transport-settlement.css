@@ -4,21 +4,22 @@
  * ========================================================= */
 
 .ts-root {
+  container: settlement-viewport / inline-size;
   width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
 .ts-canvas {
-  width: 1920px;
-  height: 936px;
-  transform-origin: left top;
+  width: 100%;
+  height: 100%;
   position: relative;
 }
 
 .ts-app {
   position: relative;
-  width: 1920px;
-  height: 936px;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background: linear-gradient(127deg, #edf3f8 0%, #f2f1f6 100%);
   font-family: -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif,
@@ -228,47 +229,21 @@
 }
 
 .ts-select-field {
-  height: 32px;
-  border: 1px solid #e0e0e0;
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 0 8px 0 10px;
-  cursor: pointer;
-  background: #fff;
-  position: relative;
-  user-select: none;
+  --el-color-primary: #3a65ff;
+  --el-border-radius-base: 2px;
+  --el-border-color: #e0e0e0;
+  min-width: 0;
 }
 
 .ts-select-field .ts-select-label {
   color: #909399;
   font-size: 14px;
-  margin-right: 8px;
   white-space: nowrap;
 }
 
-.ts-select-field .ts-select-value {
-  color: #333;
+.ts-select-field .el-select__caret {
   font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ts-select-field .ts-select-value.placeholder {
   color: #c0c4cc;
-}
-
-.ts-select-field .ts-caret {
-  margin-left: auto;
-  padding-left: 10px;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid #c0c4cc;
-  flex: none;
 }
 
 .ts-select-pop {
@@ -1446,7 +1421,9 @@
 .tsd-waybill {
   display: flex;
   align-items: center;
-  height: 81px;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 81px;
   padding: 8px;
   box-sizing: border-box;
 }
@@ -1459,8 +1436,8 @@
 .tsd-waybill-info {
   display: flex;
   align-items: center;
-  width: 320px;
-  flex: none;
+  flex: 0 1 320px;
+  min-width: 0;
 }
 
 .tsd-file-icon {
@@ -1487,8 +1464,9 @@
 .tsd-waybill-no {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
-  height: 20px;
+  min-height: 20px;
   font-size: 14px;
   color: #323234;
 }
@@ -1503,11 +1481,11 @@
   font-size: 14px;
   color: #606266;
   line-height: 19px;
+  overflow-wrap: anywhere;
 }
 
 .tsd-metric {
-  width: 128px;
-  flex: none;
+  flex: 0 0 clamp(88px, 10%, 128px);
   text-align: left;
 }
 
@@ -1581,6 +1559,11 @@
 .tsd-desc-columns .tsd-desc-item {
   flex: 1;
   min-width: 0;
+  height: auto;
+  min-height: 31px;
+  align-items: baseline;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tsd-desc-columns.single .tsd-desc-item {
@@ -1827,34 +1810,53 @@
 }
 .ts-plan-formula { flex: none; color: #3a65ff; }
 
+.ts-driver-card {
+  margin: 14px 0;
+  border: 1px solid #ebeef5;
+  border-top: 2px solid #a8bcff;
+}
+.ts-driver-card .ts-driver-card-heading {
+  height: auto;
+  min-height: 40px;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 8px 12px;
+  background: #f5f7fc;
+}
+.ts-driver-card-amount { margin-left: auto; }
+.ts-driver-card-heading .ts-wb-links { margin-left: 0; }
+.ts-driver-card-heading .ts-wb-links button { margin-left: 0; }
+.ts-driver-card .ts-canonical-plan { padding: 0 12px; }
+.ts-driver-card .ts-canonical-plan + .ts-canonical-plan { border-top: 1px solid #ebeef5; }
+.ts-driver-card .ts-plan-strip { height: auto; min-height: 28px; flex-wrap: wrap; gap: 6px 0; }
+.ts-driver-card-total {
+  padding: 10px 12px;
+  text-align: right;
+  border-top: 1px solid #ebeef5;
+  background: #fafafa;
+}
+
 /* 运单分组行 */
 .ts-draft-waybill td { height: auto !important; padding: 0 12px !important; background: #fff; border-top: 1px dashed #e6ebf5; }
 .ts-wb-line { display: flex; align-items: center; gap: 8px; height: 40px; }
 .ts-wb-title { color: #4a4f5c; }
 .ts-wb-links { margin-left: auto; }
-.ts-wb-links button { color: #3a65ff; font-size: 12px; margin-left: 12px; }
+.ts-wb-links button { margin-left: 12px; }
 .ts-draft-waybill .ts-flag-tag { margin-left: 6px; }
 
 /* 运单明细行 */
 .ts-draft-detail td { height: 71px !important; vertical-align: middle; }
 .ts-draft-detail.ts-draft-diff td { background: #fffdf6; }
 .ts-draft-detail.ts-draft-diff:hover td { background: #fff9ea; }
-.ts-draft-detail .ts-merged { padding: 0 !important; }
-.ts-merged-flex { display: flex; height: 71px; }
+.ts-draft-table .ts-draft-detail .ts-draft-field { padding: 0; }
 .ts-sub {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-  height: 100%;
   padding: 0 10px;
-  border-right: 1px solid #f0f2f7;
-  flex: none;
 }
-.ts-sub:last-child { border-right: 0; }
-.ts-sub-goods { width: 250px; flex-direction: row; align-items: center; }
-.ts-sub-places { width: 180px; }
-.ts-sub-num { width: 120px; }
+.ts-sub-goods { flex-direction: row; align-items: center; justify-content: flex-start; overflow-wrap: anywhere; }
 .ts-sub-line { line-height: 18px; color: #3d4050; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ts-pair { display: flex; align-items: center; gap: 4px; }
 .ts-pair label { flex: none; color: #8a8f99; font-size: 11px; }
@@ -1878,7 +1880,20 @@
 .ts-place-tag.unload { color: #d46b08; background: #fff4e5; }
 .ts-loss, .ts-mileage { line-height: 18px; color: #4a4f5c; font-variant-numeric: tabular-nums; }
 .ts-fee { color: #4a4f5c; white-space: nowrap; }
-.ts-fee button { color: #3a65ff; font-size: 12px; margin-left: 4px; }
+.ts-fee button { margin-left: 4px; }
+.ts-driver-card .ts-fee button { display: block; margin: 4px 0 0; }
+.ts-fee-target { margin: 0 0 12px; }
+.ts-fee-error { color: var(--el-color-danger); }
+.ts-wb-links button,
+.ts-fee button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #3a65ff;
+  font-size: 12px;
+  cursor: pointer;
+}
 
 /* 合计行 */
 .ts-draft-total td {
@@ -1904,3 +1919,282 @@
 
 .ts-flag-tag.muted { color: #8a8f99; background: #f2f3f5; }
 .ts-draft-summary { margin: 0 0 12px; font-size: 12px; color: #8a8f99; }
+
+/* 运输结算独立页随工作台画布排版。 */
+.ts-root .ts-body { min-width: 0; }
+.ts-root .ts-side {
+  width: clamp(144px, 16%, 246px);
+  height: 100%;
+  overflow: auto;
+  padding-inline: 16px;
+}
+.ts-root .ts-side-group,
+.ts-root .ts-side-group-title,
+.ts-root .ts-side-child { width: 100%; }
+.ts-root .ts-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  padding-right: 0;
+}
+.ts-root .ts-content > :not(.ts-table-wrap, .ts-page-empty) { flex: none; }
+.ts-root .ts-search {
+  height: auto;
+  min-height: 48px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.ts-root .ts-search-fields {
+  flex: 1 1 420px;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ts-root .ts-search-fields > * { flex: 1 1 150px; }
+.ts-root .ts-search-actions { margin-left: auto; }
+.ts-root .ts-table-wrap,
+.ts-root .ts-page-empty {
+  flex: 1 1 auto;
+  min-height: 160px;
+  height: auto;
+}
+.ts-root .ts-table-wrap { overflow: auto; }
+.ts-root .ts-table-wrap .ts-table { min-width: 1710px; width: 100%; }
+.ts-root .ts-select-info {
+  position: static;
+  padding: 12px 16px;
+}
+.ts-root .ts-drawer {
+  inset: 0;
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+.ts-root .ts-drawer-body { flex: 1; min-height: 0; overflow: auto; }
+.ts-root .ts-drawer-footer { position: static; width: auto; flex: none; }
+.ts-root .ts-picker {
+  inset: 0 0 0 auto;
+  width: min(1536px, 100%);
+  height: auto;
+  overflow: auto;
+  padding-bottom: 60px;
+}
+.ts-root .ts-picker-filters { flex-wrap: wrap; height: auto; }
+.ts-root .ts-picker-footer { position: sticky; bottom: 0; width: 100%; background: #fff; }
+.ts-root .tsd-left { flex: 3; min-width: 0; width: auto; }
+.ts-root .tsd-right { flex: 2; min-width: 0; width: auto; }
+.ts-root .tsd-table-wrap { width: auto; margin-right: 10px; overflow: auto; }
+
+@container settlement-viewport (width < 1280px) {
+  .ts-root .tsd-main { flex-direction: column; gap: 16px; }
+  .ts-root .tsd-left,
+  .ts-root .tsd-right { width: 100%; flex: auto; }
+  .ts-root .tsd-left { padding-bottom: 0; }
+  .ts-root .tsd-right { margin: 0; }
+}
+
+/* 页签栏沿用 Pixso 选中的工作台底栏与斜肩页签。 */
+.ts-root .tms-workbar--business {
+  border-radius: 12px 0 0;
+  background: rgb(0 0 0 / 6%);
+}
+.ts-root .tms-workbar-home {
+  color: #909499;
+  font-family: 'PingFang SC', system-ui, sans-serif;
+}
+.ts-root .tms-workbar-home-icon img { width: 16px; height: 16px; }
+.ts-root .tms-workbar--business .tms-workbar-tabs { left: 153px; }
+.ts-root .tms-workbar--business .tms-workbar-tab.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 202px;
+  padding: 0 30px;
+  background: url('/tms-web-shell-assets/Vector_26_176.svg') center / 202px 36px no-repeat;
+}
+.ts-root .tms-workbar--business .tms-workbar-tab-label {
+  color: #3d4050;
+  font: 600 16px/22px 'PingFang SC', system-ui, sans-serif;
+}
+.ts-root .tms-workbar--business .tms-workbar-tab-close {
+  position: static;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.ts-root .tms-workbar--business .tms-workbar-tab-close-icon {
+  width: 10px;
+  height: 10px;
+}
+.ts-root .tms-workbar-tab-close-icon::before,
+.ts-root .tms-workbar-tab-close-icon::after { width: 8px; }
+
+.ts-root .ts-content > .ts-search { margin-top: 24px; }
+.ts-waybill-types {
+  display: flex;
+  gap: 12px;
+  margin: 16px 16px 8px;
+}
+.ts-waybill-types button {
+  position: relative;
+  height: 32px;
+  border: 0;
+  padding: 0 8px;
+  background: transparent;
+  color: #323234;
+  font: inherit;
+  cursor: pointer;
+}
+.ts-waybill-types button[aria-pressed='true'] { color: #3a65ff; }
+.ts-waybill-types button[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto calc(50% - 12px) 0;
+  height: 2px;
+  background: currentColor;
+}
+.ts-waybill-search {
+  --el-color-primary: #3a65ff;
+  --el-border-radius-base: 2px;
+  --el-fill-color-light: #f5f5f5;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 0 16px;
+}
+.ts-root .ts-waybill-search .ts-search-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: 1;
+  gap: 16px 14px;
+}
+.ts-waybill-field {
+  display: flex;
+  min-width: 0;
+}
+.ts-waybill-field > span {
+  display: flex;
+  align-items: center;
+  padding-inline: 12px;
+  height: 32px;
+  border: 1px solid var(--el-border-color);
+  border-right: 0;
+  border-radius: 2px 0 0 2px;
+  background: #f5f5f5;
+  color: #606266;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.ts-waybill-search .el-input-group__prepend { padding-inline: 12px; color: #606266; white-space: nowrap; }
+.ts-waybill-field .el-select,
+.ts-waybill-field > .el-date-editor { flex: 1; min-width: 0; }
+.ts-waybill-field .el-select__wrapper,
+.ts-waybill-field > .el-date-editor { border-radius: 0 2px 2px 0; }
+.ts-waybill-dates { grid-column: span 2; width: min(100%, 500px); }
+.ts-waybill-search .ts-search-actions { flex: none; gap: 12px; }
+.ts-waybill-search .ts-search-actions .primary { width: 80px; }
+.ts-waybill-search .ts-icon-btn svg,
+.ts-waybill-toolbar .ts-btn svg { width: 16px; height: 16px; }
+.ts-root .ts-waybill-toolbar { margin-top: 20px; }
+.ts-waybill-toolbar .ts-btn svg { margin-right: 6px; }
+@container settlement-viewport (width < 1050px) {
+  .ts-root .ts-waybill-search .ts-search-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container settlement-viewport (width < 760px) {
+  .ts-waybill-search { flex-direction: column; gap: 12px; }
+  .ts-root .ts-waybill-search .ts-search-fields { width: 100%; }
+}
+@container settlement-viewport (width < 510px) {
+  .ts-root .ts-waybill-search .ts-search-fields { grid-template-columns: minmax(0, 1fr); }
+  .ts-waybill-dates { grid-column: auto; }
+}
+.ts-waybill-table .ts-waybill-check,
+.ts-waybill-table .ts-waybill-id {
+  position: sticky;
+  z-index: 1;
+  background: inherit;
+}
+.ts-waybill-table .ts-waybill-check {
+  left: 0;
+  padding: 0;
+  text-align: center;
+}
+.ts-waybill-table .ts-waybill-id {
+  left: 44px;
+  box-shadow: 3px 0 6px rgb(0 0 0 / 4%);
+}
+.ts-waybill-table thead :is(.ts-waybill-check, .ts-waybill-id) {
+  z-index: 4;
+  background: #f5f5f5;
+}
+.ts-waybill-table .col-op { width: 92px; }
+.ts-waybill-table .ts-settle-no { gap: 8px; }
+.ts-waybill-table .ts-settle-no img { width: 22px; height: 22px; }
+.ts-waybill-table .ts-grey-title { overflow-wrap: anywhere; }
+.ts-waybill-table input[type='checkbox'] { accent-color: #3860ff; }
+.ts-waybill-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.ts-waybill-empty {
+  text-align: center;
+  color: #909399;
+}
+
+.ts-waybill-detail-body { background: #f6f8fa; }
+.ts-waybill-detail .tsd-header { height: 52px; padding-top: 14px; }
+.ts-waybill-detail .tsd-summary { height: auto; }
+.ts-waybill-detail .tsd-summary-title {
+  height: auto;
+  min-height: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ts-waybill-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px 20px;
+  margin: 12px 0 0;
+}
+.ts-waybill-facts dt { color: #777d88; font-size: 12px; }
+.ts-waybill-facts dd { margin: 3px 0 0; overflow-wrap: anywhere; }
+.ts-waybill-panel {
+  margin: 16px 20px;
+  padding: 16px;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  background: #fff;
+}
+.ts-waybill-panel h3 { margin: 0 0 12px; font-size: 15px; }
+.ts-waybill-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+.ts-waybill-route p { margin: 4px 0 0; color: #777d88; font-size: 12px; }
+.ts-waybill-route-arrow { color: #3860ff; }
+.ts-waybill-metrics {
+  margin: 16px 0;
+  padding: 10px 12px;
+  background: #f5f7fa;
+}
+.ts-waybill-panel-table { overflow: auto; }
+.ts-waybill-panel-table table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+.ts-waybill-panel-table :is(th, td) {
+  padding: 10px 12px;
+  border: 1px solid #ebeef5;
+  text-align: left;
+}
+.ts-waybill-panel-table th { background: #f5f5f5; font-weight: 600; }
+.ts-waybill-panel-table .ts-waybill-empty { text-align: center; }

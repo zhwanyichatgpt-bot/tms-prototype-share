@@ -27,6 +27,7 @@ defineProps({
   /* 工作台栏 */
   tabs: { type: Array, default: () => [] },
   activeTabKey: { type: String, default: '' },
+  workspaceVariant: { type: String, default: '' },
   /* 左侧导航 */
   navItems: { type: Array, default: () => [] },
   activeNav: { type: String, default: '' },
@@ -34,6 +35,7 @@ defineProps({
   scale: { type: Number, default: 1 },
   /* 框架规格：design（1920×1364 设计稿）/ business（业务系统 1920×936） */
   variant: { type: String, default: 'design' },
+  fluid: { type: Boolean, default: false },
   /* business 规格画布高度 */
   canvasHeight: { type: Number, default: 936 },
   /* 是否显示页签栏左侧「工作台」入口 */
@@ -52,7 +54,7 @@ const emit = defineEmits([
 <template>
   <div
     class="tms-web-shell"
-    :class="`tms-web-shell--${variant}`"
+    :class="[`tms-web-shell--${variant}`, { 'tms-web-shell--fluid': fluid }]"
     :style="{ '--tms-shell-scale': scale, '--tms-shell-height': `${canvasHeight}px` }"
   >
     <TmsTopbar
@@ -74,7 +76,7 @@ const emit = defineEmits([
     </TmsTopbar>
 
     <TmsWorkspaceBar
-      :variant="variant"
+      :variant="workspaceVariant || variant"
       :show-home="showHome"
       :tabs="tabs"
       :active-key="activeTabKey"
@@ -146,5 +148,67 @@ const emit = defineEmits([
   width: 1856px;
   height: calc(var(--tms-shell-height, 936px) - 108px);
   background-color: #ffffff;
+}
+.tms-web-shell--business .tms-workbar--design {
+  left: 64px;
+  width: 1856px;
+}
+.tms-web-shell--business .tms-workbar--design .tms-workbar-tabs { left: 153px; }
+.tms-web-shell--business .tms-workbar--design :is(.tms-workbar-home-text, .tms-workbar-tab-label) { font-weight: 400; }
+.tms-web-shell--business .tms-workbar-home-icon img { width: 16px; height: 16px; }
+
+/* 业务页按实际画布排版，保留浏览器原生字号。 */
+.tms-web-shell--business.tms-web-shell--fluid {
+  container: tms-fluid-shell / inline-size;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+.tms-web-shell--fluid .tms-shell-body {
+  width: 100%;
+  height: auto;
+  bottom: 0;
+}
+.tms-web-shell--fluid .tms-shell-content,
+.tms-web-shell--fluid .tms-workbar {
+  width: calc(100% - 64px);
+}
+.tms-web-shell--fluid .tms-shell-content {
+  height: 100%;
+  overflow: auto;
+}
+.tms-web-shell--fluid .tms-topbar--business {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 480px minmax(0, 1fr) 420px;
+}
+.tms-web-shell--fluid .tms-topbar--business .tms-topbar-menus {
+  position: relative;
+  grid-column: 2;
+  left: auto;
+  justify-self: center;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+@container tms-fluid-shell (width < 1500px) {
+  .tms-web-shell--fluid .tms-topbar--business {
+    grid-template-columns: min(36%, 370px) minmax(0, 1fr) 132px;
+  }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-logo { left: 20px; }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-divider { left: 156px; }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-avatar { left: 168px; }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-id { left: 210px; max-width: calc(36% - 218px); }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-org,
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-site {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tms-web-shell--fluid .tms-topbar--business .tms-topbar-status { display: none; }
+}
+@container tms-fluid-shell (width < 760px) {
+  .tms-web-shell--fluid .tms-topbar--business { grid-template-columns: 156px minmax(0, 1fr) 132px; }
+  .tms-web-shell--fluid .tms-topbar--business :is(.tms-topbar-id, .tms-topbar-divider, .tms-topbar-avatar) { display: none; }
 }
 </style>

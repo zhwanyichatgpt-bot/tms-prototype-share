@@ -1,0 +1,32 @@
+<svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="52.000000" height="52.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+		<g id="pixso_custom_effect_168">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="8" />
+		</g>
+		<filter id="filter_168" width="44.995605" height="25.234375" x="3.002441" y="26.765625" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_168)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="2.66666675" result="effect_layerBlur_1" />
+		</filter>
+		<linearGradient id="paint_linear_88" x1="12.3475323" x2="23.3574257" y1="10.2035666" y2="-5.55445576" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0" />
+		</linearGradient>
+	</defs>
+	<mask id="mask_235" width="52.000000" height="52.000000" x="0.000000" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 17504" width="52.000000" height="52.000000" x="0.000000" y="0.000000" fill="rgb(255,255,255)" />
+			<rect id="矩形 17504" width="51.000000" height="51.000000" x="0.500000" y="0.500000" stroke="rgb(255,255,255)" stroke-width="1.000000" />
+		</g>
+	</mask>
+	<g id="已装货" mask="url(#mask_235)">
+		<g filter="url(#filter_168)">
+			<ellipse id="椭圆 1854" rx="14.500000" ry="4.618381" cx="14.5" cy="4.61838055" fill="rgb(58,101,255)" transform="matrix(0.999848,0.0174524,-0.0174524,0.999848,11.083,34.5195)" />
+		</g>
+		<path id="路径 32231" d="M18.5 0C28.7173 0 37 8.28273 37 18.5C37 28.7173 28.7173 37 18.5 37C8.28273 37 0 28.7173 0 18.5C0 8.28273 8.28273 0 18.5 0Z" fill="rgb(58,101,255)" fill-rule="nonzero" transform="matrix(0,-1,1,0,7,44)" />
+		<path id="路径 32232" d="M17.0268 14.7276L15.0379 16.7134C14.6813 17.0487 14.1252 17.0487 13.7686 16.7134L11.7827 14.7245C11.6139 14.5565 11.519 14.3281 11.519 14.0899C11.519 13.8517 11.6139 13.6233 11.7827 13.4553C11.9507 13.2865 12.1791 13.1916 12.4174 13.1916C12.6556 13.1916 12.884 13.2865 13.052 13.4553L13.5369 13.9401L13.5369 4.05781C13.5655 3.33141 13.1943 2.64761 12.5695 2.2759C11.9447 1.9042 11.1666 1.9042 10.5418 2.2759C9.91702 2.64761 9.54578 3.33141 9.5744 4.05781L9.5744 12.6492C9.51584 14.699 7.83716 16.3303 5.78637 16.3303C3.73559 16.3303 2.0569 14.699 1.99834 12.6492L1.99834 3.04795L1.54126 3.52046C1.18989 3.87352 0.618806 3.8749 0.265721 3.52355C-0.0873637 3.1722 -0.0887468 2.60117 0.262632 2.24811L2.25161 0.262388C2.60241 -0.0874628 3.17019 -0.0874628 3.52098 0.262388L5.50687 2.25121C5.82755 2.60638 5.81366 3.15052 5.47528 3.48888C5.1369 3.82723 4.59271 3.84112 4.23751 3.52047L3.79894 3.07885L3.79894 12.6523C3.8411 13.7228 4.72121 14.5688 5.79256 14.5688C6.86391 14.5688 7.74402 13.7228 7.78618 12.6523L7.78618 4.07016C7.84449 2.02703 9.51772 0.401014 11.5619 0.401014C13.606 0.401014 15.2792 2.02704 15.3375 4.07016L15.3375 13.8845L15.7483 13.4584C16.1035 13.1377 16.6477 13.1516 16.986 13.49C17.3244 13.8283 17.3383 14.3724 17.0176 14.7276L17.0268 14.7276Z" fill="url(#paint_linear_88)" fill-rule="nonzero" transform="matrix(0,1,-1,0,33.981,16.876)" />
+	</g>
+</svg>

@@ -13,6 +13,7 @@ const VERSION_PATCH_FIELDS = new Set([
   'baseVersionId',
   'targetReleaseDate',
   'pages',
+  'scopeItems',
 ])
 
 export class ReviewValidationError extends Error {
@@ -139,6 +140,18 @@ function normalizeVersionInput(input, pageCatalog) {
     pages: Array.isArray(input?.pages) ? clone(input.pages) : [],
   }
   version.pages = validateVersionPages(version, pageCatalog)
+  if (input.scopeItems !== undefined) {
+    if (!Array.isArray(input.scopeItems)) fail('INVALID_SCOPE_ITEMS', '本次需求范围必须为列表')
+    const includedKeys = new Set(version.pages.map(page => page.pageKey))
+    version.scopeItems = input.scopeItems
+      .filter(item => includedKeys.has(item?.pageKey))
+      .map(item => ({
+        pageKey: item.pageKey,
+        title: requiredText(item.title, '需求标题'),
+        location: requiredText(item.location, '操作位置'),
+        detail: requiredText(item.detail, '具体要求'),
+      }))
+  }
   return version
 }
 

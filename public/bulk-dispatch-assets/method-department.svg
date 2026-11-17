@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 44" width="56.000000" height="44.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_outline">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+		<linearGradient id="paint_linear_108" x1="31.0724945" x2="31.0724945" y1="9.64794922" y2="37.7597351" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(58,101,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(168,185,246)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_206">
+			<effect x="0.000000" y="1.000000" visibility="visible" fill="rgb(73,99,191)" fill-opacity="0.23137255" effectType="dropShadow" stdDeviation="2" radius="0" />
+			<effect x="1.000000" y="2.000000" visibility="visible" fill="rgb(255,255,255)" fill-opacity="1" effectType="innerShadow" showShadowBehind="1" stdDeviation="7" radius="0" />
+			<effect visibility="hidden" effectType="backgroundBlur" saturation="0.439999998" stdDeviation="4" />
+		</g>
+		<filter id="filter_206" width="46.167725" height="41.482422" x="7.520264" y="1.151367" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_206)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.09016 0 " />
+			<feOffset dx="0.000000" dy="1.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="0.666666687" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.286275 0 0 0 0 0.388235 0 0 0 0 0.74902 0 0 0 0.231373 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.09016 0 " />
+			<feOffset dx="1.000000" dy="2.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="2.33333325" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+			<feBlend result="effect_innerShadow_2" in2="shape" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_109" x1="20.2645588" x2="37.5660095" y1="36.9421196" y2="5.86660767" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(116,141,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(154,191,253)" offset="1" stop-opacity="1" />
+		</linearGradient>
+		<g id="pixso_custom_effect_207">
+			<effect x="0.000000" y="2.000000" visibility="visible" fill="rgb(138,138,138)" fill-opacity="0.258823544" effectType="dropShadow" stdDeviation="3" radius="0" />
+			<effect visibility="hidden" effectType="backgroundBlur" saturation="0.579999983" stdDeviation="2" />
+		</g>
+		<filter id="filter_207" width="30.863770" height="24.772705" x="16.578125" y="11.847168" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_207)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 " />
+			<feOffset dx="0.000000" dy="2.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="1" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.541176 0 0 0 0 0.541176 0 0 0 0 0.541176 0 0 0 0.258824 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+		<linearGradient id="paint_linear_110" x1="32.0100098" x2="44.1918945" y1="24.0561523" y2="36.9160194" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0" />
+		</linearGradient>
+		<g id="pixso_custom_effect_208">
+			<effect x="0.000000" y="1.000000" visibility="visible" fill="rgb(73,99,191)" fill-opacity="0.23137255" effectType="dropShadow" stdDeviation="2" radius="0" />
+			<effect x="1.000000" y="2.000000" visibility="visible" fill="rgb(255,255,255)" fill-opacity="1" effectType="innerShadow" showShadowBehind="1" stdDeviation="7" radius="0" />
+			<effect visibility="visible" effectType="backgroundBlur" saturation="0.5" stdDeviation="4" />
+		</g>
+		<filter id="filter_208" width="26.340088" height="25.512695" x="2.928711" y="18.058105" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_208)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14.1667 0 " />
+			<feOffset dx="0.000000" dy="1.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="0.666666687" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.286275 0 0 0 0 0.388235 0 0 0 0 0.74902 0 0 0 0.231373 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+			<feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14.1667 0 " />
+			<feOffset dx="1.000000" dy="2.000000" in="hardAlpha" />
+			<feGaussianBlur stdDeviation="2.33333325" />
+			<feComposite k2="-1" k3="1" in2="hardAlpha" operator="arithmetic" />
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+			<feBlend result="effect_innerShadow_2" in2="shape" mode="normal" />
+		</filter>
+		<clipPath id="outline_mask_19" transform="matrix(1,0,0,1,-2.92871,-18.0581)">
+			<path d="M4.92871 29.8144C4.92871 35.755 9.92971 40.5708 16.0988 40.5708C22.2678 40.5708 27.2688 35.755 27.2688 29.8144C27.2688 23.8739 22.2678 19.0581 16.0988 19.0581C9.92971 19.0581 4.92871 23.8739 4.92871 29.8144Z" fill="rgb(255,255,255)" fill-rule="evenodd" />
+		</clipPath>
+		<linearGradient id="paint_linear_111" x1="21.4306126" x2="9.95731068" y1="36.2937889" y2="23.9125271" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,255,255)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,255,255)" offset="1" stop-opacity="0.0705882385" />
+		</linearGradient>
+		<g id="pixso_custom_effect_209">
+			<effect visibility="visible" effectType="gaussianBlur" stdDeviation="8" />
+		</g>
+		<filter id="filter_209" width="32.867188" height="20.872803" x="15.576172" y="27.697998" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_209)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feBlend result="shape" in="SourceGraphic" in2="BackgroundImageFix" mode="normal" />
+			<feGaussianBlur stdDeviation="2.66666675" result="effect_layerBlur_1" />
+		</filter>
+	</defs>
+	<mask id="mask_245" width="56.000000" height="44.000000" x="0.000000" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_outline)">
+			<rect id="矩形 20627" width="56.000000" height="44.000000" x="0.000000" y="0.000000" stroke="none" stroke-width="1.000000" fill="#ffffff" />
+		</g>
+	</mask>
+	<g id="组 45132">
+		<g id="蒙版组 2215" opacity="0.75999999" mask="url(#mask_245)">
+			<g id="组 45126">
+				<rect id="矩形 20622" width="28.111788" height="28.111788" x="17.016602" y="9.647949" rx="14.055894" fill="url(#paint_linear_108)" />
+				<g filter="url(#filter_206)">
+					<path id="路径 32925" d="M19.5203 2.15137L41.6879 2.15137C45.6699 2.15137 49.1083 4.47877 50.8444 8.12519C51.3394 9.15102 51.6879 10.6105 51.6879 12.1514L51.6879 29.6338C51.6879 35.1566 47.2108 39.6338 41.6879 39.6338L19.5203 39.6338C13.9974 39.6338 9.52026 35.1566 9.52026 29.6338L9.52026 12.1514C9.52026 6.62852 13.9974 2.15137 19.5203 2.15137Z" fill="url(#paint_linear_109)" fill-rule="nonzero" />
+				</g>
+				<path id="路径 32925" d="M19.5203 2.15137L41.6879 2.15137C45.6699 2.15137 49.1083 4.47877 50.8444 8.12519C51.3394 9.15102 51.6879 10.6105 51.6879 12.1514L51.6879 29.6338C51.6879 35.1566 47.2108 39.6338 41.6879 39.6338L19.5203 39.6338C13.9974 39.6338 9.52026 35.1566 9.52026 29.6338L9.52026 12.1514C9.52026 6.62852 13.9974 2.15137 19.5203 2.15137ZM19.5203 3.15137C14.5497 3.15137 10.5203 7.1808 10.5203 12.1514L10.5203 29.6338C10.5203 34.6043 14.5497 38.6338 19.5203 38.6338L41.6879 38.6338C46.6585 38.6338 50.6879 34.6043 50.6879 29.6338L50.6879 12.1514C50.6879 10.785 50.4391 9.58625 49.9415 8.55506Q49.1156 6.82033 47.8113 5.59454Q47.2319 5.04996 46.5581 4.60583C45.0869 3.63619 43.4635 3.15137 41.6879 3.15137L19.5203 3.15137Z" fill="rgb(255,255,255)" fill-opacity="0.478431374" fill-rule="evenodd" />
+				<g filter="url(#filter_207)">
+					<path id="货车 (2)" d="M42.5929 28.3245C42.3314 27.0462 41.4337 25.9909 40.2139 25.5277C38.9942 25.0645 37.6223 25.258 36.5782 26.0404L36.5782 17.8138C36.5779 17.289 36.8479 16.8011 37.2926 16.5225C37.7374 16.244 38.2943 16.2141 38.7663 16.4434L43.3345 18.6628C43.8592 18.9177 44.1921 19.4499 44.1918 20.0332L44.1918 26.8018C44.1918 27.6427 43.5101 28.3245 42.6691 28.3245L42.5929 28.3245L42.5929 28.3245ZM29.6497 28.3245C29.2864 26.553 27.7274 25.2812 25.919 25.2812C24.1106 25.2812 22.5516 26.553 22.1883 28.3245L21.3508 28.3245C20.5099 28.3245 19.8281 27.6427 19.8281 26.8017L19.8281 14.6199C19.8281 13.7789 20.5099 13.0972 21.3508 13.0972L33.5327 13.0972C34.3737 13.0972 35.0554 13.7789 35.0554 14.6199L35.0554 26.8017C35.0554 27.6427 34.3737 28.3245 33.5327 28.3245L29.6497 28.3245L29.6497 28.3245ZM25.919 31.37C27.1805 31.37 28.2031 30.3474 28.2031 29.0859C28.2031 27.8244 27.1805 26.8018 25.919 26.8018C24.6576 26.8018 23.6349 27.8244 23.6349 29.0859C23.6349 30.3474 24.6576 31.37 25.919 31.37ZM38.8623 31.37C40.1237 31.37 41.1464 30.3474 41.1464 29.0859C41.1464 27.8244 40.1237 26.8018 38.8623 26.8018C37.6008 26.8018 36.5782 27.8244 36.5782 29.0859C36.5782 30.3474 37.6008 31.37 38.8623 31.37Z" fill="url(#paint_linear_110)" fill-rule="nonzero" />
+					<path id="货车 (2)" d="M40.2139 25.5277C38.9942 25.0645 37.6223 25.258 36.5782 26.0404L36.5782 17.8138C36.5779 17.289 36.8479 16.8011 37.2926 16.5225C37.7374 16.244 38.2943 16.2141 38.7663 16.4434L43.3345 18.6628C43.8592 18.9177 44.1921 19.4499 44.1918 20.0332L44.1918 26.8018C44.1918 27.6427 43.5101 28.3245 42.6691 28.3245L42.5929 28.3245L42.5929 28.3245C42.3314 27.0462 41.4337 25.9909 40.2139 25.5277ZM25.919 25.2812C24.1106 25.2812 22.5516 26.553 22.1883 28.3245L21.3508 28.3245C20.5099 28.3245 19.8281 27.6427 19.8281 26.8017L19.8281 14.6199C19.8281 13.7789 20.5099 13.0972 21.3508 13.0972L33.5327 13.0972C34.3737 13.0972 35.0554 13.7789 35.0554 14.6199L35.0554 26.8017C35.0554 27.6427 34.3737 28.3245 33.5327 28.3245L29.6497 28.3245L29.6497 28.3245C29.2864 26.553 27.7274 25.2812 25.919 25.2812ZM28.2031 29.0859C28.2031 27.8244 27.1805 26.8018 25.919 26.8018C24.6576 26.8018 23.6349 27.8244 23.6349 29.0859C23.6349 30.3474 24.6576 31.37 25.919 31.37C27.1805 31.37 28.2031 30.3474 28.2031 29.0859ZM41.1464 29.0859C41.1464 27.8244 40.1237 26.8018 38.8623 26.8018C37.6008 26.8018 36.5782 27.8244 36.5782 29.0859C36.5782 30.3474 37.6008 31.37 38.8623 31.37C40.1237 31.37 41.1464 30.3474 41.1464 29.0859Z" fill-rule="nonzero" stroke="rgb(255,255,255)" stroke-width="0.500000" />
+				</g>
+				<g data-pixso-skip-parse="true">
+					<foreignObject width="26.340088" height="25.512695" x="2.928711" y="18.058105" />
+				</g>
+				<g filter="url(#filter_208)">
+					<ellipse id="椭圆 1997" rx="11.170051" ry="10.756344" cx="16.0987625" cy="29.8144493" fill="url(#paint_linear_111)" />
+				</g>
+				<ellipse id="椭圆 1997" rx="11.170051" ry="10.756344" cx="16.0987625" cy="29.8144493" stroke="rgb(255,255,255)" stroke-width="0.000000" />
+				<path id="路径 32906" d="M11.2632 27.7568L21.0605 27.7568L18.8384 24.2598" stroke="rgb(89,120,212)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.600000" />
+				<path id="路径 32907" d="M0 3.49691L9.7964 3.49691L7.57432 0" stroke="rgb(89,120,212)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.600000" transform="matrix(-1,2.11958e-09,-2.11958e-09,-1,21.0586,34.9077)" />
+				<g filter="url(#filter_209)">
+					<ellipse id="椭圆 1998" rx="8.433537" ry="2.436392" cx="32.0097084" cy="38.1343918" fill="rgb(255,255,255)" />
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

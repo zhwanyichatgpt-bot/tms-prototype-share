@@ -4,9 +4,11 @@
  * 只承载列表页状态与交互，系统框架由 App.vue 提供。
  */
 import { computed, ref } from 'vue'
+import SettlementWaybillList from './SettlementWaybillList.vue'
 import { settlementRows, statusOptions, partyOptions, creatorOptions } from '../mock-data'
 
-const emit = defineEmits(['create', 'notice', 'detail'])
+defineProps({ mode: { type: String, default: 'road' }, driverMode: Boolean })
+const emit = defineEmits(['create', 'notice', 'detail', 'waybill-detail'])
 
 const asset = (name) => `/transport-settlement-assets/${name}`
 
@@ -344,11 +346,14 @@ function switchTab(key) {
       </div>
     </template>
 
-    <template v-else>
-      <div class="ts-page-empty">
-        <img :src="asset('empty-box.png')" alt="" />
-        <p>暂无数据</p>
-      </div>
-    </template>
+    <SettlementWaybillList
+      v-else
+      :key="`${mode}-${activeTab}-${driverMode}`"
+      :mode="mode"
+      :driver-mode="driverMode"
+      :accounted="activeTab === 'waybills'"
+      @detail="emit('waybill-detail', $event)"
+      @create="emit('create', $event)"
+    />
   </div>
 </template>

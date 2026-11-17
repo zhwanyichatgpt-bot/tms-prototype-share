@@ -4,12 +4,14 @@
  * 复刻对象：https://jy.zjz1.net/settlementAdjust3.0（2026-11-08）
  * 业务系统框架复用公共组件 TmsWebShell（business 规格），页面只承载业务内容
  */
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onUnmounted, ref } from 'vue'
 import TmsWebShell from '../../../../../shared/web/tms-web-shell/TmsWebShell.vue'
 import SettlementList from './components/SettlementList.vue'
 import SettlementDetail from './components/SettlementDetail.vue'
+import SettlementWaybillDetail from './components/SettlementWaybillDetail.vue'
 import CreateDrawer from './components/CreateDrawer.vue'
 import { menuGroups } from './mock-data'
+import { driverPendingWaybills, makeDriverDraft } from './driver-accounting'
 import './transport-settlement.css'
 
 const asset = (name) => `/transport-settlement-assets/${name}`
@@ -47,28 +49,26 @@ const railItems = [
 
 /* 页签栏 */
 const workspaceTabs = [
-  { key: 'workbench', label: '工作台' },
   { key: 'settlement', label: '运输结算3.0' },
 ]
 const activeTab = ref('settlement')
 
 const activeNav = ref('workbench')
-const activeSide = ref('road-0')
+const props = defineProps({ initialSide: { type: String, default: 'road-0' } })
+const activeSide = ref(props.initialSide)
+const transportMode = computed(() => activeSide.value.split('-')[0])
+const driverMode = computed(() => activeSide.value === 'road-2')
 const drawerOpen = ref(false)
+const accountingDraft = ref(null)
+const driverDrawerOpen = ref(false)
+const driverCargoKind = ref('bulk')
+const driverWaybills = ref([])
+const driverPickerRows = computed(() => driverPendingWaybills.filter(row => row.kind === driverCargoKind.value))
 const detailRow = ref(null)
+const waybillRow = ref(null)
+let waybillTrigger = null
 const toast = ref('')
 let toastTimer = null
-
-/* —— 自适应缩放，保证 1920×936 比例不变 —— */
-const rootEl = ref(null)
-const scale = ref(1)
-let resizeObserver = null
-
-function updateScale() {
-  if (!rootEl.value) return
-  const width = rootEl.value.clientWidth
-  scale.value = width > 0 ? Math.min(1, width / 1920) : 1
-}
 
 function showToast(message) {
   toast.value = message
@@ -78,33 +78,84 @@ function showToast(message) {
   }, 2000)
 }
 
-function openCreate() {
+function openCreate(option) {
+  const waybills = option?.rows || []
+  driverCargoKind.value = option?.kind || (option === '集装箱' ? 'container' : 'bulk')
+  driverDrawerOpen.value = driverMode.value
+  if (driverDrawerOpen.value) {
+    selectDriverWaybills(waybills)
+    drawerOpen.value = true
+    return
+  }
+  accountingDraft.value = null
+  if (waybills.length) {
+    const plans = new Map()
+    const rows = waybills.map((row, index) => {
+      plans.set(row.planNo, { id: row.planNo, name: row.planName, number: row.planNo })
+      return {
+        id: row.id, seq: index + 1, planId: row.planNo,
+        driver: row.operator, phone: row.contact, plate: row.vehicle,
+        goods: row.goods, loadPlace: row.from, unloadPlace: row.to,
+        load: row.loaded, unload: row.unloaded, price: row.unitPrice,
+        basic: row.payable, amount: row.payable, loss: 0,
+      }
+    })
+    const shippers = new Set(waybills.map(row => row.shipper))
+    accountingDraft.value = {
+      plans: [...plans.values()],
+      rows,
+      basis: 'loaded',
+      unit: waybills[0].unit,
+      party: shippers.size === 1 ? waybills[0].shipper : '',
+      totalRows: rows.length,
+      count: rows.length,
+      total: rows.reduce((sum, row) => sum + row.amount, 0),
+      weight: rows.reduce((sum, row) => sum + row.load, 0),
+      loss: 0,
+    }
+  }
   drawerOpen.value = true
+}
+
+function selectDriverWaybills(rows) {
+  driverWaybills.value = rows
+  accountingDraft.value = makeDriverDraft(rows)
+}
+
+function chooseDriverMode() {
+  const selectedIds = new Set((accountingDraft.value?.rows || []).map(row => row.id))
+  driverDrawerOpen.value = true
+  selectDriverWaybills(driverPickerRows.value.filter(row => selectedIds.has(row.id)))
 }
 
 function openDetail(row) {
   detailRow.value = row
 }
 
-onMounted(() => {
-  updateScale()
-  resizeObserver = new ResizeObserver(updateScale)
-  if (rootEl.value) resizeObserver.observe(rootEl.value)
-})
+function openWaybill(row) {
+  waybillTrigger = document.activeElement
+  waybillRow.value = row
+}
+
+async function closeWaybill() {
+  waybillRow.value = null
+  await nextTick()
+  waybillTrigger?.focus()
+  waybillTrigger = null
+}
 
 onUnmounted(() => {
-  resizeObserver?.disconnect()
   clearTimeout(toastTimer)
 })
 </script>
 
 <template>
-  <div ref="rootEl" class="ts-root" :style="{ height: `${936 * scale}px` }">
-    <div class="ts-canvas" :style="{ transform: `scale(${scale})` }">
+  <div class="ts-root">
+    <div class="ts-canvas">
       <div class="ts-app">
         <TmsWebShell
           variant="business"
-          :canvas-height="936"
+          fluid
           site-name="至简测试企业"
           organization-name="至简测试企业"
           date-text="2026 年 11 月 08 日"
@@ -113,13 +164,17 @@ onUnmounted(() => {
           active-menu="workbench"
           :tabs="workspaceTabs"
           active-tab-key="settlement"
-          :show-home="false"
           :nav-items="railItems"
           active-nav="app"
+          :inert="Boolean(waybillRow)"
           @menu-select="activeNav = $event"
           @switch-tab="activeTab = $event"
+          @go-workbench="activeTab = 'workbench'"
           @close-tab="showToast('页签关闭功能待接入')"
         >
+          <template #home-icon>
+            <img src="/bulk-dispatch-assets/home-grid.svg" alt="" />
+          </template>
           <template #logo>
             <img class="ts-logo" :src="asset('logo.png')" alt="至简集运" />
           </template>
@@ -154,7 +209,7 @@ onUnmounted(() => {
               </div>
             </aside>
 
-            <SettlementList @create="openCreate" @notice="showToast" @detail="openDetail" />
+            <SettlementList :key="activeSide" :mode="transportMode" :driver-mode="driverMode" @create="openCreate" @notice="showToast" @detail="openDetail" @waybill-detail="openWaybill" />
           </section>
         </TmsWebShell>
 
@@ -165,9 +220,19 @@ onUnmounted(() => {
           @notice="showToast"
         />
 
+        <SettlementWaybillDetail v-if="waybillRow" :row="waybillRow" @close="closeWaybill" />
+
         <CreateDrawer
           v-if="drawerOpen"
+          :draft="accountingDraft"
+          :driver-mode="driverDrawerOpen"
+          :allow-driver-mode="transportMode === 'road'"
+          :picker-rows="driverPickerRows"
+          :selected-waybills="driverWaybills"
+          @choose-driver="chooseDriverMode"
+          @select-waybills="selectDriverWaybills"
           @close="drawerOpen = false"
+          @confirm="showToast('当前为模拟核算预览，未生成结算单')"
           @notice="showToast"
         />
 

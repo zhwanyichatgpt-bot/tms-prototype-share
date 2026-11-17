@@ -31,10 +31,21 @@ function start() {
   // Element.scroll 不冒泡，只监听 window 时可能收不到工作台画布、表格等容器的滚动事件。
   window.addEventListener('scroll', scheduleFlush, { passive: true })
   document.addEventListener('scroll', scheduleFlush, { passive: true, capture: true })
+  document.addEventListener('transitionend', scheduleFlush, true)
+  document.addEventListener('animationend', scheduleFlush, true)
   window.addEventListener('resize', scheduleFlush, { passive: true })
 
   if (typeof MutationObserver !== 'undefined') {
-    mutationObserver = new MutationObserver(scheduleFlush)
+    const isToolNode = (node: Node) => node instanceof Element &&
+      !!node.closest('.annotation-dot, .annotation-overlay, .annotation-panel, .annotation-editor-mask, .annotation-click-layer')
+    mutationObserver = new MutationObserver(records => {
+      const changed = records.some(record => {
+        if (isToolNode(record.target)) return false
+        if (record.type !== 'childList') return true
+        return [...record.addedNodes, ...record.removedNodes].some(node => !isToolNode(node))
+      })
+      if (changed) scheduleFlush()
+    })
     mutationObserver.observe(document.body, {
       childList: true,
       subtree: true,
@@ -51,6 +62,8 @@ function stop() {
 
   window.removeEventListener('scroll', scheduleFlush)
   document.removeEventListener('scroll', scheduleFlush, { capture: true })
+  document.removeEventListener('transitionend', scheduleFlush, true)
+  document.removeEventListener('animationend', scheduleFlush, true)
   window.removeEventListener('resize', scheduleFlush)
   mutationObserver?.disconnect()
   mutationObserver = null

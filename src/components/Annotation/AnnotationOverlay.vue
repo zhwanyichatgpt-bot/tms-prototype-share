@@ -4,14 +4,12 @@
     <!-- 标注点：每个 dot 自己决定是否显示及渲染到哪个容器 -->
     <template v-if="visible">
       <AnnotationDot
-        v-for="ann in annotations"
+        v-for="({item: ann, origin}, index) in badges"
         :key="ann.id"
         :annotation="ann"
-        :index="displayIndexById[ann.id] ?? 0"
+        :index="index" :origin="origin"
         :is-active="activeId === ann.id"
         :edit-mode="editMode"
-        :modal-open="modalOpen"
-        :drawer-open="drawerOpen"
         @click="handleDotClick"
         @move="handleDotMove"
       />
@@ -24,6 +22,7 @@
         :index="activeIndex"
         :edit-mode="editMode"
         @close="activeId = ''"
+        @rebind="startRebind"
         @edit="openEditor"
         @delete="handleDelete"
       />
@@ -32,24 +31,28 @@
     <!-- 编辑模式工具栏 -->
     <div v-if="editMode" class="annotation-toolbar">
       <span class="toolbar-label">标注编辑模式</span>
-      <span class="toolbar-hint">点击页面添加标注</span>
+      <span class="toolbar-hint" role="status">{{ placementHint || (fixedPlacement ? '点击页面设置固定位置' : '点击要说明的字段或区域') }}</span>
+      <button v-if="rebindId" class="toolbar-btn" @click="cancelRebind">取消重新绑定</button>
+      <label v-else><input type="checkbox" v-model="fixedPlacement" @change="placementHint = ''"> 固定坐标</label>
       <button class="toolbar-btn toolbar-btn-exit" @click="toggleEditMode">退出编辑</button>
     </div>
 
     <!-- 点击页面添加标注（编辑模式下）-->
     <!-- 无弹窗/抽屉时：全屏覆盖层，点击任意位置添加标注 -->
     <div
-      v-if="editMode && !editorVisible && !modalOpen && !drawerOpen"
+      v-if="ready && editMode && !editorVisible && !modalOpen && !drawerOpen"
       class="annotation-click-layer"
       @click="handleAddClick"
     ></div>
     <!-- 有弹窗时：click-layer teleport 到弹窗内容区，避免遮挡弹窗外的标注点交互 -->
-    <Teleport v-if="editMode && !editorVisible && (modalOpen || drawerOpen)" :to="overlayClickTarget || 'body'">
+    <Teleport v-if="ready && editMode && !editorVisible && (modalOpen || drawerOpen)" :to="overlayClickTarget || 'body'">
       <div
         class="annotation-click-layer annotation-click-layer-inset"
         @click="handleAddClick"
       ></div>
     </Teleport>
+
+    <div v-if="dataError" class="annotation-toolbar" role="alert">{{ dataError }}</div>
 
     <!-- 编辑器弹窗：teleport 到 body，避免被 overlay stacking context 限制 -->
     <Teleport to="body">
@@ -68,10 +71,12 @@
  * 标注覆盖层组件
  * 全局挂载在 MainLayout 中，提供标注查看和编辑功能
  */
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, shallowRef, watch, onMounted, onUnmounted } from 'vue'
 import AnnotationDot from './AnnotationDot.vue'
 import AnnotationPanel from './AnnotationPanel.vue'
 import AnnotationEditor from './AnnotationEditor.vue'
+import { currentLayer, visibleBadges } from './annotationContext'
+import { useRoute } from 'vue-router'
 import { useAnnotation } from './useAnnotation'
 import { subscribe, unsubscribe } from './annotationTracker'
 import type { AnnotationItem, AnnotationCategory } from './types'
@@ -79,94 +84,25 @@ import type { AnnotationItem, AnnotationCategory } from './types'
 const {
   visible, editMode, activeId, annotations,
   addAnnotation, updateAnnotation, removeAnnotation,
-  toggleEditMode
+  toggleEditMode, visibleCount, ready, dataError
 } = useAnnotation()
 
-// 当前选中的标注
-const activeAnnotation = computed(() =>
-  annotations.value.find(a => a.id === activeId.value) || null
-)
-
-// 编号只统计当前 DOM 中实际可见的标注目标。
-// 同一路由可能同时登记货源报价、运力报价和提交弹窗等分支标注，
-// 直接按 group 编号会让页面出现多个“1”；按当前可见目标重新编号，
-// 才能保证用户看到的标注点始终从 1 连续展示。
+const route = useRoute()
+const layer = shallowRef(currentLayer())
 const displayVersion = ref(0)
-
-const isAnnotationTargetVisible = (annotation: AnnotationItem) => {
-  const container = annotation.container || 'page'
-  if (container === 'modal' && !modalOpen.value) return false
-  if (container === 'drawer' && !drawerOpen.value) return false
-  if (container === 'page' && (modalOpen.value || drawerOpen.value)) return false
-
-  if (annotation.type === 'position') {
-    return !(annotation.position.x === 0 && annotation.position.y === 0)
-  }
-
-  if (!annotation.selector) return false
-  const target = document.querySelector(annotation.selector)
-  if (!target) return false
-  const rect = target.getBoundingClientRect()
-  const style = window.getComputedStyle(target as HTMLElement)
-  return rect.width > 0 && rect.height > 0 &&
-    style.display !== 'none' && style.visibility !== 'hidden' &&
-    parseFloat(style.opacity || '1') > 0
-}
-
-const displayIndexById = computed<Record<string, number>>(() => {
+const modalOpen = computed(() => layer.value.kind === 'modal')
+const drawerOpen = computed(() => layer.value.kind === 'drawer')
+const overlayClickTarget = computed(() => layer.value.root)
+const badges = computed(() => {
   void displayVersion.value
-  const indexes: Record<string, number> = {}
-  let visibleIndex = 0
-  for (const annotation of annotations.value) {
-    if (!isAnnotationTargetVisible(annotation)) continue
-    indexes[annotation.id] = visibleIndex
-    visibleIndex += 1
-  }
-  return indexes
+  return visibleBadges(annotations.value, layer.value, editMode.value)
 })
-const activeIndex = computed(() => displayIndexById.value[activeId.value] ?? -1)
-
-// 点击标注点
-const handleDotClick = (id: string) => {
-  activeId.value = activeId.value === id ? '' : id
-}
-
-// 编辑模式下 click-layer 的 Teleport 目标（弹窗/抽屉打开时定位到浮层内容区）
-const OVERLAY_CLICK_MODAL_SELECTORS = [
-  '.ant-modal-content', '.el-dialog', '.van-dialog', '.t-dialog', '.n-dialog',
-  '[data-annotation-content="modal"]',
-  '[class*="modal-content"]', '[class*="dialog-content"]'
-]
-const OVERLAY_CLICK_DRAWER_SELECTORS = [
-  '.ant-drawer-body', '.el-drawer__body', '.van-popup', '.t-drawer__body',
-  '.n-drawer-body-content', '[data-annotation-content="drawer"]',
-  '[class*="drawer-body"]', '[class*="drawer-content"]'
-]
-// 多弹窗共存时取第一个匹配会选到隐藏容器，需返回当前可见的浮层容器 DOM 元素
-const overlayClickTarget = computed<Element | null>(() => {
-  void modalOpen.value
-  void drawerOpen.value
-  const selectors = drawerOpen.value ? OVERLAY_CLICK_DRAWER_SELECTORS : OVERLAY_CLICK_MODAL_SELECTORS
-  for (const sel of selectors) {
-    const nodes = Array.from(document.querySelectorAll(sel))
-    for (const node of nodes) {
-      const rect = node.getBoundingClientRect()
-      if (rect.width > 0 && rect.height > 0) return node
-    }
-  }
-  return null
-})
-
-// position 保存屏幕坐标；selector 只更新相对宿主的偏移量，保留组件绑定
-const handleDotMove = (id: string, pos: { x: number; y: number }) => {
-  const annotation = annotations.value.find(item => item.id === id)
-  if (!annotation) return
-  if (annotation.type === 'selector') {
-    updateAnnotation(id, { position: pos })
-    return
-  }
-  updateAnnotation(id, { position: pos })
-}
+watch(() => badges.value.length, count => { visibleCount.value = count }, {immediate:true})
+const activeIndex = computed(() => badges.value.findIndex(({item}) => item.id === activeId.value))
+const activeAnnotation = computed(() => badges.value[activeIndex.value]?.item || null)
+watch(activeAnnotation, item => { if (!item) activeId.value = '' })
+function handleDotClick(id: string) { activeId.value = activeId.value === id ? '' : id }
+function handleDotMove(id: string, position: {x:number; y:number}) { updateAnnotation(id, {position}) }
 
 // 编辑器状态
 const editorVisible = ref(false)
@@ -175,11 +111,67 @@ const pendingPosition = ref<{ x: number; y: number }>({ x: 0, y: 0 })
 // 新建标注 ID 自增计数器：避免同一毫秒连续添加时 Date.now() 撞 ID
 let idCounter = 0
 
-// 编辑模式下点击页面添加标注
-const handleAddClick = (e: MouseEvent) => {
-  pendingPosition.value = { x: e.clientX, y: e.clientY }
-  // 记录当前容器上下文：弹窗/抽屉打开时新建的标注归属对应容器
+const fixedPlacement = ref(false)
+const placementHint = ref('')
+const pendingSelector = ref('')
+const pendingAnchor = ref<AnnotationItem['anchorPoint']>()
+const pendingGroup = ref<string>()
+const rebindId = ref('')
+function cancelRebind() { rebindId.value = ''; placementHint.value = '' }
+function startRebind(id: string) {
+  rebindId.value = id
+  fixedPlacement.value = false
+  activeId.value = ''
+  placementHint.value = '点击此条标注应关联的字段或区域'
+}
+function resetEditor() {
+  fixedPlacement.value = false
+  cancelRebind()
+  editorVisible.value = false
+  editorItem.value = null
+}
+watch([editMode, () => route.fullPath, () => layer.value.root], resetEditor)
+
+// 只取点击位置下方真实业务元素的祖先，不穿过遮罩猜测底层字段。
+function handleAddClick(e: MouseEvent) {
+  const root = modalOpen.value || drawerOpen.value ? overlayClickTarget.value : document.querySelector('.prototype-workbench-canvas')
+  const hit = document.elementsFromPoint(e.clientX, e.clientY).find(el =>
+    !el.closest('.annotation-overlay, .annotation-click-layer, .annotation-dot'))
+  if (!root || !hit || !root.contains(hit)) return
   pendingContainer.value = drawerOpen.value ? 'drawer' : modalOpen.value ? 'modal' : 'page'
+  pendingSelector.value = ''
+  pendingAnchor.value = undefined
+  pendingGroup.value = undefined
+  pendingPosition.value = { x: e.clientX, y: e.clientY }
+  if (!fixedPlacement.value) {
+    for (let el: Element | null = hit; el && root.contains(el); el = el.parentElement) {
+      const name = Array.from(el.classList).find(c => c.startsWith('annot-') &&
+        document.querySelectorAll('.' + CSS.escape(c)).length === 1)
+      if (!name) continue
+      const rect = el.getBoundingClientRect()
+      if (!rect.width || !rect.height) continue
+      pendingSelector.value = '.' + CSS.escape(name)
+      pendingAnchor.value = { x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height }
+      pendingPosition.value = { x: 0, y: 0 }
+      pendingGroup.value = annotations.value.find(item => item.selector === pendingSelector.value)?.group
+      break
+    }
+    if (!pendingSelector.value) {
+      placementHint.value = rebindId.value ? '此位置没有可绑定的区域，请重新选择' : '这里没有可绑定的区域，请换个位置，或勾选固定坐标'
+      return
+    }
+  }
+  const groups = new Set(badges.value.map(({item}) => item.group).filter((g): g is string => !!g))
+  if (!pendingGroup.value && groups.size === 1) pendingGroup.value = [...groups][0]
+  if (rebindId.value) {
+    const id = rebindId.value
+    updateAnnotation(id, { type:'selector', selector:pendingSelector.value, anchorPoint:pendingAnchor.value,
+      position:{x:0,y:0}, container:pendingContainer.value, group:pendingGroup.value })
+    cancelRebind()
+    activeId.value = id
+    return
+  }
+  placementHint.value = ''
   editorItem.value = null
   editorVisible.value = true
 }
@@ -199,8 +191,10 @@ const handleEditorSave = (data: { title: string; content: string; category: Anno
   } else {
     const newItem: AnnotationItem = {
       id: `ann-${Date.now()}-${++idCounter}`,
-      type: 'position',
-      selector: '',
+      type: pendingSelector.value ? 'selector' : 'position',
+      selector: pendingSelector.value,
+      anchorPoint: pendingAnchor.value,
+      group: pendingGroup.value,
       position: pendingPosition.value,
       title: data.title,
       content: data.content,
@@ -221,111 +215,20 @@ const handleDelete = (id: string) => {
   activeId.value = ''
 }
 
-// 弹窗/抽屉状态检测：随全局 tracker 触发，区分 modal 和 drawer
-// 支持 Ant Design（ant-scrolling-effect）和 Element Plus（el-popup-parent--hidden）
-const modalOpen = ref(false)
-const drawerOpen = ref(false)
-
-/**
- * 通用 overlay 检测：不绑定任何具体 UI 库
- *
- * 策略（双重检测，任一命中即判定为打开）：
- * 1. body class 信号：各 UI 库在弹窗打开时会给 body 加特征 class
- *    - Ant Design Vue: ant-scrolling-effect
- *    - Element Plus: el-popup-parent--hidden
- *    - Vant: van-overflow-hidden
- *    - TDesign: t-overflow-hidden
- * 2. DOM 可见元素检测：在 body 子树中找到可见的弹窗/抽屉容器
- *    - 判断可见：元素有实际尺寸 + opacity > 0 + 不是 mask 遮罩
- *
- * 抽屉优先于弹窗：同时存在时，drawerOpen=true，modalOpen=false
- */
-
-// body class 信号（各 UI 库在弹窗打开时给 body 加的 class）
-const BODY_MODAL_SIGNALS = [
-  'ant-scrolling-effect',       // Ant Design Vue modal
-  'el-popup-parent--hidden',    // Element Plus
-  'van-overflow-hidden',        // Vant
-  't-overflow-hidden',          // TDesign
-  'overflow-hidden',            // 通用（shadcn/ui 等）
-]
-
-const BODY_DRAWER_SIGNALS = [
-  'ant-drawer-open',            // Ant Design Vue drawer（body 上的标记）
-]
-
-// DOM 元素选择器（找到可见元素即判定打开）
-const DRAWER_VISIBLE_SELECTORS = [
-  '.ant-drawer-open .ant-drawer-content-wrapper',  // Ant Design Vue
-  '.el-drawer__body',                               // Element Plus（2.x 抽屉可见时内容区即存在，无 is-visible 类）
-  '.van-popup--left, .van-popup--right, .van-popup--top, .van-popup--bottom',  // Vant
-  '.t-drawer__body',                                // TDesign
-  '.n-drawer-body-content',                         // Naive UI
-  '[data-annotation-container="drawer"]',          // 项目自定义抽屉显式接入
-]
-
-const MODAL_VISIBLE_SELECTORS = [
-  '.ant-modal-wrap:not([style*="display: none"])',  // Ant Design Vue
-  '.el-overlay-dialog',                              // Element Plus
-  '.van-dialog',                                     // Vant
-  '.t-dialog__wrap',                                 // TDesign
-  '.n-modal-container',                              // Naive UI
-  '[data-annotation-container="modal"]',           // 项目自定义弹层显式接入
-]
-
-const isElementVisible = (el: Element): boolean => {
-  const rect = el.getBoundingClientRect()
-  if (rect.width === 0 || rect.height === 0) return false
-  const style = window.getComputedStyle(el as HTMLElement)
-  return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0
+function refreshContext() {
+  const next = currentLayer()
+  if (next.root !== layer.value.root || next.kind !== layer.value.kind) layer.value = next
+  displayVersion.value++
 }
-
-const checkOverlayState = () => {
-  const bodyClass = document.body.className || ''
-
-  // 1. body class 信号检测
-  const bodySignalsDrawer = BODY_DRAWER_SIGNALS.some(c => bodyClass.includes(c))
-  const bodySignalsModal = !bodySignalsDrawer && BODY_MODAL_SIGNALS.some(c => bodyClass.includes(c))
-
-  // 2. DOM 可见元素检测
-  let domFoundDrawer = false
-  let domFoundModal = false
-
-  for (const sel of DRAWER_VISIBLE_SELECTORS) {
-    const el = document.querySelector(sel)
-    if (el && isElementVisible(el)) { domFoundDrawer = true; break }
-  }
-
-  if (!domFoundDrawer) {
-    for (const sel of MODAL_VISIBLE_SELECTORS) {
-      const el = document.querySelector(sel)
-      if (el && isElementVisible(el)) { domFoundModal = true; break }
-    }
-  }
-
-  const foundDrawer = bodySignalsDrawer || domFoundDrawer
-  const foundModal = !foundDrawer && (bodySignalsModal || domFoundModal)
-
-  drawerOpen.value = foundDrawer
-  modalOpen.value = foundModal
-}
-
 onMounted(() => {
   document.addEventListener('click', handleOutsideClick, true)
-
-  // 标注目标可能因货源/运力分支、弹窗或抽屉切换而增删，
-  // 复用现有追踪器让可见编号同步刷新。
-  subscribe('__annotation_display_index__', () => { displayVersion.value += 1 })
-
-  // 复用全局 tracker 的单例 observer：弹窗/抽屉状态检测随 DOM 变化触发，
-  // 且自动获得 rAF 防抖（避免每次 mutation 同步跑重排密集的 checkOverlayState）
-  checkOverlayState()
-  subscribe('__overlay_state__', checkOverlayState)
+  subscribe('__annotation_context__', refreshContext)
+  refreshContext()
 })
 onUnmounted(() => {
   document.removeEventListener('click', handleOutsideClick, true)
-  unsubscribe('__overlay_state__')
-  unsubscribe('__annotation_display_index__')
+  unsubscribe('__annotation_context__')
+  visibleCount.value = 0
 })
 
 // 点击外部关闭详情面板（标注点、面板本身、编辑器弹窗打开时除外）

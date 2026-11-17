@@ -20,6 +20,7 @@ export interface AnnotationItem {
   type: AnnotationType
   selector: string
   position: { x: number; y: number } // position 类型为屏幕坐标；selector 类型为相对宿主默认锚点的偏移量
+  anchorPoint?: { x: number; y: number } // 手工选择的宿主内落点，按宽高比例保存
   title: string
   content: string
   category: AnnotationCategory

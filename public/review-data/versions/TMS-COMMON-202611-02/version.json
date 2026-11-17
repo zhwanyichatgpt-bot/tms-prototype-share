@@ -1,0 +1,39 @@
+{
+  "id": "TMS-COMMON-202611-02",
+  "name": "联运 Web 1.0.1.18｜调度与运输结算",
+  "scope": "common",
+  "projectId": null,
+  "baseVersionId": null,
+  "targetReleaseDate": "2026-11-27",
+  "pages": [
+    {
+      "pageKey": "bulkDispatch",
+      "order": 1
+    },
+    {
+      "pageKey": "transportSettlement",
+      "order": 2
+    }
+  ],
+  "scopeItems": [
+    {
+      "pageKey": "bulkDispatch",
+      "title": "汽运调度 · 计费范围",
+      "location": "散杂货调度 → 汽运计划 → 调度指派 → 直接指派车辆",
+      "detail": "统一在调度层选择整趟或分段计费，供本次指派的车辆和承运时段共用。分段计费沿用各段所属计划的司机计费规则。"
+    },
+    {
+      "pageKey": "transportSettlement",
+      "title": "汽运结算 · 司机核算",
+      "location": "运输结算 → 汽运结算 → 司机（待结算列表／新增核算）",
+      "detail": "明确每张运单的计费范围和司机结算责任，按派单规则统一整趟或分段运费的核算口径。"
+    }
+  ],
+  "status": "in_progress",
+  "revision": "R0",
+  "publishedAt": "2026-11-17T03:59:44.479Z",
+  "lastPublishedAt": "2026-11-17T03:59:44.479Z",
+  "completedAt": null,
+  "createdAt": "2026-11-17T03:42:45.010Z",
+  "updatedAt": "2026-11-17T03:59:44.479Z"
+}

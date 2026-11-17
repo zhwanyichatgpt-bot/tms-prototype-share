@@ -1,0 +1,88 @@
+{
+  "versionId": "TMS-COMMON-202611-02",
+  "page": "transportSettlement",
+  "title": "运输结算",
+  "updatedAt": "2026-11-17",
+  "annotations": [
+    {
+      "id": "annot-transportSettlement-rule-driver-billing-scope",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-driver-billing-scope",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "司机待结算运单的计费范围",
+      "content": "按运单承接的派单计费范围展示，列表内不可修改。\n\n- **整趟定价**：派单时按整趟给定司机运费，按整趟价格核算。\n- **分段计费**：按各段所属计划的计费依据与单价分别核算，再汇总本趟司机基础运费。",
+      "category": "rule",
+      "source": "已确认的调度计费范围与司机核算规则；散杂货调度的计费范围标注及运输结算司机待结算列表",
+      "container": "page",
+      "group": "driver-pending-list",
+      "createdAt": "2026-11-17"
+    },
+    {
+      "id": "annot-transportSettlement-rule-responsibility",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-responsibility",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "司机费用与结算责任",
+      "content": "司机运费由派单上级给定。\n\n- 计划创建企业直接指派司机时，由该企业与司机结算。\n- 委外给第三方承运商，再由第三方指派司机时，由该承运商与司机结算。",
+      "category": "rule",
+      "source": "本次产品对话已确认：司机费用由派单上级给定、按运单确定司机、两层核算及扣减补贴明细；运输结算原型用于核对展示位置",
+      "container": "drawer",
+      "group": "driver-create",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-transportSettlement-rule-accounting-levels",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-accounting-levels",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "核算运单层级与计费",
+      "content": "核算运单保持两层：主运单（司机、车辆）→计费明细，不再增加按司机分组的第三层。\n\n- 主运单头展示运单、司机及车辆识别信息，不展示完整地址；装卸点放在明细中。\n- 整趟计费按整趟价格核算。\n- 分段计费在明细展示各段所属计划、装卸点、计费条件和计费依据，按所属计划费用计算后汇总本趟金额。\n\n用户可见文案统一使用“分段计费”。",
+      "category": "rule",
+      "source": "本次产品对话已确认：司机费用由派单上级给定、按运单确定司机、两层核算及扣减补贴明细；运输结算原型用于核对展示位置",
+      "container": "drawer",
+      "group": "driver-create",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-transportSettlement-rule-waybill-driver",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-waybill-driver",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "通过运单确定司机",
+      "content": "司机核算以所选运单为依据，自动带出各运单对应的司机姓名、手机号和车牌，不需要另行选择司机。一张结算单允许选择多个司机对应的运单。",
+      "category": "rule",
+      "source": "本次产品对话已确认：司机费用由派单上级给定、按运单确定司机、两层核算及扣减补贴明细；运输结算原型用于核对展示位置",
+      "container": "drawer",
+      "group": "driver-picker",
+      "createdAt": "2026-11-16"
+    },
+    {
+      "id": "annot-transportSettlement-rule-fee-items",
+      "type": "selector",
+      "selector": ".annot-transportSettlement-rule-fee-items",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "title": "扣减与补贴明细",
+      "content": "扣减、补贴分别按当前核算明细维护费用项目。费用明细支持新增，并保留现有表格填写与删除交互；确认后将同类费用汇总回对应核算明细的扣减或补贴金额。",
+      "category": "rule",
+      "source": "本次产品对话已确认：司机费用由派单上级给定、按运单确定司机、两层核算及扣减补贴明细；运输结算原型用于核对展示位置",
+      "container": "modal",
+      "group": "driver-fees",
+      "createdAt": "2026-11-16"
+    }
+  ]
+}

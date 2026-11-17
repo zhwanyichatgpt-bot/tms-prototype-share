@@ -1,17 +1,15 @@
 <!-- 标注圆点：显示在页面上的编号标记，支持 page/modal/drawer 三种宿主容器 -->
 <template>
-  <!-- 根据 container 决定渲染到哪个容器 -->
-  <Teleport :to="teleportTarget" :disabled="!teleportTarget">
-    <!-- position 类型且坐标为 (0,0) 时隐藏，等用户在编辑模式下拖放定位 -->
+  <!-- 角标和锚点统一使用视口坐标，避免抽屉变换重复偏移。 -->
+  <Teleport to="body">
     <div
-      v-if="shouldShow"
       class="annotation-dot"
       :data-annot-id="annotation.id"
       :class="{
         'annotation-dot-active': isActive,
         'annotation-dot-edit': editMode,
         'annotation-dot-dragging': isDragging,
-        'annotation-dot-unplaced': isUnplaced
+        'annotation-dot-unplaced': isUnplaced && !isDragging
       }"
       :style="{ ...dotStyle, '--dot-color': dotColor }"
       @click.stop="handleClick"
@@ -31,19 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import type { AnnotationItem } from './types'
-import { registerOnElement, unregisterFromElement } from './annotationRegistry'
-import { subscribe, unsubscribe } from './annotationTracker'
+import type { Point } from './annotationContext'
 
 const props = defineProps<{
   annotation: AnnotationItem
   index: number
   isActive: boolean
   editMode: boolean
-  /** 当前是否有弹窗/抽屉打开（由父组件传入） */
-  modalOpen: boolean
-  drawerOpen: boolean
+  origin: Point
 }>()
 
 const emit = defineEmits<{
@@ -51,129 +46,12 @@ const emit = defineEmits<{
   move: [id: string, pos: { x: number; y: number }]
 }>()
 
-// ═══ 响应式状态（必须在 computed 使用之前声明）═══
-const selectorPos = ref<{ x: number; y: number } | null>(null)
-const isDragging = ref(false)
-let hasMoved = false
-const dragPos = ref<{ x: number; y: number } | null>(null)
+const dragPos = ref<Point | null>(null)
+const isDragging = computed(() => !!dragPos.value)
 const showTooltip = ref(false)
-// 当前已登记到的目标元素（用于元素变化时先从旧元素解除登记）
-let registeredEl: Element | null = null
-
-const unregisterCurrent = () => {
-  if (registeredEl) {
-    unregisterFromElement(registeredEl, props.annotation.id)
-    registeredEl = null
-  }
-}
-
-// ═══ 计算属性 ═══
-// 宿主容器，默认 page
-const container = computed(() => props.annotation.container || 'page')
-
-// 是否为未定位的 position 标注
-const isUnplaced = computed(() =>
-  props.annotation.type === 'position' &&
-  props.annotation.position.x === 0 &&
-  props.annotation.position.y === 0
-)
-
-// selector 类型但元素还没找到（未完成首次定位）
-const isSelectorPending = computed(() =>
-  props.annotation.type === 'selector' && selectorPos.value === null
-)
-
-/**
- * 当前 dot 的容器是否与页面浮层状态匹配（容器隔离，编辑模式同样生效）：
- * - page 容器：仅在无弹窗/抽屉时显示（弹窗打开时隐藏，避免和弹窗内标注混叠）
- * - modal 容器：仅在弹窗打开时显示
- * - drawer 容器：仅在抽屉打开时显示
- */
-const containerMatches = computed(() => {
-  if (container.value === 'modal') return props.modalOpen
-  if (container.value === 'drawer') return props.drawerOpen
-  // page 容器：弹窗或抽屉打开时隐藏
-  return !props.modalOpen && !props.drawerOpen
-})
-
-/**
- * 决定是否显示：
- * - 容器隔离永远生效（弹窗打开时只显示弹窗内的点，page 点隐藏）——编辑模式也不例外
- * - selector 类型但元素未找到（不在当前 DOM）：任何模式都隐藏，避免跑到 (0,0)
- *   （这是跨容器隔离的关键：炼厂表单标注在人员弹窗里找不到元素，即使都是 modal 容器也不显示）
- * - 编辑模式下，已定位或待拖放(position)的点始终显示（方便调整位置）
- * - 非编辑模式下，未定位的 position 点也隐藏
- */
-const shouldShow = computed(() => {
-  // 容器不匹配（如弹窗打开时的 page 点）→ 一律隐藏
-  if (!containerMatches.value) return false
-
-  // selector 找不到元素 → 任何模式都隐藏（元素不在 DOM，不该显示在 (0,0)）
-  if (isSelectorPending.value) return false
-
-  // 编辑模式下，已能定位的点（含待拖放的未定位 position 点）始终显示，方便调整
-  if (props.editMode) return true
-
-  if (isUnplaced.value) return false
-  return true
-})
-
-// Teleport 目标标识（依赖 modalOpen/drawerOpen 变化时重新计算）
-const teleportTargetKey = ref(0)
-
-/**
- * 通用浮层容器选择器（按优先级排序，兼容多种 UI 库）
- */
-// modal 标注点 Teleport 到弹窗内容区（而非遮罩层），确保 pointer-events 不被遮罩拦截
-const MODAL_SELECTORS = [
-  '.ant-modal-content',   // Ant Design Vue（内容区，不含遮罩）
-  '.el-dialog',           // Element Plus
-  '.van-dialog',          // Vant
-  '.t-dialog',            // TDesign
-  '.n-dialog',            // Naive UI
-  '[data-annotation-content="modal"]', // 项目自定义弹层内容区
-  '[class*="modal-content"]',
-  '[class*="dialog-content"]'
-]
-
-const DRAWER_SELECTORS = [
-  '.ant-drawer-body',     // Ant Design Vue
-  '.el-drawer__body',     // Element Plus
-  '.van-popup',           // Vant（用作抽屉时）
-  '.t-drawer__body',      // TDesign
-  '.n-drawer-body-content',  // Naive UI
-  '[data-annotation-content="drawer"]', // 项目自定义抽屉内容区
-  '[class*="drawer-body"]',
-  '[class*="drawer-content"]'
-]
-
-/**
- * Teleport 目标：根据 container 类型查找可用的浮层容器
- * 多弹窗共存时（如一个页面挂了多个 ElDialog），querySelector 取第一个会选到隐藏的容器，
- * 导致标注点 teleport 进 display:none 的弹窗里整个看不见。
- * 因此返回「当前可见的」浮层容器 DOM 元素（直接给 Teleport :to，避免选择器歧义），而非第一个匹配。
- */
-const teleportTarget = computed<Element | null>(() => {
-  void teleportTargetKey.value
-  void props.modalOpen
-  void props.drawerOpen
-
-  const selectors = container.value === 'modal' ? MODAL_SELECTORS
-                  : container.value === 'drawer' ? DRAWER_SELECTORS
-                  : null
-
-  if (!selectors) return null
-
-  for (const sel of selectors) {
-    const nodes = Array.from(document.querySelectorAll(sel))
-    for (const node of nodes) {
-      const rect = node.getBoundingClientRect()
-      // 跳过隐藏/零尺寸的容器，只命中当前真正展示的弹窗/抽屉
-      if (rect.width > 0 && rect.height > 0) return node
-    }
-  }
-  return null
-})
+const isUnplaced = computed(() => props.annotation.type === 'position' && !props.annotation.position.x && !props.annotation.position.y)
+let hasMoved = false
+let cleanup: (() => void) | undefined
 
 const dotColor = computed(() => props.annotation.color || '#1677ff')
 
@@ -182,251 +60,48 @@ const categoryMap: Record<string, string> = {
 }
 const categoryLabel = computed(() => categoryMap[props.annotation.category] || props.annotation.category)
 
-// ═══ 拖拽逻辑 ═══
-// 编辑模式下两类标注都可拖拽：position 保存绝对坐标，selector 保存相对宿主的偏移量
-const handleDragStart = (e: PointerEvent) => {
-  if (!props.editMode) return
-  const startX = e.clientX
-  const startY = e.clientY
-  hasMoved = false
-
-  const onMove = (ev: PointerEvent) => {
-    if (!hasMoved && (Math.abs(ev.clientX - startX) > 3 || Math.abs(ev.clientY - startY) > 3)) {
-      isDragging.value = true
-      hasMoved = true
-    }
-    if (hasMoved) {
-      ev.preventDefault()  // 拖动时阻止页面滚动（触屏）
-      dragPos.value = { x: ev.clientX, y: ev.clientY }
-    }
-  }
-  const onUp = () => {
-    document.removeEventListener('pointermove', onMove)
-    document.removeEventListener('pointerup', onUp)
-    document.removeEventListener('pointercancel', onUp)
-    if (hasMoved && dragPos.value) {
-      const nextPosition = props.annotation.type === 'selector' && selectorPos.value
-        ? {
-            x: dragPos.value.x - 9 - selectorPos.value.x,
-            y: dragPos.value.y - 9 - selectorPos.value.y
-          }
-        : { x: dragPos.value.x, y: dragPos.value.y }
-      emit('move', props.annotation.id, nextPosition)
-    }
-    isDragging.value = false
-    dragPos.value = null
-  }
-  document.addEventListener('pointermove', onMove, { passive: false })
-  document.addEventListener('pointerup', onUp)
-  document.addEventListener('pointercancel', onUp)
-}
-
-const handleClick = () => {
-  if (!hasMoved) emit('click', props.annotation.id)
-}
-
-// ═══ 选择器定位 ═══
-/**
- * 正式标注使用注入的 .annot-xxx class 精确定位，selector 永远命中。
- * 以下 fallback 仅在用户手动写标注但 selector 找不到时兜底，使用通用语义 class 匹配。
- * 严禁出现任何 UI 库专属选择器（如 .ant-table、.el-table）。
- */
-const getFallbackSelectors = (): string[] => {
-  const { category } = props.annotation
-  // 通用语义类（项目可能自定义的布局容器）
-  if (category === 'filter') return ['[class*="filter"]', '[class*="search"]', 'form:first-of-type']
-  if (category === 'action') return ['[class*="action"]', '[class*="toolbar"]', '[class*="operate"]']
-  if (category === 'field')  return ['[class*="table"]', '[class*="list"]', '[class*="form"]', 'table', 'form']
-  if (category === 'rule')   return ['[class*="table"]', '[class*="filter"]', 'main']
-  return []
-}
-
-/**
- * 查找元素并更新位置
- * 返回值：true 表示本次找到了稳定元素，可以停止高频轮询
- */
-const updateSelectorPos = (): boolean => {
-  if (props.annotation.type !== 'selector') return true
-
-  /**
-   * 计算标注点位置
-   * 策略：优先放在目标元素外侧，避免标注点压住页面文字和控件。
-   * - 宽区域：放在左侧外沿；窄区域：优先放在右侧外沿。
-   * - 堆叠错位：同一元素上有多个标注点时沿外侧方向错开。
-   */
-  const computePos = (rect: DOMRect, el: Element): { x: number; y: number } => {
-    const DOT_SIZE = 18
-    const OUTSIDE_GAP = 5
-    const STEP = 20
-
-    // 登记到目标元素，拿到在组内的索引（单点 → 0）
-    const stackIndex = registerOnElement(el, props.annotation.id)
-
-    const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-    const canPlaceRight = rect.right + OUTSIDE_GAP + DOT_SIZE <= viewportWidth - 4
-    const placeRight = rect.width < 180 && canPlaceRight
-    const baseX = placeRight
-      ? rect.right + OUTSIDE_GAP
-      : Math.max(4, rect.left - OUTSIDE_GAP - DOT_SIZE)
-    const x = placeRight
-      ? baseX + stackIndex * STEP
-      : Math.max(4, baseX - stackIndex * STEP)
-    const y = Math.max(4, rect.top + 2)
-
-    return { x, y }
-  }
-
-  // 第一步：直接用 selector 查
-  if (props.annotation.selector) {
-    // 缓存命中：元素仍在 DOM 中且仍匹配当前 selector 才复用。
-    // 条件 class 被移除时必须重新查询，否则阶段切换后旧标注会残留。
-    let el = (registeredEl && document.contains(registeredEl) && registeredEl.matches(props.annotation.selector))
-      ? (registeredEl as HTMLElement)
-      : (document.querySelector(props.annotation.selector) as HTMLElement | null)
-    if (el) {
-      const rect = el.getBoundingClientRect()
-      // 元素 display:none（offsetParent 为 null）或尺寸为 0 → 元素被隐藏，标注点也隐藏
-      if (rect.width === 0 && rect.height === 0) {
-        unregisterCurrent()
-        selectorPos.value = null
-        return false
-      }
-      // 目标元素变化 → 从旧元素解除登记
-      if (registeredEl && registeredEl !== el) unregisterCurrent()
-      registeredEl = el
-      selectorPos.value = computePos(rect, el)
-      return true
-    }
-    // 元素不在 DOM 中：清空位置（可能是路由已切换或条件渲染关闭）
-    unregisterCurrent()
-    selectorPos.value = null
-    return false
-  }
-
-  // 第二步：selector 找不到，根据 category + title 动态推断
-  const fallbacks = getFallbackSelectors()
-  for (const sel of fallbacks) {
-    const el = document.querySelector(sel) as HTMLElement | null
-    if (el) {
-      const rect = el.getBoundingClientRect()
-      if (rect.width === 0 && rect.height === 0) {
-        unregisterCurrent()
-        selectorPos.value = null
-        continue
-      }
-      if (registeredEl && registeredEl !== el) unregisterCurrent()
-      registeredEl = el
-      selectorPos.value = computePos(rect, el)
-      return true
-    }
-  }
-
-  // 都找不到：清空位置，标注点隐藏
-  unregisterCurrent()
-  selectorPos.value = null
-  return false
-}
-
-// ═══ 位置样式 ═══
+// 微调只改相对偏移；取消手势或切换状态时不提交。
 const dotStyle = computed(() => {
-  const isInContainer = container.value !== 'page'
-
-  // 拖拽中：跟随鼠标（始终用 fixed）。-9 = 点直径 18px 的半径，让圆心对准鼠标
-  if (dragPos.value) {
-    return {
-      position: 'fixed' as const,
-      left: `${dragPos.value.x - 9}px`,
-      top: `${dragPos.value.y - 9}px`,
-      zIndex: 9999,
-      transition: 'none'
-    }
+  const pos = dragPos.value || {
+    x: props.origin.x + props.annotation.position.x,
+    y: props.origin.y + props.annotation.position.y
   }
-
-  // 选择器定位：默认锚点位置 + 用户在编辑模式下保存的相对偏移量
-  if (props.annotation.type === 'selector' && selectorPos.value) {
-    return {
-      position: 'fixed' as const,
-      left: `${selectorPos.value.x + props.annotation.position.x}px`,
-      top: `${selectorPos.value.y + props.annotation.position.y}px`,
-      zIndex: isInContainer ? 1100 : 9990
-    }
-  }
-
-  // 手动标注（position 类型）。-9 = 点直径 18px 的半径，让圆心对准坐标点
-  return {
-    position: 'fixed' as const,
-    left: `${props.annotation.position.x - 9}px`,
-    top: `${props.annotation.position.y - 9}px`,
-    zIndex: isInContainer ? 1100 : 9990
-  }
+  return { position: 'fixed' as const, left: pos.x+'px', top: pos.y+'px', zIndex: 9991 }
 })
-
-// ═══ 定位追踪（订阅全局单例 tracker，不再各自挂监听）═══
-let rafId: number | null = null
-
-/**
- * 初始定位：rAF 轮询直到找到元素，再继续追踪一段布局稳定窗口。
- * 避免工作台缩放、过渡动画或异步内容完成前就固化了旧坐标。
- * 稳定后，后续更新交给全局 tracker（scroll/resize/mutation 统一驱动）。
- */
-const startInitialTracking = () => {
-  if (props.annotation.type !== 'selector') return
-
-  let missingAttempts = 0
-  let settleFrames = 0
-  const MAX_MISSING_ATTEMPTS = 300 // 目标未出现时最多等待约 5 秒
-  const SETTLE_FRAMES = 30 // 目标出现后继续追踪约 0.5 秒，覆盖布局缩放和过渡
-
-  const tick = () => {
-    const found = updateSelectorPos()
-    if (found) {
-      settleFrames++
-    } else {
-      missingAttempts++
-      settleFrames = 0
-    }
-
-    if (settleFrames >= SETTLE_FRAMES || missingAttempts >= MAX_MISSING_ATTEMPTS) {
-      rafId = null
-      return
-    }
-    rafId = requestAnimationFrame(tick)
+function handleDragStart(e: PointerEvent) {
+  hasMoved = false
+  if (!props.editMode || e.button !== 0 || !e.isPrimary) return
+  cleanup?.()
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  const move = (ev: PointerEvent) => {
+    if (ev.pointerId !== e.pointerId) return
+    const dx = ev.clientX-e.clientX, dy = ev.clientY-e.clientY
+    if (!hasMoved && Math.hypot(dx,dy) < 4) return
+    hasMoved = true
+    ev.preventDefault()
+    dragPos.value = {x:rect.left+dx, y:rect.top+dy}
   }
-  rafId = requestAnimationFrame(tick)
+  const finish = (ev: PointerEvent) => {
+    if (ev.pointerId !== e.pointerId) return
+    const point = dragPos.value
+    if (point && ev.type === 'pointerup') emit('move', props.annotation.id, {
+      x:point.x-props.origin.x, y:point.y-props.origin.y
+    })
+    cleanup?.()
+  }
+  cleanup = () => {
+    document.removeEventListener('pointermove', move)
+    document.removeEventListener('pointerup', finish)
+    document.removeEventListener('pointercancel', finish)
+    dragPos.value = null
+    cleanup = undefined
+  }
+  document.addEventListener('pointermove', move, {passive:false})
+  document.addEventListener('pointerup', finish)
+  document.addEventListener('pointercancel', finish)
 }
-
-const stopInitialTracking = () => {
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId)
-    rafId = null
-  }
-}
-
-// 监听 props 变化：annotation 或容器开关状态变化时重新定位
-watch(
-  () => [props.modalOpen, props.drawerOpen, props.annotation.selector, props.annotation.container],
-  () => {
-    teleportTargetKey.value++  // 强制 teleportTarget computed 重新求值
-    // 容器状态变化可能导致元素位置变化，重新开始轮询
-    stopInitialTracking()
-    selectorPos.value = null  // 重置为 null，让 shouldShow 正确判断
-    nextTick(() => startInitialTracking())
-  }
-)
-
-onMounted(() => {
-  nextTick(() => startInitialTracking())
-  // 仅 selector 类型需要随 DOM 变化重新定位；position 类型坐标固定，无需订阅
-  if (props.annotation.type === 'selector') {
-    subscribe(props.annotation.id, updateSelectorPos)
-  }
-})
-
-onUnmounted(() => {
-  stopInitialTracking()
-  unsubscribe(props.annotation.id)
-  unregisterCurrent()
-})
+function handleClick() { if (!hasMoved) emit('click', props.annotation.id) }
+onUnmounted(() => cleanup?.())
 </script>
 
 <style scoped lang="scss">
@@ -486,7 +161,7 @@ onUnmounted(() => {
 }
 
 .dot-tooltip {
-  position: fixed;
+  position: absolute;
   top: -8px;
   left: calc(100% + 8px);
   background: rgba(0, 0, 0, 0.8);

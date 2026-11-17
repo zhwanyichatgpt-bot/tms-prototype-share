@@ -2,6 +2,21 @@
   "schemaVersion": 1,
   "versions": [
     {
+      "id": "TMS-COMMON-202611-02",
+      "name": "联运 Web 1.0.1.18｜调度与运输结算",
+      "scope": "common",
+      "projectId": null,
+      "baseVersionId": null,
+      "targetReleaseDate": "2026-11-27",
+      "status": "in_progress",
+      "revision": "R0",
+      "publishedAt": "2026-11-17T03:59:44.479Z",
+      "lastPublishedAt": "2026-11-17T03:59:44.479Z",
+      "completedAt": null,
+      "createdAt": "2026-11-17T03:42:45.010Z",
+      "updatedAt": "2026-11-17T03:59:44.479Z"
+    },
+    {
       "id": "TMS-COMMON-202611-01",
       "name": "至小简 AI 工作台与业务协同 V1.0",
       "scope": "common",
@@ -107,5 +122,5 @@
       "updatedAt": "2026-08-22T09:09:20.278Z"
     }
   ],
-  "updatedAt": "2026-11-11T12:28:37.669Z"
+  "updatedAt": "2026-11-17T03:59:44.479Z"
 }
